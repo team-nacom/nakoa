@@ -11,5 +11,5 @@
     "start": "node index.js",
     "watch": "nodemon index.js"
   },
-  "version": "1.2.3"
+  "version": "0.1.0"
 }
