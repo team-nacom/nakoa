@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from 'logo.svg';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Main from 'pages/Main';
 

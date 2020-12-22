@@ -1,11 +1,23 @@
-# Nakoa - NamuCompass with Koa
+# Nakoa - NamuCompass with Koa and React
 
 ## How to run
 
-Install npm.
+Install yarn.
 
-Run `npm install` to install all npm dependencies.
+Run `yarn` to install all npm dependencies.
 
-Run `npm run start` to start the server, or `npm run watch` to watch the changes of the source files.
+Run `yarn watch` to watch the changes of the source files.
 
-The server runs in port 3000. To connect, open `localhost:3000` with your web browser.
+The client server (which is being developed in /client) runs in port 3000, 
+The API server (which is being developed in /server) runs in port 3885.
+
+To connect to client server, open `localhost:3000` with your web browser.
+To connect to API server, open `localhost:3885` with your web browser.
+
+## Notes
+
+
+## Structure
+
+
+## Publish
