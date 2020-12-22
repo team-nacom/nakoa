@@ -10,5 +10,6 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js"
-  }
+  },
+  "version": "0.0.0"
 }
