@@ -1,27 +1,21 @@
-const Koa = require('koa');
+import Koa from 'koa';
+import Router from 'koa-router';
+import Logger from 'koa-logger';
+
 const app = new Koa();
 
 // logger
+const logger = new Logger();
+app.use(logger);
 
-app.use(async (ctx, next) => {
-  await next();;
-  const rt = ctx.response.get('X-Response-Time');
-  console.log(`${ctx.method} ${ctx.url} - ${rt}`);
-});
-
-// x-response-time
-
-app.use(async (ctx, next) => {
-  const start = Date.now();
+// router
+const router = new Router();
+router.get('/', async (ctx, next) => {
+  ctx.body = 'Hello World';
   await next();
-  const ms = Date.now() - start;
-  ctx.set('X-Response-Time', `${ms}ms`);
 });
 
-// response
-
-app.use(async ctx => {
-    ctx.body = 'Hello World';
-});
+// main app
+app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3000);

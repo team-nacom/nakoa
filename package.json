@@ -1,10 +1,13 @@
 {
   "name": "nakoa",
   "version": "0.0.0",
-  "description": "",
+  "description": "Wooden Compass with koa",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "koa": "^2.13.0",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^10.0.0",
     "nodemon": "^2.0.6"
   },
   "devDependencies": {},
