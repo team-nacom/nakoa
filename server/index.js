@@ -4,9 +4,7 @@ import Logger from 'koa-logger';
 
 const app = new Koa();
 
-// logger
-const logger = new Logger();
-app.use(logger);
+app.use(Logger());
 
 // router
 const router = new Router();
@@ -18,4 +16,4 @@ router.get('/', async (ctx, next) => {
 // main app
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(3000);
+app.listen(3885);
