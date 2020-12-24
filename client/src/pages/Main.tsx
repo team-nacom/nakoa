@@ -2,6 +2,7 @@ import React from 'react';
 import Header from 'components/Header';
 import ReactMarkdown from 'react-markdown';
 import markdownConfig from 'etc/markdownConfig';
+import Footer from 'components/Footer';
 
 const mainText = `
 # Team WoodenCompass
@@ -26,6 +27,7 @@ function Main() {
         <>
             <Header/>
             <ReactMarkdown source={mainText} renderers={markdownConfig} />
+            <Footer/>
         </>
     );
 }
