@@ -1,15 +1,15 @@
 import Router from 'koa-router';
 
-const chall = new Router();
+import Chall from '../models/chall';
 
-chall.get('/', async (ctx, next) => {
-  ctx.body = {
-    "status": "success",
-    "json": {
-      "id": "ASD"
-    }
-  };
-  await next();
+const router = new Router();
+
+router.get('/', async (ctx) => {
+  try {
+    ctx.body = await Chall.find().exec();
+  } catch (e) {
+    return ctx.throw(500, e);
+  }
 });
 
-export default chall;
+export default router;
