@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@200;300;500;800&display=swap');
+
+// Reset CSS : https://meyerweb.com/eric/tools/css/reset/
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -16,8 +18,8 @@ time, mark, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
-	font: inherit;
+//	font-size: 100%;
+//	font: inherit;
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -28,9 +30,9 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 }
-ol, ul {
-	list-style: none;
-}
+//ol, ul {
+//	list-style: none;
+//}
 blockquote, q {
 	quotes: none;
 }
@@ -49,9 +51,39 @@ a {
 	color: inherit;
 }
 
+/////////////////////////////////////////////////////
+
 * {
   font-family: 'Noto Sans KR', sans-serif;
 }
 
+h1 {
+	margin-top: 20px;
+	font-size: 40px;
+	line-height: 60px;
+	font-weight: 500;
+}
+
+h2 {
+	margin-top: 14px;
+	font-size: 28px;
+	line-height: 42px;
+	font-weight: 500;
+}
+
+h3 {
+	margin-top: 11px;
+	font-size: 22px;
+	line-height: 33px;
+	font-weight: 500;
+}
+
+p, ul, ol {
+	margin-top: 8px;
+	margin-bottom: 8px;
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 300;
+}
 
 @import 'styles/header.scss';
