@@ -1,11 +1,14 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import Main from 'pages/Main';
+import ChallengeList from 'pages/ChallengeList';
 
 function App() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path='/challenge' component={ChallengeList} />
+        <Redirect path='/problem' to='/challenge' />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>
