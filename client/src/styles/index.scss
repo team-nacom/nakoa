@@ -86,6 +86,12 @@ p, ul, ol {
 	font-weight: 300;
 }
 
+#root {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
 @import 'header.scss';
 @import 'footer.scss';
 @import 'table.scss';
