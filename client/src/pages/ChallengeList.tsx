@@ -16,9 +16,9 @@ function ChallengeList() {
                 </thead>
                 <tbody>
                     <tr>
-                        <th> 1 </th>
-                        <th> 리만 가설 </th>
-                        <th> 15 </th> 
+                        <td> 1 </td>
+                        <td> 리만 가설 </td>
+                        <td> 15 </td> 
                     </tr>
                 </tbody>
             </table>
