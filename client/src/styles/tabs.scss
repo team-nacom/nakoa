@@ -1,13 +1,13 @@
 @import 'consts.scss';
 
 .tabs {
-    width: calc(100% - 100px);
+    width: 100%;
     align-items: flex-start;
     justify-content: left;
   
     display: flex;
   
-  
+    border-bottom: 1px solid #dddddd;
   
     letter-spacing: 0.1rem;
     text-align: center;

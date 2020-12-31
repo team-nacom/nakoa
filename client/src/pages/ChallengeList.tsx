@@ -2,6 +2,7 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Tabs from 'components/Tabs';
+import { Link } from 'react-router-dom';
 
 function ChallengeList() {
     return (
@@ -11,10 +12,6 @@ function ChallengeList() {
                 {
                     name: "문제 목록",
                     link: '/challenges',
-                    active: false,
-                }, {
-                    name: "ㅋㅋㅋ",
-                    link: '/',
                     active: true,
                 }
             ]} />
@@ -29,7 +26,7 @@ function ChallengeList() {
                 <tbody>
                     <tr>
                         <td> 1 </td>
-                        <td> 리만 가설 </td>
+                        <Link to='/challenge/1'> <td> 리만 가설 </td> </Link>
                         <td> 15 </td> 
                     </tr>
                 </tbody>
