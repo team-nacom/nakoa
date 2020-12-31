@@ -1,11 +1,23 @@
 import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import Tabs from 'components/Tabs';
 
 function ChallengeList() {
     return (
         <>
             <Header/>
+            <Tabs data={[
+                {
+                    name: "문제 목록",
+                    link: '/challenges',
+                    active: false,
+                }, {
+                    name: "ㅋㅋㅋ",
+                    link: '/',
+                    active: true,
+                }
+            ]} />
             <table>
                 <thead>
                     <tr>
