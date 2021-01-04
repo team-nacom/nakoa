@@ -5,31 +5,34 @@ import mongoose from 'mongoose';
 
 import chall from './chall';
 
-// connect to db
+// connect to local mongoDB
 mongoose.connect('mongodb://localhost/nacom', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  useNewUrlParser: true,   // new parser (old parser is deprecated)
+  useUnifiedTopology: true // new connection management engine
 }).then(res => {
-  console.log("Successfully connected to mongodb on localhost/nacom !");
-})
-.catch(err => {
+  console.log("Successfully connected to mongodb on localhost/nacom");
+}).catch(err => {
   console.error(err);
+  throw err;
 });
 
-// Koa app
-const app = new Koa();
-app.use(Logger());
 
-// router
+// Router
 const router = new Router();
+
+// Root (not used)
 router.get('/', async (ctx, next) => {
   ctx.body = 'Hello World';
   await next();
 });
+
 // Challenges
 router.use('/chall', chall.routes());
 
-// main app
+
+// Koa app
+const app = new Koa();
+app.use(Logger());
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3885);
