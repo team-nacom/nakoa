@@ -11,6 +11,7 @@ function App() {
         <Route path='/challenge/:id' component={Challenge} />
         <Route path='/challenge' component={ChallengeList} />
         <Redirect path='/problem' to='/challenge' />
+        <Redirect path='/challenges' to='/challenge' />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>
