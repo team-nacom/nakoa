@@ -3,9 +3,15 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Tabs from 'components/Tabs';
 import { Link } from 'react-router-dom';
+import usePromise from 'etc/usePromise';
+import { getChallList } from 'etc/api';
+import Loading from './Loading';
 
 function ChallengeList() {
-    return (
+    let [challLoading, challs] = usePromise(getChallList);
+
+    if (challLoading) return <Loading/>;
+    else return (
         <>
             <Header/>
             <Tabs data={[
@@ -24,11 +30,13 @@ function ChallengeList() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td> 1 </td>
-                        <td> <Link to='/challenge/1'> 리만 가설 </Link> </td>
-                        <td> 15 </td> 
-                    </tr>
+                    { challs.map((chall) => (
+                        <tr>
+                            <td> { chall.index } </td>
+                            <td> <Link to={`/challenge/${chall.index}`}> {chall.name} </Link> </td>
+                            <td> - </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             <Footer/>
