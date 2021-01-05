@@ -12,6 +12,12 @@ interface ChallengeProps {
     match: match<MatchParams>;
 };
 
+const submitPlaceholder = 
+`여기에 풀이를 작성하거나 아래 버튼을 이용해 풀이를 담은 파일을 첨부해주세요.
+$n^2$와 같이 수식을 작성할 수 있으며, markdown 형식을 사용할 수 있습니다.
+작성한 풀이는 운영진이 읽고 피드백해 드립니다.
+`
+
 function ChallengeSubmit({ match }: ChallengeProps) {
     const id = match.params.id;
     return (
@@ -35,7 +41,9 @@ function ChallengeSubmit({ match }: ChallengeProps) {
                     active: false,
                 }
             ]} />
-            
+            <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
+            <input type='file'/>
+            <button className='submitChallenge'> 제출 </button>
             <Footer/>
         </>
     )
