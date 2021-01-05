@@ -12,7 +12,7 @@ interface ChallengeProps {
     match: match<MatchParams>;
 };
 
-function Challenge({ match }: ChallengeProps) {
+function ChallengeSubmit({ match }: ChallengeProps) {
     const id = match.params.id;
     return (
         <>
@@ -24,26 +24,21 @@ function Challenge({ match }: ChallengeProps) {
                 {
                     name: '문제',
                     link: `/challenge/${id}`,
-                    active: true,
+                    active: false,
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
-                    active: false,
+                    active: true,
                 }, {
                     name: '토론',
                     link: `/challenge/${id}/debate`,
                     active: false,
                 }
             ]} />
-            <object 
-                data="https://s3-ap-northeast-1.amazonaws.com/ojuz-attach/problems/jqummtdh28tz12ko4cwlkt2l4dvxgrlv/statement_ko.pdf" 
-                type="application/pdf" 
-                style={{width: '100%', height: '600px'}}>
-                Sorry, Your browser is outdated, or your PDF plugin is deactivated
-            </object>
+            
             <Footer/>
         </>
     )
 }
 
-export default Challenge;
+export default ChallengeSubmit;

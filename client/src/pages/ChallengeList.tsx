@@ -11,7 +11,7 @@ function ChallengeList() {
             <Tabs data={[
                 {
                     name: "문제 목록",
-                    link: '/challenges',
+                    link: '/challenge',
                     active: true,
                 }
             ]} />
@@ -26,7 +26,7 @@ function ChallengeList() {
                 <tbody>
                     <tr>
                         <td> 1 </td>
-                        <Link to='/challenge/1'> <td> 리만 가설 </td> </Link>
+                        <td> <Link to='/challenge/1'> 리만 가설 </Link> </td>
                         <td> 15 </td> 
                     </tr>
                 </tbody>

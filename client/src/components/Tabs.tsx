@@ -25,12 +25,12 @@ function Tabs({data} : TabsProps) {
             {
                 data.map((data) => {
                     if ("link" in data) return (
-                        <Link to={data.link}>
+                        <Link to={data.link} key={data.name}>
                             <button className={data.active ? 'active' : undefined}> {data.name} </button>
                         </Link>
                     );
                     else return (
-                        <button className={data.active ? 'active' : undefined} onClick={data.onClick}> {data.name} </button>
+                        <button className={data.active ? 'active' : undefined} onClick={data.onClick} key={data.name}> {data.name} </button>
                     );
                 } )
             }
