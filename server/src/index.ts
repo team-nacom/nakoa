@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import Logger from 'koa-logger';
+import Cors from '@koa/cors';
 import mongoose from 'mongoose';
 
 import chall from './chall';
@@ -45,6 +46,7 @@ router.use('/chall', chall.routes());
 
 // Koa app
 const app = new Koa();
+app.use(Cors());
 app.use(Logger());
 app.use(router.routes()).use(router.allowedMethods());
 
