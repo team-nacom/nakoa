@@ -6,6 +6,8 @@ Install yarn.
 
 Run `yarn` to install all npm dependencies.
 
+Create `./server/.env`, and save your credential to the demo MongoDB server, `DB_USER` and `DB_PASS`.
+
 Run `yarn watch` to watch the changes of the source files.
 
 The client server (which is being developed in /client) runs in port 3000, 
