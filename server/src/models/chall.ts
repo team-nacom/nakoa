@@ -10,4 +10,4 @@ const challSchema = new Schema({
 
 // challSchema.methods.getStatemetPdfLocation
 
-export default model('Chall', challSchema);
+export default model('Chall', challSchema, 'challs');
