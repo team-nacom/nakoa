@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": "true",
     "scripts": {
+        "install": "yarn --cwd ./client/ && yarn --cwd ./server/",
         "client": "yarn --cwd ./client/ watch",
         "server": "yarn --cwd ./server/ watch",
         "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn client\" \"yarn server\""
