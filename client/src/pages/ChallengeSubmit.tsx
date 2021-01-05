@@ -42,8 +42,8 @@ function ChallengeSubmit({ match }: ChallengeProps) {
                 }
             ]} />
             <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
-            <input type='file'/>
-            <button className='submitChallenge'> 제출 </button>
+            <input type='file' style={{margin: '16px'}}/>
+            <button className='button submitChallenge'> 제출 </button>
             <Footer/>
         </>
     )
