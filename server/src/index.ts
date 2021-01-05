@@ -3,14 +3,20 @@ import Router from 'koa-router';
 import Logger from 'koa-logger';
 import mongoose from 'mongoose';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import chall from './chall';
 
-// connect to local mongoDB
-mongoose.connect('mongodb://localhost/nacom', {
+const atlasConn = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.frhrs.mongodb.net/nacom?retryWrites=true&w=majority`;
+const localConn = 'mongodb://localhost/nacom';
+const connectionString = process.env.DOTENV_CONFIG_LOCALDB ? localConn : atlasConn;
+
+mongoose.connect(connectionString, {
   useNewUrlParser: true,   // new parser (old parser is deprecated)
   useUnifiedTopology: true // new connection management engine
 }).then(res => {
-  console.log("Successfully connected to mongodb on localhost/nacom");
+  console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch(err => {
   console.error(err);
   throw err;
