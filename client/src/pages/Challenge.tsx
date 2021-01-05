@@ -36,7 +36,7 @@ function Challenge({ match }: ChallengeProps) {
                 }
             ]} />
             <object 
-                data="https://s3-ap-northeast-1.amazonaws.com/ojuz-attach/problems/jqummtdh28tz12ko4cwlkt2l4dvxgrlv/statement_ko.pdf" 
+                data="https://nacom-main-storage.s3.ap-northeast-2.amazonaws.com/challs/test.pdf" 
                 type="application/pdf" 
                 style={{width: '100%', height: '600px'}}>
                 Sorry, Your browser is outdated, or your PDF plugin is deactivated
