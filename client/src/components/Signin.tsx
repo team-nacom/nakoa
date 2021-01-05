@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface SignInProps {
     visible: boolean;
@@ -15,7 +16,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                 <input className='signinForm' placeholder='아이디' />
                 <input className='signinForm' placeholder='비밀번호' />
                 <button className='signin'> 로그인 </button>
-                <p> 처음 오셨나요? </p>
+                <Link to='/signup'> <p> 처음 오셨나요? </p> </Link>
                 <p> 아이디, 비밀번호를 까먹으셨나요? </p>
             </div>
         </>

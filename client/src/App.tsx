@@ -4,6 +4,7 @@ import Main from 'pages/Main';
 import ChallengeList from 'pages/ChallengeList';
 import Challenge from 'pages/Challenge';
 import ChallengeSubmit from 'pages/ChallengeSubmit';
+import SignUp from 'pages/SignUp';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/challenge' component={ChallengeList} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
+        <Route path='/signup' component={SignUp} />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>
