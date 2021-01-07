@@ -35,10 +35,6 @@ function ChallengeSubmit({ match }: ChallengeProps) {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
                     active: true,
-                }, {
-                    name: '토론',
-                    link: `/challenge/${id}/debate`,
-                    active: false,
                 }
             ]} />
             <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
