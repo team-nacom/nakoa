@@ -16,9 +16,14 @@ function Header() {
                         </Link>
                     </div>
                     <ul className='menu'>
+                        <Link to='/quiz'>
+                            <li>
+                                퀴즈
+                            </li>
+                        </Link>
                         <Link to='/challenge'> 
                             <li>
-                                Challenge
+                                챌린지
                             </li>
                         </Link>
                     </ul>

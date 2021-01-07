@@ -4,6 +4,15 @@
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 300;  
+}
+
 h1 {
     margin-top: 20px;
     font-size: 40px;
@@ -32,15 +41,6 @@ p, ul, ol {
 
 .link {
     cursor: pointer;
-}
-
-#root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    font-size: 15px;
-    line-height: 20px;
-    font-weight: 300;  
 }
 
 button.button {
