@@ -3,7 +3,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Markdown from 'components/Markdown';
 
-const mainText = `
+const mainText = String.raw`
 # Team WoodenCompass
 안녕하세요! 팀 나무컴퍼스입니다.
 
