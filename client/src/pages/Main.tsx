@@ -1,12 +1,25 @@
 import React from 'react';
 import Header from 'components/Header';
-import ReactMarkdown from 'react-markdown';
-import markdownConfig from 'etc/markdownConfig';
 import Footer from 'components/Footer';
+import Markdown from 'components/Markdown';
 
 const mainText = `
 # Team WoodenCompass
 안녕하세요! 팀 나무컴퍼스입니다.
+
+$E = mc^2$입니다.
+
+$$ dp[k] = \max_{i=1, \cdots, k-1} (dp[i] + ax^2 + bx + c) $$
+
+$$ = \max_{i=1, \cdots, k-1} (dp[i] + a(S_k - S_i)^2 + b (S_k - S_i) + c) $$
+
+$$ = \max_{i=1, \cdots, k-1} (dp[i] + a S_k^2 - 2 a S_k S_i + a S_i ^ 2 + b S_k - b S_i + c ) $$
+
+$$ = \max_{i=1, \cdots, k-1} (dp[i] - 2 a S_k S_i + a S_i ^ 2 - b S_i ) + a S_k^2 + b S_k + c $$
+
+$$ = \max_{i=1, \cdots, k-1} ( -2aS_i \times S_k + (dp[i] + a S_i^2 - b S_i) ) + a S_k^2 + bS_k + c$$
+
+일까요?
 
 ## 이 곳은 웹사이트입니다.
 
@@ -26,7 +39,7 @@ function Main() {
     return (
         <>
             <Header/>
-            <ReactMarkdown source={mainText} renderers={markdownConfig} />
+            <Markdown source={mainText} />
             <Footer/>
         </>
     );
