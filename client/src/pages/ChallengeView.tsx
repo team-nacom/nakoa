@@ -12,7 +12,7 @@ interface ChallengeProps {
     match: match<MatchParams>;
 };
 
-function Challenge({ match }: ChallengeProps) {
+function ChallengeView({ match }: ChallengeProps) {
     const id = match.params.id;
     return (
         <>
@@ -29,10 +29,6 @@ function Challenge({ match }: ChallengeProps) {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
                     active: false,
-                }, {
-                    name: '토론',
-                    link: `/challenge/${id}/debate`,
-                    active: false,
                 }
             ]} />
             <object 
@@ -46,4 +42,4 @@ function Challenge({ match }: ChallengeProps) {
     )
 }
 
-export default Challenge;
+export default ChallengeView;
