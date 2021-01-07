@@ -10,11 +10,11 @@ function Header() {
         <>
             <header>
                 <div className='navbar'>
-                    <Link to='/'>
-                        <div className='title' style={{fontSize: '18px', fontWeight: 'normal'}}>
-                            <span style={{color: mainColor}}>나무</span><span style={{color: subColor}}>컴퍼스</span>
-                        </div>
-                    </Link>
+                    <div className='title'>
+                        <Link to='/'>
+                            <img src={process.env.PUBLIC_URL + '/logo.png'} />
+                        </Link>
+                    </div>
                     <ul className='menu'>
                         <Link to='/challenge'> 
                             <li>
