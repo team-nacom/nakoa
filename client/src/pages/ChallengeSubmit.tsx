@@ -8,7 +8,7 @@ interface MatchParams {
     id: string;
 };
 
-interface ChallengeProps {
+interface Props {
     match: match<MatchParams>;
 };
 
@@ -18,7 +18,7 @@ $n^2$와 같이 수식을 작성할 수 있으며, markdown 형식을 사용할 
 작성한 풀이는 운영진이 읽고 피드백해 드립니다.
 `
 
-function ChallengeSubmit({ match }: ChallengeProps) {
+function ChallengeSubmit({ match }: Props) {
     const id = match.params.id;
     return (
         <>
@@ -35,8 +35,12 @@ function ChallengeSubmit({ match }: ChallengeProps) {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
                     active: true,
+                }, {
+                    name: '풀이',
+                    link: `/challenge/${id}/solutions`,
+                    active: false,
                 }
-            ]} />
+        ]} />
             <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
             <input type='file' style={{margin: '16px'}}/>
             <button className='button submitChallenge'> 제출 </button>

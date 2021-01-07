@@ -8,11 +8,11 @@ interface MatchParams {
     id: string;
 };
 
-interface ChallengeProps {
+interface Props {
     match: match<MatchParams>;
 };
 
-function ChallengeView({ match }: ChallengeProps) {
+function ChallengeView({ match }: Props) {
     const id = match.params.id;
     return (
         <>
@@ -28,6 +28,10 @@ function ChallengeView({ match }: ChallengeProps) {
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
+                    active: false,
+                }, {
+                    name: '풀이',
+                    link: `/challenge/${id}/solutions`,
                     active: false,
                 }
             ]} />
