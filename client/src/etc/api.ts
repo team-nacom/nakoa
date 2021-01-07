@@ -1,7 +1,7 @@
 import Axios from 'axios';
+import config from './config';
 
-const apiAddress = 'http://localhost:3885';
-
+const apiAddress = config.apiAddress;
 export interface Chall {
     _id: string;
     index: number;
