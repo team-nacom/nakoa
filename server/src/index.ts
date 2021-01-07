@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import Logger from 'koa-logger';
 import Cors from '@koa/cors';
 import mongoose from 'mongoose';
+import './models/aws';
 
 import chall from './chall';
 
