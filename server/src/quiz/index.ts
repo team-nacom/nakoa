@@ -6,22 +6,23 @@ const router = new Router();
 
 // Get list of all quizzes
 router.get('/', async (ctx) => {
-    try {
-        ctx.body = await Quiz.find().exec();
-    } catch (err) {
-        return ctx.throw(500, err);
-    }
+  await Quiz.find().lean().
+    catch(err => ctx.throw(500, err)).
+    then(docs => ctx.body = docs);
 });
 
 // Get specific quiz with given index
 router.get('/:index', async (ctx) => {
   const index = ctx.params.index;
-  try {
-    ctx.body = await Quiz.find({ index: index }).exec();
-    // TODO if quiz is not found
-  } catch (err) {
-    return ctx.throw(500, err);
-  }
+
+  const query = Quiz.find({ index: index });
+
+  await query.findOne().lean().
+    catch(err => ctx.throw(500, err)).
+    then(doc => {
+      if(!doc) ctx.throw(404, "Document Not Found");
+      ctx.body = doc;
+    });
 });
 
 export default router;

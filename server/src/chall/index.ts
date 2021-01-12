@@ -7,32 +7,28 @@ const router = new Router();
 // NOTE: exclude _id from projection?
 // Get list of published challenges
 router.get('/', async (ctx) => {
-  try {
-    ctx.body = await Chall.find(
-      { isPublic: true }, // return only public challs
-      'index name solveCount'        // project index & name fields only
-    ).exec();
-  } catch (err) {
-    return ctx.throw(500, err);
-  }
+  const query = Chall.find({ isPublic: true }).select('index name solveCount');
+  await query.lean().
+    catch(err => ctx.throw(500, err)).
+    then(docs => ctx.body = docs);
 });
 
 // Get specific challenge with given index
-router.get('/:index', async (ctx, next) => {
+router.get('/:index', async (ctx) => {
   const index = ctx.params.index;
-  try {
-    ctx.body = await Chall.find(
-      {
-        index: index,
-        isPublic: true,
-      },
-      '-isPublic'
-    ).exec();
-    // TODO if chall is not found
-  } catch (err) {
-    return ctx.throw(500, err);
-  }
-  next();
+
+  const filter = {
+    index: index,
+    isPublic: true
+  };
+  const query = Chall.find(filter).select('-isPublic');
+
+  await query.findOne().lean().
+    catch(err => ctx.throw(500, err)).
+    then(doc => {
+      if(!doc) ctx.throw(404, "Document Not Found");
+      ctx.body = doc;
+    });
 });
 
 
