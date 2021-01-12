@@ -19,11 +19,11 @@ const dateString = (date: Date) => {
     return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`;
 }
 
-function ChallengeView({ match }: Props) {
+function ChallengeSolution({ match }: Props) {
     const id = Number.parseInt(match.params.id);
     let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
     let time = React.useMemo(() => new Date(), []);
-    let problemOpenTime = React.useMemo(() => new Date(problem ? problem.problemOpenDate: 0), [problem]);
+    let solutionOpenTime = React.useMemo(() => new Date(problem ? problem.solutionOpenDate: 0), [problem]);
 
     if (problemLoading) return <Loading/>;
     else return (
@@ -36,7 +36,7 @@ function ChallengeView({ match }: Props) {
                 {
                     name: '문제',
                     link: `/challenge/${id}`,
-                    active: true,
+                    active: false,
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
@@ -44,14 +44,14 @@ function ChallengeView({ match }: Props) {
                 }, {
                     name: '풀이',
                     link: `/challenge/${id}/solution`,
-                    active: false,
+                    active: true,
                 }, {
                     name: '답안',
                     link: `/challenge/${id}/submissions`,
                     active: false,
                 }
             ]} />
-            { problemOpenTime <= time ? (
+            { solutionOpenTime <= time ? (
                 <object 
                     data={problem.problemUrl}
                     type="application/pdf" 
@@ -59,11 +59,11 @@ function ChallengeView({ match }: Props) {
                     Sorry, Your browser is outdated, or your PDF plugin is deactivated
                 </object>
             ) : (
-                <p> 문제는 {dateString(problemOpenTime)}에 공개됩니다. </p>
+                <p> 풀이는 {dateString(solutionOpenTime)}에 공개됩니다. </p>
             )}
             <Footer/>
         </>
     )
 }
 
-export default ChallengeView;
+export default ChallengeSolution;

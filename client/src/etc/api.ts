@@ -6,6 +6,12 @@ export interface Chall {
     _id: string;
     index: number;
     name: string;
+    solveCount: number;
+    problemUrl: string;
+    solutionUrl: string;
+    createDate: number;
+    problemOpenDate: number;
+    solutionOpenDate: number;
 }
 
 export const getChallList = async () => {
@@ -15,7 +21,7 @@ export const getChallList = async () => {
 }
 
 export const getChallInfo = async (id: number) => {
-    let response = await Axios.get<Chall>(`${apiAddress}/chall/${id}`);
+    let response = await Axios.get<Chall[]>(`${apiAddress}/chall/${id}`);
 
-    return response.data;
+    return response.data[0];
 }

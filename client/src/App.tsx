@@ -6,14 +6,16 @@ import ChallengeView from 'pages/ChallengeView';
 import ChallengeSubmit from 'pages/ChallengeSubmit';
 import SignUp from 'pages/SignUp';
 import Quiz from 'pages/Quiz';
-import ChallengeSolutions from 'pages/ChallengeSolutions';
+import ChallengeSubmissions from 'pages/ChallengeSubmissions';
+import ChallengeSolution from 'pages/ChallengeSolution';
 
 function App() {
   return (
     <BrowserRouter>
       <Switch>
         <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
-        <Route path='/challenge/:id/solutions' component={ChallengeSolutions} />
+        <Route path='/challenge/:id/solution' component={ChallengeSolution} />
+        <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
         <Redirect path='/problem' to='/challenge' />

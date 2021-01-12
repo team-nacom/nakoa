@@ -1,8 +1,11 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Tabs from 'components/Tabs';
+import { getChallInfo } from 'etc/api';
+import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
+import Loading from './Loading';
 
 interface MatchParams {
     id: string;
@@ -12,14 +15,16 @@ interface Props {
     match: match<MatchParams>;
 };
 
-function ChallengeSolutions({ match } : Props) {
-    const id = match.params.id;
+function ChallengeSubmissions({ match } : Props) {
+    const id = Number.parseInt(match.params.id);
+    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
 
-    return (
+    if (problemLoading) return <Loading/>;
+    else return (
         <>
             <Header/>
             <h2 className='title' style={{marginBottom: '20px'}}>
-                리만 가설
+                { problem.name }
             </h2>
             <Tabs data={[
                 {
@@ -32,7 +37,11 @@ function ChallengeSolutions({ match } : Props) {
                     active: false,
                 }, {
                     name: '풀이',
-                    link: `/challenge/${id}/solutions`,
+                    link: `/challenge/${id}/solution`,
+                    active: false,
+                }, {
+                    name: '답안',
+                    link: `/challenge/${id}/submissions`,
                     active: true,
                 }
             ]} />
@@ -62,4 +71,4 @@ function ChallengeSolutions({ match } : Props) {
     )
 }
 
-export default ChallengeSolutions;
+export default ChallengeSubmissions;
