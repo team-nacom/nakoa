@@ -1,6 +1,8 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Tabs from 'components/Tabs';
+import { getChallInfo } from 'etc/api';
+import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
 
@@ -13,13 +15,15 @@ interface Props {
 };
 
 function ChallengeSubmissions({ match } : Props) {
-    const id = match.params.id;
+    const id = Number.parseInt(match.params.id);
+    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
 
-    return (
+    if (problemLoading) return (<><Header/><Footer/></>)
+    else return (
         <>
             <Header/>
             <h2 className='title' style={{marginBottom: '20px'}}>
-                리만 가설
+                { problem.name }
             </h2>
             <Tabs data={[
                 {

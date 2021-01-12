@@ -24,7 +24,7 @@ function ChallengeSolution({ match }: Props) {
     let time = React.useMemo(() => new Date(), []);
     let solutionOpenTime = React.useMemo(() => new Date(problem ? problem.solutionOpenDate: 0), [problem]);
 
-    if (problemLoading) return <></>
+    if (problemLoading) return (<><Header/><Footer/></>)
     else return (
         <>
             <Header/>
