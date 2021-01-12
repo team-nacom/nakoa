@@ -5,7 +5,8 @@ import Cors from '@koa/cors';
 import mongoose from 'mongoose';
 import './models/aws';
 
-import chall from './chall';
+import challRouter from './chall';
+import quizRouter from './quiz';
 
 // Check env
 const dbUser = process.env.DB_USER;
@@ -42,7 +43,9 @@ router.get('/', async (ctx, next) => {
 });
 
 // Challenges
-router.use('/chall', chall.routes());
+router.use('/chall', challRouter.routes());
+// Quizzes
+router.use('/quiz', quizRouter.routes());
 
 
 // Koa app
