@@ -5,6 +5,7 @@ import { getChallInfo } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
+import Loading from './Loading';
 
 interface MatchParams {
     id: string;
@@ -24,7 +25,7 @@ function ChallengeSubmit({ match }: Props) {
     const id = Number.parseInt(match.params.id);
     let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
 
-    if (problemLoading) return (<><Header/><Footer/></>)
+    if (problemLoading) return <Loading/>;
     else return (
         <>
             <Header/>

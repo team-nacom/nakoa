@@ -5,6 +5,7 @@ import { getChallInfo } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
+import Loading from './Loading';
 
 interface MatchParams {
     id: string;
@@ -24,7 +25,7 @@ function ChallengeView({ match }: Props) {
     let time = React.useMemo(() => new Date(), []);
     let problemOpenTime = React.useMemo(() => new Date(problem ? problem.problemOpenDate: 0), [problem]);
 
-    if (problemLoading) return (<><Header/><Footer/></>)
+    if (problemLoading) return <Loading/>;
     else return (
         <>
             <Header/>
