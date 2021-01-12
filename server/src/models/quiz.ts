@@ -8,7 +8,7 @@ const quizSchema = new Schema({
     choices: [String],
     answer: String, // correct answer (1-based index of the correct choice)
     explanation: String,
-    createDate: { type: Date, default: Date.now }
+    createDate: { type: Number, default: Date.now }
 });
 
 export default model('Quiz', quizSchema, 'quizzes');

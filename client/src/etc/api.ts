@@ -21,7 +21,12 @@ export const getChallList = async () => {
 }
 
 export const getChallInfo = async (id: number) => {
-    let response = await Axios.get<Chall[]>(`${apiAddress}/chall/${id}`);
+    let response = await Axios.get(`${apiAddress}/chall/${id}`);
+    
+    const data = response.data;
+    data.createDate = Number.parseInt(data.createDate);
+    data.problemOpenDate = Number.parseInt(data.problemOpenDate);
+    data.solutionOpenDate = Number.parseInt(data.solutionOpenDate);
 
-    return response.data[0];
+    return data;
 }

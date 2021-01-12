@@ -14,6 +14,4 @@ const challSchema = new Schema({
     createDate: { type: Number, default: Date.now },
 });
 
-// challSchema.methods.getStatemetPdfLocation
-
 export default model('Chall', challSchema, 'challs');
