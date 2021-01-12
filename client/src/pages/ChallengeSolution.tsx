@@ -12,7 +12,7 @@ interface Props {
     match: match<MatchParams>;
 };
 
-function ChallengeView({ match }: Props) {
+function ChallengeSolution({ match }: Props) {
     const id = match.params.id;
     return (
         <>
@@ -24,7 +24,7 @@ function ChallengeView({ match }: Props) {
                 {
                     name: '문제',
                     link: `/challenge/${id}`,
-                    active: true,
+                    active: false,
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
@@ -32,7 +32,7 @@ function ChallengeView({ match }: Props) {
                 }, {
                     name: '풀이',
                     link: `/challenge/${id}/solutions`,
-                    active: false,
+                    active: true,
                 }, {
                     name: '답안',
                     link: `/challenge/${id}/submissions`,
@@ -50,4 +50,4 @@ function ChallengeView({ match }: Props) {
     )
 }
 
-export default ChallengeView;
+export default ChallengeSolution;

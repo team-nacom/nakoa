@@ -27,7 +27,7 @@ function Quiz() {
                     );
                 }) }
                 <div style={{marginBottom: '10px'}} />
-                <button className='button' onClick={() => setStatus(2)}> 제출 </button>
+                <button className='button' onClick={choice ? (() => setStatus(2)) : undefined}> 제출 </button>
                 { status === 2 && (
                     <>
                         <p> {answer === choice ? '맞았습니다!' : '틀렸습니다..'} {' '} { `정답은 ${answer}입니다.`} </p>

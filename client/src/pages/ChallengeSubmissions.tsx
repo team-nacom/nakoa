@@ -12,7 +12,7 @@ interface Props {
     match: match<MatchParams>;
 };
 
-function ChallengeSolutions({ match } : Props) {
+function ChallengeSubmissions({ match } : Props) {
     const id = match.params.id;
 
     return (
@@ -34,6 +34,10 @@ function ChallengeSolutions({ match } : Props) {
                     name: '풀이',
                     link: `/challenge/${id}/solutions`,
                     active: true,
+                }, {
+                    name: '답안',
+                    link: `/challenge/${id}/submissions`,
+                    active: false,
                 }
             ]} />
             <p> 각 행을 클릭하면 사람들이 제출한 풀이를 확인할 수 있습니다. </p>
@@ -62,4 +66,4 @@ function ChallengeSolutions({ match } : Props) {
     )
 }
 
-export default ChallengeSolutions;
+export default ChallengeSubmissions;

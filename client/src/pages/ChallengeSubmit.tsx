@@ -39,6 +39,10 @@ function ChallengeSubmit({ match }: Props) {
                     name: '풀이',
                     link: `/challenge/${id}/solutions`,
                     active: false,
+                }, {
+                    name: '답안',
+                    link: `/challenge/${id}/submissions`,
+                    active: false,
                 }
         ]} />
             <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
