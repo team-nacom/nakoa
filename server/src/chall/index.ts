@@ -10,7 +10,7 @@ router.get('/', async (ctx) => {
   try {
     ctx.body = await Chall.find(
       { isPublic: true }, // return only public challs
-      'index name'        // project index & name fields only
+      'index name solveCount'        // project index & name fields only
     ).exec();
   } catch (err) {
     return ctx.throw(500, err);
