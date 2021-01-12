@@ -15,7 +15,7 @@ function SignUp() {
                 <input className='signupForm' placeholder='예시: example@gmail.com'/>
     
                 <div className='signupLabel'> 비밀번호 </div>
-                <input type='password' className='signupForm' placeholder='8글자 이상 영문+숫자'/>
+                <input type='password' className='signupForm' placeholder='8글자 이상 영문, 숫자 혼합'/>
 
                 <div className='signupLabel'> 비밀번호 확인 </div>
                 <input type='password' className='signupForm'/>
