@@ -8,10 +8,10 @@ const challSchema = new Schema({
     solveCount: Number,
     problemUrl: String,
     solutionUrl: String,
-    problemOpenDate: { type: Date, default: () => Date.now() + 86400 },
-    solutionOpenDate: { type: Date, default: () => Date.now() + 86400 },
+    problemOpenDate: { type: Number, default: () => Date.now() + 86400 },
+    solutionOpenDate: { type: Number, default: () => Date.now() + 86400 },
     isPublic: { type: Boolean, default: false },
-    createDate: { type: Date, default: Date.now },
+    createDate: { type: Number, default: Date.now },
 });
 
 // challSchema.methods.getStatemetPdfLocation

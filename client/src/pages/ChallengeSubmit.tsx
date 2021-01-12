@@ -37,7 +37,7 @@ function ChallengeSubmit({ match }: Props) {
                     active: true,
                 }, {
                     name: '풀이',
-                    link: `/challenge/${id}/solutions`,
+                    link: `/challenge/${id}/solution`,
                     active: false,
                 }, {
                     name: '답안',

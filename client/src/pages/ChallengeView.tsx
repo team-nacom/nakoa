@@ -1,6 +1,8 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Tabs from 'components/Tabs';
+import { getChallInfo } from 'etc/api';
+import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
 
@@ -12,13 +14,22 @@ interface Props {
     match: match<MatchParams>;
 };
 
+const dateString = (date: Date) => {
+    return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`;
+}
+
 function ChallengeView({ match }: Props) {
-    const id = match.params.id;
-    return (
+    const id = Number.parseInt(match.params.id);
+    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
+    let time = React.useMemo(() => new Date(), []);
+    let problemOpenTime = React.useMemo(() => new Date(problem ? problem.problemOpenDate: 0), [problem]);
+
+    if (problemLoading) return <></>
+    else return (
         <>
             <Header/>
             <h2 className='title' style={{marginBottom: '20px'}}>
-                리만 가설
+                { problem.name }
             </h2>
             <Tabs data={[
                 {
@@ -31,7 +42,7 @@ function ChallengeView({ match }: Props) {
                     active: false,
                 }, {
                     name: '풀이',
-                    link: `/challenge/${id}/solutions`,
+                    link: `/challenge/${id}/solution`,
                     active: false,
                 }, {
                     name: '답안',
@@ -39,12 +50,16 @@ function ChallengeView({ match }: Props) {
                     active: false,
                 }
             ]} />
-            <object 
-                data="https://nacom-main-storage.s3.ap-northeast-2.amazonaws.com/challs/test.pdf" 
-                type="application/pdf" 
-                style={{width: '100%', height: '600px'}}>
-                Sorry, Your browser is outdated, or your PDF plugin is deactivated
-            </object>
+            { problemOpenTime <= time ? (
+                <object 
+                    data={problem.problemUrl}
+                    type="application/pdf" 
+                    style={{width: '100%', height: '600px'}}>
+                    Sorry, Your browser is outdated, or your PDF plugin is deactivated
+                </object>
+            ) : (
+                <p> 문제는 {dateString(problemOpenTime)}에 공개됩니다. </p>
+            )}
             <Footer/>
         </>
     )

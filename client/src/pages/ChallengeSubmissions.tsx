@@ -32,12 +32,12 @@ function ChallengeSubmissions({ match } : Props) {
                     active: false,
                 }, {
                     name: '풀이',
-                    link: `/challenge/${id}/solutions`,
-                    active: true,
+                    link: `/challenge/${id}/solution`,
+                    active: false,
                 }, {
                     name: '답안',
                     link: `/challenge/${id}/submissions`,
-                    active: false,
+                    active: true,
                 }
             ]} />
             <p> 각 행을 클릭하면 사람들이 제출한 풀이를 확인할 수 있습니다. </p>
