@@ -11,7 +11,11 @@ export interface Chall {
 export const getChallList = async () => {
     let response = await Axios.get<Chall[]>(`${apiAddress}/chall`);
 
-    console.log(response);
-    if (response.status === 200) return response.data;
-    else return [];
+    return response.data;
+}
+
+export const getChallInfo = async (id: number) => {
+    let response = await Axios.get<Chall>(`${apiAddress}/chall/${id}`);
+
+    return response.data;
 }
