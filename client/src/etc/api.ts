@@ -22,11 +22,29 @@ export const getChallList = async () => {
 
 export const getChallInfo = async (id: number) => {
     let response = await Axios.get(`${apiAddress}/chall/${id}`);
-    
-    const data = response.data;
-    data.createDate = Number.parseInt(data.createDate);
-    data.problemOpenDate = Number.parseInt(data.problemOpenDate);
-    data.solutionOpenDate = Number.parseInt(data.solutionOpenDate);
 
-    return data;
+    return response.data;
+}
+
+export interface Quiz {
+    _id: string;
+    index: number;
+    name: string;
+    description: string;
+    choices: string[];
+    answer: string;
+    explanation: string;
+    createDate: number;
+}
+
+export const getQuizList = async () => {
+    let response = await Axios.get<Quiz[]>(`${apiAddress}/quiz`);
+    
+    return response.data;
+}
+
+export const getQuizInfo = async (id: number) => {
+    let response = await Axios.get<Quiz>(`${apiAddress}/quiz/${id}`);
+
+    return response.data;
 }

@@ -20,7 +20,8 @@ function App() {
         <Route path='/challenge' component={ChallengeList} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
-        <Route path='/quiz' component={Quiz} />
+        <Route path='/quiz/:id' component={Quiz} />
+        <Redirect path='/quiz' to='/quiz/1'/>
         <Route path='/signup' component={SignUp} />
         <Route path='/' component={Main} />
       </Switch>
