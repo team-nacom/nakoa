@@ -6,7 +6,7 @@ const router = new Router();
 
 // Get list of all quizzes
 router.get('/', async (ctx) => {
-  await Quiz.find().lean().
+  await Quiz.find().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);
 });
@@ -17,7 +17,7 @@ router.get('/:index', async (ctx) => {
 
   const query = Quiz.find({ index: index });
 
-  await query.findOne().lean().
+  await query.findOne().
     catch(err => ctx.throw(500, err)).
     then(doc => {
       if(!doc) ctx.throw(404, "Document Not Found");
