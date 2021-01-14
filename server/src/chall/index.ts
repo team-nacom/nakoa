@@ -23,7 +23,7 @@ router.get('/:index', async (ctx) => {
   };
   const query = Chall.find(filter).select('-isPublic');
 
-  await query.findOne().lean().
+  await query.findOne().
     catch(err => ctx.throw(500, err)).
     then(doc => {
       if(!doc) ctx.throw(404, "Document Not Found");
