@@ -1,8 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Markdown from 'components/Markdown';
-import { getQuizInfo } from 'etc/api';
-import usePromise from 'etc/usePromise';
+import { getQuizInfo, Quiz } from 'etc/api';
 import React from 'react';
 import { Link, match } from 'react-router-dom';
 import Loading from './Loading';
@@ -15,24 +14,37 @@ interface Props {
     match: match<MatchParams>;
 };
 
-function Quiz({ match } : Props) {
+function QuizView({ match } : Props) {
     const id = Number.parseInt(match.params.id);
-    let [quizLoading, quiz, quizError] = usePromise(() => getQuizInfo(id));
+    let [quiz, setQuiz] = React.useState<Quiz>();
+    let [description, setDescription] = React.useState<JSX.Element>();
+    let [choices, setChoices] = React.useState<JSX.Element[]>();
     let [choice, setChoice] = React.useState<string>();
     let [status, setStatus] = React.useState<number>(1);
 
-    if (quizLoading) return <Loading/>;
+    React.useEffect(() => {
+        setQuiz(undefined);
+        setChoice(undefined);
+        setStatus(1);
+        getQuizInfo(id).then((quiz) => {
+            setDescription(<Markdown source={quiz.description}/>);
+            setChoices(quiz.choices.map((choice, index) => <Markdown source={`${index+1}. ${choice}`} />));
+            setQuiz(quiz);
+        })
+    }, [id]);
+
+    if (!quiz) return <Loading/>;
     else return (
         <>
             <Header/>
             <div className='quizBox'>
-                <Markdown source={quiz.description} />
+                { description }
                 <div style={{marginBottom: '30px'}} />
-                { quiz.choices.map((item, i) => {
+                { choices && choices.map((choiceElement, i) => {
                     let index = (i+1).toString();
                     return (
-                        <div className={'choiceForm' + ((choice === index) ? ' active' : ' inactive')} key={item} onClick={(status === 1 ) ? (() => setChoice(index)) : undefined}> 
-                            <Markdown source={`${index}. ${item}`} />
+                        <div className={'choiceForm' + ((choice === index) ? ' active' : ' inactive')} onClick={(status === 1 ) ? (() => setChoice(index)) : undefined}> 
+                            { choiceElement }
                         </div> 
                     );
                 }) }
@@ -51,4 +63,4 @@ function Quiz({ match } : Props) {
     )
 }
 
-export default Quiz;
+export default QuizView;
