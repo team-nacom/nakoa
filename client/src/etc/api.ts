@@ -27,14 +27,14 @@ export const getChallInfo = async (id: number) => {
 }
 
 export interface Quiz {
-    _id: string;
-    index: number;
+    _id?: string;
+    index?: number;
     name: string;
     description: string;
     choices: string[];
     answer: string;
     explanation: string;
-    createDate: number;
+    createDate?: number;
 }
 
 export const getQuizList = async () => {
@@ -47,4 +47,11 @@ export const getQuizInfo = async (id: number) => {
     let response = await Axios.get<Quiz>(`${apiAddress}/quiz/${id}`);
 
     return response.data;
+}
+
+export const postQuiz = async (quiz: Quiz) => {
+    let response = await Axios.post(`${apiAddress}/quiz`, quiz);
+    console.log(quiz);
+    console.log(response);
+    return response.status < 300;
 }

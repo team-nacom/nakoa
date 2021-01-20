@@ -14,7 +14,7 @@ interface Props {
     match: match<MatchParams>;
 };
 
-const maxId = 2;
+const maxId = 4;
 
 function QuizView({ match } : Props) {
     const id = Number.parseInt(match.params.id);
@@ -39,6 +39,7 @@ function QuizView({ match } : Props) {
     else return (
         <>
             <Header/>
+            <Link to='/admin/quiz/add'><button className='button'> 퀴즈 추가하기 </button></Link>
             <div className={`quizBox shadowOver${Math.min(3, maxId - id)}`}>
                 <div style={{marginBottom: '27px'}}> { `#${id}. ${quiz.name}` } </div>
                 { description }
