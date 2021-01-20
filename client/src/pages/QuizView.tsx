@@ -14,6 +14,8 @@ interface Props {
     match: match<MatchParams>;
 };
 
+const maxId = 2;
+
 function QuizView({ match } : Props) {
     const id = Number.parseInt(match.params.id);
     let [quiz, setQuiz] = React.useState<Quiz>();
@@ -37,7 +39,7 @@ function QuizView({ match } : Props) {
     else return (
         <>
             <Header/>
-            <div className='quizBox'>
+            <div className={`quizBox shadowOver${Math.min(3, maxId - id)}`}>
                 { description }
                 <div style={{marginBottom: '30px'}} />
                 { choices && choices.map((choiceElement, i) => {
@@ -54,7 +56,7 @@ function QuizView({ match } : Props) {
                     <>
                         <p> {quiz.answer === choice ? '맞았습니다!' : '틀렸습니다..'} {` 정답은 ${quiz.answer}입니다.`} </p>
                         <Markdown source={quiz.explanation}/>
-                        <Link to={`/quiz/${id+1}`}><button className='button'> 다음 문제 </button></Link>
+                        <Link to={`/quiz/${Math.min(maxId, id+1)}`}><button className='button'> 다음 문제 </button></Link>
                     </>
                 )}
             </div>
