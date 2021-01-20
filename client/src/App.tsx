@@ -8,6 +8,8 @@ import SignUp from 'pages/SignUp';
 import QuizView from 'pages/QuizView';
 import ChallengeSubmissions from 'pages/ChallengeSubmissions';
 import ChallengeSolution from 'pages/ChallengeSolution';
+import AdminAddQuiz from 'pages/AdminAddQuiz';
+import AdminAddChallenge from 'pages/AdminAddChallenge';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Redirect path='/challenges' to='/challenge' />
         <Route path='/quiz/:id' component={QuizView} />
         <Redirect path='/quiz' to='/quiz/1'/>
+        <Route path='/admin/quiz/add' component={AdminAddQuiz} />
+        <Route path='/admin/challenge/add' component={AdminAddChallenge} />
         <Route path='/signup' component={SignUp} />
         <Route path='/' component={Main} />
       </Switch>
