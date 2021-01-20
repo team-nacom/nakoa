@@ -4,6 +4,18 @@ div.quizBox {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     margin: 40px 20px;
     padding: 20px 30px;
+
+    &.shadowOver1 {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 6px 6px 0px white, 6px 6px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    &.shadowOver2 {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 6px 6px 0px white, 6px 6px 10px rgba(0, 0, 0, 0.3), 11px 11px 0px white, 11px 11px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    &.shadowOver3 {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 6px 6px 0px white, 6px 6px 10px rgba(0, 0, 0, 0.3), 11px 11px 0px white, 11px 11px 10px rgba(0, 0, 0, 0.3), 15px 15px 0px white, 15px 15px 10px rgba(0, 0, 0, 0.3);
+    }
 }
 
 div.choiceForm {
