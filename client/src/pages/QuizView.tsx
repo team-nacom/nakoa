@@ -40,6 +40,7 @@ function QuizView({ match } : Props) {
         <>
             <Header/>
             <div className={`quizBox shadowOver${Math.min(3, maxId - id)}`}>
+                <div style={{marginBottom: '27px'}}> { `#${id}. ${quiz.name}` } </div>
                 { description }
                 <div style={{marginBottom: '30px'}} />
                 { choices && choices.map((choiceElement, i) => {
