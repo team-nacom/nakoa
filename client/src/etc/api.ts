@@ -21,7 +21,30 @@ export const getChallList = async () => {
 }
 
 export const getChallInfo = async (id: number) => {
-    let response = await Axios.get<Chall>(`${apiAddress}/chall/${id}`);
+    let response = await Axios.get(`${apiAddress}/chall/${id}`);
+
+    return response.data;
+}
+
+export interface Quiz {
+    _id: string;
+    index: number;
+    name: string;
+    description: string;
+    choices: string[];
+    answer: string;
+    explanation: string;
+    createDate: number;
+}
+
+export const getQuizList = async () => {
+    let response = await Axios.get<Quiz[]>(`${apiAddress}/quiz`);
+    
+    return response.data;
+}
+
+export const getQuizInfo = async (id: number) => {
+    let response = await Axios.get<Quiz>(`${apiAddress}/quiz/${id}`);
 
     return response.data;
 }
