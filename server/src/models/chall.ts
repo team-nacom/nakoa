@@ -5,7 +5,7 @@ const challSchema = new Schema({
     index: Number,
     name: String,
 
-    solveCount: Number,
+    solveCount: { type: Number, default: 0 },
     problemUrl: String,
     solutionUrl: String,
     problemOpenDate: { type: Number, default: () => Date.now() + 86400 },
