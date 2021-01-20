@@ -2,6 +2,8 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import Logger from 'koa-logger';
 import Cors from '@koa/cors';
+import bodyParser from 'koa-bodyparser';
+
 import mongoose from 'mongoose';
 import './models/aws';
 
@@ -50,8 +52,10 @@ router.use('/quiz', quizRouter.routes());
 
 // Koa app
 const app = new Koa();
-app.use(Cors());
 app.use(Logger());
+app.use(Cors());
+app.use(bodyParser());
+
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3885);
