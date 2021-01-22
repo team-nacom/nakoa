@@ -6,6 +6,10 @@ const router = new Router();
 
 // Post a challenge
 router.post('/', async (ctx) => {
+  // suspend POST request
+  ctx.throw(404);
+  return;
+
   type ChallPost = {
     index?: number,
     name: string,
