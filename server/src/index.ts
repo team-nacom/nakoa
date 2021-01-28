@@ -4,11 +4,15 @@ import Logger from 'koa-logger';
 import Cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 
+import session from 'koa-session';
+import passport from 'koa-passport';
+
 import mongoose from 'mongoose';
 import './models/aws';
 
 import challRouter from './chall';
 import quizRouter from './quiz';
+import userRouter from './user';
 
 // Check env
 const dbUser = process.env.DB_USER;
@@ -35,6 +39,43 @@ mongoose.connect(connectionString, {
 });
 
 
+// Passport (User Auth) config
+const fetchUser = (() => {
+  // This is an example! Use password hashing in your project and avoid storing passwords in your code
+  const user = { id: 1, username: 'test', password: 'test' }
+  return async function() {
+    return user
+  }
+})();
+
+passport.serializeUser(function(user, done) {
+  // @ts-ignore
+  done(null, user.id)
+})
+
+passport.deserializeUser(async function(id, done) {
+  try {
+    const user = await fetchUser()
+    done(null, user)
+  } catch(err) {
+    done(err)
+  }
+})
+
+import {Strategy as LocalStrategy} from 'passport-local'
+passport.use(new LocalStrategy(function(username, password, done) {
+  fetchUser()
+    .then(user => {
+      if (username === user.username && password === user.password) {
+        done(null, user)
+      } else {
+        done(null, false)
+      }
+    })
+    .catch(err => done(err))
+}))
+
+
 // Router
 const router = new Router();
 
@@ -48,13 +89,20 @@ router.get('/', async (ctx, next) => {
 router.use('/chall', challRouter.routes());
 // Quizzes
 router.use('/quiz', quizRouter.routes());
+// Users
+router.use('/user', userRouter.routes());
 
 
 // Koa app
 const app = new Koa();
 app.use(Logger());
-app.use(Cors());
 app.use(bodyParser());
+app.use(Cors());
+
+app.keys = ['your-session-secret'] // keys for what?
+app.use(session({}, app));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(router.routes()).use(router.allowedMethods());
 
