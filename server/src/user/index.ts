@@ -17,14 +17,13 @@ router.post('/logout', (ctx) => {
   // @ts-ignore
   ctx.logout();
   ctx.redirect('/user/check');
-})
+});
 
 router.get('/check', (ctx) => {
   // @ts-ignore
   if(ctx.isAuthenticated()){
     const user = ctx.state.user; // returned user type
-    console.log(user);
-    ctx.body = `Hello, ${user.username}`;
+    ctx.body = `Hello, ${user.name}`;
   } else {
     ctx.body = 'You are not logged in.';
   }
