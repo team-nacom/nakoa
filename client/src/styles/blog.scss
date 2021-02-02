@@ -1,0 +1,68 @@
+@import './consts.scss';
+
+.blogSection, .blogSubsection {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px $main-color solid;
+}
+
+.blogSubsection {
+    padding-left: 20px;
+}
+
+.blogSectionText, .blogSubsectionText {
+    float: left;
+    margin-right: 10px;
+}
+
+.blogSectionText, .blogSubsectionText, .markdown > * {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.blogSectionText {
+    font-size: 28px;
+    font-weight: 300;
+}
+
+.blogSubsectionText {
+    font-size: 22px;
+    font-weight: 300;
+}
+
+
+.markdown {
+    float: left;
+    h1 {
+        font-size: 40px;
+        line-height: 40px;
+        font-weight: 500;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: 500;
+    }
+
+    h3 {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: 500;
+    }
+}
+
+.preview {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #444444;
+    .blogSection, .blogSubsection {
+        border: none;
+        margin: 0px;
+        height: 38px;
+    }
+    h2, h3, .blogSectionText, .blogSubsectionText {
+        font-size: 18px;
+        line-height: 20px;
+    }
+}
