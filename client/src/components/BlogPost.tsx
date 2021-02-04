@@ -30,28 +30,38 @@ function BlogPost({ text }: Params) {
     let sectionNum = 0, subsectionNum = 0;
 
     let previews : JSX.Element[] = [];
+    let components : JSX.Element[] = [];
 
-    const components = lines.map((text) => {
-        if (text.startsWith('###')) {
-            subsectionNum += 1;
-            const res = subsection(sectionNum, subsectionNum, text);
-            previews.push(res);
-            return res;
+    let nowLines = '';
+    for (let line of lines) {
+        if (line.startsWith('##')) {
+            let sectionElement : JSX.Element;
+            
+            if (line.startsWith('###')) {
+                subsectionNum += 1;
+                sectionElement = subsection(sectionNum, subsectionNum, line);
+            }
+            else {
+                sectionNum += 1;
+                subsectionNum = 0;
+                sectionElement = section(sectionNum, line);
+            }
+
+            components.push(<Markdown source={nowLines}/>);
+            nowLines = '';
+
+            previews.push(sectionElement);
+            components.push(sectionElement);
         }
-        if (text.startsWith('##')) {
-            sectionNum += 1;
-            subsectionNum = 0;
-            const res = section(sectionNum, text);
-            previews.push(res);
-            return res;
+        else {
+            nowLines = nowLines + line + '\n';
         }
-        return <Markdown source={text} />
-    });
+    }
+    components.push(<Markdown source={nowLines}/>);
 
     return (
         <>
             <div className='preview'>
-                <div style={{marginBottom: '12px'}}> 목차 </div>
                 { previews }
             </div>
             <div className='blog'>

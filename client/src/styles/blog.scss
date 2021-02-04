@@ -24,6 +24,27 @@
         line-height: 24px;
         font-weight: 300;
     }
+
+    a {
+        color: $main-color;
+        text-decoration: underline;
+    }
+
+    ol, ul {
+        margin-left: 32px;
+    }
+
+    li::marker {
+        margin-left: 20px;
+        color: $main-color;
+        font-weight: bold;
+    }
+
+
+    > * {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 }
 
 .blog {
@@ -35,7 +56,7 @@
     }
 
     .subsection {
-        padding-left: 20px;
+//        padding-left: 20px;
     }
 
     .sectionText, .subsectionText {
@@ -43,18 +64,15 @@
         margin-right: 10px;
     }
 
-    .markdown > * {
-        margin-top: 12px;
-        margin-bottom: 12px;
-    }
-
     .sectionText {
         font-size: 28px;
+        line-height: 28px;
         font-weight: 300;
     }
 
     .subsectionText {
         font-size: 22px;
+        line-height: 22px;
         font-weight: 300;
     }
 }
@@ -76,7 +94,7 @@
     .section, .subsection {
         border: none;
         margin: 0px;
-        height: 30px;
+        margin-bottom: 10px;
     }
     h2, h3, .sectionText, .subsectionText {
         font-size: 18px;
