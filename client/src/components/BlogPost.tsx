@@ -3,8 +3,8 @@ import Markdown from './Markdown';
 
 function subsection(sectionNum: number, subsectionNum: number, text: string) {
     return (        
-        <div className='blogSubsection'>
-            <div className='blogSubsectionText'> {`${sectionNum}.${subsectionNum}.`} </div>
+        <div className='subsection'>
+            <div className='subsectionText'> {`${sectionNum}.${subsectionNum}.`} </div>
             <Markdown source={text} /> 
         </div>
     )
@@ -12,8 +12,8 @@ function subsection(sectionNum: number, subsectionNum: number, text: string) {
 
 function section(sectionNum: number, text: string) {
     return (
-        <div className='blogSection'>
-            <div className='blogSectionText'> {`${sectionNum}.`} </div>
+        <div className='section'>
+            <div className='sectionText'> {`${sectionNum}.`} </div>
             <Markdown source={text} /> 
         </div>
     )
@@ -51,10 +51,12 @@ function BlogPost({ text }: Params) {
     return (
         <>
             <div className='preview'>
-                <div> 목차 </div>
+                <div style={{marginBottom: '12px'}}> 목차 </div>
                 { previews }
             </div>
-            { components }
+            <div className='blog'>
+                { components }
+            </div>
         </>
     );
 }
