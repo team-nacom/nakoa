@@ -10,6 +10,7 @@ import ChallengeSubmissions from 'pages/ChallengeSubmissions';
 import ChallengeSolution from 'pages/ChallengeSolution';
 import AdminAddQuiz from 'pages/AdminAddQuiz';
 import AdminAddChallenge from 'pages/AdminAddChallenge';
+import BlogPage from 'pages/BlogPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
+        <Route path='/blog' component={BlogPage} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
         <Route path='/quiz/:id' component={QuizView} />
