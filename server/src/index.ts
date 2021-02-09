@@ -39,7 +39,8 @@ app.use(Logger());
 app.use(bodyParser());
 app.use(Cors());
 
-app.keys = ['your-session-secret'] // keys for what?
+// we might want to keep this key secret
+app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
 app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());

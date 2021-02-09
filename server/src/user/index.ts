@@ -1,3 +1,4 @@
+// @ts-nocheck : typing doesn't work nicely with passports
 import Router from 'koa-router';
 import passport from 'koa-passport';
 
@@ -7,42 +8,38 @@ const router = new Router();
 
 router.use(passport.session());
 
-router.post('/register', async (ctx) => {
+router.post('/register', async (ctx, next) => {
   const userObj = ctx.request.body;
-
-  if(!userObj || !userObj.name || !userObj.password) {
-    console.error(`User is ill-formed ${userObj}`);
-    ctx.throw(400);
-  } else if(await User.exists({ name: userObj.name })) {
-    console.error(`User with username ${userObj.name} already exists`);
-    ctx.throw(400);
-  } else {
-    const user = new User(userObj);
-    await user.save()
-      .then(doc => { console.log(`New user ${userObj.name} successfully created`); ctx.redirect('/user/check'); })
-      .catch(err => { console.error(err); ctx.throw(500); });
-  }
+  console.log('registering user');
+  User.register(new User({username: userObj.username}), userObj.password, function(err) {
+    if (err) {
+      // handle different errors differently
+      console.log('error while user register!', err);
+      ctx.body = err;
+      next(err);
+    } else {
+      console.log(`New user ${userObj.username} successfully registered!`);
+    }
+  });
+  ctx.redirect('/user/check');
 })
 
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/user/check',
-    successMessage: 'Welcome',
     failureRedirect: '/user/login',
-    failureMessage: 'Login failure'
   })
 );
 
 router.post('/logout', (ctx) => {
-  // @ts-ignore
   ctx.logout();
   ctx.redirect('/user/check');
 });
 
+// replace with root
 router.get('/check', (ctx) => {
-  // @ts-ignore
   if(ctx.isAuthenticated()){
     const user = ctx.state.user; // returned user type
-    ctx.body = `Hello, ${user.name}`;
+    ctx.body = `Hello, ${user.username}`;
   } else {
     ctx.body = 'You are not logged in.';
   }

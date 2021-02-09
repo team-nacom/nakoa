@@ -1,10 +1,8 @@
 import { model, Schema } from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
 
-const userSchema = new Schema({
-    // _id: Number (default)
-    name: String,
-    password: String,
-    joinDate: { type: Number, default: Date.now }
-});
+const userSchema = new Schema({});
+
+userSchema.plugin(passportLocalMongoose);
 
 export default model('User', userSchema, 'users');
