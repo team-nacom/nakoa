@@ -1,38 +1,6 @@
 @import './consts.scss';
 
-.blogSection, .blogSubsection {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-bottom: 2px $main-color solid;
-}
-
-.blogSubsection {
-    padding-left: 20px;
-}
-
-.blogSectionText, .blogSubsectionText {
-    float: left;
-    margin-right: 10px;
-}
-
-.blogSectionText, .blogSubsectionText, .markdown > * {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-.blogSectionText {
-    font-size: 28px;
-    font-weight: 300;
-}
-
-.blogSubsectionText {
-    font-size: 22px;
-    font-weight: 300;
-}
-
-
 .markdown {
-    float: left;
     h1 {
         font-size: 40px;
         line-height: 40px;
@@ -50,18 +18,85 @@
         line-height: 22px;
         font-weight: 500;
     }
+
+    p {
+        font-size: 15px;
+        line-height: 24px;
+        font-weight: 300;
+    }
+
+    a {
+        color: $main-color;
+        text-decoration: underline;
+    }
+
+    ol, ul {
+        margin-left: 32px;
+    }
+
+    li::marker {
+        margin-left: 20px;
+        color: $main-color;
+        font-weight: bold;
+    }
+
+
+    > * {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.blog {
+    height: fit-content;
+    .section, .subsection {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-bottom: 2px $main-color solid;
+    }
+
+    .subsection {
+//        padding-left: 20px;
+    }
+
+    .sectionText, .subsectionText {
+        float: left;
+        margin-right: 10px;
+    }
+
+    .sectionText {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: 300;
+    }
+
+    .subsectionText {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: 300;
+    }
 }
 
 .preview {
+    .subsection {
+        padding-left: 20px;
+    }
+
+    .sectionText, .subsectionText {
+        float: left;
+        margin-right: 10px;
+    }
+
     margin: 10px;
     padding: 10px;
     border: 1px solid #444444;
-    .blogSection, .blogSubsection {
+
+    .section, .subsection {
         border: none;
         margin: 0px;
-        height: 38px;
+        margin-bottom: 10px;
     }
-    h2, h3, .blogSectionText, .blogSubsectionText {
+    h2, h3, .sectionText, .subsectionText {
         font-size: 18px;
         line-height: 20px;
     }
