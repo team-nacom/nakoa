@@ -8,41 +8,62 @@ const router = new Router();
 
 router.use(passport.session());
 
+// information about current session
+router.get('/', (ctx) => {
+  if(ctx.isAuthenticated()){
+    const user = ctx.state.user;
+    ctx.body = {
+      "isAuth": true,
+      "username": user.username // TODO email, name, uid
+    };
+  } else {
+    ctx.body = {
+      "isAuth": false
+    };
+  }
+});
+
 router.post('/register', async (ctx, next) => {
+  // log out if logged in
+  if(ctx.isAuthenticated()) ctx.logout();
+
+  // requested user object
   const userObj = ctx.request.body;
-  console.log('registering user');
-  User.register(new User({username: userObj.username}), userObj.password, function(err) {
-    if (err) {
-      // handle different errors differently
-      console.log('error while user register!', err);
-      ctx.body = err;
-      next(err);
-    } else {
+  const user = new User({username: userObj.username});
+
+  await Promise.resolve()
+    .then(() => {
+      if (!user.get("username")) {
+        throw new Error("Missing Username");
+      }
+    })
+    .then(() => User.findByUsername(user.get("username")))
+    .then(existingUser => {
+      if (existingUser) {
+        throw new Error("Existing User");
+      }
+    })
+    .then(() => user.setPassword(userObj.password))
+    .then(() => user.save())
+    .then(() => {
       console.log(`New user ${userObj.username} successfully registered!`);
-    }
-  });
-  ctx.redirect('/user/check');
-})
+      ctx.redirect('/user/');
+    })
+    .catch(err => {
+      console.log('An error occured while registering:\n', err);
+      ctx.body = String(err);
+    });
+});
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/user/check',
-    failureRedirect: '/user/login',
+    successRedirect: '/user/',
+    failureRedirect: '/user/'
   })
 );
 
 router.post('/logout', (ctx) => {
   ctx.logout();
-  ctx.redirect('/user/check');
-});
-
-// replace with root
-router.get('/check', (ctx) => {
-  if(ctx.isAuthenticated()){
-    const user = ctx.state.user; // returned user type
-    ctx.body = `Hello, ${user.username}`;
-  } else {
-    ctx.body = 'You are not logged in.';
-  }
+  ctx.redirect('/user/');
 });
 
 export default router;

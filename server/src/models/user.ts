@@ -1,7 +1,8 @@
 import { model, Schema } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
-const userSchema = new Schema({});
+const givenOptions = {};
+const userSchema = new Schema(givenOptions);
 
 userSchema.plugin(passportLocalMongoose);
 
