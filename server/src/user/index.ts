@@ -2,7 +2,7 @@
 import Router from 'koa-router';
 import passport from 'koa-passport';
 
-import User from '../models/user';
+import User, {givenOptions} from '../models/user';
 
 const router = new Router();
 
@@ -14,7 +14,8 @@ router.get('/', (ctx) => {
     const user = ctx.state.user;
     ctx.body = {
       "isAuth": true,
-      "username": user.username // TODO email, name, uid
+      "email": user.email,
+      "nickname": user.nickname
     };
   } else {
     ctx.body = {
@@ -29,15 +30,16 @@ router.post('/register', async (ctx, next) => {
 
   // requested user object
   const userObj = ctx.request.body;
-  const user = new User({username: userObj.username});
+  const { password, ...cloneWithoutPassword } = userObj;
+  const user = new User(cloneWithoutPassword);
 
   await Promise.resolve()
     .then(() => {
-      if (!user.get("username")) {
-        throw new Error("Missing Username");
+      if(['email', 'nickname'].some(field => !user.get(field))){
+        throw new Error("Missing Field");
       }
     })
-    .then(() => User.findByUsername(user.get("username")))
+    .then(() => User.findByUsername(user.get(givenOptions.usernameField)))
     .then(existingUser => {
       if (existingUser) {
         throw new Error("Existing User");
@@ -46,24 +48,30 @@ router.post('/register', async (ctx, next) => {
     .then(() => user.setPassword(userObj.password))
     .then(() => user.save())
     .then(() => {
-      console.log(`New user ${userObj.username} successfully registered!`);
-      ctx.redirect('/user/');
+      console.log(`New user ${userObj.email} successfully registered!`);
+      ctx.body = "Success";
     })
     .catch(err => {
       console.log('An error occured while registering:\n', err);
-      ctx.body = String(err);
+      ctx.body = "Error : " + err.message;
     });
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/user/',
-    failureRedirect: '/user/'
-  })
-);
+router.post('/login', (ctx) => {
+  return passport.authenticate('local', {}, (err, user) => {
+    if(user === false){
+      ctx.body = "Failure";
+    } else {
+      ctx.body = "Success";
+      return ctx.login(user);
+    }
+  })(ctx);
+});
 
 router.post('/logout', (ctx) => {
   ctx.logout();
-  ctx.redirect('/user/');
+  ctx.body = "Success";
+  // ctx.redirect('/user/');
 });
 
 export default router;
