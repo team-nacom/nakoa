@@ -42,17 +42,17 @@
 
 
     > * {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top: 14px;
+        margin-bottom: 14px;
     }
 }
 
 .blog {
     height: fit-content;
     .section, .subsection {
-        margin-top: 20px;
+        margin-top: 40px;
         margin-bottom: 20px;
-        border-bottom: 2px $main-color solid;
+        border-bottom: 1px $main-color solid;
     }
 
     .subsection {
@@ -62,18 +62,19 @@
     .sectionText, .subsectionText {
         float: left;
         margin-right: 10px;
+        color: $main-color;
     }
 
     .sectionText {
         font-size: 28px;
         line-height: 28px;
-        font-weight: 300;
+        font-weight: bold;
     }
 
     .subsectionText {
         font-size: 22px;
         line-height: 22px;
-        font-weight: 300;
+        font-weight: bold;
     }
 }
 
@@ -85,19 +86,24 @@
     .sectionText, .subsectionText {
         float: left;
         margin-right: 10px;
+        color: $main-color;
+        font-weight: bold;
     }
 
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #444444;
+    // margin: 10px;
+    padding: 20px;
+    border: 1px solid #d9dce9;
 
     .section, .subsection {
         border: none;
-        margin: 0px;
-        margin-bottom: 10px;
+        //margin: 0px;
+        //margin-bottom: 10px;
     }
     h2, h3, .sectionText, .subsectionText {
-        font-size: 18px;
-        line-height: 20px;
+        font-size: 15px;
+        line-height: 24px;
+        font-weight: 300;
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
 }
