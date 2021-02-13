@@ -1,5 +1,4 @@
 import Axios from 'axios';
-import store from 'store';
 import { clearUser, setUser } from 'store/user';
 import config from './config';
 
@@ -67,15 +66,31 @@ export const register = async (data : RegisterData) => {
     return response.status < 300;
 }
 
+export interface UserData {
+    isAuth: boolean;
+    email: string;
+    nickname: string;
+}
+
+export const setUserInfo = async () => {
+    let response = await Axios.get(`${apiAddress}/user`);
+    let data = response.data as UserData;
+
+    console.log(data);
+    
+    if (data.isAuth) setUser(data.email, data.nickname);
+    else clearUser();
+}
+
 export interface LoginData {
     email: string;
     password: string;
 }
 
 export const login = async (data: LoginData) => {
-    let response = await Axios.post(`${apiAddress}/user/login`, data);
+    let response = await Axios.post(`${apiAddress}/user/login`, data, { validateStatus: (status) => ((200 <= status && status < 300) || status === 401) });
     
-    if (response.status < 300) store.dispatch(setUser(data.email, ''));
+    if (response.status < 300) await setUserInfo();
 
     return {
         success: response.status < 300, 
@@ -84,9 +99,9 @@ export const login = async (data: LoginData) => {
 }
 
 export const logout = async () => {
-    let response = await Axios.post(`${apiAddress}/user/logout`);
+    let response = await Axios.post(`${apiAddress}/user/logout`, undefined, { validateStatus: (status) => ((200 <= status && status < 300) || status === 401) });
 
-    if (response.status < 300) store.dispatch(clearUser());
+    if (response.status < 300) await setUserInfo();
 
     return {
         success: response.status < 300, 

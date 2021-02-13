@@ -11,9 +11,14 @@ import ChallengeSolution from 'pages/ChallengeSolution';
 import AdminAddQuiz from 'pages/AdminAddQuiz';
 import AdminAddChallenge from 'pages/AdminAddChallenge';
 import BlogPage from 'pages/BlogPage';
+import usePromise from 'etc/usePromise';
+import { setUserInfo } from 'etc/api';
 
 function App() {
-  return (
+  let [userInfoLoading] = usePromise(() => setUserInfo());
+
+  if (userInfoLoading) return <></>;
+  else return (
     <BrowserRouter>
       <Switch>
         <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
