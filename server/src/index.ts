@@ -15,6 +15,8 @@ import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 
+import { handleError } from "./utils";
+
 
 // Router
 const router = new Router();
@@ -45,6 +47,7 @@ app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(handleError);
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3885);
