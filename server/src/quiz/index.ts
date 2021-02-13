@@ -1,24 +1,13 @@
 import Router from 'koa-router';
 
 import Quiz from "../models/quiz";
+import { checkAdmin } from "../utils";
 
 const router = new Router();
 
 // Post a quiz
+router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
-
-  // @ts-ignore
-  if(!ctx.isAuthenticated()){
-    ctx.throw(401, "Should log in");
-    return;
-  } else {
-    const user = ctx.state.user;
-    if(user.email != "admin"){
-      ctx.throw(401, "Should be admin");
-      return;
-    }
-  }
-
   type QuizPost = {
     index?: number,
     name: string,
@@ -41,19 +30,16 @@ router.post('/', async (ctx) => {
   quizObj.index ??= -1;
 
   if(await Quiz.exists({ index: quizObj.index })){
-    console.error(`Quiz with index ${quizObj.index} already exists`);
-    ctx.throw(400);
+    ctx.throw(400, `Quiz with index ${quizObj.index} already exists`);
   }
   else if(!isQuizPost(quizObj)){
-    console.error("Quiz is ill-formed");
-    ctx.throw(400);
+    ctx.throw(400, "Quiz is ill-formed");
   }
   else {
     const quiz = new Quiz(quizObj);
-    
     await quiz.save()
       .then(doc => { console.log(`Quiz upload "${quizObj.name}" successful`); ctx.body = quizObj; })
-      .catch(err => { console.error(err); ctx.throw(500); });
+      .catch(err => { console.error(err); ctx.throw(500, err.message); });
   }
 });
 
