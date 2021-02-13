@@ -6,6 +6,19 @@ const router = new Router();
 
 // Post a challenge
 router.post('/', async (ctx) => {
+
+  // @ts-ignore
+  if(!ctx.isAuthenticated()){
+    ctx.throw(401, "Should log in");
+    return;
+  } else {
+    const user = ctx.state.user;
+    if(user.email != "admin"){
+      ctx.throw(401, "Should be admin");
+      return;
+    }
+  }
+
   type ChallPost = {
     index?: number,
     name: string,

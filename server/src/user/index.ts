@@ -6,7 +6,7 @@ import User, {givenOptions} from '../models/user';
 
 const router = new Router();
 
-router.use(passport.session());
+router.use(passport.session()); // is this needed?
 
 // information about current session
 router.get('/', (ctx) => {
@@ -53,14 +53,14 @@ router.post('/register', async (ctx, next) => {
     })
     .catch(err => {
       console.log('An error occured while registering:\n', err);
-      ctx.body = "Error : " + err.message;
+      ctx.throw(401, "Error : " + err.message);
     });
 });
 
 router.post('/login', (ctx) => {
   return passport.authenticate('local', {}, (err, user) => {
     if(user === false){
-      ctx.body = "Failure";
+      ctx.throw(401, "Login Failed"); // Unauthorized
     } else {
       ctx.body = "Success";
       return ctx.login(user);
@@ -71,7 +71,6 @@ router.post('/login', (ctx) => {
 router.post('/logout', (ctx) => {
   ctx.logout();
   ctx.body = "Success";
-  // ctx.redirect('/user/');
 });
 
 export default router;
