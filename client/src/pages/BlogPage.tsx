@@ -3,6 +3,7 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Markdown from 'components/Markdown';
 import React from 'react';
+import { match } from 'react-router-dom';
 
 const blogText = String.raw`
 안녕하세요! 팀 나무컴퍼스가 만든 블로그 게시글 프로젝트입니다. 이 페이지는 markdown으로 쓰인 블로그 글을 예쁘게 보여줍니다. 상단에는 글의 목차를 뽑아서 보여줍니다.
@@ -44,7 +45,17 @@ $$ = \max_{i=1, \cdots, k-1} ( -2aS_i \times S_k + (dp[i] + a S_i^2 - b S_i) ) +
 
 `;
 
-function BlogPage() {
+interface MatchParams {
+    id: string;
+};
+
+interface Props {
+    match: match<MatchParams>;
+};
+
+function BlogPage({ match } : Props) {
+    let id = match.params.id;
+    
     return (
         <>
             <Header />

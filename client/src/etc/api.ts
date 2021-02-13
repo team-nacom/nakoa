@@ -75,14 +75,21 @@ export interface LoginData {
 export const login = async (data: LoginData) => {
     let response = await Axios.post(`${apiAddress}/user/login`, data);
     
-    if (response.status >= 300) throw response.data;
+    if (response.status < 300) store.dispatch(setUser(data.email, ''));
 
-    store.dispatch(setUser(data.email, data.password));
+    return {
+        success: response.status < 300, 
+        message: response.data as string,
+    };
 }
 
 export const logout = async () => {
     let response = await Axios.post(`${apiAddress}/user/logout`);
-    if (response.status >= 300) throw response.data;
 
-    store.dispatch(clearUser());
+    if (response.status < 300) store.dispatch(clearUser());
+
+    return {
+        success: response.status < 300, 
+        message: response.data as string,
+    };
 }

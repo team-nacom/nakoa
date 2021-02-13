@@ -2,10 +2,10 @@
 const SET_USER = 'SET_USER' as const;
 const CLEAR_USER = 'CLEAR_USER' as const;
 
-export const setUser = (email: string, username: string) => {
+export const setUser = (email: string, nickname: string) => {
   return {
     type: SET_USER,
-    email, username,
+    email, nickname,
   };
 };
 
@@ -23,13 +23,13 @@ export type UserAction =
 interface UserState {
   loggedIn: boolean;
   email: string;
-  username: string;
+  nickname: string;
 };
 
 const initialState : UserState = {
   loggedIn: false,
   email: '',
-  username: '',
+  nickname: '',
 };
 
 export default function user(state = initialState, action : UserAction) {
@@ -38,14 +38,14 @@ export default function user(state = initialState, action : UserAction) {
       return {
         ...state,
         email: action.email,
-        username: action.username,
+        nickname: action.nickname,
         loggedIn: true,
       };
     case CLEAR_USER:
       return {
         ...state,
         email: '',
-        username: '',
+        nickname: '',
         loggedIn: false,
       }
     default:
