@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import store from 'store';
+import { clearUser, setUser } from 'store/user';
 import config from './config';
 
 const apiAddress = config.apiAddress;
@@ -51,7 +53,36 @@ export const getQuizInfo = async (id: number) => {
 
 export const postQuiz = async (quiz: Quiz) => {
     let response = await Axios.post(`${apiAddress}/quiz`, quiz);
-    console.log(quiz);
-    console.log(response);
     return response.status < 300;
+}
+
+export interface RegisterData {
+    email: string;
+    nickname: string;
+    password: string;
+}
+
+export const register = async (data : RegisterData) => {
+    let response = await Axios.post(`${apiAddress}/user/register`, data);
+    return response.status < 300;
+}
+
+export interface LoginData {
+    email: string;
+    password: string;
+}
+
+export const login = async (data: LoginData) => {
+    let response = await Axios.post(`${apiAddress}/user/login`, data);
+    
+    if (response.status >= 300) throw response.data;
+
+    store.dispatch(setUser(data.email, data.password));
+}
+
+export const logout = async () => {
+    let response = await Axios.post(`${apiAddress}/user/logout`);
+    if (response.status >= 300) throw response.data;
+
+    store.dispatch(clearUser());
 }
