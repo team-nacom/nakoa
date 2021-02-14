@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import store from 'store';
 import { clearUser, setUser } from 'store/user';
 import config from './config';
 
@@ -62,10 +63,14 @@ export interface RegisterData {
 }
 
 export const register = async (data : RegisterData) => {
-    let response = await Axios.post(`${apiAddress}/user/register`, data);
-    return response.status < 300;
+    let response = await Axios.post(`${apiAddress}/user/register`, data, { validateStatus: () => true });
+    return {
+        success: response.status < 300,
+        message: response.data as string,
+    };
 }
 
+const authValidateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
 export interface UserData {
     isAuth: boolean;
     email: string;
@@ -73,13 +78,13 @@ export interface UserData {
 }
 
 export const setUserInfo = async () => {
-    let response = await Axios.get(`${apiAddress}/user`);
+    let response = await Axios.get(`${apiAddress}/user`, { validateStatus: authValidateStatus, withCredentials: true });
     let data = response.data as UserData;
 
     console.log(data);
     
-    if (data.isAuth) setUser(data.email, data.nickname);
-    else clearUser();
+    if (data.isAuth) store.dispatch(setUser(data.email, data.nickname));
+    else store.dispatch(clearUser());
 }
 
 export interface LoginData {
@@ -88,7 +93,7 @@ export interface LoginData {
 }
 
 export const login = async (data: LoginData) => {
-    let response = await Axios.post(`${apiAddress}/user/login`, data, { validateStatus: (status) => ((200 <= status && status < 300) || status === 401) });
+    let response = await Axios.post(`${apiAddress}/user/login`, data, { validateStatus: authValidateStatus, withCredentials: true });
     
     if (response.status < 300) await setUserInfo();
 
@@ -99,7 +104,7 @@ export const login = async (data: LoginData) => {
 }
 
 export const logout = async () => {
-    let response = await Axios.post(`${apiAddress}/user/logout`, undefined, { validateStatus: (status) => ((200 <= status && status < 300) || status === 401) });
+    let response = await Axios.post(`${apiAddress}/user/logout`, undefined, { validateStatus: authValidateStatus, withCredentials: true });
 
     if (response.status < 300) await setUserInfo();
 

@@ -13,7 +13,7 @@ function validateEmail(email: string) {
 }
 
 function validatePassword(password: string) {
-    const regex1 = /^[a-zA-Z0-9]{8,50}$/;
+    const regex1 = /^[ -~]{8,50}$/;
     const regex2 = /[a-zA-Z]/;
     const regex3 = /[0-9]/;
     return regex1.test(password) && regex2.test(password) && regex3.test(password);

@@ -39,7 +39,10 @@ router.use('/user', userRouter.routes());
 const app = new Koa();
 app.use(Logger());
 app.use(bodyParser());
-app.use(Cors());
+app.use(Cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
