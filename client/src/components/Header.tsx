@@ -32,14 +32,16 @@ function Header() {
                             </li>
                         </Link>
                     </ul>
-                </div>
-                <div className='menubar'>
-                    <span className='link' onClick={() => setSignInVisible(true) }>
-                        로그인
-                    </span>
-                    <Link to='/signup'>
-                        <span> 회원 가입 </span>
-                    </Link>
+                    <ul className='account'>
+                        <span className='material-icons' onClick={() => setSignInVisible(true) }>
+                           login
+                        </span>
+                        <Link to='/signup'>
+                            <span className='material-icons'>
+                                person_add
+                            </span>
+                        </Link>
+                    </ul>
                 </div>
             </header>
             <SignIn visible={signInVisible} setVisible={setSignInVisible} />
