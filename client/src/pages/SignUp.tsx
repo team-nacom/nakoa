@@ -1,8 +1,129 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
+import { register } from 'etc/api';
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 function SignUp() {
+    let [redirectToDone, setRedirectToDone] = React.useState(false);
+
+    let [message, setMessage] = React.useState('');
+    
+    let [email, setEmail] = React.useState('');
+    let [emailMessage, setEmailMessage] = React.useState('');
+    let validateEmail = async () => {
+        if (!email) {
+            setEmailMessage('');
+            return true;
+        }
+
+        const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!regex.test(email)) {
+            setEmailMessage('이메일의 형식이 올바르지 않습니다.');
+            return false;
+        }
+        setEmailMessage('');
+        return true;
+    }
+
+    let [password, setPassword] = React.useState('');
+    let [passwordMessage, setPasswordMessage] = React.useState('');
+    let validatePassword = () => {
+        const regex1 = /^[ -~]{8,200}$/;
+        const regex2 = /[a-zA-Z]/;
+        const regex3 = /[0-9]/;
+
+        if (!regex1.test(password) || !regex2.test(password) || !regex3.test(password)) {
+            setPasswordMessage('비밀번호는 8글자 이상으로, 영문과 숫자를 포함하도록 해 주세요.');
+            return false;
+        }
+        setPasswordMessage('');
+        return true;
+    }
+
+    let [passwordConfirm, setPasswordConfirm] = React.useState('');
+    let [passwordConfirmMessage, setPasswordConfirmMessage] = React.useState('');
+    let validatePasswordConfirm = () => {
+        let result = password === passwordConfirm;
+
+        if (!result) {
+            setPasswordConfirmMessage('비밀번호와 비밀번호 확인 란이 다릅니다.');
+            return false;
+        }
+        setPasswordConfirmMessage('');
+        return true;
+    }
+
+    let [nickname, setNickname] = React.useState('');
+    let [nicknameMessage, setNicknameMessage] = React.useState('');
+    let validateName = () => {
+        if (nickname.length < 1) {
+            setNicknameMessage('이름을 적어주세요.');
+            return false;
+        }
+        if (nickname.length > 100) {
+            setNicknameMessage('이름은 100글자 이내로 해 주세요.');
+            return false;
+        }
+        setNicknameMessage('');
+        return true;
+    }
+
+    let entries = [
+        {
+            name: '이메일 (아이디)',
+            body: (
+                <>
+                    <input className='signupForm' autoComplete='email' placeholder='예시: example@gmail.com' onChange={(e) => setEmail(e.target.value)} value={email} />
+                </>
+            ),
+            message: emailMessage,
+            validate: validateEmail,
+        }, {
+            name: '비밀번호',
+            body: (
+                <>
+                    <input type='password' className='signupForm' autoComplete='new-password' placeholder='8글자 이상 영문, 숫자 혼합' onChange={(e) => setPassword(e.target.value) } value={password}/>
+                </>
+            ),
+            message: passwordMessage,
+            validate: validatePassword,
+        }, {
+            name: '비밀번호 확인',
+            body: (
+                <>
+                    <input type='password' className='signupForm' autoComplete='new-password'  onChange={(e) => { setPasswordConfirm(e.target.value); }} value={passwordConfirm}/>
+                </>
+            ),
+            message: passwordConfirmMessage,
+            validate: validatePasswordConfirm,
+        }, {
+            name: '닉네임',
+            body: (
+                <>
+                    <input className='signupForm' autoComplete='name' placeholder='2글자 이상 10글자 이하 한글, 영문, 숫자' onChange={(e) => setNickname(e.target.value)} value={nickname}/>
+                </>
+            ),
+            message: nicknameMessage,
+            validate: validateName,
+        }
+    ]
+
+    let validateAll = async () => {
+        let result = true;
+
+        for (let { validate } of entries) {
+            if (!await validate()) result = false;
+        }
+        
+        return result;
+    }
+
+    
+    if (redirectToDone) return <Redirect to={{
+        pathname: '/signup/done',
+        state: { nickname, }
+    }} />;
     return (
         <>
             <Header/>
@@ -10,21 +131,34 @@ function SignUp() {
             <p> 나무컴퍼스에 관심을 가지고 가입해주셔서 감사합니다. </p>
             <p> 가입하시려면, 아래 항목을 채워주세요. 입력해주신 개인정보는 로그인 외 다른 용도로 이용되지 않습니다.</p>
 
-            <div className='signupBox'>
-                <div className='signupLabel'> 이메일 (아이디) </div>
-                <input className='signupForm' placeholder='예시: example@gmail.com'/>
-    
-                <div className='signupLabel'> 비밀번호 </div>
-                <input type='password' className='signupForm' placeholder='8글자 이상 영문, 숫자 혼합'/>
+            <form>
+                <div className='signupBox'>
+                    { entries.map((({ name, body, message, validate }) => (
+                        <>
+                            <div className='signupLabel'> { name } </div>
+                            { body }
+                            { message && <p> { message } </p> }
+                        </>
+                    )))}
+                </div>
 
-                <div className='signupLabel'> 비밀번호 확인 </div>
-                <input type='password' className='signupForm'/>
-
-                <div className='signupLabel'> 닉네임 </div>
-                <input className='signupForm' placeholder='2글자 이상 10글자 이하 한글, 영문, 숫자'/>
-            </div>
-
-            <button className='button'> 가입하기 </button>
+                <button type='submit' className='button' onClick={async (e) => {
+                    e.preventDefault();
+                    if (!await validateAll()) return false;
+                    let { success, message } = await register({ email, password, nickname });
+                    console.log(success, message);
+                    if (success) {
+                        setRedirectToDone(true);
+                    } else {
+                        setMessage('가입에 실패했습니다: ' + message);
+                    }
+                }}> 가입하기 </button>
+                { message && <p style={{marginBottom: '8px'}}> { message } </p> }
+                { entries.map(({ name, message } ) => {
+                    if (message) return <p style={{marginBottom: '8px'}}> { `${name}: ${message}` } </p>   
+                    else return undefined;
+                }) }
+            </form>
             <Footer/>
         </>
     )
