@@ -67,7 +67,7 @@ function SignUp() {
             return false;
         }
 
-        const regex = /^[ -~가-힣]{2,100}/;
+        const regex = /^[ -~가-힣]{2,100}$/;
         if (!regex.test(nickname)) {
             setNicknameMessage('이름은 영문, 숫자, 특수문자, 한글만 사용해서 2글자 이상 100글자 이하로 해 주세요.');
             return false;
