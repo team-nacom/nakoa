@@ -11,9 +11,16 @@ import ChallengeSolution from 'pages/ChallengeSolution';
 import AdminAddQuiz from 'pages/AdminAddQuiz';
 import AdminAddChallenge from 'pages/AdminAddChallenge';
 import BlogPage from 'pages/BlogPage';
+import usePromise from 'etc/usePromise';
+import { setUserInfo } from 'etc/api';
+import Logout from 'pages/Logout';
+import SignUpDone from 'pages/SignUpDone';
 
 function App() {
-  return (
+  let [userInfoLoading] = usePromise(() => setUserInfo());
+
+  if (userInfoLoading) return <></>;
+  else return (
     <BrowserRouter>
       <Switch>
         <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
@@ -28,7 +35,9 @@ function App() {
         <Redirect path='/quiz' to='/quiz/1'/>
         <Route path='/admin/quiz/add' component={AdminAddQuiz} />
         <Route path='/admin/challenge/add' component={AdminAddChallenge} />
+        <Route path='/signup/done' component={SignUpDone} />
         <Route path='/signup' component={SignUp} />
+        <Route path='/logout' component={Logout} />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>

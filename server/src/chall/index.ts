@@ -1,10 +1,12 @@
 import Router from 'koa-router';
 
 import Chall from '../models/chall';
+import { checkAdmin } from "../utils";
 
 const router = new Router();
 
 // Post a challenge
+router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
   type ChallPost = {
     index?: number,

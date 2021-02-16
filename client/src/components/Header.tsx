@@ -1,10 +1,13 @@
 import { mainColor, subColor } from 'etc/consts';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { RootReducer } from 'store';
 import SignIn from './SignIn';
 
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
+    let user = useSelector((state: RootReducer) => state.user);
     
     return (
         <>

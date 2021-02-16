@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import store from 'store';
+import { clearUser, setUser } from 'store/user';
 import config from './config';
 
 const apiAddress = config.apiAddress;
@@ -51,7 +53,63 @@ export const getQuizInfo = async (id: number) => {
 
 export const postQuiz = async (quiz: Quiz) => {
     let response = await Axios.post(`${apiAddress}/quiz`, quiz);
-    console.log(quiz);
-    console.log(response);
     return response.status < 300;
+}
+
+export interface RegisterData {
+    email: string;
+    nickname: string;
+    password: string;
+}
+
+export const register = async (data : RegisterData) => {
+    let response = await Axios.post(`${apiAddress}/user/register`, data, { validateStatus: () => true });
+    return {
+        success: response.status < 300,
+        message: response.data as string,
+    };
+}
+
+const authValidateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
+export interface UserData {
+    isAuth: boolean;
+    email: string;
+    nickname: string;
+}
+
+export const setUserInfo = async () => {
+    let response = await Axios.get(`${apiAddress}/user`, { validateStatus: authValidateStatus, withCredentials: true });
+    let data = response.data as UserData;
+
+    console.log(data);
+    
+    if (data.isAuth) store.dispatch(setUser(data.email, data.nickname));
+    else store.dispatch(clearUser());
+}
+
+export interface LoginData {
+    email: string;
+    password: string;
+}
+
+export const login = async (data: LoginData) => {
+    let response = await Axios.post(`${apiAddress}/user/login`, data, { validateStatus: authValidateStatus, withCredentials: true });
+    
+    if (response.status < 300) await setUserInfo();
+
+    return {
+        success: response.status < 300, 
+        message: response.data as string,
+    };
+}
+
+export const logout = async () => {
+    let response = await Axios.post(`${apiAddress}/user/logout`, undefined, { validateStatus: authValidateStatus, withCredentials: true });
+
+    if (response.status < 300) await setUserInfo();
+
+    return {
+        success: response.status < 300, 
+        message: response.data as string,
+    };
 }

@@ -6,8 +6,6 @@ import User, {givenOptions} from '../models/user';
 
 const router = new Router();
 
-router.use(passport.session());
-
 // information about current session
 router.get('/', (ctx) => {
   if(ctx.isAuthenticated()){
@@ -24,6 +22,7 @@ router.get('/', (ctx) => {
   }
 });
 
+// register new user (email, password)
 router.post('/register', async (ctx, next) => {
   // log out if logged in
   if(ctx.isAuthenticated()) ctx.logout();
@@ -33,34 +32,28 @@ router.post('/register', async (ctx, next) => {
   const { password, ...cloneWithoutPassword } = userObj;
   const user = new User(cloneWithoutPassword);
 
-  await Promise.resolve()
-    .then(() => {
-      if(['email', 'nickname'].some(field => !user.get(field))){
-        throw new Error("Missing Field");
-      }
-    })
-    .then(() => User.findByUsername(user.get(givenOptions.usernameField)))
-    .then(existingUser => {
-      if (existingUser) {
-        throw new Error("Existing User");
-      }
-    })
-    .then(() => user.setPassword(userObj.password))
-    .then(() => user.save())
-    .then(() => {
-      console.log(`New user ${userObj.email} successfully registered!`);
-      ctx.body = "Success";
-    })
-    .catch(err => {
-      console.log('An error occured while registering:\n', err);
-      ctx.body = "Error : " + err.message;
-    });
+  if(['email', 'nickname'].some(field => !user.get(field))) {
+    ctx.throw(400, "Missing Field");
+  } else if(await User.findByUsername(user.get(givenOptions.usernameField))) {
+    ctx.throw(400, "Existing User");
+  } else {
+    try {
+      await user.setPassword(userObj.password);
+      await user.save();
+    } catch (err) {
+      console.error(err);
+      ctx.throw(500, err.message);
+    }
+    console.log(`New user ${userObj.email} successfully registered!`);
+    ctx.body = "Success";
+  }
 });
 
+// login (email, password)
 router.post('/login', (ctx) => {
   return passport.authenticate('local', {}, (err, user) => {
     if(user === false){
-      ctx.body = "Failure";
+      ctx.throw(401, "Login Failed");
     } else {
       ctx.body = "Success";
       return ctx.login(user);
@@ -71,7 +64,6 @@ router.post('/login', (ctx) => {
 router.post('/logout', (ctx) => {
   ctx.logout();
   ctx.body = "Success";
-  // ctx.redirect('/user/');
 });
 
 export default router;

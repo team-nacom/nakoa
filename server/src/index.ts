@@ -15,6 +15,8 @@ import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 
+import { handleError } from "./utils";
+
 
 // Router
 const router = new Router();
@@ -37,7 +39,10 @@ router.use('/user', userRouter.routes());
 const app = new Koa();
 app.use(Logger());
 app.use(bodyParser());
-app.use(Cors());
+app.use(Cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
@@ -45,6 +50,7 @@ app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(handleError);
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3885);
