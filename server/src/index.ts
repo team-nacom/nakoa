@@ -14,6 +14,7 @@ import './user/setup'; // set up passportJS
 import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
+import guideRouter from './guide';
 
 import { handleError } from "./utils";
 
@@ -33,6 +34,8 @@ router.use('/chall', challRouter.routes());
 router.use('/quiz', quizRouter.routes());
 // Users
 router.use('/user', userRouter.routes());
+// Guides
+router.use('/guide', guideRouter.routes());
 
 
 // Koa app

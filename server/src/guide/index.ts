@@ -49,7 +49,7 @@ router.post('/', async (ctx) => {
 // NOTE: exclude _id from projection?
 // Get list of guides
 router.get('/', async (ctx) => {
-  const query = Guide.find({ isPublic: true }).select('index name priority createDate');
+  const query = Guide.find().select('index name priority createDate');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);
