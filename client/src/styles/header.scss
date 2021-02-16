@@ -72,7 +72,7 @@ header {
             right: 0;
             margin-right: 10%;
 
-            span {
+            li {
                 color: #666666;
                 font-size: 22px;
                 font-weight: 300;
@@ -82,7 +82,7 @@ header {
                 transition: all .2s ease-in-out;
             }
             
-            span:hover {
+            li:hover {
                 color: $main-color;
             }
         }
