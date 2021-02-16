@@ -36,13 +36,13 @@ function Header() {
                         </Link>
                     </ul>
                     <ul className='account'>
-                        <span className='material-icons' onClick={() => setSignInVisible(true) }>
+                        <li className='material-icons link' onClick={() => setSignInVisible(true) }>
                            login
-                        </span>
+                        </li>
                         <Link to='/signup'>
-                            <span className='material-icons'>
+                            <li className='material-icons'>
                                 person_add
-                            </span>
+                            </li>
                         </Link>
                     </ul>
                 </div>
