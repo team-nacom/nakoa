@@ -12,9 +12,9 @@ function SignUp() {
     let [email, setEmail] = React.useState('');
     let [emailMessage, setEmailMessage] = React.useState('');
     let validateEmail = async () => {
-        if (!email) {
-            setEmailMessage('');
-            return true;
+        if (email.length === 0) {
+            setEmailMessage('이메일을 적어주세요.');
+            return false;
         }
 
         const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -29,7 +29,12 @@ function SignUp() {
     let [password, setPassword] = React.useState('');
     let [passwordMessage, setPasswordMessage] = React.useState('');
     let validatePassword = () => {
-        const regex1 = /^[ -~]{8,200}$/;
+        if (password.length === 0) {
+            setPasswordMessage('비밀번호를 적어주세요.');
+            return false;
+        }
+
+        const regex1 = /^[ -~]{8,32}$/;
         const regex2 = /[a-zA-Z]/;
         const regex3 = /[0-9]/;
 
@@ -56,13 +61,15 @@ function SignUp() {
 
     let [nickname, setNickname] = React.useState('');
     let [nicknameMessage, setNicknameMessage] = React.useState('');
-    let validateName = () => {
-        if (nickname.length < 1) {
+    let validateNickname = () => {
+        if (nickname.length === 0) {
             setNicknameMessage('이름을 적어주세요.');
             return false;
         }
-        if (nickname.length > 100) {
-            setNicknameMessage('이름은 100글자 이내로 해 주세요.');
+
+        const regex = /^[ -~가-힣]{2,100}/;
+        if (!regex.test(nickname)) {
+            setNicknameMessage('이름은 영문, 숫자, 특수문자, 한글만 사용해서 2글자 이상 100글자 이하로 해 주세요.');
             return false;
         }
         setNicknameMessage('');
@@ -105,7 +112,7 @@ function SignUp() {
                 </>
             ),
             message: nicknameMessage,
-            validate: validateName,
+            validate: validateNickname,
         }
     ]
 
