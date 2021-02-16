@@ -21,3 +21,5 @@ export async function handleError(ctx :any, next :any) {
     ctx.app.emit('error', err, ctx);
   }
 };
+
+// unified error logging
