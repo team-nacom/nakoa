@@ -22,6 +22,11 @@ function Header() {
                         </Link>
                     </div>
                     <ul className='menu'>
+                        { user.loggedIn && (
+                            <li className='inactive'>
+                                { user.nickname + '님, 안녕하세요!' }
+                            </li>
+                        )}
                         <Link to='/guide'>
                             <li className={pathname.startsWith('/guide') ? 'active' : ''}>
                                 크립토 프로젝트

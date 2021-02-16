@@ -59,7 +59,7 @@ header {
                 border: 2px rgba(0, 0, 0, 0) solid;
                 transition: all .2s ease-in-out;
                 
-                &:hover, &.active {
+                &:hover:not(.inactive), &.active {
                     color: $main-color;
                     border-bottom: 2px $main-color solid;
                 }
@@ -72,6 +72,8 @@ header {
             margin: 0;
             right: 0;
             margin-right: 10%;
+
+            bottom: 3px;
 
             li {
                 color: #666666;
