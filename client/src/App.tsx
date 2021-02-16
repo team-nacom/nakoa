@@ -28,7 +28,7 @@ function App() {
         <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
-        <Route path='/blog' component={BlogPage} />
+        <Route path='/guide' component={BlogPage} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
         <Route path='/quiz/:id' component={QuizView} />

@@ -58,12 +58,13 @@ header {
                 overflow: hidden;
                 border: 2px rgba(0, 0, 0, 0) solid;
                 transition: all .2s ease-in-out;
+                
+                &:hover, &.active {
+                    color: $main-color;
+                    border-bottom: 2px $main-color solid;
+                }
             }
             
-            li:hover {
-                color: $main-color;
-                border-bottom: 2px $main-color solid;
-            }
         }
 
         ul.account {
@@ -80,10 +81,10 @@ header {
                 float: left;
                 overflow: hidden;
                 transition: all .2s ease-in-out;
-            }
-            
-            li:hover {
-                color: $main-color;
+
+                &:hover {
+                    color: $main-color;
+                }
             }
         }
     }
