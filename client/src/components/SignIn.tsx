@@ -31,7 +31,9 @@ function SignIn({ visible, setVisible } : SignInProps) {
                 <form>
                     <input className='signinForm' autoComplete='email' placeholder='아이디 (이메일)' onChange={(e) => setEmail(e.target.value)} value={email} />
                     <input className='signinForm' autoComplete='current-password' placeholder='비밀번호 (8글자 이상)' type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
-                    { message && <p> { message } </p> }
+                    { message && <p className='helpText'> { message } </p> }
+                    <div style={{marginBottom: '42px'}}/>
+                    <Link to='/signup'> <p className='helpText'> 처음 오셨나요? </p> </Link>
                     <button type='submit' className='signin' onClick={async (e) => {
                         e.preventDefault();
                         if (!validateEmail(email)) {
@@ -50,8 +52,6 @@ function SignIn({ visible, setVisible } : SignInProps) {
                         });
                     }}> 로그인 </button>
                 </form>
-                <Link to='/signup'> <p> 처음 오셨나요? </p> </Link>
-                <p> 아이디, 비밀번호를 까먹으셨나요? </p>
             </div>
         </>
     );
