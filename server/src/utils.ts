@@ -5,7 +5,7 @@ export async function checkAdmin(ctx :any, next :any) {
     ctx.throw(401, "Should log in");
   } else {
     const user = ctx.state.user;
-    if(user.email != "admin"){
+    if(user.email != "nacommanager@gmail.com"){
       ctx.throw(401, "Should be admin");
     }
   }
