@@ -29,7 +29,7 @@ function Header() {
                         )}
                         <Link to='/guide'>
                             <li className={pathname.startsWith('/guide') ? 'active' : ''}>
-                                크립토 프로젝트
+                                가이드
                             </li>
                         </Link>
                         <Link to='/quiz'>

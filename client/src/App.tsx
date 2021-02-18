@@ -16,6 +16,7 @@ import { setUserInfo } from 'etc/api';
 import Logout from 'pages/Logout';
 import SignUpDone from 'pages/SignUpDone';
 import GuideList from 'pages/GuideList';
+import AdminAddGuide from 'pages/AdminAddGuide';
 
 function App() {
   let [userInfoLoading] = usePromise(() => setUserInfo());
@@ -37,6 +38,7 @@ function App() {
         <Redirect path='/quiz' to='/quiz/1'/>
         <Route path='/admin/quiz/add' component={AdminAddQuiz} />
         <Route path='/admin/challenge/add' component={AdminAddChallenge} />
+        <Route path='/admin/guide/add' component={AdminAddGuide} />
         <Route path='/signup/done' component={SignUpDone} />
         <Route path='/signup' component={SignUp} />
         <Route path='/logout' component={Logout} />

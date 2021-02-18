@@ -19,7 +19,7 @@ function GuideList() {
                 <thead>
                     <tr>
                         <th style={{width: '5%'}}> # </th>
-                        <th style={{width: '95%'}}> 블로그 이름 </th>
+                        <th style={{width: '95%'}}> 가이드 이름 </th>
                     </tr>
                 </thead>
                 <tbody>
