@@ -24,6 +24,16 @@ div.signinContainer {
     box-sizing: border-box;
     z-index: 99;
 
+    .backButton {
+        position: absolute;
+        left: 10px;
+        top: -49px;
+        height: 59px;
+        width: 59px;
+        color: white;
+        font-size: 39px;
+    }
+
     div.signinHeader {
         width: 100%;
         font-size: 21px;
@@ -44,6 +54,14 @@ div.signinContainer {
         width: calc(100% - 102px);
         box-sizing: border-box;
         border-radius: 9px;
+    }
+
+    .insideIcon {
+        top: -46px;
+        left: 365.39px;
+        position: relative;
+        font-size: 24px;
+        height: 0px;
     }
 
     .helpText {

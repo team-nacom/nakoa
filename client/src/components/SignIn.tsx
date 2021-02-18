@@ -27,6 +27,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
         <>
             <div className='signinShadow' onClick={() => setVisible(false)} />
             <div className='signinContainer'>
+                <span className='material-icons backButton link' onClick={() => setVisible(false)}> arrow_back </span>
                 <div className='signinHeader'> 로그인 </div>
                 <form>
                     <input className='signinForm' autoComplete='email' placeholder='아이디 (이메일)' onChange={(e) => setEmail(e.target.value)} value={email} />
