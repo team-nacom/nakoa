@@ -1,9 +1,11 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Markdown from 'components/Markdown';
-import { getQuizInfo, Quiz } from 'etc/api';
+import { getQuizInfo, isAdmin, Quiz } from 'etc/api';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link, match } from 'react-router-dom';
+import { RootReducer } from 'store';
 import Loading from './Loading';
 
 interface MatchParams {
@@ -39,7 +41,7 @@ function QuizView({ match } : Props) {
     else return (
         <>
             <Header/>
-            <Link to='/admin/quiz/add'><button className='button'> 퀴즈 추가하기 </button></Link>
+            { isAdmin() && <Link to='/admin/quiz/add'><button className='button'> 퀴즈 추가하기 </button></Link> }
             <div className={`quizBox shadowOver${Math.min(3, maxId - id)}`}>
                 <div style={{marginBottom: '27px'}}> { `#${id}. ${quiz.name}` } </div>
                 { description }

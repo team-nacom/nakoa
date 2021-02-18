@@ -4,7 +4,7 @@ import Footer from 'components/Footer';
 import Tabs from 'components/Tabs';
 import { Link } from 'react-router-dom';
 import usePromise from 'etc/usePromise';
-import { getChallList } from 'etc/api';
+import { getChallList, isAdmin } from 'etc/api';
 import Loading from './Loading';
 
 function ChallengeList() {
@@ -21,6 +21,7 @@ function ChallengeList() {
                     active: true,
                 }
             ]} />
+            { isAdmin() && <Link to='/admin/chall/add'><button className='button'> 챌린지 추가하기 </button></Link> }
             <table>
                 <thead>
                     <tr>

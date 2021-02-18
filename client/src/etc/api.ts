@@ -85,6 +85,10 @@ export const setUserInfo = async () => {
     else store.dispatch(clearUser());
 }
 
+export const isAdmin = () => {
+    return store.getState().user?.email === config.adminEmail;
+}
+
 export interface LoginData {
     email: string;
     password: string;
