@@ -13,10 +13,8 @@ function validateEmail(email: string) {
 }
 
 function validatePassword(password: string) {
-    const regex1 = /^[ -~]{8,50}$/;
-    const regex2 = /[a-zA-Z]/;
-    const regex3 = /[0-9]/;
-    return regex1.test(password) && regex2.test(password) && regex3.test(password);
+    const regex1 = /^[ -~]{8,32}$/;
+    return regex1.test(password);
 }
 
 function SignIn({ visible, setVisible } : SignInProps) {
@@ -32,7 +30,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                 <div className='signinHeader'> 로그인 </div>
                 <form>
                     <input className='signinForm' autoComplete='email' placeholder='아이디 (이메일)' onChange={(e) => setEmail(e.target.value)} value={email} />
-                    <input className='signinForm' autoComplete='current-password' placeholder='비밀번호 (영문, 숫자 혼합 8자 이상 50자 이하)' type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
+                    <input className='signinForm' autoComplete='current-password' placeholder='비밀번호 (8글자 이상)' type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
                     { message && <p> { message } </p> }
                     <button type='submit' className='signin' onClick={async (e) => {
                         e.preventDefault();
@@ -41,7 +39,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                             return;
                         }
                         if (!validatePassword(password)) {
-                            setMessage('비밀번호는 영문, 숫자 혼합 8자 이상 50자 이하여야 합니다.');
+                            setMessage('비밀번호는 8글자 이상으로 적어 주세요.');
                             return;
                         }
                         login({

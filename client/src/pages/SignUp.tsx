@@ -13,7 +13,7 @@ function SignUp() {
     let [emailMessage, setEmailMessage] = React.useState('');
     let validateEmail = async () => {
         if (email.length === 0) {
-            setEmailMessage('이메일을 적어주세요.');
+            setEmailMessage('이메일을 적어 주세요.');
             return false;
         }
 
@@ -30,16 +30,14 @@ function SignUp() {
     let [passwordMessage, setPasswordMessage] = React.useState('');
     let validatePassword = () => {
         if (password.length === 0) {
-            setPasswordMessage('비밀번호를 적어주세요.');
+            setPasswordMessage('비밀번호를 적어 주세요.');
             return false;
         }
 
         const regex1 = /^[ -~]{8,32}$/;
-        const regex2 = /[a-zA-Z]/;
-        const regex3 = /[0-9]/;
 
-        if (!regex1.test(password) || !regex2.test(password) || !regex3.test(password)) {
-            setPasswordMessage('비밀번호는 8글자 이상으로, 영문과 숫자를 포함하도록 해 주세요.');
+        if (!regex1.test(password)) {
+            setPasswordMessage('비밀번호는 8글자 이상으로 적어 주세요.');
             return false;
         }
         setPasswordMessage('');
@@ -63,7 +61,7 @@ function SignUp() {
     let [nicknameMessage, setNicknameMessage] = React.useState('');
     let validateNickname = () => {
         if (nickname.length === 0) {
-            setNicknameMessage('이름을 적어주세요.');
+            setNicknameMessage('이름을 적어 주세요.');
             return false;
         }
 
