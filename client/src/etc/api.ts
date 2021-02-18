@@ -81,8 +81,6 @@ export const setUserInfo = async () => {
     let response = await Axios.get(`${apiAddress}/user`, { validateStatus: authValidateStatus, withCredentials: true });
     let data = response.data as UserData;
 
-    console.log(data);
-    
     if (data.isAuth) store.dispatch(setUser(data.email, data.nickname));
     else store.dispatch(clearUser());
 }
@@ -112,4 +110,29 @@ export const logout = async () => {
         success: response.status < 300, 
         message: response.data as string,
     };
+}
+
+interface GuideType {
+    index: number;
+    name: string;
+    content: string;
+    priority: number;
+}
+
+export const getGuides = async () => {
+    let response = await Axios.get(`${apiAddress}/guide`);
+
+    return response.data as GuideType[];
+}
+
+export const getGuide = async (id: number) => {
+    let response = await Axios.get(`${apiAddress}/guide/${id}`);
+
+    return response.data as GuideType;
+}
+
+export const postGuide = async (data: GuideType) => {
+    let response = await Axios.post(`${apiAddress}/guide`, data, { validateStatus: authValidateStatus, withCredentials: true });
+
+    return response.status < 300;
 }

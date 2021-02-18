@@ -24,7 +24,7 @@ interface Params {
     text: string;
 }
 
-function BlogPost({ text }: Params) {
+function GuidePost({ text }: Params) {
     const lines = text.split('\n');
 
     let sectionNum = 0, subsectionNum = 0;
@@ -71,4 +71,4 @@ function BlogPost({ text }: Params) {
     );
 }
 
-export default BlogPost;
+export default GuidePost;

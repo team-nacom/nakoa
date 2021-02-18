@@ -10,11 +10,12 @@ import ChallengeSubmissions from 'pages/ChallengeSubmissions';
 import ChallengeSolution from 'pages/ChallengeSolution';
 import AdminAddQuiz from 'pages/AdminAddQuiz';
 import AdminAddChallenge from 'pages/AdminAddChallenge';
-import BlogPage from 'pages/BlogPage';
+import Guide from 'pages/Guide';
 import usePromise from 'etc/usePromise';
 import { setUserInfo } from 'etc/api';
 import Logout from 'pages/Logout';
 import SignUpDone from 'pages/SignUpDone';
+import GuideList from 'pages/GuideList';
 
 function App() {
   let [userInfoLoading] = usePromise(() => setUserInfo());
@@ -28,7 +29,8 @@ function App() {
         <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
-        <Route path='/guide' component={BlogPage} />
+        <Route path='/guide/:id' component={Guide} />
+        <Route path='/guide' component={GuideList} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
         <Route path='/quiz/:id' component={QuizView} />
