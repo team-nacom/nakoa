@@ -40,7 +40,7 @@ router.post('/', async (ctx) => {
     const guide = new Guide(guideObj);
     
     await guide.save()
-      .then(doc => { console.log(`Guide upload "${guideObj.name}" successful`); ctx.body = guideObj; })
+      .then(() => { console.log(`Guide upload "${guide.name}" successful`); ctx.body = "Success"; })
       .catch(err => { console.error(err); ctx.throw(500); });
   }
 });

@@ -1,6 +1,14 @@
-import { model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
-const guideSchema = new Schema({
+export interface GuideDocument extends Document {
+    index: number,
+    name: string,
+    content: string,
+    priority: number,
+    createDate: number
+}
+
+const guideSchema = new Schema<GuideDocument>({
     // _id: Number (default)
     index: Number,
     name: String,
@@ -9,4 +17,4 @@ const guideSchema = new Schema({
     createDate: { type: Number, default: Date.now }
 });
 
-export default model('Guide', guideSchema, 'guides');
+export default model<GuideDocument>('Guide', guideSchema, 'guides');
