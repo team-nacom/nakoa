@@ -47,6 +47,21 @@
     }
 }
 
+.exercise {
+    border: 1px $main-color solid;
+    margin: 5px;
+    padding: 10px;
+    padding-top: 18px;
+    padding-left: 15px;
+
+    h1 {
+        font-size: 20px;
+        line-height: 20px;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+}
+
 .blog {
     height: fit-content;
     .section, .subsection {

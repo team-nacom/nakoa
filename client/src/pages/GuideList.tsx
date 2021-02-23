@@ -28,7 +28,6 @@ function GuideList() {
                         <tr>
                             <td> { guide.index } </td>
                             <td> <Link to={`/guide/${guide.index}`}> {guide.name} </Link> </td>
-                            <td> - </td>
                         </tr>
                     ))}
                 </tbody>
