@@ -1,5 +1,6 @@
 import Guide, {GuideDocument} from '../models/guide';
 import createError from "http-errors";
+import AdmZip from "adm-zip";
 
 export async function postOneGuide(guideObj: any) {
   // type guard
@@ -28,3 +29,7 @@ export async function postOneGuide(guideObj: any) {
       .catch(err => { console.error(err); throw createError(500, err); });
   }
 }
+
+// export async function postZipFile(){
+
+// }

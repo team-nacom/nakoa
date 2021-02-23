@@ -1,9 +1,10 @@
-import bodyParser from 'koa-bodyparser';
 import Router from 'koa-router';
 
-import Guide, {GuideDocument} from '../models/guide';
+import Guide from '../models/guide';
 import { checkAdmin } from "../utils";
 import { postOneGuide } from "./poster";
+import asyncBusboy from 'async-busboy';
+import createHttpError from 'http-errors';
 
 const router = new Router();
 
@@ -12,6 +13,17 @@ router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
   await postOneGuide(ctx.request.body);
   ctx.body = "Success";
+});
+
+// Upload in bulk with zipped file
+router.post('/zip', checkAdmin);
+router.post('/zip', async (ctx, next) => {
+  const {files, fields} = await asyncBusboy(ctx.req);
+  if(files === undefined)
+    throw createHttpError(400, "No files given");
+  console.log(fields);
+  console.log(files.length);
+  ctx.body = fields;
 });
 
 // NOTE: exclude _id from projection?
