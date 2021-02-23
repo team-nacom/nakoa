@@ -6,22 +6,24 @@ import User, {givenOptions} from '../models/user';
 
 const router = new Router();
 
-async function validateTokens(ctx, next) {
+async function validateAllTokens(ctx, next, checkNickname = true) {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const nickRegex = /^[ -~가-힣]{2,100}$/;
   const body = ctx.request.body;
 
-  if(!body || !body.email || !body.password || !body.nickname) {
+  if(!body || !body.email || !body.password || (checkNickname && !body.nickname)) {
     ctx.throw(400, "Missing field");
   } else if (!emailRegex.test(body.email)) {
     ctx.throw(400, "Invalid email address");
   } else if (32 < body.password.length || body.password.length < 8) {
     ctx.throw(400, "Invalid password length");
-  } else if (!nickRegex.test(body.nickname)) {
+  } else if (checkNickname && !nickRegex.test(body.nickname)) {
     ctx.throw(400, "Invalid nickname");
   }
   await next();
 }
+
+const validateLoginTokens = (ctx, next) => validateAllTokens(ctx, next, false);
 
 // information about current session
 router.get('/', (ctx) => {
@@ -40,7 +42,7 @@ router.get('/', (ctx) => {
 });
 
 // register new user (email, password)
-router.post('/register', validateTokens);
+router.post('/register', validateAllTokens);
 router.post('/register', async (ctx, next) => {
   // log out if logged in
   if(ctx.isAuthenticated()) ctx.logout();
@@ -68,7 +70,7 @@ router.post('/register', async (ctx, next) => {
 });
 
 // login (email, password)
-router.post('/login', validateTokens);
+router.post('/login', validateLoginTokens);
 router.post('/login', (ctx) => {
   return passport.authenticate('local', {}, (err, user) => {
     if(user === false){

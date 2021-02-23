@@ -1,50 +1,18 @@
+import bodyParser from 'koa-bodyparser';
 import Router from 'koa-router';
 
-import Guide from '../models/guide';
+import Guide, {GuideDocument} from '../models/guide';
 import { checkAdmin } from "../utils";
+import { postOneGuide } from "./poster";
 
 const router = new Router();
 
-// Currently, guides = crypto project posts
-
-// Post a guide
+// Post a guide (manual)
 router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
-  type GuidePost = {
-    index?: number,
-    name: string,
-    content: string,
-    priority: number,
-    createDate: number
-  };
-
-  // type guard
-  function isGuidePost(obj: any): obj is GuidePost{
-    const quiz = obj as GuidePost;
-    const keys = ['name', 'content', 'priority'];
-    // TODO check types, not only undefined
-    let result: boolean = keys.every((val: string) => (val in quiz));
-    return result;
-  }
-
-  const guideObj = ctx.request.body;
-  guideObj.index ??= -1;
-
-  if(await Guide.exists({ index: guideObj.index })){
-    ctx.throw(400, `Guide with index ${guideObj.index} already exists`);
-  }
-  else if(!isGuidePost(guideObj)){
-    ctx.throw(400, "Guide is ill-formed");
-  }
-  else {
-    const guide = new Guide(guideObj);
-    
-    await guide.save()
-      .then(() => { console.log(`Guide upload "${guide.name}" successful`); ctx.body = "Success"; })
-      .catch(err => { console.error(err); ctx.throw(500); });
-  }
+  await postOneGuide(ctx.request.body);
+  ctx.body = "Success";
 });
-
 
 // NOTE: exclude _id from projection?
 // Get list of guides
