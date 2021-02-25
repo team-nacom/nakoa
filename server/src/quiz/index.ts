@@ -6,8 +6,7 @@ import { checkAdmin } from "../utils";
 const router = new Router();
 
 // Post a quiz
-router.post('/', checkAdmin);
-router.post('/', async (ctx) => {
+router.post('/', checkAdmin, async (ctx) => {
   type QuizPost = {
     index?: number,
     name: string,
@@ -18,50 +17,46 @@ router.post('/', async (ctx) => {
   };
 
   // type guard
+  // TODO check types, not only undefined
   function isQuizPost(obj: any): obj is QuizPost{
-    const quiz = obj as QuizPost;
     const keys = ['name', 'description', 'choices', 'answer', 'explanation'];
-    // TODO check types, not only undefined
-    let result: boolean = keys.every((val: string) => (val in quiz));
-    return result;
+
+    return keys.every(val => val in obj);
   }
 
-  const quizObj = ctx.request.body;
+  const quizObj: QuizPost = ctx.request.body;
   quizObj.index ??= -1;
 
-  if(await Quiz.exists({ index: quizObj.index })){
-    ctx.throw(400, `Quiz with index ${quizObj.index} already exists`);
-  }
-  else if(!isQuizPost(quizObj)){
+  if (!isQuizPost(quizObj)) {
     ctx.throw(400, "Quiz is ill-formed");
+    return;
   }
-  else {
-    const quiz = new Quiz(quizObj);
-    await quiz.save()
-      .then(doc => { console.log(`Quiz upload "${quizObj.name}" successful`); ctx.body = quizObj; })
-      .catch(err => { console.error(err); ctx.throw(500, err.message); });
+
+  if (await Quiz.exists({ index: quizObj.index })) {
+    ctx.throw(400, `Quiz with index ${quizObj.index} already exists`);
+    return;
   }
+
+  const quiz = new Quiz(quizObj);
+  await quiz.save();
+  
+  ctx.body = quizObj;
+  console.log(`Quiz upload "${quizObj.name}" successful`); 
 });
 
 // Get list of all quizzes
 router.get('/', async (ctx) => {
-  await Quiz.find().
-    catch(err => ctx.throw(500, err)).
-    then(docs => ctx.body = docs);
+  ctx.body = await Quiz.find();
 });
 
 // Get specific quiz with given index
 router.get('/:index', async (ctx) => {
-  const index = ctx.params.index;
+  const index: number = ctx.params.index!;
 
-  const query = Quiz.find({ index: index });
+  const doc = await Quiz.findOne({ index });
 
-  await query.findOne().
-    catch(err => ctx.throw(500, err)).
-    then(doc => {
-      if(!doc) ctx.throw(404, "Document Not Found");
-      ctx.body = doc;
-    });
+  if (!doc) ctx.throw(404, "Document Not Found");
+  else ctx.body = doc;
 });
 
 export default router;

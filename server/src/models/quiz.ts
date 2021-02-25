@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-export interface QuizDocument extends Document {
+export interface QuizType {
     index: number,
     name: string,
     description: string,
@@ -8,7 +8,9 @@ export interface QuizDocument extends Document {
     answer: string, // correct answer (1-based index of the correct choice)
     explanation: string,
     createDate: number
-}
+};
+
+type QuizDocument = QuizType & Document;
 
 const quizSchema = new Schema<QuizDocument>({
     // _id: Number (default)
