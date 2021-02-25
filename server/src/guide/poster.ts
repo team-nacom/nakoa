@@ -1,6 +1,5 @@
 import Guide, {GuideDocument} from '../models/guide';
 import createError from "http-errors";
-import AdmZip from "adm-zip";
 
 export async function postOneGuide(guideObj: any) {
   // type guard
@@ -24,9 +23,8 @@ export async function postOneGuide(guideObj: any) {
   else {
     const guide = new Guide(guideObj);
     
-    await guide.save()
-      .then(() => { console.log(`Guide upload "${guide.name}" successful`); })
-      .catch(err => { console.error(err); throw createError(500, err); });
+    await guide.save();
+    console.log(`Guide upload "${guide.name}" successful`);
   }
 }
 

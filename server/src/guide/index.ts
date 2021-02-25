@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import fs from "fs";
 
 import Guide from '../models/guide';
 import { checkAdmin } from "../utils";
@@ -21,9 +22,12 @@ router.post('/zip', async (ctx, next) => {
   const {files, fields} = await asyncBusboy(ctx.req);
   if(files === undefined)
     throw createHttpError(400, "No files given");
+  
+  const st = fs.createWriteStream('test.zip');
+  files[0].pipe(st);
+  console.log(files);
   console.log(fields);
-  console.log(files.length);
-  ctx.body = fields;
+  ctx.body = "Got it";
 });
 
 // NOTE: exclude _id from projection?
@@ -36,7 +40,7 @@ router.get('/', async (ctx) => {
 });
 
 // Get specific guide with given index
-router.get('/:index', async (ctx) => {
+router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
 
   const filter = { index: index };
