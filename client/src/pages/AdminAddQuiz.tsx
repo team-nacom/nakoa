@@ -3,16 +3,6 @@ import Header from 'components/Header';
 import { postQuiz } from 'etc/api';
 import React from 'react';
 
-/*
-
-export interface Quiz {
-    index?: number;
-    name: string;
-    description: string;
-    choices: string[];
-    answer: string;
-    explanation: string;
-*/
 
 function AdminAddQuiz() {
     let [index, setIndex] = React.useState<number>();

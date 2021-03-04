@@ -11,6 +11,7 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/react-mathjax": "^1.0.0",
+    "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.6",
     "axios": "^0.21.1",
     "cross-env": "^7.0.3",
@@ -20,14 +21,18 @@
     "react-dom": "^17.0.1",
     "react-markdown": "^5.0.3",
     "react-mathjax": "^1.0.1",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "redux": "^4.0.5",
     "remark-math": "^4.0.0",
+    "serve": "^11.3.2",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
     "watch": "react-scripts start",
+    "server": "yarn serve -s build -- --port 3000",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

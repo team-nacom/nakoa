@@ -33,3 +33,13 @@ textarea.adminForm {
     height: 100px;
     border: #888888 1px solid;
 }
+
+button.adminForm {
+    &.active {
+        background: #FFAAAA;
+    }
+
+    &.inactive {
+        background: #EEEEEE;
+    }
+}

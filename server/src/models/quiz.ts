@@ -1,6 +1,18 @@
-import { model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
-const quizSchema = new Schema({
+export interface QuizType {
+    index: number,
+    name: string,
+    description: string,
+    choices: [string],
+    answer: string, // correct answer (1-based index of the correct choice)
+    explanation: string,
+    createDate: number
+};
+
+type QuizDocument = QuizType & Document;
+
+const quizSchema = new Schema<QuizDocument>({
     // _id: Number (default)
     index: Number,
     name: String,
@@ -11,4 +23,4 @@ const quizSchema = new Schema({
     createDate: { type: Number, default: Date.now }
 });
 
-export default model('Quiz', quizSchema, 'quizzes');
+export default model<QuizDocument>('Quiz', quizSchema, 'quizzes');

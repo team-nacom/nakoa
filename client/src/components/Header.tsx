@@ -1,10 +1,16 @@
 import { mainColor, subColor } from 'etc/consts';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { RootReducer } from 'store';
 import SignIn from './SignIn';
 
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
+    let user = useSelector((state: RootReducer) => state.user);
+    
+    const pathname = window.location.pathname;
+    console.log(pathname);
     
     return (
         <>
@@ -16,25 +22,45 @@ function Header() {
                         </Link>
                     </div>
                     <ul className='menu'>
+                        { user.loggedIn && (
+                            <li className='inactive'>
+                                { user.nickname + '님, 안녕하세요!' }
+                            </li>
+                        )}
+                        <Link to='/guide'>
+                            <li className={pathname.startsWith('/guide') ? 'active' : ''}>
+                                가이드
+                            </li>
+                        </Link>
                         <Link to='/quiz'>
-                            <li>
+                            <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
                                 퀴즈
                             </li>
                         </Link>
                         <Link to='/challenge'> 
-                            <li>
+                            <li className={pathname.startsWith('/chall') ? 'active' : ''}>
                                 챌린지
                             </li>
                         </Link>
                     </ul>
-                </div>
-                <div className='menubar'>
-                    <span className='link' onClick={() => setSignInVisible(true) }>
-                        로그인
-                    </span>
-                    <Link to='/signup'>
-                        <span> 회원 가입 </span>
-                    </Link>
+                    <ul className='account'>
+                        { user.loggedIn ? (
+                            <Link to='/logout'>
+                                <li className='material-icons'>
+                                    logout
+                                </li>
+                            </Link>
+                        ) : (
+                            <li className='material-icons link' onClick={() => setSignInVisible(true) }>
+                               login
+                            </li>
+                        )}
+                        <Link to='/signup'>
+                            <li className='material-icons'>
+                                person_add
+                            </li>
+                        </Link>
+                    </ul>
                 </div>
             </header>
             <SignIn visible={signInVisible} setVisible={setSignInVisible} />

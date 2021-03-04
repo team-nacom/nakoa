@@ -17,7 +17,7 @@ function Markdown(props : any) {
     
     return (
         <MathJax.Provider>
-            <ReactMarkdown {...allProps} />
+            <ReactMarkdown {...allProps} className='markdown'/>
         </MathJax.Provider>
     );
 }
