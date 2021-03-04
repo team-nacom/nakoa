@@ -52,8 +52,6 @@ function GuidePost({ text }: Params) {
         let isSubsection = /^### /.test(line);
         let isExercise = /^\[연습문제 .+\]\(.+\)/.test(line);
 
-        console.log(line, isSection, isSubsection, isExercise);
-
         if (isSection || isSubsection || isExercise) {
             let specialElement : JSX.Element;
             
