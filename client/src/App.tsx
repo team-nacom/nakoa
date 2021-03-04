@@ -10,9 +10,19 @@ import ChallengeSubmissions from 'pages/ChallengeSubmissions';
 import ChallengeSolution from 'pages/ChallengeSolution';
 import AdminAddQuiz from 'pages/AdminAddQuiz';
 import AdminAddChallenge from 'pages/AdminAddChallenge';
+import Guide from 'pages/Guide';
+import usePromise from 'etc/usePromise';
+import { setUserInfo } from 'etc/api';
+import Logout from 'pages/Logout';
+import SignUpDone from 'pages/SignUpDone';
+import GuideList from 'pages/GuideList';
+import AdminAddGuide from 'pages/AdminAddGuide';
 
 function App() {
-  return (
+  let [userInfoLoading] = usePromise(() => setUserInfo());
+
+  if (userInfoLoading) return <></>;
+  else return (
     <BrowserRouter>
       <Switch>
         <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
@@ -20,13 +30,18 @@ function App() {
         <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
+        <Route path='/guide/:id' component={Guide} />
+        <Route path='/guide' component={GuideList} />
         <Redirect path='/problem' to='/challenge' />
         <Redirect path='/challenges' to='/challenge' />
         <Route path='/quiz/:id' component={QuizView} />
         <Redirect path='/quiz' to='/quiz/1'/>
         <Route path='/admin/quiz/add' component={AdminAddQuiz} />
         <Route path='/admin/challenge/add' component={AdminAddChallenge} />
+        <Route path='/admin/guide/add' component={AdminAddGuide} />
+        <Route path='/signup/done' component={SignUpDone} />
         <Route path='/signup' component={SignUp} />
+        <Route path='/logout' component={Logout} />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>

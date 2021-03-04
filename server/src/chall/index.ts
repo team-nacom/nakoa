@@ -1,10 +1,12 @@
 import Router from 'koa-router';
 
 import Chall from '../models/chall';
+import { checkAdmin } from "../utils";
 
 const router = new Router();
 
 // Post a challenge
+router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
   // suspend POST request
   ctx.throw(404);
@@ -35,12 +37,10 @@ router.post('/', async (ctx) => {
   challObj.solutionPdf = "https://nacom-main-storage.s3.ap-northeast-2.amazonaws.com/challs/test.pdf";
 
   if(await Chall.exists({ index: challObj.index })){
-    console.error(`Challenge with index ${challObj.index} already exists`);
-    ctx.throw(400);
+    ctx.throw(400, `Challenge with index ${challObj.index} already exists`);
   }
   else if(!isChallPost(challObj)){
-    console.error("Challenge is ill-formed");
-    ctx.throw(400);
+    ctx.throw(400, "Challenge is ill-formed");
   }
   else {
     const chall = new Chall(challObj);
