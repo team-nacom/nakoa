@@ -8,7 +8,7 @@ import session from 'koa-session';
 import passport from 'koa-passport';
 
 import './models/atlas'; // connect Atlas mongoDB
-import './models/aws'; // connect aws S3
+// import './models/aws'; // connect aws S3
 import './user/setup'; // set up passportJS
 
 import challRouter from './chall';

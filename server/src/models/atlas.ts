@@ -20,6 +20,6 @@ mongoose.connect(connectionString, {
 }).then(res => {
   console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch(err => {
-  console.error(`Failed to connect to ${mongoose.connection.host}`);
-  throw err;
+  console.error(`Failed to connect.`);
+  console.error(err)
 });
