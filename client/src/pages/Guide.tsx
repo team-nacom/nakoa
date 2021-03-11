@@ -23,9 +23,12 @@ function Guide({ match } : Props) {
     return (
         <>
             <Header />
-            <h1> { guide.name } </h1>
-            <div style={{marginBottom: '60px'}}/>
-            <GuidePost text={guide.content}/>
+            <div className='guideBackground' />
+            <div className='guide'>
+                <h2 className='subtitle'> 부제 </h2>
+                <h1 className='title'> { guide.name } </h1>
+                <GuidePost text={guide.content}/>
+            </div>
             <Footer />
         </>
     );

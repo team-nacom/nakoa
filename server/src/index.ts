@@ -50,8 +50,8 @@ app.use(Cors({
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
 app.use(session({
-  secure: true,
-  sameSite: 'none',
+//  secure: true,
+//  sameSite: 'none',
 }, app));
 app.use(passport.initialize());
 app.use(passport.session());
