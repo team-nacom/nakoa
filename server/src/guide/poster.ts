@@ -18,13 +18,13 @@ export async function postOneGuide(guideObj: any) {
     throw createError(400, `Guide with index ${guideObj.index} already exists`);
   }
   else if(!isGuideDocument(guideObj)){
-    throw createError(400, "Guide is ill-formed");
+    throw createError(400, "Invalid Guide format");
   }
   else {
     const guide = new Guide(guideObj);
     
     await guide.save();
-    console.log(`Guide upload "${guide.name}" successful`);
+    console.log(`Guide "${guide.name}" uploaded successful`);
   }
 }
 
