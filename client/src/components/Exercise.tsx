@@ -15,9 +15,11 @@ interface Props {
 
 function Exercise({ id, title, content, answer } : Props) {
     return (
-        <div className='exercise'>
+        <div className='exercise box'>
+            <div className='label'>
+                { `Exercise ${id}` }
+            </div>
             <h1> 
-                { `연습문제 ${id} ` }
                 { title && <Markdown source={title} />}
             </h1>
             <div> <Markdown source={content}/> </div>

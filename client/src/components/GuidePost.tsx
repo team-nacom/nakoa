@@ -52,8 +52,6 @@ function GuidePost({ text }: Params) {
         let isSubsection = /^### /.test(line);
         let isExercise = /^\[연습문제 .+\]\(.+\)/.test(line);
 
-        console.log(line, isSection, isSubsection, isExercise);
-
         if (isSection || isSubsection || isExercise) {
             let specialElement : JSX.Element;
             
@@ -82,14 +80,15 @@ function GuidePost({ text }: Params) {
     components.push(<Markdown source={nowLines}/>);
 
     return (
-        <>
-            <div className='preview'>
+        <div className='guideContent'>
+            <div className='preview box'>
+                <div className='label'> Contents </div>
                 { previews }
             </div>
             <div className='blog'>
                 { components }
             </div>
-        </>
+        </div>
     );
 }
 

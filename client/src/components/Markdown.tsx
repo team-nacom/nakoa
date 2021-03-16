@@ -1,24 +1,28 @@
+import React from 'react';
+import { MathJaxProvider, Tex2SVG } from 'react-hook-mathjax';
 import ReactMarkdown from 'react-markdown';
 import MathJax from 'react-mathjax';
-import RemarkMathPlugin from 'remark-math';
+import Math from 'remark-math';
+import CodeFrontmatter from 'remark-code-frontmatter';
 
 function Markdown(props : any) {
     const allProps: ReactMarkdown.ReactMarkdownProps = {
         ...props,
         plugins: [
-        RemarkMathPlugin,
+            Math,
+            CodeFrontmatter,
         ],
         renderers: {
-        ...props.renderers,
-        math: (props) => <MathJax.Node formula={props.value} />,
-        inlineMath: (props) => <MathJax.Node inline formula={props.value} />
+            ...props.renderers,
+            math: (props) => <Tex2SVG display='inline' latex={props.value}/>,
+            inlineMath: (props) => <Tex2SVG display='inline' latex={props.value}/>,
         }
     };
     
     return (
-        <MathJax.Provider>
+        <MathJaxProvider>
             <ReactMarkdown {...allProps} className='markdown'/>
-        </MathJax.Provider>
+        </MathJaxProvider>
     );
 }
 
