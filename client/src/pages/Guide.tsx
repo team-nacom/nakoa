@@ -38,5 +38,4 @@ function Guide({ match } : Props) {
         </>
     );
 }
-
 export default Guide;
