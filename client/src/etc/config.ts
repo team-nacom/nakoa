@@ -3,6 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default {
-    adminEmail: process.env.ADMIN_EMAIL || 'nacommanager@gmail.com',
-    apiAddress: process.env.API_ADDRESS || 'https://beta.team-na.com:3885'
+    adminEmail: 'nacommanager@gmail.com',
+    apiAddress: process.env.REACT_APP_API_URL || 'http:/localhost:3885'
 }

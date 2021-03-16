@@ -3,10 +3,13 @@
     "version": "0.1.0",
     "private": "true",
     "scripts": {
-        "install": "yarn --cwd ./client/ && yarn --cwd ./server/",
-        "client": "yarn --cwd ./client/ watch",
-        "server": "yarn --cwd ./server/ watch",
-        "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn client\" \"yarn server\""
+        "install-all": "yarn && yarn --cwd ./client/ && yarn --cwd ./server/",
+        "watch-client": "yarn --cwd ./client/ watch",
+        "start-server": "yarn --cwd ./server/ watch",
+        "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn watch-client\" \"yarn start-server\"",
+        "build-client": "yarn --cwd ./client/ build",
+        "build-server": "yarn --cwd ./server/ build",
+        "build": "yarn build-client && yarn build-server"
     },
     "devDependencies": {
         "concurrently": "^5.3.0"

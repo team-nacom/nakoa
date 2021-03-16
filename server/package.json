@@ -45,6 +45,6 @@
     "watch": "nodemon -r dotenv/config --exec ts-node src/index.ts",
     "local-start": "yarn build && DOTENV_CONFIG_LOCALDB=1 node -r dotenv/config build/index.js",
     "local-watch": "DOTENV_CONFIG_LOCALDB=1 nodemon -r dotenv/config build/index.js",
-    "build": "tsc && echo \"Compile Completed!\nServer will run on http://localhost:3885\""
+    "build": "tsc"
   }
 }
