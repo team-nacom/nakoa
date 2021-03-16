@@ -23,15 +23,19 @@ function Guide({ match } : Props) {
     return (
         <>
             <Header />
-            <div className='guideBackground' />
-            <div className='guide'>
-                <h2 className='subtitle'> 부제 </h2>
-                <h1 className='title'> { guide.name } </h1>
-                <GuidePost text={guide.content}/>
-            </div>
+
+            { guide ? (
+                <>
+                    <h1> { guide.name } </h1>
+                    <div style={{marginBottom: '60px'}}/>
+
+                    <GuidePost text={guide.content}/>
+                </>
+            ) : (
+                <p>해당 가이드가 존재하지 않습니다.</p>
+            )}
             <Footer />
         </>
     );
 }
-
 export default Guide;
