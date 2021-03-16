@@ -80,14 +80,15 @@ function GuidePost({ text }: Params) {
     components.push(<Markdown source={nowLines}/>);
 
     return (
-        <>
-            <div className='preview'>
+        <div className='guideContent'>
+            <div className='preview box'>
+                <div className='label'> Contents </div>
                 { previews }
             </div>
             <div className='blog'>
                 { components }
             </div>
-        </>
+        </div>
     );
 }
 
