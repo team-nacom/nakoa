@@ -23,6 +23,8 @@ DB_USER=foo
 DB_PASS=password1234
 ```
 
+If you want to use local MongoDB, you can add `USE_LOCAL_DB` variable to 1, without specifying DB credential. Server will connect to `nacom` collection. refer to `server/src/models/atlas.ts` for detail.
+
 AWS is currently not used yet, so its credential setting is not required for now.
 
 
