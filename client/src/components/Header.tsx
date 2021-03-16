@@ -8,20 +8,20 @@ import SignIn from './SignIn';
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
     let user = useSelector((state: RootReducer) => state.user);
+    let [expanded, setExpanded] = React.useState<boolean>(false);
     
     const pathname = window.location.pathname;
-    console.log(pathname);
     
     return (
         <>
             <header>
-                <div className='navbar'>
+                <nav className='navbar'>
                     <div className='title'>
                         <Link to='/'>
                             <img src={process.env.PUBLIC_URL + '/logo.png'} />
                         </Link>
                     </div>
-                    <ul className='menu'>
+                    <ul className={'menu' + (expanded ? ' expanded' : '')}>
                         { user.loggedIn && (
                             <li className='inactive'>
                                 { user.nickname + '님, 안녕하세요!' }
@@ -51,17 +51,25 @@ function Header() {
                                 </li>
                             </Link>
                         ) : (
-                            <li className='material-icons link' onClick={() => setSignInVisible(true) }>
-                               login
-                            </li>
+                            <>
+                                <li className='material-icons link' onClick={() => setSignInVisible(true) }>
+                                login
+                                </li>
+                                <Link to='/signup'>
+                                    <li className='material-icons'>
+                                        person_add
+                                    </li>
+                                </Link>
+                            </>
                         )}
-                        <Link to='/signup'>
-                            <li className='material-icons'>
-                                person_add
-                            </li>
-                        </Link>
+                        <li className={'mobileOnly material-icons link' + (expanded ? ' active' : '')} onClick={(e) => {
+                            e.preventDefault();
+                            setExpanded(!expanded);
+                        }}>
+                            menu
+                        </li>
                     </ul>
-                </div>
+                </nav>
             </header>
             <SignIn visible={signInVisible} setVisible={setSignInVisible} />
         </>
