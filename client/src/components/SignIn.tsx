@@ -35,23 +35,25 @@ function SignIn({ visible, setVisible } : SignInProps) {
                     { message && <p className='helpText'> { message } </p> }
                     <div style={{marginBottom: '42px'}}/>
                     <Link to='/signup'> <p className='helpText'> 처음 오셨나요? </p> </Link>
-                    <button type='submit' className='signin' onClick={async (e) => {
-                        e.preventDefault();
-                        if (!validateEmail(email)) {
-                            setMessage('이메일을 형식에 맞게 입력해주세요.');
-                            return;
-                        }
-                        if (!validatePassword(password)) {
-                            setMessage('비밀번호는 8글자 이상으로 적어 주세요.');
-                            return;
-                        }
-                        login({
-                            email, password,
-                        }).then(({ success, message }) => {
-                            if (success) setVisible(false);
-                            else setMessage(message);
-                        });
-                    }}> 로그인 </button>
+                    <div className='buttonContainer'>
+                        <button type='submit' className='signin' onClick={async (e) => {
+                            e.preventDefault();
+                            if (!validateEmail(email)) {
+                                setMessage('이메일을 형식에 맞게 입력해주세요.');
+                                return;
+                            }
+                            if (!validatePassword(password)) {
+                                setMessage('비밀번호는 8글자 이상으로 적어 주세요.');
+                                return;
+                            }
+                            login({
+                                email, password,
+                            }).then(({ success, message }) => {
+                                if (success) setVisible(false);
+                                else setMessage(message);
+                            });
+                        }}> 로그인 </button>
+                    </div>
                 </form>
             </div>
         </>
