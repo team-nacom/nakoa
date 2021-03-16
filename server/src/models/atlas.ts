@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // Check env
 const dbUser = process.env.DB_USER;
 const dbPass = process.env.DB_PASS;
-const useLocal = process.env.DOTENV_CONFIG_LOCALDB;
+const useLocal = process.env.USE_LOCAL_DB;
 if(!useLocal && (!dbUser || !dbPass)){
   throw new Error("No DB_USER or DB_PASS in .env file.");
 }

@@ -8,7 +8,7 @@ import session from 'koa-session';
 import passport from 'koa-passport';
 
 import './models/atlas'; // connect Atlas mongoDB
-// import './models/aws'; // connect aws S3
+// import './models/aws'; // connect aws S3 (not used yet)
 import './user/setup'; // set up passportJS
 
 import challRouter from './chall';
@@ -37,26 +37,27 @@ router.use('/user', userRouter.routes());
 // Guides
 router.use('/guide', guideRouter.routes());
 
+// local / production config
+const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
+const origin = (isProduction ? 'https://beta.team-na.com' : 'http://localhost:3000');
+const port = (isProduction ? 3884 : 3885);
 
 // Koa app
 const app = new Koa();
 app.use(Logger());
 app.use(bodyParser());
 app.use(Cors({
-  origin: 'http://localhost:3000',
+  origin: origin,
   credentials: true,
 }));
 
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
-app.use(session({
-  secure: true,
-  sameSite: 'none',
-}, app));
+app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(handleError);
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(3885);
+app.listen(port);
