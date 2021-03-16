@@ -43,15 +43,16 @@ const app = new Koa();
 app.use(Logger());
 app.use(bodyParser());
 app.use(Cors({
-  origin: 'http://localhost:3000',
+	//  origin: 'http://beta.team-na.com:3000',
+  origin: 'https://beta.team-na.com',
   credentials: true,
 }));
 
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
 app.use(session({
-  secure: true,
-  sameSite: 'none',
+	//	  secure: true,
+	//	  sameSite: 'none',
 }, app));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -59,4 +60,4 @@ app.use(passport.session());
 app.use(handleError);
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(3885);
+app.listen(3884);
