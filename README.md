@@ -6,7 +6,11 @@ Install yarn.
 
 Run `yarn` to install all npm dependencies.
 
-Create `./server/.env`, and save your credential to the demo MongoDB server, `DB_USER` and `DB_PASS`.
+Create file `./server/.env`, and save your credential to the demo MongoDB server, `DB_USER` and `DB_PASS`.
+```
+DB_USER=foo
+DB_PASS=password1234
+```
 
 Run `yarn watch` to watch the changes of the source files.
 

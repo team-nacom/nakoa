@@ -6,7 +6,8 @@
         "install": "yarn --cwd ./client/ && yarn --cwd ./server/",
         "client": "yarn --cwd ./client/ watch",
         "server": "yarn --cwd ./server/ watch",
-        "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn client\" \"yarn server\""
+        "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn client\" \"yarn server\"",
+        "watch-s": "HTTPS=true SSL_CRT_FILE=./localhost.pem SSL_KEY_FILE=./localhost-key.pem concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn client\" \"yarn server\""
     },
     "devDependencies": {
         "concurrently": "^5.3.0"
