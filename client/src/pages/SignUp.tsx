@@ -1,6 +1,5 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import PageTitle from 'components/PageTitle';
 import { register } from 'etc/api';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
@@ -133,7 +132,7 @@ function SignUp() {
     return (
         <>
             <Header/>
-            <PageTitle> 가입 </PageTitle>
+            <h2 className='title' style={{marginBottom: '20px'}}> 가입 </h2>
             <p> 나무컴퍼스에 관심을 가지고 가입해주셔서 감사합니다. </p>
             <p> 가입하시려면, 아래 항목을 채워주세요. 입력해주신 개인정보는 로그인 외 다른 용도로 이용되지 않습니다.</p>
 

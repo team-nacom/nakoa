@@ -29,7 +29,6 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-	overflow-y:scroll; //always show vertical scroll
 }
 //ol, ul {
 //	list-style: none;
@@ -50,11 +49,6 @@ table {
 a {
 	text-decoration: none;
 	color: inherit;
-}
-
-
-.pageTitle {
-	margin-bottom: 20px; //should be in a separated file?
 }
 
 @import 'admin.scss';
