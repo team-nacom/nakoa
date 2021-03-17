@@ -1,4 +1,4 @@
-import GuidePost from 'components/GuidePost';
+import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Markdown from 'components/Markdown';

@@ -1,6 +1,8 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
+import MarkdownEditor from 'components/MarkdownEditor';
+
 import { postGuide } from 'etc/api';
 import React from 'react';
 
@@ -13,7 +15,7 @@ function AdminAddGuide() {
 
     return (<>
         <Header/>
-        <PageTitle style={{marginBottom: '20px'}}> 가이드 추가 </PageTitle>
+        <PageTitle> 가이드 추가 </PageTitle>
 
         <div className='adminBox'>
             <div className='adminLabel'> 가이드 번호 </div>
@@ -23,7 +25,8 @@ function AdminAddGuide() {
             <input className='adminForm' value={name} onChange={(e) => setName(e.target.value)}/>
 
             <div className='adminLabel'> 가이드 내용 </div>
-            <textarea className='adminForm' placeholder='Markdown 및 Mathjax 사용 가능' value={content} onChange={(e) => setContent(e.target.value)}/>
+            {/* <textarea className='adminForm' placeholder='Markdown 및 Mathjax 사용 가능' value={content} onChange={(e) => setContent(e.target.value)}/> */}
+            <MarkdownEditor className='adminForm' body='' update={ (c) => setContent(c) } />
 
             <div className='adminLabel'> 중요도 </div>
             <div>

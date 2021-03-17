@@ -1,4 +1,4 @@
-import GuidePost from 'components/GuidePost';
+import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import { getGuide } from 'etc/api';
@@ -6,6 +6,7 @@ import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
 import Loading from './Loading';
+import { title } from 'process';
 
 interface MatchParams {
     id: string;
@@ -25,16 +26,9 @@ function Guide({ match } : Props) {
             <Header />
 
             { guide ? (
-                <>
-                    <div className='guideBackground' />
-                    <div className='guide'>
-                        <h2 className='subtitle'> 부제 </h2>
-                        <h1 className='title'> { guide.name } </h1>
-                        <GuidePost text={guide.content}/>
-                    </div>
-                </>
+                <GuideView title={ guide.name } subtitle='부제' text={guide.content} />
             ) : (
-                <p>해당 가이드가 존재하지 않습니다.</p>
+                <p>404 : 해당 가이드가 존재하지 않습니다.</p>
             )}
             <Footer />
         </>

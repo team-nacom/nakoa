@@ -35,10 +35,12 @@ const samplePost = {
 
 
 interface Params {
+    title: string;
+    subtitle?: string;
     text: string;
 }
 
-function GuidePost({ text }: Params) {
+function GuideView({ title, subtitle, text }: Params) {
     const lines = text.split('\n');
 
     let sectionNum = 0, subsectionNum = 0, exerciseNum = 1;
@@ -80,16 +82,21 @@ function GuidePost({ text }: Params) {
     components.push(<Markdown source={nowLines}/>);
 
     return (
-        <div className='guideContent'>
-            <div className='preview box'>
-                <div className='label'> Contents </div>
-                { previews }
-            </div>
-            <div className='blog'>
-                { components }
+        <div className='guide'>
+            <div className='guideBackground' />
+            <h2 className='subtitle'> { subtitle || '부제' } </h2>
+            <h1 className='title'> { title } </h1>
+            <div className='guideContent'>
+                <div className='preview box'>
+                    <div className='label'> Contents </div>
+                    { previews }
+                </div>
+                <div className='blog'>
+                    { components }
+                </div>
             </div>
         </div>
     );
 }
 
-export default GuidePost;
+export default GuideView;
