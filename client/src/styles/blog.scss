@@ -25,6 +25,8 @@
         font-size: 15px;
         line-height: 24px;
         font-weight: 300;
+
+        overflow: hidden;
     }
 
     a {
@@ -50,6 +52,12 @@
     > * {
         margin-top: 17px;
         margin-bottom: 17px;
+    }
+
+    .katex-display > .katex {
+        width: 100%;
+        overflow-x: auto;
+        text-align: center!important;
     }
 }
 
@@ -87,7 +95,8 @@
 
     .guideContent {
         background: white;
-        padding: 80px;
+        padding: unquote('min(calc(10%),80px)');
+        min-width: 80%;
         box-shadow: 0px 3px 20px #0000004D;
         border-radius: 10px;
 
