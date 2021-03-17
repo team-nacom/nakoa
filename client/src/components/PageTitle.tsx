@@ -7,7 +7,7 @@ interface Params {
 
 function PageTitle({style, children} : Params) {
     return (
-        <h2 className='title' style={ style }>
+        <h2 className='pageTitle' style={ style }>
             {children}
         </h2>
     )
