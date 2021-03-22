@@ -10,8 +10,10 @@ if(!useLocal && (!dbUser || !dbPass)){
 
 // Choose between atlas and local
 const atlasConn = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.frhrs.mongodb.net/nacom?retryWrites=true&w=majority`;
-const localConn = 'mongodb://localhost/nacom';
+const localConn = process.env.LOCAL_DB_STR ? process.env.LOCAL_DB_STR : 'mongodb://localhost/nacom';
 const connectionString = useLocal ? localConn : atlasConn;
+
+console.log(connectionString);
 
 // Connect to db
 mongoose.connect(connectionString, {
