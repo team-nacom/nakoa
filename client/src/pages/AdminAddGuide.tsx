@@ -3,15 +3,33 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { postGuide } from 'etc/api';
+import { postGuide, postTempGuide } from 'etc/api';
 import React from 'react';
 
 function AdminAddGuide() {
-    let [index, setIndex] = React.useState<number>();
-    let [name, setName] = React.useState<string>();
-    let [content, setContent] = React.useState<string>();
+    let [index, setIndex] = React.useState<number>(1);
+    let [name, setName] = React.useState<string>('');
+    let [content, setContent] = React.useState<string>('');
     let [priority, setPriority] = React.useState<number>(1);
     let [message, setMessage] = React.useState<string>();
+    let [lastModify, setLastModify] = React.useState<number>();
+    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
+
+    React.useEffect(() => {
+        setLastModify(new Date().getTime());
+    }, [index, name, content, priority]);
+
+    React.useEffect(() => {
+        if (recentlySaved) return;
+
+        postTempGuide({
+            index, name, content, priority,
+        }).then(() => {
+            setRecentlySaved(true);
+        })
+
+        setTimeout(() => setRecentlySaved(false), 1000);
+    }, [lastModify]);
 
     return (<>
         <Header/>

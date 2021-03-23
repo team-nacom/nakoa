@@ -140,3 +140,10 @@ export const postGuide = async (data: GuideType) => {
 
     return response.status < 300;
 }
+
+export const postTempGuide = async (data: GuideType) => {
+    console.log('Now trying(?) to auto-save..');
+    console.log('Title: ', data.name);
+    console.log('Content: ', data.content);
+    // This will be written after server-side draft logic is done.
+}
