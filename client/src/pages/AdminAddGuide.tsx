@@ -12,7 +12,11 @@ function AdminAddGuide() {
     let [content, setContent] = React.useState<string>();
     let [priority, setPriority] = React.useState<number>(1);
     let [message, setMessage] = React.useState<string>();
-
+/*
+    React.useEffect(() => {
+        let 
+    }, []);
+*/
     return (<>
         <Header/>
         <PageTitle> 가이드 추가 </PageTitle>

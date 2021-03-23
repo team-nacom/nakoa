@@ -5,6 +5,7 @@ export interface GuideDocument extends Document {
     index: number,
     name: string, // change the name to title?
     content: string,
+    authors: [string],
     priority: number,
     createDate: number,
     exercises: [object]
@@ -15,6 +16,7 @@ const guideSchema = new Schema<GuideDocument>({
     index: Number,
     name: String,
     content: String,
+    authors: [String],
     priority: Number, // 1 is highest, 5 is lowest
     createDate: { type: Number, default: Date.now },
     exercises: {

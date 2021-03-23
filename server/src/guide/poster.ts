@@ -5,7 +5,7 @@ export async function postOneGuide(guideObj: any) {
   // type guard
   function isGuideDocument(obj: any): obj is GuideDocument{
     const quiz = obj as GuideDocument;
-    const keys = ['name', 'content', 'priority'];
+    const keys = ['name', 'content', 'priority', 'authors'];
     // TODO properly check types & contents
     let result: boolean = keys.every((val: string) => (val in quiz));
     return result;

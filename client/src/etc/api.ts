@@ -121,6 +121,7 @@ interface GuideType {
     name: string;
     content: string;
     priority: number;
+    authors?: string[];
 }
 
 export const getGuides = async () => {
