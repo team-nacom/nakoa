@@ -1,10 +1,5 @@
 import React from 'react';
-import Markdown from './Markdown';
-
-
-
-
-
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Props {
     id: number;
@@ -20,9 +15,9 @@ function Exercise({ id, title, content, answer } : Props) {
                 { `Exercise ${id}` }
             </div>
             <h1> 
-                { title && <Markdown source={title} />}
+                { title && <MarkdownRenderer source={title} />}
             </h1>
-            <div> <Markdown source={content}/> </div>
+            <div> <MarkdownRenderer source={content}/> </div>
         </div>
     )
 }

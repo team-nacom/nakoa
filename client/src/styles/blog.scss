@@ -57,6 +57,7 @@
     .katex-display > .katex {
         width: 100%;
         overflow-x: auto;
+        overflow-y: hidden; //a bug in katex renderer?
         text-align: center!important;
     }
 }
