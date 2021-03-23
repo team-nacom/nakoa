@@ -12,10 +12,7 @@ const router = new Router();
 // Post a guide (manual)
 router.post('/', checkAdmin);
 router.post('/', async (ctx) => {
-  await postOneGuide({
-    ...ctx.request.body,
-    authors: [ctx.state.user.nickname],
-  });
+  await postOneGuide(ctx.request.body);
   ctx.body = "Success";
 });
 
