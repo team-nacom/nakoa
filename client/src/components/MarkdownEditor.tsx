@@ -20,6 +20,7 @@ const PreviewArea = styled.div`
     width: 100%;
     height: 300px;
     overflow-y: scroll;
+    overflow-x: hidden;
     box-sizing:border-box;
 
     margin: 10px 0px;

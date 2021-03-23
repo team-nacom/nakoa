@@ -47,7 +47,7 @@ header {
             @media (min-width: $min-tablet-width) {
                 position: absolute;
                 top: 35px;
-                right: 100px;
+                right: 72px;
                 margin-right: 10%;
                 width: calc(100% - 200px);
     
@@ -55,7 +55,7 @@ header {
                     color: #666666;
                     font-size: 15px;
                     font-weight: 300;
-                    padding: 16px;
+                    padding: 16px 12px;
                     float: right;
                     overflow: hidden;
                     border: 2px rgba(0, 0, 0, 0) solid;
