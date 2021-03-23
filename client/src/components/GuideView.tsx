@@ -1,12 +1,12 @@
 import React from 'react';
 import Exercise from './Exercise';
-import Markdown from './Markdown';
+import MarkdownRenderer from './MarkdownRenderer';
 
 function subsection(sectionNum: number, subsectionNum: number, text: string) {
     return (        
         <div className='subsection'>
             <div className='subsectionText'> {`${sectionNum}.${subsectionNum}.`} </div>
-            <Markdown source={text} /> 
+            <MarkdownRenderer source={text} /> 
         </div>
     )
 }
@@ -15,7 +15,7 @@ function section(sectionNum: number, text: string) {
     return (
         <div className='section'>
             <div className='sectionText'> {`${sectionNum}.`} </div>
-            <Markdown source={text} /> 
+            <MarkdownRenderer source={text} /> 
         </div>
     )
 }
@@ -69,7 +69,7 @@ function GuideView({ title, subtitle, text }: Params) {
                 exerciseNum += 1;
             }
 
-            components.push(<Markdown source={nowLines}/>);
+            components.push(<MarkdownRenderer source={nowLines}/>);
             nowLines = '';
 
             if (isSection || isSubsection) previews.push(specialElement);
@@ -79,7 +79,7 @@ function GuideView({ title, subtitle, text }: Params) {
             nowLines = nowLines + line + '\n';
         }
     }
-    components.push(<Markdown source={nowLines}/>);
+    components.push(<MarkdownRenderer source={nowLines}/>);
 
     return (
         <div className='guide'>

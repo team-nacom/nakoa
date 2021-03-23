@@ -30,7 +30,7 @@ textarea.adminForm {
     font-size: 16px;
     font-weight: 300;
     width: calc(100% - 10px);
-    height: 100px;
+    min-height: 100px;
     resize: vertical;
     border: #888888 1px solid;
 }
