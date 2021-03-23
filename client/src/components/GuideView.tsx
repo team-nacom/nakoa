@@ -36,11 +36,11 @@ const samplePost = {
 
 interface Params {
     title: string;
-    subtitle?: string;
+    authors?: [string];
     text: string;
 }
 
-function GuideView({ title, subtitle, text }: Params) {
+function GuideView({ title, authors, text }: Params) {
     const lines = text.split('\n');
 
     let sectionNum = 0, subsectionNum = 0, exerciseNum = 1;
@@ -84,7 +84,7 @@ function GuideView({ title, subtitle, text }: Params) {
     return (
         <div className='guide'>
             <div className='guideBackground' />
-            <h2 className='subtitle'> { subtitle || '부제' } </h2>
+            <h2 className='subtitle'> { authors ? authors.join(', ') : '' } </h2>
             <h1 className='title'> { title } </h1>
             <div className='guideContent'>
                 <div className='preview box'>
