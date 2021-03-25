@@ -29,9 +29,9 @@ textarea.adminForm {
 
     font-size: 16px;
     font-weight: 300;
-    width: calc(100% - 10px);
+    // width: calc(100% - 10px);
     min-height: 100px;
-    resize: vertical;
+    // resize: vertical;
     border: #888888 1px solid;
 }
 
@@ -43,4 +43,63 @@ button.adminForm {
     &.inactive {
         background: #EEEEEE;
     }
+}
+
+
+// update 2021/03/25
+// TODO : integrate '.adminForm' into '.markdownArea',
+// TODO : integrate '.blog' with '.markdown' (in blog.scss)
+// TODO : beautify '.panelMenu's
+
+.markdownArea {
+    width: 100%;
+    height: 300px;
+    overflow-y: scroll;
+    box-sizing:border-box;
+
+    margin: 10px 0px;
+    padding: 4px;
+
+    resize: none;
+}
+
+.previewArea {
+    width: 100%;
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    margin: 10px 0px;
+    padding: 0px 10px;
+    border: 1px solid #888888;
+}
+
+// .panelMenuWrapper {
+                    
+// }
+.panelMenu {
+    // -webkit-box-sizing: border-box;
+    // -moz-box-sizing: border-box;
+    // box-sizing: border-box;
+
+    border: none;
+    background-color: #cccccc;
+    width: 100px;
+    margin: 0px 10px;
+    padding: 10px;
+    font-size: 20px;
+    display: inline-block;
+}
+.panelMenu:enabled:hover{
+    outline: 2px solid #e25fbd;
+    cursor: pointer;
+}
+.panelMenu:focus{
+    outline: none;
+}
+.panelMenu.selected {
+    color: red;
+}
+.panelMenu:disabled {
+    color: gray;
 }
