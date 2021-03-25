@@ -3,14 +3,13 @@ import Count from '../models/count';
 import createError from "http-errors";
 
 // type guard
-function isGuideDocument(obj: any, hasIndex?: boolean): obj is GuideDocument{
-  const quiz = obj as GuideDocument;
+function isGuideDocument(obj: any): obj is GuideDocument{
+  const guide = obj as GuideDocument;
   const keys = ['name', 'content', 'priority'];
-  if(hasIndex) keys.push('index');
 
   // TODO properly check types & contents
   // TODO check exercises
-  let result: boolean = keys.every((val: string) => (val in quiz));
+  let result: boolean = keys.every((val: string) => (val in guide));
   return result;
 }
 
@@ -35,7 +34,8 @@ export async function updateOneGuide(guideObj: any, index: number) {
   if(index !== guideObj.index) throw createError(400, "Index does not match with URI");
   const guide = await Guide.findOne({ index: guideObj.index }).exec();
 
-  if(!isGuideDocument(guideObj, true)){
+  // TODO check if extra fields exist
+  if(! ("index" in guideObj)){
     throw createError(400, "Guide is ill-formed");
   }
   else if(guide === null) {
