@@ -2,7 +2,7 @@ import Router from 'koa-router';
 
 import Guide from '../models/guide';
 import { isAdmin, checkAdminMiddleware } from "../utils";
-import { postOneGuide } from "./poster";
+import { postOneGuide, updateOneGuide } from "./poster";
 import createHttpError from 'http-errors';
 
 const router = new Router();
@@ -11,6 +11,14 @@ const router = new Router();
 router.post('/', checkAdminMiddleware);
 router.post('/', async (ctx) => {
   await postOneGuide(ctx.request.body);
+  ctx.body = "Success";
+});
+
+// Update an existing guide
+router.put('/:index(\\d+)', checkAdminMiddleware);
+router.put('/:index(\\d+)', async (ctx) => {
+  const index: number = Number.parseInt(ctx.params.index);
+  await updateOneGuide(ctx.request.body, index);
   ctx.body = "Success";
 });
 
