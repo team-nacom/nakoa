@@ -1,12 +1,12 @@
 import Router from 'koa-router';
 
 import Quiz from "../models/quiz";
-import { checkAdmin } from "../utils";
+import { checkAdminMiddleware } from "../utils";
 
 const router = new Router();
 
 // Post a quiz
-router.post('/', checkAdmin, async (ctx) => {
+router.post('/', checkAdminMiddleware, async (ctx) => {
   type QuizPost = {
     index?: number,
     name: string,

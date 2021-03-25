@@ -1,5 +1,10 @@
 
-export async function checkAdmin(ctx :any, next :any) {
+export function isAdmin(ctx :any): boolean {
+  // @ts-ignore
+  return ctx.isAuthenticated() && ctx.state.user.email === "nacommanager@gmail.com";
+}
+
+export async function checkAdminMiddleware(ctx :any, next :any) {
   // @ts-ignore
   if(!ctx.isAuthenticated()){
     ctx.throw(401, "Should log in");
@@ -12,7 +17,9 @@ export async function checkAdmin(ctx :any, next :any) {
   await next();
 };
 
-export async function handleError(ctx :any, next :any) {
+
+// unified error logging
+export async function handleErrorMiddleware(ctx :any, next :any) {
   try {
     await next();
   } catch (err) {
@@ -21,5 +28,3 @@ export async function handleError(ctx :any, next :any) {
     ctx.app.emit('error', err, ctx);
   }
 };
-
-// unified error logging

@@ -1,14 +1,14 @@
 import Router from 'koa-router';
 
 import Guide from '../models/guide';
-import { checkAdmin } from "../utils";
+import { isAdmin, checkAdminMiddleware } from "../utils";
 import { postOneGuide } from "./poster";
 import createHttpError from 'http-errors';
 
 const router = new Router();
 
 // Post a guide (manual)
-router.post('/', checkAdmin);
+router.post('/', checkAdminMiddleware);
 router.post('/', async (ctx) => {
   await postOneGuide(ctx.request.body);
   ctx.body = "Success";
@@ -16,7 +16,8 @@ router.post('/', async (ctx) => {
 
 // Get list of guides
 router.get('/', async (ctx) => {
-  const query = Guide.find().select('index name category section priority');
+  const filter = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  const query = Guide.find(filter).select('index name category section priority');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);
@@ -26,7 +27,9 @@ router.get('/', async (ctx) => {
 router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
 
-  const filter = { index: index };
+  const filter :any = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  filter.index = index;
+
   const query = Guide.find(filter);
 
   await query.findOne().

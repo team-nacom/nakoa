@@ -16,7 +16,7 @@ import quizRouter from './quiz';
 import userRouter from './user';
 import guideRouter from './guide';
 
-import { handleError } from "./utils";
+import { handleErrorMiddleware } from "./utils";
 
 
 // Router
@@ -53,7 +53,7 @@ app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(handleError);
+app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3885);
