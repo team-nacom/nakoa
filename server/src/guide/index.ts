@@ -1,10 +1,8 @@
 import Router from 'koa-router';
-import fs from "fs";
 
 import Guide from '../models/guide';
 import { checkAdmin } from "../utils";
 import { postOneGuide } from "./poster";
-import asyncBusboy from 'async-busboy';
 import createHttpError from 'http-errors';
 
 const router = new Router();
@@ -16,24 +14,9 @@ router.post('/', async (ctx) => {
   ctx.body = "Success";
 });
 
-// Upload in bulk with zipped file
-// router.post('/zip', checkAdmin);
-// router.post('/zip', async (ctx, next) => {
-//   const {files, fields} = await asyncBusboy(ctx.req);
-//   if(files === undefined)
-//     throw createHttpError(400, "No files given");
-  
-//   const st = fs.createWriteStream('test.zip');
-//   files[0].pipe(st);
-//   console.log(files);
-//   console.log(fields);
-//   ctx.body = "Got it";
-// });
-
-// NOTE: exclude _id from projection?
 // Get list of guides
 router.get('/', async (ctx) => {
-  const query = Guide.find().select('index name priority createDate');
+  const query = Guide.find().select('index name category section priority');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);

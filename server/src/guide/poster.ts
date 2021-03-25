@@ -1,4 +1,5 @@
 import Guide, {GuideDocument} from '../models/guide';
+import Count from '../models/count';
 import createError from "http-errors";
 
 export async function postOneGuide(guideObj: any) {
@@ -12,7 +13,7 @@ export async function postOneGuide(guideObj: any) {
   }
   // TODO check exercises
 
-  guideObj.index ??= -1;
+  guideObj.index ??= await Count.getNextCount('guide');
 
   if(await Guide.exists({ index: guideObj.index })){
     throw createError(400, `Guide with index ${guideObj.index} already exists`);
@@ -27,7 +28,3 @@ export async function postOneGuide(guideObj: any) {
     console.log(`Guide upload "${guide.name}" successful`);
   }
 }
-
-// export async function postZipFile(){
-
-// }
