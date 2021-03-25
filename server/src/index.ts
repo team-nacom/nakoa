@@ -7,9 +7,9 @@ import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
 import passport from 'koa-passport';
 
-import './models/atlas'; // connect Atlas mongoDB
-// import './models/aws'; // connect aws S3
-import './user/setup'; // set up passportJS
+import './setup/atlas'; // connect Atlas mongoDB
+// import './setup/aws'; // connect aws S3
+import './setup/passport'; // set up passportJS
 
 import challRouter from './chall';
 import quizRouter from './quiz';
