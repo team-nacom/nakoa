@@ -1,6 +1,6 @@
 import React from 'react';
 import Exercise from './Exercise';
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 function subsection(sectionNum: number, subsectionNum: number, text: string) {
     return (        

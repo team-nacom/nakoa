@@ -3,15 +3,15 @@ import styled from 'styled-components';
 
 import { useMediaQuery } from 'react-responsive';
 
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown/MarkdownRenderer';
+// import { readBuilderProgram } from 'typescript';
 
 function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
-        <textarea {...props} />
+        <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
         // className={ (props.className || '') + ' markdownArea' }
     )
 }
-
 function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
     return(
         <div {...props} />
@@ -79,12 +79,50 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         update(e.target.value);
     }
 
+    const pasteHandler = (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
+    handler : {
+        let text = e.clipboardData.getData('text/plain');
+        if(text){
+            document.execCommand('insertText',false,text);
+            break handler;
+        }
+
+        // images
+        for(const item of e.clipboardData.items){
+            if(item.type.indexOf('image') === 0){ //image detected
+                const blob = item.getAsFile();
+                if(blob == null) break;
+
+                // inline image insertion
+                const reader = new FileReader();
+                reader.onload = (e2) =>{
+                    var res = e2.target!.result;
+                    if(typeof res === 'string'){
+                        document.execCommand('insertText',false,`![](${res})`);
+                    }
+                }
+                reader.readAsDataURL(blob);
+                // WARNING : DO NOT PASTE IMG >100px. MUST be altered to server upload.
+
+                break handler;
+            }
+        }
+    }
+        e.preventDefault();
+    }
+
     return (
         <>
             <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={1} callback = { setActiveIndex }>편집</PanelMenu>
             <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={2} callback = { setActiveIndex }>미리보기</PanelMenu>
             <Panel collapse = { _collapse } activeIndex={ activeIndex } index={1} >
-                <MarkdownArea {...other} className={ `${other.className || ''} markdownArea` } placeholder='Markdown 및 LaTeX 수식 입력 가능' onChange={ innerUpdate } value = { value } />
+                <MarkdownArea
+                    {...other}
+                    className={ `${other.className || ''} markdownArea` } 
+                    onChange={ innerUpdate }
+                    onPaste={ pasteHandler }
+                    value = { value }
+                />
             </Panel>
             <Panel collapse = { _collapse } style={ { float: 'right'} } activeIndex={ activeIndex } index={2}>
                 <PreviewArea className='blog previewArea'>

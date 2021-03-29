@@ -1,5 +1,5 @@
 import React from 'react';
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 interface Props {
     id: number;
