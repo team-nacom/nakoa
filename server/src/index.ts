@@ -37,13 +37,17 @@ router.use('/user', userRouter.routes());
 // Guides
 router.use('/guide', guideRouter.routes());
 
+// local / production config
+const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
+const origin = (isProduction ? 'https://beta.team-na.com' : 'http://localhost:3000');
+const port = (isProduction ? 3884 : 3885);
 
 // Koa app
 const app = new Koa();
 app.use(Logger());
 app.use(bodyParser());
 app.use(Cors({
-  origin: 'http://localhost:3000',
+  origin: origin,
   credentials: true,
 }));
 
@@ -56,4 +60,4 @@ app.use(passport.session());
 app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(3885);
+app.listen(port);

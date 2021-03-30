@@ -1,46 +1,28 @@
-# Getting Started with Create React App
+# Nakoa Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Client will serve at port `3000`. In the production server, it will listen to both `80` and `443` ports, while nginx redirecting any http connection to https on `443` port.
 
-## Available Scripts
+Note that the api call is run on the users' side, not on the server. This means the API server must be open and listen to public.
 
-In the project directory, you can run:
+## Configuration
 
-### `yarn start`
+Default API server address is set to `http://localhost:3885`. If you want to change these values, create `.env` in `client/`, and add `REACT_APP_API_URL` variable. For example, the production server will have the following `client/.env`:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+REACT_APP_API_URL=https://beta.team-na.com
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## How to run
 
-### `yarn test`
+To build the client (mainly to make static SPA), run `yarn build`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To run the client, run `yarn start`.
 
-### `yarn build`
+To run the client which updates on changes of code, run `yarn watch`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+After building the client, you can publish the site by serving `build/` as a static single page application. React will magically handle the routing and everything.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

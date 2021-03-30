@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // Check env
 const dbUser = process.env.DB_USER;
 const dbPass = process.env.DB_PASS;
-const useLocal = process.env.DOTENV_CONFIG_LOCALDB;
+const useLocal = process.env.USE_LOCAL_DB;
 if(!useLocal && (!dbUser || !dbPass)){
   throw new Error("No DB_USER or DB_PASS in .env file.");
 }
@@ -22,6 +22,6 @@ mongoose.connect(connectionString, {
 }).then(res => {
   console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch(err => {
-  console.error(`Failed to connect to ${mongoose.connection.host}`);
-  throw err;
+  console.error(`Failed to connect.`);
+  console.error(err)
 });
