@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import Math from 'remark-math';
 
+import gfm from 'remark-gfm';
+import Math from 'remark-math';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
 import 'katex/dist/katex.min.css';
@@ -12,6 +13,7 @@ function Markdown(props : any) {
     const allProps: ReactMarkdown.ReactMarkdownProps = {
         ...props,
         plugins: [
+            gfm,
             Math,
             CodeFrontmatter,
         ],
