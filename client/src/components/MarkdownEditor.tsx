@@ -6,7 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
 
-import { upload } from './editor/FileUpload'
+import { upload } from '../etc/FileUpload'
 
 function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
@@ -122,7 +122,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
 
         try{
             const fileUrl = await upload(file);
-            document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
+            document.execCommand('insertText',false,`\n![](${ fileUrl })\n\n`);
         } catch (error){
             // file uploading error handler
             console.log('파일 업로드에 실패했습니다.')
@@ -153,7 +153,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
             </Panel>
             <div style={ {clear:'both'} }></div>
 
-            <label htmlFor='fileUpload'>파일 첨부 </label>
+            <label htmlFor='fileUpload'> 이미지 첨부 </label>
             <input type='file' id='fileUpload' name='fileUpload' ref={ fileElem } />
             <button type='submit' onClick={ uploader } >업로드</button>
         </>
