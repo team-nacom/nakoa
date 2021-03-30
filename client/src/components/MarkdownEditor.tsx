@@ -1,10 +1,12 @@
-import React, { useState, Component } from 'react';
+import React, { useState, useRef, Component } from 'react';
 import styled from 'styled-components';
 
 import { useMediaQuery } from 'react-responsive';
 
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
+
+import { upload } from './editor/FileUpload'
 
 function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
@@ -69,6 +71,8 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
 }
 
 function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
+    const fileElem = useRef<HTMLInputElement>(null);
+
     const [value,setValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as number | string);
     let _collapse = useMediaQuery({ query: `(max-width:768px)` }) || collapse || false;
@@ -111,6 +115,17 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         e.preventDefault();
     }
 
+    const uploader = async () => {
+        if(fileElem.current!.files == null) return false;
+
+        const file = fileElem.current!.files[0];
+        const fileUrl = await upload(file);
+
+        document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
+
+        return false;
+    }
+
     return (
         <>
             <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={1} callback = { setActiveIndex }>편집</PanelMenu>
@@ -130,6 +145,10 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
                 </PreviewArea>
             </Panel>
             <div style={ {clear:'both'} }></div>
+
+            <label htmlFor='fileUpload'>파일 첨부 </label>
+            <input type='file' id='fileUpload' name='fileUpload' ref={ fileElem } />
+            <button type='submit' onClick={ uploader } >업로드</button>
         </>
     );
 }
