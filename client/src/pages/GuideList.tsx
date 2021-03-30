@@ -1,7 +1,7 @@
-import GuidePost from 'components/GuidePost';
+import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import Markdown from 'components/Markdown';
+// import MarkdownRenderer from 'components/MarkdownRenderer';
 import { getGuides, isAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';

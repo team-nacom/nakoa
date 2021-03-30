@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import Markdown from 'components/Markdown';
+import MarkdownRenderer from 'components/MarkdownRenderer';
 import { getQuizInfo, isAdmin, Quiz } from 'etc/api';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -31,8 +31,8 @@ function QuizView({ match } : Props) {
         setChoice(undefined);
         setStatus(1);
         getQuizInfo(id).then((quiz) => {
-            setDescription(<Markdown source={quiz.description}/>);
-            setChoices(quiz.choices.map((choice, index) => <Markdown source={`${index+1}. ${choice}`} />));
+            setDescription(<MarkdownRenderer source={quiz.description}/>);
+            setChoices(quiz.choices.map((choice, index) => <MarkdownRenderer source={`${index+1}. ${choice}`} />));
             setQuiz(quiz);
         })
     }, [id]);
@@ -59,7 +59,7 @@ function QuizView({ match } : Props) {
                 { status === 2 && (
                     <>
                         <p> {quiz.answer === choice ? '맞았습니다!' : '틀렸습니다..'} {` 정답은 ${quiz.answer}입니다.`} </p>
-                        <Markdown source={quiz.explanation}/>
+                        <MarkdownRenderer source={quiz.explanation}/>
                         <Link to={`/quiz/${Math.min(maxId, id+1)}`}><button className='button'> 다음 문제 </button></Link>
                     </>
                 )}

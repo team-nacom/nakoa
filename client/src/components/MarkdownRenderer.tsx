@@ -1,9 +1,12 @@
 import React from 'react';
-import { MathJaxProvider, Tex2SVG } from 'react-hook-mathjax';
 import ReactMarkdown from 'react-markdown';
-import MathJax from 'react-mathjax';
 import Math from 'remark-math';
+
 import CodeFrontmatter from 'remark-code-frontmatter';
+
+import 'katex/dist/katex.min.css';
+// @ts-ignore
+import { InlineMath, BlockMath } from 'react-katex';
 
 function Markdown(props : any) {
     const allProps: ReactMarkdown.ReactMarkdownProps = {
@@ -14,15 +17,13 @@ function Markdown(props : any) {
         ],
         renderers: {
             ...props.renderers,
-            math: (props) => <Tex2SVG display='inline' latex={props.value}/>,
-            inlineMath: (props) => <Tex2SVG display='inline' latex={props.value}/>,
+            math: (props) => <BlockMath math = { props.value } />,
+            inlineMath: (props) => <InlineMath>{ props.value }</InlineMath>,
         }
     };
     
     return (
-        <MathJaxProvider>
-            <ReactMarkdown {...allProps} className='markdown'/>
-        </MathJaxProvider>
+        <ReactMarkdown {...allProps} className='markdown'/>
     );
 }
 

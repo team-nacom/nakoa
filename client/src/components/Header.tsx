@@ -8,60 +8,60 @@ import SignIn from './SignIn';
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
     let user = useSelector((state: RootReducer) => state.user);
+    let [expanded, setExpanded] = React.useState<boolean>(false);
     
     const pathname = window.location.pathname;
-    console.log(pathname);
     
     return (
         <>
             <header>
-                <div className='navbar'>
+                <nav className='navbar'>
                     <div className='title'>
                         <Link to='/'>
                             <img src={process.env.PUBLIC_URL + '/logo.png'} />
                         </Link>
                     </div>
-                    <ul className='menu'>
+                    <ul className={'menu' + (expanded ? ' expanded' : '')}>
                         { user.loggedIn && (
                             <li className='inactive'>
                                 { user.nickname + '님, 안녕하세요!' }
                             </li>
                         )}
-                        <Link to='/guide'>
-                            <li className={pathname.startsWith('/guide') ? 'active' : ''}>
-                                가이드
-                            </li>
-                        </Link>
-                        <Link to='/quiz'>
-                            <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
-                                퀴즈
-                            </li>
-                        </Link>
-                        <Link to='/challenge'> 
-                            <li className={pathname.startsWith('/chall') ? 'active' : ''}>
-                                챌린지
-                            </li>
-                        </Link>
+                        <li className={pathname.startsWith('/about') ? 'active' : ''}>
+                            <Link to='/about'>About</Link>
+                        </li>
+                        <li className={pathname.startsWith('/guide') ? 'active' : ''}>
+                            <Link to='/guide'>가이드</Link>
+                        </li>
+                        <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
+                            <Link to='/quiz'>퀴즈</Link>
+                        </li>
+                        <li className={pathname.startsWith('/challenge') ? 'active' : ''}>
+                            <Link to='/challenge'>챌린지</Link>
+                        </li>
                     </ul>
                     <ul className='account'>
                         { user.loggedIn ? (
-                            <Link to='/logout'>
-                                <li className='material-icons'>
-                                    logout
-                                </li>
-                            </Link>
-                        ) : (
-                            <li className='material-icons link' onClick={() => setSignInVisible(true) }>
-                               login
+                            <li>
+                                <Link className="material-icons" to='/logout'>logout</Link>
                             </li>
-                        )}
-                        <Link to='/signup'>
-                            <li className='material-icons'>
-                                person_add
+                        ) : (<>
+                            <li>
+                                <i className='material-icons link' onClick={() => setSignInVisible(true) }>login</i>
                             </li>
-                        </Link>
+
+                            <li>
+                                <Link className="material-icons" to='/signup'>person_add</Link>
+                            </li>
+                        </>)}
+                        <li className={'mobileOnly material-icons link' + (expanded ? ' active' : '')} onClick={(e) => {
+                            e.preventDefault();
+                            setExpanded(!expanded);
+                        }}>
+                            menu
+                        </li>
                     </ul>
-                </div>
+                </nav>
             </header>
             <SignIn visible={signInVisible} setVisible={setSignInVisible} />
         </>

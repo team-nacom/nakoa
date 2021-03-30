@@ -25,6 +25,8 @@
         font-size: 15px;
         line-height: 24px;
         font-weight: 300;
+
+        overflow: hidden;
     }
 
     a {
@@ -46,10 +48,23 @@
         margin-bottom: 6px;
     }
 
+    img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+    }
+
 
     > * {
         margin-top: 17px;
         margin-bottom: 17px;
+    }
+
+    .katex-display > .katex {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden; //a bug in katex renderer?
+        text-align: center!important;
     }
 }
 
@@ -66,8 +81,8 @@
 .guide {
     h2.subtitle {
         text-align: center;
-        font-size: 30px;
-        line-height: 40px;
+        font-size: 24px;
+        line-height: 32px;
         color: white;
         margin-top: 70px;
         margin-bottom: 10px;
@@ -87,7 +102,8 @@
 
     .guideContent {
         background: white;
-        padding: 80px;
+        padding: unquote('min(calc(10%),80px)');
+        min-width: 80%;
         box-shadow: 0px 3px 20px #0000004D;
         border-radius: 10px;
 
@@ -150,7 +166,7 @@
                 //margin: 0px;
                 //margin-bottom: 10px;
             }
-            h2, h3, .sectionText, .subsectionText {
+            h1, h2, h3, .sectionText, .subsectionText {
                 font-size: 15px;
                 line-height: 24px;
                 font-weight: 300;

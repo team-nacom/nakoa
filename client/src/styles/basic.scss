@@ -24,3 +24,15 @@ button.button {
     border: none;
     width: fit-content;
 }
+
+.desktopOnly {
+    @media (max-width: $max-mobile-width) {
+        display: none;
+    }
+}
+
+.mobileOnly {
+    @media (min-width: $min-tablet-width) {
+        display: none;
+    }
+}

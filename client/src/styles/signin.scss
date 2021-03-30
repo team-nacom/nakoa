@@ -24,6 +24,10 @@ div.signinContainer {
     box-sizing: border-box;
     z-index: 99;
 
+    @media (max-width: 461px) {
+        width: 100%;
+    }
+
     .backButton {
         position: absolute;
         left: 10px;
@@ -71,16 +75,21 @@ div.signinContainer {
         color: #F06498;
     }
 
-    button.signin {
+    div.buttonContainer {
         margin-top: 30px;
         margin-bottom: 20px;
-        width: 175px;
         height: 46px;
-        margin: 0px 143px;
-        border: none;
+        width: fit-content;
+        margin: 0px auto;
+    }
+
+    button.signin {
+        width: 175px;
+        height: 100%;
         font-size: 16px;
         background-color: #F06498;
         color: white;
+        border: none;
         border-radius: 35px;
     }
 }

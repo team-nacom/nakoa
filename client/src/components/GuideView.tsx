@@ -1,12 +1,12 @@
 import React from 'react';
 import Exercise from './Exercise';
-import Markdown from './Markdown';
+import MarkdownRenderer from './MarkdownRenderer';
 
 function subsection(sectionNum: number, subsectionNum: number, text: string) {
     return (        
         <div className='subsection'>
             <div className='subsectionText'> {`${sectionNum}.${subsectionNum}.`} </div>
-            <Markdown source={text} /> 
+            <MarkdownRenderer source={text} /> 
         </div>
     )
 }
@@ -15,7 +15,7 @@ function section(sectionNum: number, text: string) {
     return (
         <div className='section'>
             <div className='sectionText'> {`${sectionNum}.`} </div>
-            <Markdown source={text} /> 
+            <MarkdownRenderer source={text} /> 
         </div>
     )
 }
@@ -35,10 +35,12 @@ const samplePost = {
 
 
 interface Params {
+    title: string;
+    authors?: [string];
     text: string;
 }
 
-function GuidePost({ text }: Params) {
+function GuideView({ title, authors, text }: Params) {
     const lines = text.split('\n');
 
     let sectionNum = 0, subsectionNum = 0, exerciseNum = 1;
@@ -67,7 +69,7 @@ function GuidePost({ text }: Params) {
                 exerciseNum += 1;
             }
 
-            components.push(<Markdown source={nowLines}/>);
+            components.push(<MarkdownRenderer source={nowLines}/>);
             nowLines = '';
 
             if (isSection || isSubsection) previews.push(specialElement);
@@ -77,19 +79,24 @@ function GuidePost({ text }: Params) {
             nowLines = nowLines + line + '\n';
         }
     }
-    components.push(<Markdown source={nowLines}/>);
+    components.push(<MarkdownRenderer source={nowLines}/>);
 
     return (
-        <div className='guideContent'>
-            <div className='preview box'>
-                <div className='label'> Contents </div>
-                { previews }
-            </div>
-            <div className='blog'>
-                { components }
+        <div className='guide'>
+            <div className='guideBackground' />
+            <h2 className='subtitle'> { authors ? authors.join(', ') : '' } </h2>
+            <h1 className='title'> { title } </h1>
+            <div className='guideContent'>
+                <div className='preview box'>
+                    <div className='label'> Contents </div>
+                    { previews }
+                </div>
+                <div className='blog'>
+                    { components }
+                </div>
             </div>
         </div>
     );
 }
 
-export default GuidePost;
+export default GuideView;

@@ -21,7 +21,7 @@ function ChallengeList() {
                     active: true,
                 }
             ]} />
-            { isAdmin() && <Link to='/admin/chall/add'><button className='button'> 챌린지 추가하기 </button></Link> }
+            { isAdmin() && <Link to='/admin/challenge/add'><button className='button'> 챌린지 추가하기 </button></Link> }
             <table>
                 <thead>
                     <tr>
