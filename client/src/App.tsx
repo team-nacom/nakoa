@@ -17,6 +17,7 @@ import Logout from 'pages/Logout';
 import SignUpDone from 'pages/SignUpDone';
 import GuideList from 'pages/GuideList';
 import AdminAddGuide from 'pages/AdminAddGuide';
+import About from 'pages/About'
 
 function App() {
   let [userInfoLoading] = usePromise(() => setUserInfo());
@@ -42,6 +43,7 @@ function App() {
         <Route path='/signup/done' component={SignUpDone} />
         <Route path='/signup' component={SignUp} />
         <Route path='/logout' component={Logout} />
+        <Route path='/about' component={About} />
         <Route path='/' component={Main} />
       </Switch>
     </BrowserRouter>
