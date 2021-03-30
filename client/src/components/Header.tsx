@@ -27,6 +27,9 @@ function Header() {
                                 { user.nickname + '님, 안녕하세요!' }
                             </li>
                         )}
+                        <li className={pathname.startsWith('/about') ? 'active' : ''}>
+                            <Link to='/about'>About</Link>
+                        </li>
                         <li className={pathname.startsWith('/guide') ? 'active' : ''}>
                             <Link to='/guide'>가이드</Link>
                         </li>
