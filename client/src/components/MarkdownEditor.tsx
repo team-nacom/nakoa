@@ -6,7 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
 
-import { upload } from '../etc/FileUpload'
+import { fileUpload, imgUpload } from '../etc/FileUpload'
 
 function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
@@ -72,6 +72,7 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
 
 function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     const fileElem = useRef<HTMLInputElement>(null);
+    const imgElem = useRef<HTMLInputElement>(null);
 
     const [value,setValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as number | string);
@@ -83,7 +84,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         update(e.target.value);
     }
 
-    const pasteHandler = (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const pasteHandler = async (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
     handler : {
         let text = e.clipboardData.getData('text/plain');
         if(text){
@@ -95,18 +96,15 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         for(const item of e.clipboardData.items){
             if(item.type.indexOf('image') === 0){ //image detected
                 const blob = item.getAsFile();
-                if(blob == null) break;
+                if(blob == null) continue;
 
-                // inline image insertion
-                const reader = new FileReader();
-                reader.onload = (e2) =>{
-                    var res = e2.target!.result;
-                    if(typeof res === 'string'){
-                        document.execCommand('insertText',false,`![](${res})`);
-                    }
+                try{
+                    const imgUrl = await imgUpload(blob);
+                    document.execCommand('insertText',false,`\n![](${ imgUrl })\n`);
+                } catch (error){
+                    //img uploading error handler
+                    alert('이미지 업로드에 실패했습니다.');
                 }
-                reader.readAsDataURL(blob);
-                // WARNING : DO NOT PASTE IMG >100px. MUST be altered to server upload.
 
                 break handler;
             }
@@ -115,17 +113,35 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         e.preventDefault();
     }
 
-    const uploader = async () => {
+    const imgUploadHandler = async () => {
+        if(imgElem.current!.files == null) return false;
+
+        const file = imgElem.current!.files[0];
+
+        try{
+            const imgUrl = await imgUpload(file);
+            document.execCommand('insertText',false,`\n![](${ imgUrl })\n`);
+        } catch (error){
+            // img uploading error handler
+            alert('이미지 업로드에 실패했습니다.');
+        } finally {
+            imgElem.current!.value = '';
+        }
+
+        return false;
+    }
+
+    const fileUploadHandler = async () => {
         if(fileElem.current!.files == null) return false;
 
         const file = fileElem.current!.files[0];
 
         try{
-            const fileUrl = await upload(file);
-            document.execCommand('insertText',false,`\n![](${ fileUrl })\n\n`);
+            const fileUrl = await fileUpload(file);
+            document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
         } catch (error){
             // file uploading error handler
-            console.log('파일 업로드에 실패했습니다.')
+            alert('파일 업로드에 실패했습니다.');
         } finally {
             fileElem.current!.value = '';
         }
@@ -153,9 +169,15 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
             </Panel>
             <div style={ {clear:'both'} }></div>
 
-            <label htmlFor='fileUpload'> 이미지 첨부 </label>
+            <label htmlFor='imgUpload'> 이미지 첨부 </label>
+            <input type='file' accept='image/*' id='imgUpload' name='imgUpload' ref={ imgElem } />
+            <button type='submit' onClick={ imgUploadHandler } >업로드</button>
+
+            <br />
+
+            <label htmlFor='fileUpload'> 파일 첨부　 </label>
             <input type='file' id='fileUpload' name='fileUpload' ref={ fileElem } />
-            <button type='submit' onClick={ uploader } >업로드</button>
+            <button type='submit' onClick={ fileUploadHandler } >업로드</button>
         </>
     );
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "./config";
 
-async function upload(file: File){
+async function fileUpload(file: File){
 /*    const host = 'https://file.io/'
     const fileUrlResolve = (key: string) => `https://www.file.io/download/${ key }`
 
@@ -30,8 +30,14 @@ async function upload(file: File){
 //    let response = await axios.post(`${config.apiAddress}/file`, form, { withCredentials: true });
 //    return response.data.location as string;
 
-    return 'https://tamref.github.io/images/myface.png';
+    return 'https://tamref.github.io/images/myface.png'; //TEMP
+}
+
+async function imgUpload(file: File){
+    if(!file.type.includes('image')) throw new Error();
+
+    return 'https://tamref.github.io/images/myface.png'; //TEMP
 }
 
 
-export { upload };
+export { fileUpload, imgUpload };
