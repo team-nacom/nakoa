@@ -119,9 +119,16 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         if(fileElem.current!.files == null) return false;
 
         const file = fileElem.current!.files[0];
-        const fileUrl = await upload(file);
 
-        document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
+        try{
+            const fileUrl = await upload(file);
+            document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
+        } catch (error){
+            // file uploading error handler
+            console.log('파일 업로드에 실패했습니다.')
+        } finally {
+            fileElem.current!.value = '';
+        }
 
         return false;
     }
