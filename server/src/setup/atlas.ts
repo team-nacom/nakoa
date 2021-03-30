@@ -17,8 +17,10 @@ console.log(connectionString);
 
 // Connect to db
 mongoose.connect(connectionString, {
-  useNewUrlParser: true,   // new parser (old parser is deprecated)
-  useUnifiedTopology: true // new connection management engine
+  useNewUrlParser: true,    // new parser (old parser is deprecated)
+  useUnifiedTopology: true, // new connection management engine,
+  useFindAndModify: false,  // refer to https://mongoosejs.com/docs/deprecations.html#findandmodify 
+  useCreateIndex: true,     // refer to https://mongoosejs.com/docs/deprecations.html#ensureindex
 }).then(res => {
   console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch(err => {

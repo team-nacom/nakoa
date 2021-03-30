@@ -7,16 +7,16 @@ import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
 import passport from 'koa-passport';
 
-import './models/atlas'; // connect Atlas mongoDB
-// import './models/aws'; // connect aws S3 (not used yet)
-import './user/setup'; // set up passportJS
+import './setup/atlas'; // connect Atlas mongoDB
+// import './setup/aws'; // connect aws S3
+import './setup/passport'; // set up passportJS
 
 import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 import guideRouter from './guide';
 
-import { handleError } from "./utils";
+import { handleErrorMiddleware } from "./utils";
 
 
 // Router
@@ -57,7 +57,7 @@ app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(handleError);
+app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(port);
