@@ -16,17 +16,28 @@ DB_USER=foo
 DB_PASS=password1234
 ```
 
-Also, the production server will have different configurations (i.e. port, allowed CORS origin), so it will have an extra `MODE` variable in `server/.env`. The production server will have `server/.env` like this:
+You can set `S3_BUCKET` variable if you want to connect to a S3 bucket. A valid AWS S3 credential for the provided bucket should be set up in your local device. Refer to [AWS Docs](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started-nodejs.html) for details.
+
+Also, the production server will have different configurations (i.e. port, allowed CORS origin), so it will have an extra `MODE` variable in `server/.env`.
+
+The production server will have `server/.env` like this:
 ```
 MODE=production
 DB_USER=foo
 DB_PASS=password1234
+S3_BUCKET=bucketname
 ```
 
 If you want to use local MongoDB, you can add `USE_LOCAL_DB` variable to 1, without specifying DB credential. Server will connect to `nacom` collection. refer to `server/src/models/atlas.ts` for detail.
 
-AWS is currently not used yet, so its credential setting is not required for now.
-
+Fully configured developer's `server/.env` will look like this:
+```
+DB_USER=username
+DB_PASS=password1234
+S3_BUCKET=nacom-dev
+USE_LOCAL_DB=true
+LOCAL_DB_STR=dbstring
+```
 
 ## How to run
 

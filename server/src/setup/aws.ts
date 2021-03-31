@@ -5,7 +5,7 @@ import pathlib from "path";
 
 // Set the AWS region
 const REGION = "ap-northeast-2"; // SEOUL
-const BUCKET = "nacom-dev-storage";
+const BUCKET = process.env.S3_BUCKET;
 
 // Create an S3 client service object
 const s3 = new S3Client({
@@ -22,15 +22,8 @@ async function initialRun() {
     console.log("Initial S3 connection successful!");
   } catch (err) {
     console.error("Error on initial S3 connection");
-    throw err;
+    console.error(err);
   }
 };
 
-async function savePdf(){
-
-}
-
-
 initialRun();
-
-export { savePdf };
