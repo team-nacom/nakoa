@@ -35,7 +35,7 @@ function AdminAddGuide() {
         <Header/>
         <PageTitle> 가이드 추가 </PageTitle>
 
-        <div className='adminBox'>
+        <div className='adminBox guide'>
             <div className='adminLabel'> 가이드 번호 </div>
             <input type='number' className='adminForm' value={index} onChange={(e) => setIndex(Number.parseInt(e.target.value))}/>
 

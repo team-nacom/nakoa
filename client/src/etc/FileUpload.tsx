@@ -30,13 +30,13 @@ async function fileUpload(file: File){
 //    let response = await axios.post(`${config.apiAddress}/file`, form, { withCredentials: true });
 //    return response.data.location as string;
 
-    return 'https://tamref.github.io/images/myface.png'; //TEMP
+    return 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg'; //TEMP
 }
 
 async function imgUpload(file: File){
     if(!file.type.includes('image')) throw new Error();
 
-    return 'https://tamref.github.io/images/myface.png'; //TEMP
+    return 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg'; //TEMP
 }
 
 

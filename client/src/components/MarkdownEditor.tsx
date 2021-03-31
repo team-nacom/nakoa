@@ -67,7 +67,7 @@ function PanelMenu({children, collapse, activeIndex, index, callback, ...other} 
 interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     body?: string;
     collapse?: boolean;
-    update: (c : string) => void //can we do this w/o callback?
+    update?: (c : string) => void //can we do this w/o callback?
 }
 
 function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
@@ -80,8 +80,14 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     // collapse priority: mobile true > argument > default false(i.e. parallel)
 
     const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        //can we prevent double rendering??
         setValue(e.target.value);
-        update(e.target.value);
+        if(update){
+            update(e.target.value);
+        }
     }
 
     const pasteHandler = async (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -111,6 +117,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         }
     }
         e.preventDefault();
+        e.stopPropagation();
     }
 
     const imgUploadHandler = async () => {
@@ -163,8 +170,10 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
                 />
             </Panel>
             <Panel collapse = { _collapse } style={ { float: 'right'} } activeIndex={ activeIndex } index={2}>
-                <PreviewArea className='blog previewArea'>
-                    <MarkdownRenderer style={ {padding: '4px'} } source={ value } />
+                <PreviewArea className='previewArea markdown'>
+                    <MarkdownRenderer>
+                        { value }
+                    </MarkdownRenderer>
                 </PreviewArea>
             </Panel>
             <div style={ {clear:'both'} }></div>

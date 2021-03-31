@@ -41,59 +41,17 @@ interface Params {
 }
 
 function GuideView({ title, authors, text }: Params) {
-    const lines = text.split('\n');
-
-    let sectionNum = 0, subsectionNum = 0, exerciseNum = 1;
-
-    let previews : JSX.Element[] = [];
-    let components : JSX.Element[] = [];
-
-    let nowLines = '';
-    for (let line of lines) {
-        let isSection = /^## /.test(line);
-        let isSubsection = /^### /.test(line);
-        let isExercise = /^\[연습문제 .+\]\(.+\)/.test(line);
-
-        if (isSection || isSubsection || isExercise) {
-            let specialElement : JSX.Element;
-            
-            if (isSection) {
-                sectionNum += 1;
-                subsectionNum = 0;
-                specialElement = section(sectionNum, line);
-            } else if (isSubsection) {
-                subsectionNum += 1;
-                specialElement = subsection(sectionNum, subsectionNum, line);
-            } else { // isExercise
-                specialElement = <Exercise id={exerciseNum} content={samplePost.content} answer={samplePost.answer} />;
-                exerciseNum += 1;
-            }
-
-            components.push(<MarkdownRenderer source={nowLines}/>);
-            nowLines = '';
-
-            if (isSection || isSubsection) previews.push(specialElement);
-            components.push(specialElement);
-        }
-        else {
-            nowLines = nowLines + line + '\n';
-        }
-    }
-    components.push(<MarkdownRenderer source={nowLines}/>);
+    // TODO : implement excercise parsing
 
     return (
         <div className='guide'>
             <div className='guideBackground' />
             <h2 className='subtitle'> { authors ? authors.join(', ') : '' } </h2>
             <h1 className='title'> { title } </h1>
-            <div className='guideContent'>
-                <div className='preview box'>
-                    <div className='label'> Contents </div>
-                    { previews }
-                </div>
-                <div className='blog'>
-                    { components }
-                </div>
+            <div className='guideContent markdown'>
+                <MarkdownRenderer>
+                    { text }
+                </MarkdownRenderer>
             </div>
         </div>
     );
