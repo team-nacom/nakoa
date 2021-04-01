@@ -1,13 +1,12 @@
 import Router from 'koa-router';
 
 import File, { uploadFileToS3 } from '../models/file';
-import { isAdmin, checkAdminMiddleware } from "../utils";
+import { checkAdminMiddleware } from "../utils";
 
 import fs from "fs";
 import pathlib from "path";
 import { customAlphabet } from "nanoid";
 import createHttpError from 'http-errors';
-import busboy from "async-busboy";
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
 
@@ -16,19 +15,26 @@ const router = new Router();
 router.post('/upload', checkAdminMiddleware);
 router.post('/upload', async (ctx) => {
 
-    const DEMOTXT = "/home/diuven/Downloads/random.txt";
+    const folder = ctx.request.body.folder;
+    //@ts-ignore
+    const file: any = ctx.request.files?.file;
+
+    if(!folder || !file){
+        throw createHttpError(400);
+    }
 
     const randomKey = nanoid();
-    const s3Path = randomKey + '.txt'; // TODO join given path
+    const extname = pathlib.extname(file.path);
+    const s3Path = pathlib.join(folder, randomKey + extname);
 
-    const file = fs.readFileSync(DEMOTXT);
+    const fileStream = fs.readFileSync(file.path);
 
-    await uploadFileToS3(s3Path, file);
+    await uploadFileToS3(s3Path, fileStream, file.type);
 
-    const doc = new File({ path: s3Path, mime: 'text/plain' });
+    const doc = new File({ path: s3Path, mime: file.type });
     await doc.save();
 
-    console.log("Uploaded");
+    console.log(`Successfully uploaded ${file.path} of type ${file.type} to ${s3Path}`);
     ctx.body = s3Path;
 });
 

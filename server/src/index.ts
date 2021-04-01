@@ -2,7 +2,7 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import Logger from 'koa-logger';
 import Cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
+import koaBody from "koa-body";
 
 import session from 'koa-session';
 import passport from 'koa-passport';
@@ -48,7 +48,10 @@ const port = (isProduction ? 3884 : 3885);
 // Koa app
 const app = new Koa();
 app.use(Logger());
-app.use(bodyParser());
+app.use(koaBody({
+  multipart: true,
+  formidable: { keepExtensions: true }
+}));
 app.use(Cors({
   origin: origin,
   credentials: true,
