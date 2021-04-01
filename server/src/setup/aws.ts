@@ -14,6 +14,10 @@ const s3 = new S3Client({
 });
 
 async function initialRun() {
+  if(!BUCKET){
+    console.log("Not connecting to S3 bucket...");
+    return;
+  }
   console.log(`Trying to connect to ${BUCKET}...`);
   try {
     const data = await s3.send(new ListObjectsCommand({

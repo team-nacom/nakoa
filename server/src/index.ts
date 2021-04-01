@@ -15,6 +15,7 @@ import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 import guideRouter from './guide';
+import fileRouter from './file';
 
 import { handleErrorMiddleware } from "./utils";
 
@@ -36,6 +37,8 @@ router.use('/quiz', quizRouter.routes());
 router.use('/user', userRouter.routes());
 // Guides
 router.use('/guide', guideRouter.routes());
+// Files
+router.use('/file', fileRouter.routes());
 
 // local / production config
 const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
