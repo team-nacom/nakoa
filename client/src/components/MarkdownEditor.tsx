@@ -73,11 +73,34 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
 function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     const fileElem = useRef<HTMLInputElement>(null);
     const imgElem = useRef<HTMLInputElement>(null);
+    const mdAreaElem = useRef<HTMLTextAreaElement>(null);
 
     const [value,setValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as number | string);
     let _collapse = useMediaQuery({ query: `(max-width:768px)` }) || collapse || false;
     // collapse priority: mobile true > argument > default false(i.e. parallel)
+
+    const insertText = (text : string) => {
+        const isSuccess = document.execCommand('insertText', false, text);
+
+        if(!isSuccess){
+            const mdArea = document.getElementsByTagName('textarea')[0] as HTMLTextAreaElement;
+
+            if(!mdArea) return;
+
+            // source: https://kubyshkin.name/posts/insert-text-into-textarea-at-cursor-position/
+            const st = mdArea.selectionStart;
+            const ed = mdArea.selectionEnd;
+
+            mdArea.setRangeText(text, st, ed);
+            mdArea.selectionStart = mdArea.selectionEnd = st + text.length;
+
+            // notify to event listeners
+            const e = document.createEvent('UIEvent');
+            e.initEvent('input',true,false);
+            mdArea.dispatchEvent(e);
+        }
+    }
 
     const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
@@ -94,7 +117,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     handler : {
         let text = e.clipboardData.getData('text/plain');
         if(text){
-            document.execCommand('insertText',false,text);
+            insertText(text);
             break handler;
         }
 
@@ -106,7 +129,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
 
                 try{
                     const imgUrl = await imgUpload(blob);
-                    document.execCommand('insertText',false,`\n![](${ imgUrl })\n`);
+                    insertText(`\n![](${ imgUrl })\n`);
                 } catch (error){
                     //img uploading error handler
                     alert('이미지 업로드에 실패했습니다.');
@@ -127,7 +150,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
 
         try{
             const imgUrl = await imgUpload(file);
-            document.execCommand('insertText',false,`\n![](${ imgUrl })\n`);
+            insertText(`\n![](${ imgUrl })\n`);
         } catch (error){
             // img uploading error handler
             alert('이미지 업로드에 실패했습니다.');
@@ -145,7 +168,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
 
         try{
             const fileUrl = await fileUpload(file);
-            document.execCommand('insertText',false,`[💾 ${ file.name }](${ fileUrl })`);
+            insertText(`[💾 ${ file.name }](${ fileUrl })`);
         } catch (error){
             // file uploading error handler
             alert('파일 업로드에 실패했습니다.');

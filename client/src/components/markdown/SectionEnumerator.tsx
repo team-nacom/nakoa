@@ -66,7 +66,7 @@ const SectionEnumerator : Plugin = () => {
 
         root.children.unshift({ type: 'toc', children: tocList });
 
-        console.log(root);
+        // console.log(root);
     }
 
     return sectionEnumerator;
