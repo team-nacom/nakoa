@@ -5,18 +5,18 @@ import pathlib from "path";
 
 // Set the AWS region
 const REGION = "ap-northeast-2"; // SEOUL
-const BUCKET = process.env.S3_BUCKET;
+export const BUCKET = process.env.S3_BUCKET;
 
 // Create an S3 client service object
-const s3 = new S3Client({
+export const s3 = new S3Client({
   region: REGION,
-  credentials: fromIni({profile: 'nacom-dev'})
+  credentials: fromIni({profile: 'nacom'})
 });
 
 async function initialRun() {
   if(!BUCKET){
     console.log("Not connecting to S3 bucket...");
-    return;
+    return false;
   }
   console.log(`Trying to connect to ${BUCKET}...`);
   try {
@@ -24,10 +24,12 @@ async function initialRun() {
       Bucket: BUCKET,
     }));
     console.log("Initial S3 connection successful!");
+    return true;
   } catch (err) {
     console.error("Error on initial S3 connection");
     console.error(err);
+    return false;
   }
 };
 
-initialRun();
+export const connected = initialRun();

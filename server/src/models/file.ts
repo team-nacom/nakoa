@@ -1,17 +1,6 @@
 import { Document, model, Model, Schema } from "mongoose";
-import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
-import { fromIni } from "@aws-sdk/credential-provider-ini"
-
-// Set the AWS region
-const REGION = "ap-northeast-2"; // SEOUL
-const BUCKET = process.env.S3_BUCKET;
-
-// Create an S3 client service object
-const s3 = new S3Client({
-  region: REGION,
-  credentials: fromIni({profile: 'nacom-dev'})
-});
-
+import { PutObjectCommand, GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
+import { s3, BUCKET, connected } from "../setup/aws";
 
 export interface FileDocument extends Document {
     path: string,
@@ -30,10 +19,14 @@ const fileSchema = new Schema<FileDocument>({
 export default model<FileDocument>('File', fileSchema, 'files');
 
 export async function uploadFileToS3(path: string, fileStream: Buffer): Promise<void> {
+    if(!connected) throw Error("S3 not connected. Cannot upload file to S3.");
+    console.log(path);
     const params = {
         Body: fileStream,
         Key: path,
-        Bucket: BUCKET
+        Bucket: BUCKET,
+        ACL: 'public-read',
+        // ContentType: 'text/plain'
     };
     await s3.send(new PutObjectCommand(params));
 }

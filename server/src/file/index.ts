@@ -7,6 +7,7 @@ import fs from "fs";
 import pathlib from "path";
 import { customAlphabet } from "nanoid";
 import createHttpError from 'http-errors';
+import busboy from "async-busboy";
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
 
@@ -14,10 +15,11 @@ const router = new Router();
 
 router.post('/upload', checkAdminMiddleware);
 router.post('/upload', async (ctx) => {
+
     const DEMOTXT = "/home/diuven/Downloads/random.txt";
 
     const randomKey = nanoid();
-    const s3Path = randomKey; // TODO join given path
+    const s3Path = randomKey + '.txt'; // TODO join given path
 
     const file = fs.readFileSync(DEMOTXT);
 
