@@ -16,7 +16,7 @@ function SignUpDone({ location }: Props) {
         setTimeout(() => {
             setRedirectToMain(true);
         }, 3000);
-    });
+    }, [nickname, setRedirectToMain]);
 
     if (redirectToMain) return <Redirect push to='/' />;
     return (

@@ -17,7 +17,7 @@ interface Props {
 
 function ChallengeSubmissions({ match } : Props) {
     const id = Number.parseInt(match.params.id);
-    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
+    let [problemLoading, problem] = usePromise(() => getChallInfo(id));
 
     if (problemLoading) return <Loading/>;
     else return (

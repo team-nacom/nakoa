@@ -5,6 +5,7 @@ import MarkdownEditor from 'components/MarkdownEditor';
 
 import { postGuide } from 'etc/api';
 import React from 'react';
+import { Redirect } from 'react-router';
 
 function AdminAddGuide() {
     let [name, setName] = React.useState<string>('');
@@ -42,6 +43,7 @@ function AdminAddGuide() {
         })
     }
 
+    if (redirectToPost) return <Redirect to={`/guide/${index}`} />
     return (<>
         <Header/>
         <div className='adminBox guide'>

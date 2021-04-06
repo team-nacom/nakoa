@@ -1,12 +1,12 @@
 import Router from 'koa-router';
 
 import Chall from '../models/chall';
-import { checkAdmin } from "../utils";
+import { isAdmin, checkAdminMiddleware } from "../utils";
 
 const router = new Router();
 
 // Post a challenge
-router.post('/', checkAdmin);
+router.post('/', checkAdminMiddleware);
 router.post('/', async (ctx) => {
   // suspend POST request
   ctx.throw(404);
@@ -55,7 +55,8 @@ router.post('/', async (ctx) => {
 // NOTE: exclude _id from projection?
 // Get list of published challenges
 router.get('/', async (ctx) => {
-  const query = Chall.find({ isPublic: true }).select('index name solveCount');
+  let filter = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  const query = Chall.find(filter).select('index name solveCount');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);

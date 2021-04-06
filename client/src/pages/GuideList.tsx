@@ -1,7 +1,5 @@
-import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-// import MarkdownRenderer from 'components/MarkdownRenderer';
 import { getGuides, isAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -15,6 +13,7 @@ function GuideList() {
     else return (
         <>
             <Header/>
+            <div className='guideBackground' />
             { isAdmin() && <Link to='/admin/guide/add'><button className='button'> 가이드 추가하기 </button></Link> }
             <table>
                 <thead>

@@ -121,6 +121,7 @@ interface GuideType {
     name: string;
     content: string;
     priority: number;
+    isPublic?: boolean;
 }
 
 export const getGuides = async () => {
@@ -136,7 +137,18 @@ export const getGuide = async (id: number) => {
 }
 
 export const postGuide = async (data: GuideType) => {
-    let response = await Axios.post(`${apiAddress}/guide`, data, { validateStatus: authValidateStatus, withCredentials: true });
+    if (data.isPublic === undefined) data.isPublic = true;
+
+    let response = await Axios.post(`${apiAddress}/guide`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.status < 300;
+}
+
+export const removeGuide = async (id: number) => {
+    let response = await Axios.delete(`${apiAddress}/guide/${id}`, { withCredentials: true })
 
     return response.status < 300;
 }
