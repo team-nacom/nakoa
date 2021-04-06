@@ -3,7 +3,7 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { postGuide, postTempGuide } from 'etc/api';
+import { postGuide } from 'etc/api';
 import React from 'react';
 
 function AdminAddGuide() {
@@ -11,24 +11,24 @@ function AdminAddGuide() {
     let [content, setContent] = React.useState<string>('');
     let [priority, setPriority] = React.useState<number>(1);
     let [message, setMessage] = React.useState<string>();
-    let [lastModify, setLastModify] = React.useState<number>();
-    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
+//    let [lastModify, setLastModify] = React.useState<number>();
+//    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
 
-    React.useEffect(() => {
-        setLastModify(new Date().getTime());
-    }, [name, content, priority]);
+//    React.useEffect(() => {
+//        setLastModify(new Date().getTime());
+//    }, [name, content, priority]);
 
-    React.useEffect(() => {
-        if (recentlySaved) return;
-
-        postTempGuide({
-            index: 0, name, content, priority,
-        }).then(() => {
-            setRecentlySaved(true);
-        })
-
-        setTimeout(() => setRecentlySaved(false), 1000);
-    }, [lastModify]);
+//    React.useEffect(() => {
+//        if (recentlySaved) return;
+//
+//        postTempGuide({
+//            index: 0, name, content, priority,
+//        }).then(() => {
+//            setRecentlySaved(true);
+//        })
+//
+//        setTimeout(() => setRecentlySaved(false), 1000);
+//    }, [lastModify]);
 
     return (<>
         <Header/>
