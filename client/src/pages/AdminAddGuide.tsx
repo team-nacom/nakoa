@@ -9,7 +9,7 @@ import React from 'react';
 function AdminAddGuide() {
     let [name, setName] = React.useState<string>('');
     let [content, setContent] = React.useState<string>('');
-    let [priority, setPriority] = React.useState<number>(1);
+    let [priority, setPriority] = React.useState<number>(5);
     let [message, setMessage] = React.useState<string>();
 //    let [lastModify, setLastModify] = React.useState<number>();
 //    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
@@ -30,10 +30,22 @@ function AdminAddGuide() {
 //        setTimeout(() => setRecentlySaved(false), 1000);
 //    }, [lastModify]);
 
+    let upload = () => {
+        if (!name || !content || !priority ) {
+            setMessage('모든 항목을 채워주세요.');
+            return;
+        }
+
+        postGuide({index: 0, name, content, priority}).then((success) => {
+            if (success) setMessage('업로드에 성공했습니다!');
+            else setMessage('업로드에 실패했습니다...');
+        })
+    }
+
     return (<>
         <Header/>
         <div className='adminBox guide'>
-            <PageTitle> 가이드 추가 </PageTitle>
+            <PageTitle style={{margin: '40px'}}> 가이드 추가 </PageTitle>
 
             <div className='flexbox'>
                 <div className='adminForm'>
@@ -55,17 +67,10 @@ function AdminAddGuide() {
 
             <MarkdownEditor className='adminForm' body='' update={ (c) => setContent(c) } />
 
-            <button className='button' onClick={() => {
-                if (!name || !content || !priority ) {
-                    setMessage('모든 항목을 채워주세요.');
-                    return;
-                }
+            <div style={{borderTop: '2px #E8E8E8 solid', margin: '0px', marginTop: '15px', padding: '0px 30px'}}>
 
-                postGuide({index: 0, name, content, priority}).then((success) => {
-                    if (success) setMessage('업로드에 성공했습니다!');
-                    else setMessage('업로드에 실패했습니다...');
-                })
-            }}> 올리기 </button>
+                <button className='submit link' onClick={upload}> 게시하기 </button>
+            </div>
             {message}
         </div>
 
