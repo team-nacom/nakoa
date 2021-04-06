@@ -13,6 +13,10 @@ html {
     font-weight: 300;  
 }
 
+.flexbox {
+    display: flex;
+}
+
 .link {
     cursor: pointer;
 }
@@ -23,6 +27,11 @@ button.button {
     margin: 8px;
     border: none;
     width: fit-content;
+}
+
+.pageTitle {
+	font-family: SeoulNamsan;
+	margin: 25px 0px;
 }
 
 .desktopOnly {

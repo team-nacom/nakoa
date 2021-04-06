@@ -1,48 +1,59 @@
 
+
+
 div.adminBox {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     margin: 40px 20px;
-    padding: 20px 30px;
-}
 
-div.adminLabel {
-    font-size: 14px;
-    color: #666666;
-    margin: 10px;
-    margin-top: 15px;
-}
-
-input.adminForm {
-    padding: 5px;
-    margin: 10px 0px;
-
-    font-size: 16px;
-    font-weight: 300;
-    width: calc(100% - 10px);
-    border: none;
-    border-bottom: #888888 1px solid;
-}
-
-textarea.adminForm {
-    padding: 5px;
-    margin: 10px 0px;
-
-    font-size: 16px;
-    font-weight: 300;
-    // width: calc(100% - 10px);
-    min-height: 100px;
-    // resize: vertical;
-    border: #888888 1px solid;
-}
-
-button.adminForm {
-    &.active {
-        background: #FFAAAA;
+    > * {
+        margin: 20px 30px;
     }
 
-    &.inactive {
-        background: #EEEEEE;
+    .adminForm {
+        label {
+            font-size: 14px;
+            color: #666666;
+            margin: 10px;
+            margin-top: 15px;
+        }
+
+        input {
+            padding: 5px;
+            margin: 10px 0px;
+    
+            font-size: 16px;
+            font-weight: 300;
+            width: calc(100% - 10px);
+            border: none;
+            border-bottom: #888888 1px solid;
+        }
+
+        textarea {
+            padding: 5px;
+            margin: 10px 0px;
+    
+            font-size: 16px;
+            font-weight: 300;
+            // width: calc(100% - 10px);
+            min-height: 100px;
+            // resize: vertical;
+            border: #888888 1px solid;
+        }
+    
+        button {
+            &.active {
+                background: #FFAAAA;
+            }
+    
+            &.inactive {
+                background: #EEEEEE;
+            }
+        }
     }
+
+    
+
+
 }
 
 

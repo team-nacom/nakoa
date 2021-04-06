@@ -180,7 +180,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     }
 
     return (
-        <>
+        <div style={{margin: 0}}>
             <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={1} callback = { setActiveIndex }>편집</PanelMenu>
             <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={2} callback = { setActiveIndex }>미리보기</PanelMenu>
             <Panel collapse = { _collapse } activeIndex={ activeIndex } index={1} >
@@ -210,7 +210,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
             <label htmlFor='fileUpload'> 파일 첨부　 </label>
             <input type='file' id='fileUpload' name='fileUpload' ref={ fileElem } />
             <button type='submit' onClick={ fileUploadHandler } >업로드</button>
-        </>
+        </div>
     );
 }
 
