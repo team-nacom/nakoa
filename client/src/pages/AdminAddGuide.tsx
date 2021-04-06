@@ -36,18 +36,15 @@ function AdminAddGuide() {
     if (redirectToPost) return <Redirect to={`/guide/${index}`} />
     return (<>
         <Header/>
-        <PageTitle> 가이드 추가 </PageTitle>
-
-        <div className='adminBox'>
+        <div className='adminBox guide'>
+            <PageTitle> 가이드 추가 </PageTitle>
+{/*
             <div className='adminLabel'> 가이드 번호 </div>
             <input type='number' className='adminForm' value={index} onChange={(e) => setIndex(Number.parseInt(e.target.value))}/>
+*/}
 
             <div className='adminLabel'> 가이드 제목 </div>
             <input className='adminForm' value={name} onChange={(e) => setName(e.target.value)}/>
-
-            <div className='adminLabel'> 가이드 내용 </div>
-            {/* <textarea className='adminForm' placeholder='Markdown 및 Mathjax 사용 가능' value={content} onChange={(e) => setContent(e.target.value)}/> */}
-            <MarkdownEditor className='adminForm' body='' update={ (c) => setContent(c) } />
 
             <div className='adminLabel'> 중요도 </div>
             <div>
@@ -55,8 +52,10 @@ function AdminAddGuide() {
                 <button className={'button adminForm ' + (priority === 4 ? 'active' : 'inactive')} onClick={(e) => setPriority(4)}>Recommendable</button>
                 <button className={'button adminForm ' + (priority === 3 ? 'active' : 'inactive')} onClick={(e) => setPriority(3)}>Readable</button>
                 <button className={'button adminForm ' + (priority === 2 ? 'active' : 'inactive')} onClick={(e) => setPriority(2)}>Optional</button>
-                <button className={'button adminForm ' + (priority === 1 ? 'active' : 'inactive')} onClick={(e) => setPriority(1)}>Draft/Unpublished</button>
+                <button className={'button adminForm ' + (priority === 1 ? 'active' : 'inactive')} onClick={(e) => setPriority(1)}>Draft</button>
             </div>
+
+            <MarkdownEditor className='adminForm' body='' update={ (c) => setContent(c) } />
 
             <button className='button' onClick={() => {
                 if (!index || !name || !content || !priority ) {

@@ -1,4 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@200;300;500;800&display=swap');
+@font-face {
+    font-family: 'SeoulNamsan';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SeoulHangang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 // Reset CSS : https://meyerweb.com/eric/tools/css/reset/
 
@@ -54,7 +66,8 @@ a {
 
 
 .pageTitle {
-	margin-bottom: 20px; //should be in a separated file?
+	font-family: SeoulNamsan;
+	margin: 15px 0px;
 }
 
 @import 'admin.scss';

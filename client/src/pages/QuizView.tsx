@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import MarkdownRenderer from 'components/MarkdownRenderer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 import { getQuizInfo, isAdmin, Quiz } from 'etc/api';
 import React from 'react';
 import { Link, match } from 'react-router-dom';
