@@ -5,6 +5,7 @@ import MarkdownEditor from 'components/MarkdownEditor';
 
 import { postGuide, postTempGuide } from 'etc/api';
 import React from 'react';
+import { Redirect } from 'react-router';
 
 function AdminAddGuide() {
     let [index, setIndex] = React.useState<number>(1);
@@ -14,6 +15,7 @@ function AdminAddGuide() {
     let [message, setMessage] = React.useState<string>();
     let [lastModify, setLastModify] = React.useState<number>();
     let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
+    let [redirectToPost, setRedirectToPost] = React.useState(false);
 
     React.useEffect(() => {
         setLastModify(new Date().getTime());
@@ -31,6 +33,7 @@ function AdminAddGuide() {
         setTimeout(() => setRecentlySaved(false), 1000);
     }, [index, name, content, priority]);
 
+    if (redirectToPost) return <Redirect to={`/guide/${index}`} />
     return (<>
         <Header/>
         <PageTitle> 가이드 추가 </PageTitle>
@@ -62,9 +65,14 @@ function AdminAddGuide() {
                 }
 
                 postGuide({index, name, content, priority}).then((success) => {
-                    if (success) setMessage('업로드에 성공했습니다!');
+                    if (success) {
+                        setMessage('업로드에 성공했습니다!');
+                        setRedirectToPost(true);
+                    }
                     else setMessage('업로드에 실패했습니다...');
-                })
+                }).catch((e) => {
+                    setMessage(`업로드에 문제가 생겼습니다...: ${e}`);
+                });
             }}> 추가하기 </button>
             {message}
         </div>
