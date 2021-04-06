@@ -1,4 +1,3 @@
-import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 // import MarkdownRenderer from 'components/MarkdownRenderer';
