@@ -24,45 +24,35 @@ function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{
     collapse: boolean;
-    activeIndex: number | string;
-    index: number | string;
+    active: boolean;
+    label: string;
 }
 
-function Panel({children, collapse, activeIndex, index, ...other} : PanelProps){
+function Panel({children, collapse, active, label, ...other} : PanelProps){
     return(
         <div style={ {
             float: 'left',
-            width: collapse? '100%' : '50%',
-            display: (collapse && activeIndex !== index) ? 'none' : 'flex'
+            width: collapse ? '100%' : '50%',
+            display: (collapse && !active) ? 'none' : 'block'
         } }>
+            { !collapse && <label style={{marginLeft: '40px'}}> { label } </label> }
             { children }
         </div>
     )
 }
 
 interface PanelMenuProps extends React.HTMLAttributes<HTMLElement>{
-    collapse: boolean;
-    activeIndex: number | string;
-    index: number | string;
-    callback: (newActiveIndex : number | string) => void;
+    active: boolean;
+    callback: () => void;
 }
 
-function PanelMenu({children, collapse, activeIndex, index, callback, ...other} : PanelMenuProps){
+function PanelMenu({children, active, callback, ...other} : PanelMenuProps){
     return(
-        <>
-            <div className = 'panelMenuWrapper' style={ {
-                float: 'left',
-                width: collapse? 'auto' : '50%',
-            } }>
-                <button
-                className = { 'panelMenu' + ((collapse && activeIndex === index) ? ' selected' : '') }
-                onClick = { (e)=> { callback(index) } }
-                disabled = { !collapse }>
-                    { children }
-                </button>
-            </div>
-        </>
-    )
+        <label className={ 'link panelMenu' + ((active) ? ' selected' : '')}
+            onClick = { (e) => callback() }>
+            { children }
+        </label>
+    );
 }
 
 interface FileDropzoneProps {
@@ -75,10 +65,10 @@ function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
   
     return (
-      <button {...getRootProps()}>
+      <label {...getRootProps()}>
         <input {...getInputProps()} />
         { message }
-      </button>
+      </label>
     )
   }
 
@@ -183,9 +173,13 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
 
     return (
         <div style={{margin: 0}}>
-            <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={1} callback = { setActiveIndex }>편집</PanelMenu>
-            <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={2} callback = { setActiveIndex }>미리보기</PanelMenu>
-            <Panel collapse = { _collapse } activeIndex={ activeIndex } index={1} >
+            { _collapse && 
+                <div style={{marginLeft: '30px'}}>
+                    <PanelMenu active = { activeIndex === 1 } callback = { () => setActiveIndex(1) }> 편집 </PanelMenu>
+                    <PanelMenu active = { activeIndex === 2 } callback = { () => setActiveIndex(2) }> 미리보기 </PanelMenu>
+                </div>
+            }
+            <Panel collapse = { _collapse } active = { activeIndex === 1 } label='편집' >
                 <MarkdownArea
                     {...other}
                     className={ `${other.className || ''} markdownArea` } 
@@ -194,7 +188,7 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
                     value = { value }
                 />
             </Panel>
-            <Panel collapse = { _collapse } style={ { float: 'right'} } activeIndex={ activeIndex } index={2}>
+            <Panel collapse = { _collapse } active = { activeIndex === 2 } label='미리보기' >
                 <PreviewArea className='previewArea markdown'>
                     <MarkdownRenderer>
                         { value }
@@ -203,8 +197,10 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
             </Panel>
             <div style={ {clear:'both'} }></div>
 
-            <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
-            <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
+            <div style={{marginLeft: '30px'}}>
+                <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
+                <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
+            </div>
 
         </div>
     );

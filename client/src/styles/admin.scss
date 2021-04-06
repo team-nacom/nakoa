@@ -10,13 +10,6 @@ div.adminBox {
     }
 
     .adminForm {
-        label {
-            font-size: 14px;
-            color: #666666;
-            margin: 10px;
-            margin-top: 15px;
-        }
-
         input {
             padding: 5px;
             margin: 10px 0px;
@@ -70,6 +63,9 @@ div.adminBox {
 
     margin: 10px 0px;
     padding: 4px;
+    border: 2px #E8E8E8 solid;
+    border-left: none;
+    border-right: 1px #E8E8E8 solid;
 
     resize: none;
 }
@@ -81,8 +77,11 @@ div.adminBox {
     overflow-x: hidden;
     box-sizing: border-box;
     margin: 10px 0px;
-    padding: 0px 10px;
-    border: 1px solid #888888;
+    padding: 0px 10px;    
+    border: 2px #E8E8E8 solid;
+    border-left: 1px #E8E8E8 solid;
+    border-right: none;
+    
 
     white-space: pre-line; // pre-wrap ??
 }
@@ -95,24 +94,14 @@ div.adminBox {
     // -moz-box-sizing: border-box;
     // box-sizing: border-box;
 
-    border: none;
-    background-color: #cccccc;
-    width: 100px;
     margin: 0px 10px;
-    padding: 10px;
-    font-size: 20px;
     display: inline-block;
 }
-.panelMenu:enabled:hover{
-    outline: 2px solid #e25fbd;
-    cursor: pointer;
-}
-.panelMenu:focus{
-    outline: none;
-}
+
 .panelMenu.selected {
-    color: red;
+    color: black;
 }
+
 .panelMenu:disabled {
-    color: gray;
+    color: #cccccc;
 }

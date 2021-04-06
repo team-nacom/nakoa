@@ -21,7 +21,16 @@ html {
     cursor: pointer;
 }
 
-button.button {
+
+label {
+    font-size: 14px;
+    color: #666666;
+    margin: 10px;
+    line-height: 30px;
+}
+
+
+button {
     background-color: $main-background;
     padding: 16px;
     margin: 8px;
