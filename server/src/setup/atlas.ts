@@ -1,19 +1,9 @@
 import mongoose from 'mongoose';
 
-// Check env
-const dbUser = process.env.DB_USER;
-const dbPass = process.env.DB_PASS;
-const useLocal = process.env.USE_LOCAL_DB;
-if(!useLocal && (!dbUser || !dbPass)){
-  throw new Error("No DB_USER or DB_PASS in .env file.");
+const connectionString = process.env.DB_CONN;
+if(!connectionString){
+  throw new Error("DB_CONN missing in the .env file.");
 }
-
-// Choose between atlas and local
-const atlasConn = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.frhrs.mongodb.net/nacom?retryWrites=true&w=majority`;
-const localConn = process.env.LOCAL_DB_STR ? process.env.LOCAL_DB_STR : 'mongodb://localhost/nacom';
-const connectionString = useLocal ? localConn : atlasConn;
-
-console.log(connectionString);
 
 // Connect to db
 mongoose.connect(connectionString, {
