@@ -29,7 +29,7 @@ function AdminAddGuide() {
         })
 
         setTimeout(() => setRecentlySaved(false), 1000);
-    }, [lastModify]);
+    }, [index, name, content, priority]);
 
     return (<>
         <Header/>

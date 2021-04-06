@@ -3,9 +3,7 @@ import Header from 'components/Header';
 import MarkdownRenderer from 'components/MarkdownRenderer';
 import { getQuizInfo, isAdmin, Quiz } from 'etc/api';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Link, match } from 'react-router-dom';
-import { RootReducer } from 'store';
 import Loading from './Loading';
 
 interface MatchParams {
