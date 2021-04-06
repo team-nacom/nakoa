@@ -1,5 +1,6 @@
 import React, { useState, useRef, Component } from 'react';
 import styled from 'styled-components';
+import { useDropzone } from 'react-dropzone';
 
 import { useMediaQuery } from 'react-responsive';
 
@@ -64,6 +65,23 @@ function PanelMenu({children, collapse, activeIndex, index, callback, ...other} 
     )
 }
 
+interface FileDropzoneProps {
+    handleDrop: (acceptedFiles: File[]) => void;
+    message?: string;
+};
+
+function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
+    const onDrop = React.useCallback(handleDrop, []);
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+  
+    return (
+      <button {...getRootProps()}>
+        <input {...getInputProps()} />
+        { message }
+      </button>
+    )
+  }
+
 interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     body?: string;
     collapse?: boolean;
@@ -71,10 +89,6 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
 }
 
 function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
-    const fileElem = useRef<HTMLInputElement>(null);
-    const imgElem = useRef<HTMLInputElement>(null);
-    const mdAreaElem = useRef<HTMLTextAreaElement>(null);
-
     const [value,setValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as number | string);
     let _collapse = useMediaQuery({ query: `(max-width:768px)` }) || collapse || false;
@@ -143,40 +157,28 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
         e.stopPropagation();
     }
 
-    const imgUploadHandler = async () => {
-        if(imgElem.current!.files == null) return false;
-
-        const file = imgElem.current!.files[0];
-
+    const imgUploadHandler = async (file: File) => {
         try{
             const imgUrl = await imgUpload(file);
             insertText(`\n![](${ imgUrl })\n`);
         } catch (error){
             // img uploading error handler
             alert('이미지 업로드에 실패했습니다.');
-        } finally {
-            imgElem.current!.value = '';
         }
 
-        return false;
+        return;
     }
 
-    const fileUploadHandler = async () => {
-        if(fileElem.current!.files == null) return false;
-
-        const file = fileElem.current!.files[0];
-
+    const fileUploadHandler = async (file: File) => {
         try{
             const fileUrl = await fileUpload(file);
             insertText(`[💾 ${ file.name }](${ fileUrl })`);
         } catch (error){
             // file uploading error handler
             alert('파일 업로드에 실패했습니다.');
-        } finally {
-            fileElem.current!.value = '';
         }
 
-        return false;
+        return;
     }
 
     return (
@@ -201,15 +203,9 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
             </Panel>
             <div style={ {clear:'both'} }></div>
 
-            <label htmlFor='imgUpload'> 이미지 첨부 </label>
-            <input type='file' accept='image/*' id='imgUpload' name='imgUpload' ref={ imgElem } />
-            <button type='submit' onClick={ imgUploadHandler } >업로드</button>
+            <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
+            <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
 
-            <br />
-
-            <label htmlFor='fileUpload'> 파일 첨부　 </label>
-            <input type='file' id='fileUpload' name='fileUpload' ref={ fileElem } />
-            <button type='submit' onClick={ fileUploadHandler } >업로드</button>
         </div>
     );
 }
