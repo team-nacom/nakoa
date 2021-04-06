@@ -141,6 +141,12 @@ export const postGuide = async (data: GuideType) => {
     return response.status < 300;
 }
 
+export const removeGuide = async (id: number) => {
+    let response = await Axios.delete(`${apiAddress}/guide/${id}`, { withCredentials: true })
+
+    return response.status < 300;
+}
+
 export const postTempGuide = async (data: GuideType) => {
     console.log('Now trying(?) to auto-save..');
     console.log('Title: ', data.name);
