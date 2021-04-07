@@ -43,7 +43,7 @@ function AdminAddGuide() {
         })
     }
 
-    if (redirectToPost) return <Redirect to={`/guide/${index}`} />
+    // if (redirectToPost) return <Redirect to={`/guide/${index}`} />
     return (<>
         <Header/>
         <div className='adminBox guide'>
