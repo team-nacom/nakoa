@@ -8,15 +8,15 @@ import createHttpError from 'http-errors';
 const router = new Router();
 
 // Post a guide (manual)
-router.post('/', checkAdminMiddleware);
-router.post('/', async (ctx) => {
-  await postOneGuide(ctx.request.body);
-  ctx.body = "Success";
+router.post('/', checkAdminMiddleware, async (ctx) => {
+  const guide = await postOneGuide(ctx.request.body);
+  ctx.body = {
+    index: guide.index,
+  };
 });
 
 // Update an existing guide
-router.put('/:index(\\d+)', checkAdminMiddleware);
-router.put('/:index(\\d+)', async (ctx) => {
+router.put('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
   const index: number = Number.parseInt(ctx.params.index);
   await updateOneGuide(ctx.request.body, index);
   ctx.body = "Success";

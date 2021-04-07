@@ -12,6 +12,7 @@ function AdminAddGuide() {
     let [content, setContent] = React.useState<string>('');
     let [priority, setPriority] = React.useState<number>(5);
     let [message, setMessage] = React.useState<string>();
+    let [redirectIndex, setRedirectIndex] = React.useState<number>();
 //    let [lastModify, setLastModify] = React.useState<number>();
 //    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
 
@@ -37,13 +38,16 @@ function AdminAddGuide() {
             return;
         }
 
-        postGuide({index: 0, name, content, priority}).then((success) => {
-            if (success) setMessage('업로드에 성공했습니다!');
+        postGuide({name, content, priority}).then(({success, index}) => {
+            if (success) {
+                setMessage('업로드에 성공했습니다!');
+                setRedirectIndex(index);
+            }
             else setMessage('업로드에 실패했습니다...');
         })
     }
 
-    if (redirectToPost) return <Redirect to={`/guide/${index}`} />
+    if (redirectIndex) return <Redirect to={`/guide/${redirectIndex}`} />
     return (<>
         <Header/>
         <div className='adminBox guide'>

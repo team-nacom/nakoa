@@ -117,7 +117,7 @@ export const logout = async () => {
 }
 
 interface GuideType {
-    index: number;
+    index?: number;
     name: string;
     content: string;
     priority: number;
@@ -130,6 +130,12 @@ export const getGuides = async () => {
     return response.data as GuideType[];
 }
 
+export const getGuideMaxIndex = async () => {
+    let response = await Axios.get(`${apiAddress}/guide/indices`);
+
+    return response.data;
+}
+
 export const getGuide = async (id: number) => {
     let response = await Axios.get(`${apiAddress}/guide/${id}`);
 
@@ -138,13 +144,16 @@ export const getGuide = async (id: number) => {
 
 export const postGuide = async (data: GuideType) => {
     if (data.isPublic === undefined) data.isPublic = true;
-
+    
     let response = await Axios.post(`${apiAddress}/guide`, data, {
         validateStatus: authValidateStatus, 
         withCredentials: true 
     });
 
-    return response.status < 300;
+    return {
+        success: response.status < 300,
+        index: response.data.index,
+    };
 }
 
 export const removeGuide = async (id: number) => {
