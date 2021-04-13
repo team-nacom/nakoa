@@ -37,6 +37,8 @@
     "react-syntax-highlighter": "^15.4.3",
     "redux": "^4.0.5",
     "remark-code-frontmatter": "^1.0.0",
+    "remark-directive": "^1.0.1",
+    "remark-footnotes": "^3.0.0",
     "remark-gfm": "^1.0.0",
     "remark-highlight.js": "^6.0.0",
     "remark-math": "^4.0.0",

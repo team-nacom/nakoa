@@ -73,7 +73,7 @@ const SectionEnumerator : Plugin = () => {
 }
 
 const SectionRenderer = (p : any) => {
-    const hnames = [ 'N/A', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
+    const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
     const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
 
