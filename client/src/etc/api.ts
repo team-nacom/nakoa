@@ -117,16 +117,23 @@ export const logout = async () => {
 }
 
 interface GuideType {
-    index: number;
+    index?: number;
     name: string;
     content: string;
     priority: number;
+    isPublic?: boolean;
 }
 
 export const getGuides = async () => {
     let response = await Axios.get(`${apiAddress}/guide`);
 
     return response.data as GuideType[];
+}
+
+export const getGuideMaxIndex = async () => {
+    let response = await Axios.get(`${apiAddress}/guide/indices`);
+
+    return response.data;
 }
 
 export const getGuide = async (id: number) => {
@@ -136,14 +143,25 @@ export const getGuide = async (id: number) => {
 }
 
 export const postGuide = async (data: GuideType) => {
-    let response = await Axios.post(`${apiAddress}/guide`, data, { validateStatus: authValidateStatus, withCredentials: true });
+    if (data.isPublic === undefined) data.isPublic = true;
+    
+    let response = await Axios.post(`${apiAddress}/guide`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return {
+        success: response.status < 300,
+        index: response.data.index,
+    };
+}
+
+export const removeGuide = async (id: number) => {
+    let response = await Axios.delete(`${apiAddress}/guide/${id}`, { withCredentials: true })
 
     return response.status < 300;
 }
 
-export const postTempGuide = async (data: GuideType) => {
-    console.log('Now trying(?) to auto-save..');
-    console.log('Title: ', data.name);
-    console.log('Content: ', data.content);
+//export const postTempGuide = async (data: GuideType) => {
     // This will be written after server-side draft logic is done.
-}
+//}

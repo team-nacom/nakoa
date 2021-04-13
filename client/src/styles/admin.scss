@@ -1,55 +1,64 @@
+@import 'consts.scss';
+
 
 div.adminBox {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 3px 20px #0000004D;
+    border-radius: 10px;
     margin: 40px 20px;
-    padding: 20px 30px;
-}
 
-div.adminLabel {
-    font-size: 14px;
-    color: #666666;
-    margin: 10px;
-    margin-top: 15px;
-}
-
-input.adminForm {
-    padding: 5px;
-    margin: 10px 0px;
-
-    font-size: 16px;
-    font-weight: 300;
-    width: calc(100% - 10px);
-    border: none;
-    border-bottom: #888888 1px solid;
-}
-
-textarea.adminForm {
-    padding: 5px;
-    margin: 10px 0px;
-
-    font-size: 16px;
-    font-weight: 300;
-    // width: calc(100% - 10px);
-    min-height: 100px;
-    // resize: vertical;
-    border: #888888 1px solid;
-}
-
-button.adminForm {
-    &.active {
-        background: #FFAAAA;
+    > * {
+        margin: 20px 30px;
     }
 
-    &.inactive {
-        background: #EEEEEE;
+    .adminForm {
+        input {
+            padding: 15px;
+            margin: 10px 0px;
+    
+            font-size: 16px;
+            font-weight: 300;
+            width: calc(100% - 10px);
+            border: none;
+            border-bottom: #A5AAC0 1px solid;
+        }
+
+        button {
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-family: Montserrat;
+
+            &.active {
+                background: #2A97AA 0% 0% no-repeat padding-box;
+                color: black;
+            }
+    
+            &.inactive {
+                background: #F1F2F8 0% 0% no-repeat padding-box;
+                color: #A5AAC0;
+            }
+        }
     }
+
+    
+    button.submit {
+        float: right;
+        margin: 20px;
+        padding: 10px 30px;
+        border: 2px solid #F06498;
+        background: white;
+        color: #F06498;
+        font-size: 14px;
+        border-radius: 27px;
+
+        &:hover {
+            background: #F06498;
+            color: white;
+        }
+    }
+
 }
 
-
-// update 2021/03/25
-// TODO : integrate '.adminForm' into '.markdownArea',
 // TODO : integrate '.blog' with '.markdown' (in blog.scss)
-// TODO : beautify '.panelMenu's
 
 .markdownArea {
     width: 100%;
@@ -58,7 +67,10 @@ button.adminForm {
     box-sizing:border-box;
 
     margin: 10px 0px;
-    padding: 4px;
+    padding: 10px;
+    border: 2px #E8E8E8 solid;
+    border-left: none;
+    border-right: 1px #E8E8E8 solid;
 
     resize: none;
 }
@@ -70,36 +82,28 @@ button.adminForm {
     overflow-x: hidden;
     box-sizing: border-box;
     margin: 10px 0px;
-    padding: 0px 10px;
-    border: 1px solid #888888;
+    padding: 0px 10px;    
+    border: 2px #E8E8E8 solid;
+    border-left: 1px #E8E8E8 solid;
+    border-right: none;
+    
+
+    white-space: pre-line; // pre-wrap ??
 }
 
-// .panelMenuWrapper {
-                    
-// }
 .panelMenu {
     // -webkit-box-sizing: border-box;
     // -moz-box-sizing: border-box;
     // box-sizing: border-box;
 
-    border: none;
-    background-color: #cccccc;
-    width: 100px;
     margin: 0px 10px;
-    padding: 10px;
-    font-size: 20px;
     display: inline-block;
 }
-.panelMenu:enabled:hover{
-    outline: 2px solid #e25fbd;
-    cursor: pointer;
-}
-.panelMenu:focus{
-    outline: none;
-}
+
 .panelMenu.selected {
-    color: red;
+    color: black;
 }
+
 .panelMenu:disabled {
-    color: gray;
+    color: #cccccc;
 }

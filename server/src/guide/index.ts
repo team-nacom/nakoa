@@ -8,15 +8,15 @@ import createHttpError from 'http-errors';
 const router = new Router();
 
 // Post a guide (manual)
-router.post('/', checkAdminMiddleware);
-router.post('/', async (ctx) => {
-  await postOneGuide(ctx.request.body);
-  ctx.body = "Success";
+router.post('/', checkAdminMiddleware, async (ctx) => {
+  const guide = await postOneGuide(ctx.request.body);
+  ctx.body = {
+    index: guide.index,
+  };
 });
 
 // Update an existing guide
-router.put('/:index(\\d+)', checkAdminMiddleware);
-router.put('/:index(\\d+)', async (ctx) => {
+router.put('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
   const index: number = Number.parseInt(ctx.params.index);
   await updateOneGuide(ctx.request.body, index);
   ctx.body = "Success";
@@ -35,7 +35,7 @@ router.get('/', async (ctx) => {
 router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
 
-  const filter :any = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  let filter: any = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
   filter.index = index;
 
   const query = Guide.find(filter);
@@ -47,6 +47,17 @@ router.get('/:index(\\d+)', async (ctx) => {
       ctx.body = doc;
     });
 });
+
+router.delete('/:index(\\d+)', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    ctx.throw(401);
+    return;
+  }
+
+  const index: number = ctx.params.index;
+  await Guide.deleteOne({ isPublic: true, index });
+  ctx.body = "Success";
+})
 
 
 export default router;

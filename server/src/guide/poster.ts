@@ -27,6 +27,8 @@ export async function postOneGuide(guideObj: any) {
     
     await guide.save();
     console.log(`Guide upload "${guide.name}" successful`);
+
+    return guide;
   }
 }
 
