@@ -21,6 +21,12 @@
         font-weight: 500;
     }
 
+    h4 {
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: 500;
+    }
+
     p {
         font-size: 15px;
         line-height: 24px;
@@ -87,20 +93,23 @@
         .subsection {
             padding-left: 20px;
         }
+        .subsubsection {
+            padding-left: 40px;
+        }
 
-        .sectionText, .subsectionText {
+        .sectionText, .subsectionText, .subsubsectionText {
             float: left;
             margin-right: 10px;
             font-weight: bold;
         }
 
 
-        .section, .subsection {
+        .section, .subsection, .subsubsection {
             border: none;
             //margin: 0px;
             //margin-bottom: 10px;
         }
-        h1, h2, h3, h4, .sectionText, .subsectionText {
+        h1, h2, h3, h4, .sectionText, .subsectionText, .subsubsectionText {
             font-size: 15px;
             line-height: 24px;
             font-weight: 300;
@@ -214,14 +223,23 @@
             border-left: 1px #F06498 solid;
         }
 
-        .section, .subsection {
+        .subsubsection {
+            margin-top: 12px;
+            margin-bottom: 12px;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-left: 1px #F06498 solid;
+        }
+
+        .section, .subsection, .subsubsection {
             .markdown > * {
                 margin-top: 0;
                 margin-bottom: 0;
             }
         }
 
-        .sectionText, .subsectionText {
+        .sectionText, .subsectionText, .subsubsectionText {
             float: left;
             margin-right: 10px;
             color: #F06498;
@@ -236,6 +254,12 @@
         .subsectionText {
             font-size: 22px;
             line-height: 22px;
+            font-weight: bold;
+        }
+
+        .subsubsectionText {
+            font-size: 18px;
+            line-height: 18px;
             font-weight: bold;
         }
 
