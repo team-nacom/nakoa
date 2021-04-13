@@ -8,7 +8,7 @@ function Main() {
         <>
             <Header/>
 
-            메인 페이지에 뭐 넣지?
+            안녕하세요, 팀 나무컴퍼스입니다!
             
             <Footer/>
         </>
