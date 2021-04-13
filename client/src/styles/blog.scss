@@ -174,23 +174,6 @@
         min-width: 80%;
         box-shadow: 0px 3px 20px #0000004D;
         border-radius: 10px;
-
-        .exercise {
-            background: #FFF2F3 0% 0% no-repeat padding-box;
-            border-left: 3px solid #F06498;
-            color: #F06498;
-
-            .label {
-                background: #F06498;
-            }
-                h1 {
-                    font-size: 20px;
-                    line-height: 20px;
-                    font-weight: 500;
-                    margin-bottom: 20px;
-                }
-        }
-
     }
 
     .blog {
@@ -263,5 +246,22 @@
             font-weight: bold;
         }
 
+    }
+
+    .exercise {
+        background: #FFF2F3 0% 0% no-repeat padding-box;
+        border-left: 3px solid #F06498;
+        color: #000000;
+
+        .label {
+            background: #F06498;
+
+            font-size: 20px;
+            line-height: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+
+            color: #FFFFFF;
+        }
     }
 }
