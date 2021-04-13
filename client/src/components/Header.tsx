@@ -32,12 +32,14 @@ function Header() {
                         <li className={pathname.startsWith('/guide') ? 'active' : ''}>
                             <Link to='/guide'>가이드</Link>
                         </li>
+                        {/*
                         <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
                             <Link to='/quiz'>퀴즈</Link>
                         </li>
                         <li className={pathname.startsWith('/challenge') ? 'active' : ''}>
                             <Link to='/challenge'>챌린지</Link>
                         </li>
+                         */}
                     </ul>
                     <ul className='account'>
                         { user.loggedIn ? (

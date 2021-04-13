@@ -9,28 +9,38 @@ import Loading from './Loading';
 function GuideList() {
     let [guidesLoading, guides] = usePromise(getGuides);
 
+    let categories = React.useMemo(() => {
+        if (!guides) return;
+        return [...new Set(guides.map(x => x.category))]
+    }, [guides]);
+
     if (guidesLoading) return <Loading/>;
     else return (
         <>
             <Header/>
             <div className='guideBackground' />
-            { isAdmin() && <Link to='/admin/guide/add'><button className='button'> 가이드 추가하기 </button></Link> }
-            <table>
-                <thead>
-                    <tr>
-                        <th style={{width: '5%'}}> # </th>
-                        <th style={{width: '95%'}}> 가이드 이름 </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { guides.map((guide) => (
-                        <tr>
-                            <td> { guide.index } </td>
-                            <td> <Link to={`/guide/${guide.index}`}> {guide.name} </Link> </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            { isAdmin() && <Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link> }
+            { categories?.map((category) => {
+                let nowGuides = guides.filter((guide) => guide.category === category);
+
+                return (
+                    <div key={category} className='guideList'>
+                        <h1> { category || '분류되지 않음' } </h1>
+                        <table>
+                            <tbody>
+                                { nowGuides.map((guide, k) => (
+                                    <Link to={`/guide/${guide.index}`}>
+                                        <tr>
+                                            <td style={{width: '30px'}}> { k+1 } </td>
+                                            <td style={{width: 'calc(100% - 30px)'}}>  {guide.name} </td>
+                                        </tr>
+                                    </Link> 
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )
+            })}
             <Footer/>
         </>
     );
