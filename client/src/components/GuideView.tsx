@@ -36,7 +36,7 @@ const samplePost = {
 
 interface Params {
     title: string;
-    authors?: [string];
+    authors?: string[];
     text: string;
 }
 

@@ -85,6 +85,10 @@ export const setUserInfo = async () => {
     else store.dispatch(clearUser());
 }
 
+export const isLoggedIn = () => {
+    return store.getState().user.loggedIn;
+}
+
 export const isAdmin = () => {
     return store.getState().user?.email === config.adminEmail;
 }

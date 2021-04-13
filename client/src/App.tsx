@@ -31,6 +31,7 @@ function App() {
         <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
+        <Route path='/guide/add' component={AdminAddGuide} />
         <Route path='/guide/:id' component={Guide} />
         <Route path='/guide' component={GuideList} />
         <Redirect path='/problem' to='/challenge' />
@@ -39,7 +40,6 @@ function App() {
         <Redirect path='/quiz' to='/quiz/1'/>
         <Route path='/admin/quiz/add' component={AdminAddQuiz} />
         <Route path='/admin/challenge/add' component={AdminAddChallenge} />
-        <Route path='/admin/guide/add' component={AdminAddGuide} />
         <Route path='/signup/done' component={SignUpDone} />
         <Route path='/signup' component={SignUp} />
         <Route path='/logout' component={Logout} />
