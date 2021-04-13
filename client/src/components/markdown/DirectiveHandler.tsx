@@ -21,6 +21,10 @@ const DirectiveHandler : Plugin = () => {
     }
     function onContainerDirective(node : Node) {
         switch(node.name){
+        case 'expand':
+            node.type = 'expand'
+            delete node.name;
+            break;
         default: break;
         }
     }

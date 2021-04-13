@@ -62,13 +62,27 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
 
         //handled directives
         exercise: (p: any) => {
+            var n = p;
             return (
                 <div className='exercise'>
-                    <span className='label'>연습문제 { p.attributes.id }</span> <br />
+                    <span className='label'>연습문제 { n.attributes.id }</span> <br />
 
                     연습문제를 표시해 줍니다! <br />
                     안타깝게도, 지금은 연습문제 로드가 구현이 안 돼 있네요... 그래서 대체 텍스트를 집어넣었습니다!
                 </div>
+            );
+        },
+
+        expand: (p: any) => {
+            var n = p;
+            var summary = n.children[0];
+            var children = n.children.slice(1);
+
+            return (
+                <details>
+                    <summary>{ summary }</summary>
+                    { children }
+                </details>
             );
         },
 
