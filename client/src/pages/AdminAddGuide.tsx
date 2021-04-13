@@ -3,9 +3,11 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { postGuide } from 'etc/api';
+import { isAdmin, postGuide } from 'etc/api';
 import React from 'react';
 import { Redirect } from 'react-router';
+import { useSelector } from 'react-redux';
+import { RootReducer } from 'store';
 
 function AdminAddGuide() {
     let [name, setName] = React.useState<string>('');
@@ -16,6 +18,12 @@ function AdminAddGuide() {
     let [priority, setPriority] = React.useState<number>(5);
     let [message, setMessage] = React.useState<string>();
     let [redirectIndex, setRedirectIndex] = React.useState<number>();
+    let user = useSelector((state: RootReducer) => state.user);
+
+    React.useEffect(() => {
+        if (!isAdmin()) setAuthor(user.nickname);
+    }, [user]);
+    
 //    let [lastModify, setLastModify] = React.useState<number>();
 //    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
 
@@ -41,7 +49,7 @@ function AdminAddGuide() {
             return;
         }
 
-        let authors = author.split(' ').map(s => s.trim());
+        let authors = author.split(',').map(s => s.trim());
 
         postGuide({name, content, priority, category, section, authors}).then(({success, index}) => {
             if (success) {
@@ -74,7 +82,10 @@ function AdminAddGuide() {
                 <div className='adminForm'>
                     <label> 작성자 </label>
                     <div>
-                        <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+                        { isAdmin() 
+                            ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+                            : <input value={author} readOnly />
+                        }
                     </div>
                 </div>
             </div>
