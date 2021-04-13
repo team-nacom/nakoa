@@ -122,6 +122,9 @@ interface GuideType {
     content: string;
     priority: number;
     isPublic?: boolean;
+    category: string;
+    section: string;
+    authors: string[];
 }
 
 export const getGuides = async () => {
