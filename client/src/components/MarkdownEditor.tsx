@@ -65,10 +65,10 @@ function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
   
     return (
-      <label {...getRootProps()}>
-        <input {...getInputProps()} />
-        { message }
-      </label>
+        <>
+            <label {...getRootProps()}>{ message }</label>
+            <input {...getInputProps()} />
+        </>
     )
   }
 
