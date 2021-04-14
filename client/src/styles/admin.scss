@@ -81,6 +81,7 @@ div.adminBox {
 .panelWrapper {
     height: 400px;
     min-height: 300px;
+    max-height: 800px;
     margin: 10px 0px;
 }
 
@@ -98,7 +99,7 @@ div.adminBox {
 }
 
 .collapse.active1 {
-    .panelMenu1, .panelMenu2{ width: auto; }
+    .panelMenu1, .panelMenu2{ width: auto; cursor: pointer; }
     .panelMenu1 label {
         color: black;
         cursor: pointer;
@@ -112,7 +113,7 @@ div.adminBox {
     .panel2 { display: none; }
 }
 .collapse.active2 {
-    .panelMenu1, .panelMenu2{ width: auto; }
+    .panelMenu1, .panelMenu2{ width: auto; cursor: pointer; }
     .panelMenu1 label {
         color: #cccccc;
         cursor: pointer;

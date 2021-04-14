@@ -1,4 +1,4 @@
-import React, { useState, useRef, Component } from 'react';
+import React, { useState, useRef, useEffect, Component } from 'react';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 
@@ -21,6 +21,8 @@ function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
         // className={ (props.className || '') + ' previewArea' }
     )
 }
+
+const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
@@ -120,14 +122,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 const blob = item.getAsFile();
                 if(blob == null) continue;
 
-                try{
-                    const imgUrl = await imgUpload(blob);
-                    insertText(`\n![](${ imgUrl })\n`);
-                } catch (error){
-                    //img uploading error handler
-                    alert('이미지 업로드에 실패했습니다.');
-                }
-
+                imgUploadHandler(blob);
                 break handler;
             }
         }
@@ -160,14 +155,57 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         return;
     }
 
+    const [height,setHeight] = useState(400);
+    const [y,setY] = useState(0);
+    const [drag,setDrag] = useState(false);
+    const resizeMouseMove = (e : MouseEvent) => {
+        if(!drag) return;
+
+        const dy = e.clientY - y;
+        setY(e.clientY);
+        setHeight( Math.min(Math.max(300,height + dy),800) );
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const resizeMouseUp = (e : MouseEvent) => {
+        setDrag(false);
+        document.body.style.removeProperty('cursor');
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const resizeMouseDown = (e : React.MouseEvent) => {
+        setDrag(true);
+        document.body.style.cursor = 'ns-resize';
+        
+        setY(e.clientY);
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    useEffect(() => {
+        if(drag){
+            document.addEventListener('mousemove',resizeMouseMove);
+            document.addEventListener('mouseup',resizeMouseUp);
+        }
+
+        return () => {
+            document.removeEventListener('mousemove',resizeMouseMove);
+            document.removeEventListener('mouseup',resizeMouseUp);
+        }
+    },[drag]);
+    // });
+
     return (
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
                 <PanelMenu className='panelMenu1' callback = { () => setActiveIndex(1) }> 편집 </PanelMenu>
                 <PanelMenu className='panelMenu2' callback = { () => setActiveIndex(2) }> 미리보기 </PanelMenu>
-                <div style={ {clear:'both'} }></div>
+                <div style={ {clear:'both'} } />
             </div>
-            <div className='panelWrapper'>
+            <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
                     <MarkdownArea
                         {...other}
@@ -179,12 +217,21 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea markdown'>
-                        <MarkdownRenderer>
+                        <MemoizedRenderer>
                             { value }
-                        </MarkdownRenderer>
+                        </MemoizedRenderer>
                     </PreviewArea>
                 </Panel>
-                <div style={ {clear:'both'} }></div>
+                <div
+                    className='resizer'
+                    style={ {
+                        clear:'both',
+                        width: '100%',
+                        height:'10px',
+                        cursor: 'ns-resize'
+                    } }
+                    onMouseDown={ resizeMouseDown }
+                />
             </div>
             
 
