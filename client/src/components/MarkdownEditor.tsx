@@ -22,36 +22,27 @@ function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
     )
 }
 
-interface PanelProps extends React.HTMLAttributes<HTMLElement>{
-    collapse: boolean;
-    active: boolean;
-    label: string;
-}
+interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
-function Panel({children, collapse, active, label, ...other} : PanelProps){
+function Panel({children, ...other} : PanelProps){
     return(
-        <div style={ {
-            float: 'left',
-            width: collapse ? '100%' : '50%',
-            display: (collapse && !active) ? 'none' : 'block'
-        } }>
-            { !collapse && <label style={{marginLeft: '40px'}}> { label } </label> }
+        <div className={ other.className }>
             { children }
         </div>
     )
 }
 
 interface PanelMenuProps extends React.HTMLAttributes<HTMLElement>{
-    active: boolean;
     callback: () => void;
 }
 
-function PanelMenu({children, active, callback, ...other} : PanelMenuProps){
+function PanelMenu({children, callback, ...other} : PanelMenuProps){
     return(
-        <label className={ 'link panelMenu' + ((active) ? ' selected' : '')}
-            onClick = { (e) => callback() }>
-            { children }
-        </label>
+        <div className={ other.className } onClick = { (e) => callback() }>
+            <label>
+                { children }
+            </label>
+        </div>
     );
 }
 
@@ -74,15 +65,13 @@ function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
 
 interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     body?: string;
-    collapse?: boolean;
     update?: (c : string) => void //can we do this w/o callback?
 }
 
-function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
+function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [value,setValue] = useState(body || '');
-    const [activeIndex,setActiveIndex] = useState(1 as number | string);
-    let _collapse = useMediaQuery({ query: `(max-width:768px)` }) || collapse || false;
-    // collapse priority: mobile true > argument > default false(i.e. parallel)
+    const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
+    let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
 
     const insertText = (text : string) => {
         const isSuccess = document.execCommand('insertText', false, text);
@@ -172,32 +161,34 @@ function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
     }
 
     return (
-        <div style={{margin: 0}}>
-            { _collapse && 
-                <div style={{marginLeft: '30px'}}>
-                    <PanelMenu active = { activeIndex === 1 } callback = { () => setActiveIndex(1) }> 편집 </PanelMenu>
-                    <PanelMenu active = { activeIndex === 2 } callback = { () => setActiveIndex(2) }> 미리보기 </PanelMenu>
-                </div>
-            }
-            <Panel collapse = { _collapse } active = { activeIndex === 1 } label='편집' >
-                <MarkdownArea
-                    {...other}
-                    className={ `${other.className || ''} markdownArea` } 
-                    onChange={ innerUpdate }
-                    onPaste={ pasteHandler }
-                    value = { value }
-                />
-            </Panel>
-            <Panel collapse = { _collapse } active = { activeIndex === 2 } label='미리보기' >
-                <PreviewArea className='previewArea markdown'>
-                    <MarkdownRenderer>
-                        { value }
-                    </MarkdownRenderer>
-                </PreviewArea>
-            </Panel>
-            <div style={ {clear:'both'} }></div>
+        <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
+            <div>
+                <PanelMenu className='panelMenu1' callback = { () => setActiveIndex(1) }> 편집 </PanelMenu>
+                <PanelMenu className='panelMenu2' callback = { () => setActiveIndex(2) }> 미리보기 </PanelMenu>
+                <div style={ {clear:'both'} }></div>
+            </div>
+            <div className='panelWrapper'>
+                <Panel className='panel1'>
+                    <MarkdownArea
+                        {...other}
+                        className={ `${other.className || ''} markdownArea` } 
+                        onChange={ innerUpdate }
+                        onPaste={ pasteHandler }
+                        value = { value }
+                    />
+                </Panel>
+                <Panel className='panel2'>
+                    <PreviewArea className='previewArea markdown'>
+                        <MarkdownRenderer>
+                            { value }
+                        </MarkdownRenderer>
+                    </PreviewArea>
+                </Panel>
+                <div style={ {clear:'both'} }></div>
+            </div>
+            
 
-            <div style={{marginLeft: '30px'}}>
+            <div className='dropzone'>
                 <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
                 <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
             </div>
