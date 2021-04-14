@@ -4,28 +4,52 @@ import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
 import visit from 'unist-util-visit';
 
+type Visitor = visit.Visitor<Node>;
+
+const textDirectives = [
+
+] as const;
+type TextDirectives = typeof textDirectives[number];
+
+const leafDirectives = [
+    'exercise'
+] as const;
+type LeafDirectives = typeof leafDirectives[number];
+
+const containerDirectives = [
+    'expand'
+] as const;
+type ContainerDirectives = typeof containerDirectives[number];
+
 const DirectiveHandler : Plugin = () => {
     function onTextDirective(node : Node) {
-        switch(node.name){
-        default: break;
+        if(typeof node.name !== 'string' || !textDirectives.includes(node.name as TextDirectives)) return;
+        // as statement itself fails when node.name is not in textDirectives.
+        // so we guard it by node.name.
+        // actually, we don't have to guard this except that textDirectives can be empty.
+
+        switch(node.name as TextDirectives){
+        default:
+            node.type = node.name;
+            delete node.name;
         }
     }
     function onLeafDirective(node : Node) {
-        switch(node.name){
-        case 'exercise':
-            node.type = 'exercise';
+        if(typeof node.name !== 'string' || !leafDirectives.includes(node.name as LeafDirectives)) return;
+
+        switch(node.name as LeafDirectives){
+        default:
+            node.type = node.name;
             delete node.name;
-            break;
-        default: break;
         }
     }
     function onContainerDirective(node : Node) {
-        switch(node.name){
-        case 'expand':
-            node.type = 'expand'
+        if(typeof node.name !== 'string' || !containerDirectives.includes(node.name as ContainerDirectives)) return;
+
+        switch(node.name as ContainerDirectives){
+        default:
+            node.type = node.name;
             delete node.name;
-            break;
-        default: break;
         }
     }
 
@@ -38,4 +62,5 @@ const DirectiveHandler : Plugin = () => {
     return directiveHandler;
 }
 
+export type { TextDirectives, LeafDirectives, ContainerDirectives };
 export default DirectiveHandler;

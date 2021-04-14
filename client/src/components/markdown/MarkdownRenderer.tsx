@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'unified';
+import { Node, Parent } from 'unist';
 
 import GFM from 'remark-gfm';
 import Math from 'remark-math';
@@ -16,8 +17,10 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // import highlighter from 'remark-highlight.js';
 
-import DirectiveHandler from './DirectiveHandler';
+import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
+
+type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
     const plugins : PluggableList = [
@@ -32,9 +35,10 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         SectionEnumerator,
     ]
 
-    const renderers = {
-        math: (p: any) => <TeX block math = { p.value } />,
-        inlineMath: (p: any) => <TeX math = { p.value } />,
+    const renderers : {[nodeType: string]: Renderer}
+    & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
+        math: (p: Node) => <TeX block math = { p.value as string } />,
+        inlineMath: (p: Node) => <TeX math = { p.value as string } />,
         // code: ({language, value}) => {
         //     try{
         //         return <SyntaxHighlighter language={ language }>{ value }</SyntaxHighlighter>; //style={ dark }
@@ -42,18 +46,18 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //         return <></>;
         //     }
         // }
-        root: (p: any) => (
+        root: (p: Node) => (
             <>
-                { p.children[0] }
+                { (p as Parent).children[0] }
                 <div className='blog-preview'>
-                    { p.children.slice(1) }
+                    { (p as Parent).children.slice(1) }
                 </div>
             </>
         ),
-        toc: (p: any) => (
+        toc: (p: Node) => (
             <div className='toc box'>
                 <div className='label'> Contents </div>
-                { p.children }
+                { (p as Parent).children }
             </div>
         ),
         section: SectionRenderer,
@@ -61,8 +65,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //where is the footnote renderer?
 
         //handled directives
-        exercise: (p: any) => {
-            var n = p;
+        exercise: (p: Node) => {
+            var n = p as any;
             return (
                 <div className='exercise'>
                     <span className='label'>연습문제 { n.attributes.id }</span> <br />
@@ -73,10 +77,9 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             );
         },
 
-        expand: (p: any) => {
-            var n = p;
-            var summary = n.children[0];
-            var children = n.children.slice(1);
+        expand: (p: Node) => {
+            var summary = (p as Parent).children[0];
+            var children = (p as Parent).children.slice(1);
 
             return (
                 <details>
@@ -87,14 +90,12 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         },
 
         //unhandled directives
-        textDirective: (p: any) => { return (<></>); },
-        leafDirective: (p: any) => { return (<></>); },
-        containerDirective: (p: any) => {
-            var n = p;
-
+        textDirective: (p: Node) => { return (<></>); },
+        leafDirective: (p: Node) => { return (<></>); },
+        containerDirective: (p: Node) => {
             return (
                 <div style={ {border:'1px solid black', minHeight:'15px'} }>
-                    { n.children }
+                    { (p as Parent).children }
                 </div>
             );
         }
