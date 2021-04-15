@@ -87,6 +87,7 @@
         hyphens: auto;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             background: #A8CB61;
         }
         
@@ -98,6 +99,7 @@
         }
 
         .sectionText, .subsectionText, .subsubsectionText {
+            font-family: 'SeoulHangang';
             float: left;
             margin-right: 10px;
             font-weight: bold;
@@ -105,6 +107,7 @@
 
 
         .section, .subsection, .subsubsection {
+            font-family: 'SeoulHangang';
             border: none;
             //margin: 0px;
             //margin-bottom: 10px;
@@ -124,6 +127,7 @@
         margin-top: 45px;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             position: relative;
             left: -23px;
             top: -45px;
@@ -148,6 +152,7 @@
 }
 .guide {
     h2.subtitle {
+        font-family: 'Montserrat', 'SeoulNamsan';
         text-align: center;
         font-size: 24px;
         line-height: 32px;
@@ -158,6 +163,7 @@
     }
 
     h1.title {
+        font-family: 'SeoulHangang';
         text-align: center;
         font-size: 45px;
         line-height: 60px;
@@ -169,6 +175,7 @@
 
 
     .guideContent {
+//        font-family: 'SeoulHangang';
         background: white;
         padding: unquote('min(calc(10%),80px)');
         min-width: 80%;
@@ -216,6 +223,7 @@
         }
 
         .section, .subsection, .subsubsection {
+            font-family: 'Montserrat', 'SeoulNamsan';
             .markdown > * {
                 margin-top: 0;
                 margin-bottom: 0;
@@ -223,6 +231,7 @@
         }
 
         .sectionText, .subsectionText, .subsubsectionText {
+            font-family: 'Montserrat', 'SeoulNamsan';
             float: left;
             margin-right: 10px;
             color: #F06498;
@@ -260,6 +269,7 @@
         color: #000000;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             background: #F06498;
 
             font-size: 20px;
