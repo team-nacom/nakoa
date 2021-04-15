@@ -37,8 +37,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
 
     const renderers : {[nodeType: string]: Renderer}
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
-        math: (p: Node) => <TeX block math = { p.value as string } />,
-        inlineMath: (p: Node) => <TeX math = { p.value as string } />,
+        math: (p: any) => <TeX block math = { p.value as string } />,
+        inlineMath: (p: any) => <TeX math = { p.value as string } />,
         // code: ({language, value}) => {
         //     try{
         //         return <SyntaxHighlighter language={ language }>{ value }</SyntaxHighlighter>; //style={ dark }
@@ -46,18 +46,18 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //         return <></>;
         //     }
         // }
-        root: (p: Node) => (
+        root: (p: any) => (
             <>
-                { (p as Parent).children[0] }
+                { p.children[0] }
                 <div className='blog-preview'>
-                    { (p as Parent).children.slice(1) }
+                    { p.children.slice(1) }
                 </div>
             </>
         ),
-        toc: (p: Node) => (
+        toc: (p: any) => (
             <div className='toc box'>
                 <div className='label'> Contents </div>
-                { (p as Parent).children }
+                { p.children }
             </div>
         ),
         section: SectionRenderer,
@@ -65,37 +65,52 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //where is the footnote renderer?
 
         //handled directives
-        exercise: (p: Node) => {
-            var n = p as any;
+        exercise: (p: any) => {
+            var label : any = '';
+            var children = p.children;
+
+            var c = children[0];
+            if(c?.props?.data?.directiveLabel){
+                label = c.props.children;
+                children = children.slice(1);
+            }
+
             return (
                 <div className='exercise'>
-                    <span className='label'>연습문제 { n.attributes.id }</span> <br />
-
-                    연습문제를 표시해 줍니다! <br />
-                    안타깝게도, 지금은 연습문제 로드가 구현이 안 돼 있네요... 그래서 대체 텍스트를 집어넣었습니다!
+                    <span className='label'>연습문제 { label }</span> <br />
+                    { children }
                 </div>
             );
         },
+        expand: (p: any) => {
+            var label : any = '';
+            var children = p.children;
 
-        expand: (p: Node) => {
-            var summary = (p as Parent).children[0];
-            var children = (p as Parent).children.slice(1);
+            var c = children[0];
+            if(c?.props?.data?.directiveLabel){
+                label = c.props.children;
+                children = children.slice(1);
+            }
 
             return (
                 <details>
-                    <summary>{ summary }</summary>
-                    { children }
+                    <summary>{ label }</summary>
+                    <div style={ {marginLeft:'10px'} }>
+                        { children }
+                    </div>
                 </details>
             );
         },
 
         //unhandled directives
-        textDirective: (p: Node) => { return (<></>); },
-        leafDirective: (p: Node) => { return (<></>); },
-        containerDirective: (p: Node) => {
+        textDirective: (p: any) => {
+            return (<>:{ p.name }{ p.children[0] ? `[${ p.children[0].props.value }]`:`` }</>);
+        },
+        leafDirective: (p: any) => { return (<></>); },
+        containerDirective: (p: any) => {
             return (
                 <div style={ {border:'1px solid black', minHeight:'15px'} }>
-                    { (p as Parent).children }
+                    { p.children }
                 </div>
             );
         }
