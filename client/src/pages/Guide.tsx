@@ -39,9 +39,9 @@ function Guide({ match } : Props) {
             }
 
             { guide ? (
-                <GuideView title={ guide.name } authors={guide.authors || ['junie']} text={guide.content} />
+                <GuideView guide={guide} />
             ) : (
-                <p>404 : 해당 가이드가 존재하지 않습니다.</p>
+                <p> 해당 가이드가 존재하지 않습니다. </p>
             )}
             <Footer />
         </>

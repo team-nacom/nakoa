@@ -29,7 +29,7 @@
 
     p {
         font-size: 15px;
-        line-height: 24px;
+        line-height: 30px;
         font-weight: 300;
 
         overflow: hidden;
@@ -51,7 +51,7 @@
     }
 
     li {
-        margin-bottom: 6px;
+        margin: 8px 0px;
     }
 
     img {
@@ -151,6 +151,15 @@
     left: 0;
 }
 .guide {
+    div.metadata {
+        
+        font-family: 'SeoulNamsan';
+        font-size: 15px;
+        line-height: 20px;
+        color: white;
+        text-shadow: 0px 5px 5px #0000004D;
+    }
+
     h2.subtitle {
         font-family: 'Montserrat', 'SeoulNamsan';
         text-align: center;
