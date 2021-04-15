@@ -29,7 +29,7 @@
 
     p {
         font-size: 15px;
-        line-height: 24px;
+        line-height: 30px;
         font-weight: 300;
 
         overflow: hidden;
@@ -51,7 +51,7 @@
     }
 
     li {
-        margin-bottom: 6px;
+        margin: 8px 0px;
     }
 
     img {
@@ -87,6 +87,7 @@
         hyphens: auto;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             background: #A8CB61;
         }
         
@@ -98,6 +99,7 @@
         }
 
         .sectionText, .subsectionText, .subsubsectionText {
+            font-family: 'SeoulHangang';
             float: left;
             margin-right: 10px;
             font-weight: bold;
@@ -105,6 +107,7 @@
 
 
         .section, .subsection, .subsubsection {
+            font-family: 'SeoulHangang';
             border: none;
             //margin: 0px;
             //margin-bottom: 10px;
@@ -124,6 +127,7 @@
         margin-top: 45px;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             position: relative;
             left: -23px;
             top: -45px;
@@ -146,8 +150,18 @@
     top: 0;
     left: 0;
 }
+
 .guide {
+    div.metadata {
+        font-family: 'SeoulNamsan';
+        font-size: 15px;
+        line-height: 20px;
+        color: white;
+        text-shadow: 0px 5px 5px #0000004D;
+    }
+
     h2.subtitle {
+        font-family: 'Montserrat', 'SeoulNamsan';
         text-align: center;
         font-size: 24px;
         line-height: 32px;
@@ -158,6 +172,7 @@
     }
 
     h1.title {
+        font-family: 'SeoulHangang';
         text-align: center;
         font-size: 45px;
         line-height: 60px;
@@ -167,8 +182,17 @@
         text-shadow: 0px 5px 5px #0000004D;
     }
 
+    pre {
+        padding: 10px;
+        background: #eeeeee;
+        margin: 10px 0px;
+        font-family: 'Roboto Mono', monospace;
+        display: flex;
+        overflow: scroll;
+    }
 
     .guideContent {
+//        font-family: 'SeoulHangang';
         background: white;
         padding: unquote('min(calc(10%),80px)');
         min-width: 80%;
@@ -216,6 +240,7 @@
         }
 
         .section, .subsection, .subsubsection {
+            font-family: 'Montserrat', 'SeoulNamsan';
             .markdown > * {
                 margin-top: 0;
                 margin-bottom: 0;
@@ -223,6 +248,7 @@
         }
 
         .sectionText, .subsectionText, .subsubsectionText {
+            font-family: 'Montserrat', 'SeoulNamsan';
             float: left;
             margin-right: 10px;
             color: #F06498;
@@ -260,6 +286,7 @@
         color: #000000;
 
         .label {
+            font-family: 'Montserrat', 'SeoulNamsan';
             background: #F06498;
 
             font-size: 20px;
@@ -287,19 +314,24 @@
         text-shadow: 0px 4px 5px #0000004D;
     }
 
-    table, tbody, th, tr {
-        width: 100%;
-    }
-    
-    table {
+    .guideListContainer {
         background: white;
         border-left: 10px #F06498 solid;
         box-shadow: 0px 10px 15px #00000026;
         border-radius: 10px;
-        
-        td {
-            padding: 20px;
-            font-size: 20px;
+
+    }
+
+    .guideListItem {
+        padding: 20px;
+        font-size: 20px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        div {
+            overflow: auto;
         }
     }
 }

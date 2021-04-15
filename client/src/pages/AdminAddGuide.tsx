@@ -88,19 +88,19 @@ function AdminAddGuide() {
                         }
                     </div>
                 </div>
-            </div>
-
-            <div className='flexbox'>
                 <div className='adminForm'>
                     <label> 중요도 </label>
                     <div>
-                        <button className={'button ' + (priority === 5 ? 'active' : 'inactive')} onClick={(e) => setPriority(5)}>Essential</button>
-                        <button className={'button ' + (priority === 4 ? 'active' : 'inactive')} onClick={(e) => setPriority(4)}>Recommendable</button>
-                        <button className={'button ' + (priority === 3 ? 'active' : 'inactive')} onClick={(e) => setPriority(3)}>Readable</button>
-                        <button className={'button ' + (priority === 2 ? 'active' : 'inactive')} onClick={(e) => setPriority(2)}>Optional</button>
-                        <button className={'button ' + (priority === 1 ? 'active' : 'inactive')} onClick={(e) => setPriority(1)}>Draft</button>
+                        <select onChange={(e) => setPriority(Number.parseInt(e.target.value))}>
+                            { ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'].map((s, i) => (
+                                <option value={i}> {s} </option>
+                            )) }
+                        </select>
                     </div>
                 </div>
+            </div>
+
+            <div className='flexbox'>
             </div>
 
             <div className='adminForm'>
