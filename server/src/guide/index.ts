@@ -48,14 +48,10 @@ router.get('/:index(\\d+)', async (ctx) => {
     });
 });
 
-router.delete('/:index(\\d+)', async (ctx) => {
-  if (!isAdmin(ctx)) {
-    ctx.throw(401);
-    return;
-  }
-
-  const index: number = ctx.params.index;
-  await Guide.deleteOne({ isPublic: true, index });
+// Delete a post with given index
+router.delete('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
+  const index = ctx.params.index;
+  await Guide.deleteOne({ index });
   ctx.body = "Success";
 })
 
