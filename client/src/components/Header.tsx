@@ -29,6 +29,7 @@ function Header() {
                         <li className={pathname.startsWith('/about') ? 'active' : ''}>
                             <Link to='/about'>About</Link>
                         </li>
+                        <li> <a href='https://chal.team-na.com'> 챌린지 </a> </li>
                         <li className={pathname.startsWith('/guide') ? 'active' : ''}>
                             <Link to='/guide'>가이드</Link>
                         </li>
