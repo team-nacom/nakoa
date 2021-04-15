@@ -287,19 +287,24 @@
         text-shadow: 0px 4px 5px #0000004D;
     }
 
-    table, tbody, th, tr {
-        width: 100%;
-    }
-    
-    table {
+    .guideListContainer {
         background: white;
         border-left: 10px #F06498 solid;
         box-shadow: 0px 10px 15px #00000026;
         border-radius: 10px;
-        
-        td {
-            padding: 20px;
-            font-size: 20px;
+
+    }
+
+    .guideListItem {
+        padding: 20px;
+        font-size: 20px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        div {
+            overflow: auto;
         }
     }
 }
