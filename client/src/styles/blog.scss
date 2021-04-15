@@ -150,9 +150,9 @@
     top: 0;
     left: 0;
 }
+
 .guide {
     div.metadata {
-        
         font-family: 'SeoulNamsan';
         font-size: 15px;
         line-height: 20px;
@@ -187,6 +187,8 @@
         background: #eeeeee;
         margin: 10px 0px;
         font-family: 'Roboto Mono', monospace;
+        display: flex;
+        overflow: scroll;
     }
 
     .guideContent {
