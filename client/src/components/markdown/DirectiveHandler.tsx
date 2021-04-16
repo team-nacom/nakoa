@@ -12,11 +12,12 @@ const textDirectives = [
 type TextDirectives = typeof textDirectives[number];
 
 const leafDirectives = [
-    'exercise'
+    // 'exercise'
 ] as const;
 type LeafDirectives = typeof leafDirectives[number];
 
 const containerDirectives = [
+    'exercise',
     'expand'
 ] as const;
 type ContainerDirectives = typeof containerDirectives[number];
@@ -31,6 +32,7 @@ const DirectiveHandler : Plugin = () => {
         switch(node.name as TextDirectives){
         default:
             node.type = node.name;
+            node.directive = 'text';
             delete node.name;
         }
     }
@@ -40,6 +42,7 @@ const DirectiveHandler : Plugin = () => {
         switch(node.name as LeafDirectives){
         default:
             node.type = node.name;
+            node.directive = 'leaf';
             delete node.name;
         }
     }
@@ -49,6 +52,7 @@ const DirectiveHandler : Plugin = () => {
         switch(node.name as ContainerDirectives){
         default:
             node.type = node.name;
+            node.directive = 'container';
             delete node.name;
         }
     }
