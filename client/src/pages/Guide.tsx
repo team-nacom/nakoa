@@ -4,8 +4,10 @@ import Header from 'components/Header';
 import { getGuide, isAdmin, removeGuide } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
-import { match, Redirect } from 'react-router-dom';
+import { Link, match, Redirect } from 'react-router-dom';
 import Loading from './Loading';
+import { useSelector } from 'react-redux';
+import { RootReducer } from 'store';
 
 interface MatchParams {
     id: string;
@@ -19,7 +21,7 @@ function Guide({ match } : Props) {
     let id = Number.parseInt(match.params.id);
     let [guideLoading, guide] = usePromise(() => getGuide(id));
     let [redirectToList, setRedirectToList] = React.useState(false);
-    
+    let user = useSelector((state: RootReducer) => state.user);
 
     if (redirectToList) return <Redirect to='/guide' />
     if (guideLoading) return <Loading/>;
@@ -27,16 +29,28 @@ function Guide({ match } : Props) {
         <>
             <Header />
 
-            { isAdmin() && 
-                <button className='button' onClick={async (e) => {
-                    e.preventDefault();
-                    if (await removeGuide(id)) {
-                        setRedirectToList(true);
-                    }
-                }}>
-                    글 지우기
-                </button> 
-            }
+            <div className='flexbox'>
+                { isAdmin() && 
+                    <button className='button' onClick={async (e) => {
+                        e.preventDefault();
+                        if (await removeGuide(id)) {
+                            setRedirectToList(true);
+                        }
+                    }}>
+                        글 지우기
+                    </button> 
+                }
+
+                { (isAdmin() || (user.loggedIn && guide && guide.authors.filter(x => x === user.nickname).length > 0)) && 
+                    <span>
+                        <Link to={`/guide/${id}/edit`}>
+                            <button className='button'>
+                                수정하기
+                            </button> 
+                        </Link>
+                    </span>
+                }
+            </div>
 
             { guide ? (
                 <GuideView guide={guide} />

@@ -18,6 +18,7 @@ import SignUpDone from 'pages/SignUpDone';
 import GuideList from 'pages/GuideList';
 import AdminAddGuide from 'pages/AdminAddGuide';
 import About from 'pages/About'
+import GuideEdit from 'pages/GuideEdit';
 
 function App() {
   let [userInfoLoading] = usePromise(() => setUserInfo());
@@ -32,6 +33,7 @@ function App() {
         <Route path='/challenge/:id' component={ChallengeView} />
         <Route path='/challenge' component={ChallengeList} />
         <Route path='/guide/add' component={AdminAddGuide} />
+        <Route path='/guide/:id/edit' component={GuideEdit} />
         <Route path='/guide/:id' component={Guide} />
         <Route path='/guide' component={GuideList} />
         <Redirect path='/problem' to='/challenge' />
