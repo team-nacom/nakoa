@@ -51,7 +51,6 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 //    }, [lastModify]);
 
     return (<>
-        <Header/>
         <div className='adminBox guide'>
             <PageTitle style={{margin: '40px'}}> 
                 { behavior == 'add' ? '가이드 추가' : '가이드 수정'} 
@@ -113,8 +112,6 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
             </div>
             {message}
         </div>
-
-        <Footer/>
     </>)
 }
 
