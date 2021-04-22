@@ -109,7 +109,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         leafDirective: (p: any) => { return (<></>); },
         containerDirective: (p: any) => {
             return (
-                <div style={ {border:'1px solid black', minHeight:'15px'} }>
+                <div className='textframe' >
                     { p.children }
                 </div>
             );

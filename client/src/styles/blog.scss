@@ -284,6 +284,8 @@
         border-left: 3px solid #F06498;
         color: #000000;
 
+        margin-bottom:10px;
+
         .label {
             font-family: 'Montserrat', 'SeoulNamsan';
             background: #F06498;
@@ -298,6 +300,18 @@
             margin-bottom: -25px;
             color: white;
         }
+    }
+
+    .textframe {
+        background: lightyellow 0% 0% no-repeat padding-box;
+        border-left: 3px solid darkorange;
+        color: #000000;
+
+        height: fit-content;
+        position: relative;
+        padding: 10px;
+
+        margin: 10px 0;
     }
 
     details {
