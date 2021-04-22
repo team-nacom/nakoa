@@ -95,7 +95,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             return (
                 <details>
                     <summary>{ label }</summary>
-                    <div style={ {marginLeft:'10px'} }>
+                    <div>
                         { children }
                     </div>
                 </details>

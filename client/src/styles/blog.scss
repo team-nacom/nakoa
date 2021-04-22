@@ -124,7 +124,7 @@
     .box {
         box-sizing: border-box;
         padding: 20px;
-        margin-top: 45px;
+        margin-top: 35px;
 
         .label {
             position: relative;
@@ -288,11 +288,6 @@
             font-family: 'Montserrat', 'SeoulNamsan';
             background: #F06498;
 
-            font-size: 20px;
-            line-height: 20px;
-            font-weight: 500;
-            margin-bottom: 20px;
-
             position: relative;
             left: -23px;
             top: -45px;
@@ -302,6 +297,33 @@
             line-height: 15px;
             margin-bottom: -25px;
             color: white;
+        }
+    }
+
+    details {
+        margin: 10px 0px;
+        height: fit-content;
+        position: relative;
+
+        div {
+            background: #FFF2F3 0% 0% no-repeat padding-box;
+            border-left: 3px solid #F06498;
+            color: #000000;
+            padding: 10px;
+        }
+
+        summary {
+            font-family: 'Montserrat', 'SeoulNamsan';
+            background: #F06498;
+
+//            left: -23px;
+            width: fit-content;
+            padding: 5px 10px;
+            font-size: 15px;
+            line-height: 15px;
+            color: white;
+
+            cursor: pointer;
         }
     }
 
