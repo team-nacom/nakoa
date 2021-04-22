@@ -76,8 +76,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             }
 
             return (
-                <div className='exercise'>
-                    <span className='label'>연습문제 { label }</span> <br />
+                <div className='exercise box'>
+                    <div className='label'>연습문제 { label }</div>
                     { children }
                 </div>
             );

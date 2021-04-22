@@ -127,7 +127,6 @@
         margin-top: 45px;
 
         .label {
-            font-family: 'Montserrat', 'SeoulNamsan';
             position: relative;
             left: -23px;
             top: -45px;
@@ -294,7 +293,15 @@
             font-weight: 500;
             margin-bottom: 20px;
 
-            color: #FFFFFF;
+            position: relative;
+            left: -23px;
+            top: -45px;
+            width: fit-content;
+            padding: 5px 10px;
+            font-size: 15px;
+            line-height: 15px;
+            margin-bottom: -25px;
+            color: white;
         }
     }
 
