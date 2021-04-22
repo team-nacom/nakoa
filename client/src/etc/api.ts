@@ -120,7 +120,7 @@ export const logout = async () => {
     };
 }
 
-interface GuideType {
+export interface GuideType {
     index?: number;
     name: string;
     content: string;
