@@ -21,13 +21,15 @@ import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives }
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
 import UnnumberedSectionHandler from './UnnumberedSectionHandler';
 
+import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
+
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
     const plugins : PluggableList = [
         GFM,
         Math,
-        // Footnotes, // where is the renderer?
+        [Footnotes, {inlineNotes: true}],
         Directive,
         CodeFrontmatter,
 
@@ -35,6 +37,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         UnnumberedSectionHandler,
         DirectiveHandler,
         SectionEnumerator,
+        FootnoteEnumerator,
     ]
 
     const renderers : {[nodeType: string]: Renderer}
@@ -48,6 +51,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //         return <></>;
         //     }
         // }
+
         root: (p: any) => (
             <>
                 { p.children[0] }
@@ -64,7 +68,17 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         ),
         section: SectionRenderer,
 
-        //where is the footnote renderer?
+        //footnote renderers
+        footnoteReference: FootnoteReferenceRenderer,
+        footnoteDefinition: FootnoteDefinitionRenderer,
+        footnoteList: (p: any) => (
+            <div className='footnoteList'>
+                <hr />
+                <ol>
+                    { p.children }
+                </ol>
+            </div>
+        ),
 
         //handled directives
         exercise: (p: any) => {
