@@ -27,23 +27,6 @@ function nodeDeepCopy(node: Node, depth?: number) {
     } as Node;
 }
 
-function sectionPreHandler(node: Node) : boolean { //returns 'isUnnumbered'
-    if('children' in node && Array.isArray(node.children)){
-        if(node.children.length === 0){
-            node.children.push({
-                type: 'text',
-                value: '　' //full-width whitespace;
-            })
-            return false;
-        }
-        else if(node.children[0].type === 'text' && ( node.children[0].value as string ).startsWith('+++')){ // e.g. `# +++References`
-            node.children[0].value = ( node.children[0].value as string ).slice(3);
-            return true;
-        }
-    }
-    return false;
-}
-
 const SectionEnumerator : Plugin = () => {
     const sectionEnumerator : Transformer = (tree, file) => {
         let sectionNum = 0, subsectionNum = 0, subsubsectionNum = 0;
@@ -56,9 +39,17 @@ const SectionEnumerator : Plugin = () => {
             case 'heading':
                 child.type = 'section';
 
-                // pre handling: ensure height, skip unnumbered
-                if( sectionPreHandler(child) ){
-                    break;
+                // skip unnumbered
+                if(child.data?.unnumbered){
+                    continue;
+                }
+
+                // ensure height
+                if('children' in child && Array.isArray(child.children) && child.children.length === 0){
+                    child.children.push({
+                        type: 'text',
+                        value: '　' //full-width whitespace;
+                    })
                 }
 
                 if (child.depth === 1){ //section
