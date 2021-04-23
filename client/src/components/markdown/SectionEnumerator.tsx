@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 
 import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
@@ -38,6 +38,20 @@ const SectionEnumerator : Plugin = () => {
             switch(child.type){
             case 'heading':
                 child.type = 'section';
+
+                // skip unnumbered
+                if(child.data?.unnumbered){
+                    continue;
+                }
+
+                // ensure height
+                if('children' in child && Array.isArray(child.children) && child.children.length === 0){
+                    child.children.push({
+                        type: 'text',
+                        value: '　' //full-width whitespace;
+                    })
+                }
+
                 if (child.depth === 1){ //section
                     sectionNum += 1;
                     subsectionNum = 0;

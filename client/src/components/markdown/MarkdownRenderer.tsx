@@ -19,6 +19,7 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
+import UnnumberedSectionHandler from './UnnumberedSectionHandler';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
@@ -31,6 +32,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         CodeFrontmatter,
 
         // custom plugins
+        UnnumberedSectionHandler,
         DirectiveHandler,
         SectionEnumerator,
     ]
