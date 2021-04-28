@@ -11,12 +11,13 @@ div.adminBox {
     }
 
     .adminForm {
-        input {
+        input, select {
             padding: 15px;
             margin: 10px;
     
             font-size: 16px;
             font-weight: 300;
+            color: #333333;
             width: 200px;
             background: #F1F2F8 0% 0%;
             border: none;
@@ -125,6 +126,25 @@ div.adminBox {
 
     .panel1 { display: none; }
     .panel2 { width: 100%; }
+}
+
+
+button.autoRenderBtn{
+    float: right;
+    background-color: red;
+
+    z-index: 1;
+    padding: 6px;
+    margin: 0;
+    margin-right: 30px;
+    font-size: 14px;
+}
+button.autoRenderBtn.autoRenderActive{
+    background-color: green;
+}
+
+.collapse button.autoRenderBtn{
+    display:none;
 }
 
 

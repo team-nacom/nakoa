@@ -9,6 +9,14 @@ import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 import { fileUpload, imgUpload } from '../etc/FileUpload'
 
+const usePrevious = <T extends unknown>(value: T): T | undefined => {
+    const ref = useRef<T>();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+
 function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
         <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
@@ -36,14 +44,14 @@ function Panel({children, ...other} : PanelProps){
 
 interface PanelMenuProps extends React.HTMLAttributes<HTMLElement>{
     callback: () => void;
+    label: string;
 }
 
-function PanelMenu({children, callback, ...other} : PanelMenuProps){
+function PanelMenu({children, label, callback, ...other} : PanelMenuProps){
     return(
         <div className={ other.className } onClick = { (e) => callback() }>
-            <label>
-                { children }
-            </label>
+            <label>{ label }</label>
+            { children }
         </div>
     );
 }
@@ -72,8 +80,20 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
 
 function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [value,setValue] = useState(body || '');
+    const [previewValue,setPreviewValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
+
+    const preview = () => { setPreviewValue(value) }
+
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
+    const prevCollapse = usePrevious(collapse);
+    useEffect(()=>{
+        if(prevCollapse && !collapse){
+            preview();
+        }
+    }, [collapse])
+
+    const [autoRender,setAutoRender] = useState(true);
 
     const insertText = (text : string) => {
         const isSuccess = document.execCommand('insertText', false, text);
@@ -97,14 +117,21 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         }
     }
 
+    const valueUpdate = (v : string) => {
+        setValue(v);
+        if(update){
+            update(v);
+        }
+    }
+
     const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
         //can we prevent double rendering??
-        setValue(e.target.value);
-        if(update){
-            update(e.target.value);
+        valueUpdate(e.target.value);
+        if(!collapse && autoRender){
+            setPreviewValue(e.target.value);
         }
     }
 
@@ -201,8 +228,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     return (
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
-                <PanelMenu className='panelMenu1' callback = { () => setActiveIndex(1) }> 편집 </PanelMenu>
-                <PanelMenu className='panelMenu2' callback = { () => setActiveIndex(2) }> 미리보기 </PanelMenu>
+                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }> </PanelMenu>
+                <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
+                    <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
+                        setAutoRender(!autoRender);preview()
+                    } } >자동 갱신 { autoRender? 'ON' : 'OFF'}</button>
+                </PanelMenu>
                 <div style={ {clear:'both'} } />
             </div>
             <div className='panelWrapper' style={ {height: height} }>
@@ -218,7 +249,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea markdown'>
                         <MemoizedRenderer>
-                            { value }
+                            { previewValue }
                         </MemoizedRenderer>
                     </PreviewArea>
                 </Panel>
