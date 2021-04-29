@@ -163,6 +163,18 @@ export const postGuide = async (data: GuideType) => {
     };
 }
 
+export const editGuide = async (index: number, data: GuideType) => {    
+    data.index = index;
+    delete data.isPublic;
+    
+    let response = await Axios.put(`${apiAddress}/guide/${index}`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.status < 300;
+}
+
 export const removeGuide = async (id: number) => {
     let response = await Axios.delete(`${apiAddress}/guide/${id}`, { withCredentials: true })
 

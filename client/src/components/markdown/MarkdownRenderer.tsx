@@ -19,6 +19,9 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
+import UnnumberedSectionHandler from './UnnumberedSectionHandler';
+
+import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
@@ -26,13 +29,15 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
     const plugins : PluggableList = [
         GFM,
         Math,
-        // Footnotes, // where is the renderer?
+        [Footnotes, {inlineNotes: true}],
         Directive,
         CodeFrontmatter,
 
         // custom plugins
+        UnnumberedSectionHandler,
         DirectiveHandler,
         SectionEnumerator,
+        FootnoteEnumerator,
     ]
 
     const renderers : {[nodeType: string]: Renderer}
@@ -46,6 +51,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //         return <></>;
         //     }
         // }
+
         root: (p: any) => (
             <>
                 { p.children[0] }
@@ -62,7 +68,17 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         ),
         section: SectionRenderer,
 
-        //where is the footnote renderer?
+        //footnote renderers
+        footnoteReference: FootnoteReferenceRenderer,
+        footnoteDefinition: FootnoteDefinitionRenderer,
+        footnoteList: (p: any) => (
+            <div className='footnoteList'>
+                <hr />
+                <ol>
+                    { p.children }
+                </ol>
+            </div>
+        ),
 
         //handled directives
         exercise: (p: any) => {
@@ -76,8 +92,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             }
 
             return (
-                <div className='exercise'>
-                    <span className='label'>연습문제 { label }</span> <br />
+                <div className='exercise box'>
+                    <div className='label'>연습문제 { label }</div>
                     { children }
                 </div>
             );
@@ -95,7 +111,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             return (
                 <details>
                     <summary>{ label }</summary>
-                    <div style={ {marginLeft:'10px'} }>
+                    <div>
                         { children }
                     </div>
                 </details>
@@ -109,7 +125,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         leafDirective: (p: any) => { return (<></>); },
         containerDirective: (p: any) => {
             return (
-                <div style={ {border:'1px solid black', minHeight:'15px'} }>
+                <div className='textframe' >
                     { p.children }
                 </div>
             );

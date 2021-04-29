@@ -54,6 +54,16 @@
         margin: 8px 0px;
     }
 
+    sub {
+        vertical-align: sub;
+        font-size: 8px;
+    }
+
+    sup {
+        vertical-align: super;
+        font-size: 8px;
+    }
+
     img {
         display: block;
         margin: auto;
@@ -73,61 +83,12 @@
         text-align: center!important;
     }
 
-    .toc {
-        background: #F9FFEF 0% 0% no-repeat padding-box;
-        border-left: 3px solid #A8CB61;
-        color: #A8CB61;
-
-        white-space: pre-line;
-        word-break: break-all;
-        overflow-wrap: break-all;
-
-        -webkit-hyphens: auto;
-        -moz-hyphens: auto;
-        hyphens: auto;
-
-        .label {
-            font-family: 'Montserrat', 'SeoulNamsan';
-            background: #A8CB61;
-        }
-        
-        .subsection {
-            padding-left: 20px;
-        }
-        .subsubsection {
-            padding-left: 40px;
-        }
-
-        .sectionText, .subsectionText, .subsubsectionText {
-            font-family: 'SeoulHangang';
-            float: left;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-
-        .section, .subsection, .subsubsection {
-            font-family: 'SeoulHangang';
-            border: none;
-            //margin: 0px;
-            //margin-bottom: 10px;
-        }
-        h1, h2, h3, h4, .sectionText, .subsectionText, .subsubsectionText {
-            font-size: 15px;
-            line-height: 24px;
-            font-weight: 300;
-            margin-top: 0px;
-            margin-bottom: 0px;
-        }
-    }
-
     .box {
         box-sizing: border-box;
         padding: 20px;
-        margin-top: 45px;
+        margin-top: 35px;
 
         .label {
-            font-family: 'Montserrat', 'SeoulNamsan';
             position: relative;
             left: -23px;
             top: -45px;
@@ -285,21 +246,113 @@
         border-left: 3px solid #F06498;
         color: #000000;
 
+        margin-bottom:10px;
+
         .label {
             font-family: 'Montserrat', 'SeoulNamsan';
             background: #F06498;
 
-            font-size: 20px;
-            line-height: 20px;
-            font-weight: 500;
-            margin-bottom: 20px;
+            position: relative;
+            left: -23px;
+            top: -45px;
+            width: fit-content;
+            padding: 5px 10px;
+            font-size: 15px;
+            line-height: 15px;
+            margin-bottom: -25px;
+            color: white;
+        }
+    }
 
-            color: #FFFFFF;
+    .textframe {
+        background: lightyellow 0% 0% no-repeat padding-box;
+        border-left: 3px solid darkorange;
+        color: #000000;
+
+        height: fit-content;
+        position: relative;
+        padding: 10px;
+
+        margin: 10px 0;
+    }
+
+    details {
+        margin: 10px 0px;
+        height: fit-content;
+        position: relative;
+
+        div {
+            background: #FFF2F3 0% 0% no-repeat padding-box;
+            border-left: 3px solid #F06498;
+            color: #000000;
+            padding: 10px;
+        }
+
+        summary {
+            font-family: 'Montserrat', 'SeoulNamsan';
+            background: #F06498;
+
+//            left: -23px;
+            width: fit-content;
+            padding: 5px 10px;
+            font-size: 15px;
+            line-height: 15px;
+            color: white;
+
+            cursor: pointer;
         }
     }
 
     summary p {
         display: inline;
+    }
+}
+
+.toc {
+    background: #F9FFEF 0% 0% no-repeat padding-box;
+    border-left: 3px solid #A8CB61;
+    color: #A8CB61;
+
+    white-space: pre-line;
+    word-break: break-all;
+    overflow-wrap: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+
+    .label {
+        font-family: 'Montserrat', 'SeoulNamsan';
+        background: #A8CB61;
+    }
+    
+    .subsection {
+        padding-left: 20px;
+    }
+    .subsubsection {
+        padding-left: 40px;
+    }
+
+    .sectionText, .subsectionText, .subsubsectionText {
+        font-family: 'SeoulHangang';
+        float: left;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+
+    .section, .subsection, .subsubsection {
+        font-family: 'SeoulHangang';
+        border: none;
+        //margin: 0px;
+        //margin-bottom: 10px;
+    }
+    h1, h2, h3, h4, .sectionText, .subsectionText, .subsubsectionText {
+        font-size: 15px;
+        line-height: 24px;
+        font-weight: 300;
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
 }
 
