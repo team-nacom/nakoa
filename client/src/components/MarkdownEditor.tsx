@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
+import MarkdownManual from './MarkdownManual';
 
 import { fileUpload, imgUpload } from '../etc/FileUpload'
 
@@ -82,6 +83,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [value,setValue] = useState(body || '');
     const [previewValue,setPreviewValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
+    const [manualVisible,setManualVisible] = useState(false);
 
     const preview = () => { setPreviewValue(value) }
 
@@ -225,7 +227,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     },[drag]);
     // });
 
-    return (
+    return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
                 <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }> </PanelMenu>
@@ -271,8 +273,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
             </div>
 
+            <button onClick={ () => setManualVisible(true) }>
+                ?
+            </button>
         </div>
-    );
+        <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
+    </>);
 }
 
 export default MarkdownEditor;
