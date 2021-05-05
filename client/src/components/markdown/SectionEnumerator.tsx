@@ -22,6 +22,7 @@ function nodeDeepCopy(node: Node, depth?: number) {
     return {
         type : type,
         children : copiedChildren,
+        copied : true,
         ...others
         //ignore position
     } as Node;
@@ -39,8 +40,8 @@ const SectionEnumerator : Plugin = () => {
             case 'heading':
                 child.type = 'section';
 
-                // skip unnumbered
-                if(child.data?.unnumbered){
+                // skip unnumbered(priority 0)
+                if(child.data?.priority === 0){
                     continue;
                 }
 
@@ -48,7 +49,7 @@ const SectionEnumerator : Plugin = () => {
                 if('children' in child && Array.isArray(child.children) && child.children.length === 0){
                     child.children.push({
                         type: 'text',
-                        value: '　' //full-width whitespace;
+                        value: '　' //whitespace with height;
                     })
                 }
 
@@ -91,16 +92,16 @@ const SectionRenderer = (p : any) => {
 
     const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
 
-    // console.log(p);
+    const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
 
     var n = p;
-    // var n = p.node;
 
     return (        
         <div className={ hnames[n.depth] }>
             <div className={ hnames[n.depth] + 'Text' }> { n.label } </div>
             {/* <h2>{ n.children }</h2> */}
             { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+            { !(n.copied) && <span style={ {fontSize:'10px'} }>{ priorityTags[n.data.priority] }</span> }
         </div>
     )
 }
