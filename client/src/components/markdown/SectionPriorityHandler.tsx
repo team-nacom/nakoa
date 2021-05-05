@@ -3,8 +3,8 @@ import React, { Children } from 'react';
 import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
 
-const UnnumberedSectionHandler : Plugin = () => {
-    const unnumberedSectionHandler : Transformer = (tree, file) => {
+const SectionPriorityHandler : Plugin = () => {
+    const sectionPriorityHandler : Transformer = (tree, file) => {
         const root = tree as Parent;
         const marker = '+ ';
 
@@ -28,7 +28,7 @@ const UnnumberedSectionHandler : Plugin = () => {
         }
     }
 
-    return unnumberedSectionHandler;
+    return sectionPriorityHandler;
 }
 
-export default UnnumberedSectionHandler;
+export default SectionPriorityHandler;
