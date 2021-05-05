@@ -10,7 +10,7 @@ function MarkdownManual({visible, setVisible} : PopupProps) {
     const [manual, setManual] = useState('');
     useEffect(() =>{
         const fetchManual = async () => {
-            const man = await (await fetch('/editor-manual.md')).text();
+            const man = await (await fetch(process.env.PUBLIC_URL + '/editor-manual.md')).text();
             setManual(man);
         }
         fetchManual();
