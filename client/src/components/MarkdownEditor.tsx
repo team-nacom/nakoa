@@ -18,10 +18,10 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
     return ref.current;
   };
 
-function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
+function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
         <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
-        // className={ (props.className || '') + ' markdownArea' }
+        // className={ (props.className || '') + ' editorArea' }
     )
 }
 
@@ -235,15 +235,15 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
-                    } } >자동 갱신 { autoRender? 'ON' : 'OFF'}</button>
+                    } } >자동 갱신 { autoRender? '켜짐' : '꺼짐'}</button>
                 </PanelMenu>
                 <div style={ {clear:'both'} } />
             </div>
             <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
-                    <MarkdownArea
+                    <EditorArea
                         {...other}
-                        className={ `${other.className || ''} markdownArea` } 
+                        className={ `${other.className || ''} editorArea` } 
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
                         value = { value }
@@ -274,7 +274,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
             </div>
 
-            <button onClick={ () => setManualVisible(true) }>
+            <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
                 ?
             </button>
         </div>

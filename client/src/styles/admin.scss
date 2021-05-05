@@ -129,18 +129,34 @@ div.adminBox {
 }
 
 
-button.autoRenderBtn{
+button.showManualBtn{
     float: right;
-    background-color: red;
+    background-color: #f5dfec;
 
     z-index: 1;
     padding: 6px;
     margin: 0;
     margin-right: 30px;
     font-size: 14px;
+
+    cursor: pointer;
+}
+
+button.autoRenderBtn{
+    float: right;
+    background-color: #f5dfec;
+
+    z-index: 1;
+    padding: 6px;
+    margin: 0;
+    margin-right: 30px;
+    font-size: 14px;
+
+    cursor: pointer;
 }
 button.autoRenderBtn.autoRenderActive{
-    background-color: green;
+    background-color: #F06498;
+    color: white;
 }
 
 .collapse button.autoRenderBtn{
@@ -148,7 +164,7 @@ button.autoRenderBtn.autoRenderActive{
 }
 
 
-.markdownArea {
+.editorArea {
     width: 100%;
     height: 100%; // 300px;
     overflow-y: scroll;
