@@ -3,6 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'unified';
 import { Node, Parent } from 'unist';
 
+import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
+
 import GFM from 'remark-gfm';
 import Math from 'remark-math';
 import Footnotes from 'remark-footnotes';
@@ -131,9 +133,17 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             );
         }
     }
-    
+
     return (
-        <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
+        <ErrorBoundary FallbackComponent = { ({error, resetErrorBoundary}) => (
+            <div role='alert'>
+                <p>렌더링 실패, 다시 시도해 보세요.</p>
+            </div>
+        ) } onError = {
+            (error: Error) => { } // may do some error handling
+        } resetKeys={[props.children]} >
+            <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
+        </ErrorBoundary>
     );
 }
 

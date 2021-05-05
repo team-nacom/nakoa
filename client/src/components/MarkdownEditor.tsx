@@ -24,14 +24,15 @@ function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>)
         // className={ (props.className || '') + ' markdownArea' }
     )
 }
-function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
+
+const MemoizedRenderer = React.memo(MarkdownRenderer);
+function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
     return(
         <div {...props} />
-        // className={ (props.className || '') + ' previewArea' }
     )
 }
 
-const MemoizedRenderer = React.memo(MarkdownRenderer);
+
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
