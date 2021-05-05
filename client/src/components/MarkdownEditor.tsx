@@ -250,7 +250,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                     />
                 </Panel>
                 <Panel className='panel2'>
-                    <PreviewArea className='previewArea markdown'>
+                    <PreviewArea className='previewArea'>
                         <MemoizedRenderer>
                             { previewValue }
                         </MemoizedRenderer>

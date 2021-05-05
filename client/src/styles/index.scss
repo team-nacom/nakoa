@@ -69,13 +69,14 @@ a {
 
 @import 'admin.scss';
 @import 'basic.scss';
-@import 'blog.scss';
+@import 'blog.scss'; //should be renamed into 'guide.scss'
 @import 'challenge.scss';
 @import 'footer.scss';
 @import 'header.scss';
+@import 'markdown.scss';
+@import 'popup.scss';
 @import 'quiz.scss';
 @import 'signin.scss';
-@import 'popup.scss';
 @import 'signup.scss';
 @import 'table.scss';
 @import 'tabs.scss';

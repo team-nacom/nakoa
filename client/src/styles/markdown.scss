@@ -1,0 +1,330 @@
+@import './consts.scss';
+
+// box template; do we need a separate file(box.scss)?
+
+$boxMargin : 10px;
+$boxPadding : 10px;
+$lBoxPadding : 10px;
+
+.box {
+    background: #f8f8f8 0% 0% no-repeat padding-box;
+    border-left: 3px solid gray;
+    color: #000000;
+
+    height: fit-content;
+    position: relative;
+    padding: $boxPadding;
+
+    margin: $boxMargin 0;
+    // margin-top: $boxMargin;
+    // margin-bottom: $boxMargin;
+}
+
+.labeledBox {
+    @extend .box;
+
+    box-sizing: border-box;
+    margin-top: 25px + $boxMargin; //25px = text height + 2*label padding.
+    padding: $lBoxPadding;
+}
+.labeledBox .label{
+    @extend .boxlabel;
+}
+
+.boxlabel{
+    position: relative;
+    left: -3px - $lBoxPadding;
+    top: -25px - $lBoxPadding; //same 25px
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 15px;
+    line-height: 15px;
+    margin-bottom: -25px;
+    color: white;
+}
+
+/////////////////////////////////
+
+.markdown {
+    h1 {
+        font-size: 40px;
+        line-height: 40px;
+        font-weight: 500;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: 500;
+    }
+
+    h3 {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: 500;
+    }
+
+    h4 {
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: 500;
+    }
+
+    p {
+        font-size: 15px;
+        line-height: 30px;
+        font-weight: 300;
+
+        overflow: hidden;
+    }
+
+    a {
+        color: $main-color;
+        text-decoration: underline;
+    }
+
+    ol, ul {
+        margin-left: 32px;
+    }
+
+    li::marker {
+        margin-left: 20px;
+        color: $main-color;
+        font-weight: bold;
+    }
+
+    li {
+        margin: 8px 0px;
+    }
+
+    sub {
+        vertical-align: sub;
+        font-size: 8px;
+    }
+
+    sup {
+        vertical-align: super;
+        font-size: 8px;
+    }
+
+    img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+    }
+
+
+    > * {
+        margin-top: 17px;
+        margin-bottom: 17px;
+    }
+
+    .katex-display > .katex {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden; //a bug in katex renderer?
+        text-align: center!important;
+    }
+
+    //////migrated from .blog .blog-preview////////
+    white-space: pre-line;
+    word-break: break-all;
+    overflow-wrap: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+
+    .section {
+        margin-top: 35px;
+        margin-bottom: 15px;
+        padding-top: 5px;
+        padding-bottom: 15px;
+        border-bottom: 1px #F06498 solid;
+    }
+    
+    .subsection {
+        margin-top: 35px;
+        margin-bottom: 15px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        border-left: 1px #F06498 solid;
+    }
+
+    .subsubsection {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-left: 1px #F06498 solid;
+    }
+
+    .section, .subsection, .subsubsection {
+        font-family: 'Montserrat', 'SeoulNamsan';
+        // .markdown > * {
+        //     margin-top: 0;
+        //     margin-bottom: 0;
+        // }
+    }
+
+    .sectionText, .subsectionText, .subsubsectionText {
+        font-family: 'Montserrat', 'SeoulNamsan';
+        float: left;
+        margin-right: 10px;
+        color: #F06498;
+    }
+
+    .sectionText {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: bold;
+    }
+
+    .subsectionText {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: bold;
+    }
+
+    .subsubsectionText {
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: bold;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        background-color: #F06498;
+        color:#F06498;
+    }
+
+    pre {
+        padding: 10px;
+        background: #e0e0e0;
+        margin: 10px 0px;
+        font-family: 'Roboto Mono', monospace;
+        display: flex;
+        overflow-y: scroll;
+    }
+
+    code {
+        padding: 0 3px;
+        background-color: #e0e0e0;
+    }
+
+    blockquote {
+        @extend .box;
+        background-color: #f8f8f8;
+        border-color: gray;
+    }
+
+    .textframe {
+        @extend .box;
+        background-color: lightyellow;
+        border-color: darkorange;
+        color: black;
+    }
+
+    details {
+        margin: 10px 0px;
+        height: fit-content;
+        position: relative;
+
+        div {
+            @extend .labeledBox;
+            background-color: #FFF2F3;
+            border-color: #F06498;
+            color: black;
+
+            // box-sizing: border-box;
+            // padding: 20px;
+            margin: 0px;
+
+            // padding: 10px;
+        }
+
+        summary {
+            @extend .boxlabel;
+            font-family: 'Montserrat', 'SeoulNamsan';
+            background: #F06498;
+            color: white;
+
+            position: initial;
+            left: 0;
+            top: 0;
+            margin: 0;
+
+            cursor: pointer;
+            p {
+                display : inline;
+            }
+        }
+    }
+
+    .exercise {
+        @extend .labeledBox;
+        background-color: #FFF2F3;
+        border-color: #F06498;
+        color: black;
+
+        margin-bottom:10px;
+    }
+    .exercise .label{
+        @extend .boxlabel;
+        font-family: 'Montserrat', 'SeoulNamsan';
+        background: #F06498;
+    }
+}
+
+.toc {
+    @extend .labeledBox;
+    background-color: #F9FFEF;
+    border-color: #A8CB61;
+    color: #A8CB61;
+
+    white-space: pre-line;
+    word-break: break-all;
+    overflow-wrap: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+    
+    .subsection {
+        padding-left: 20px;
+    }
+    .subsubsection {
+        padding-left: 40px;
+    }
+
+    .sectionText, .subsectionText, .subsubsectionText {
+        font-family: 'SeoulHangang';
+        float: left;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+
+    .section, .subsection, .subsubsection {
+        font-family: 'SeoulHangang';
+        border: none;
+        //margin: 0px;
+        //margin-bottom: 10px;
+    }
+    h1, h2, h3, h4, .sectionText, .subsectionText, .subsubsectionText {
+        font-size: 15px;
+        line-height: 24px;
+        font-weight: 300;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+}
+.toc .label {
+    @extend .boxlabel;
+    background-color: #A8CB61;
+
+    font-family: 'Montserrat', 'SeoulNamsan';
+}

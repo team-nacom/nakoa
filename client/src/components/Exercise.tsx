@@ -10,7 +10,7 @@ interface Props {
 
 function Exercise({ id, title, content, answer } : Props) {
     return (
-        <div className='exercise box'>
+        <div className='exercise'>
             <div className='label'>
                 { `Exercise ${id}` }
             </div>

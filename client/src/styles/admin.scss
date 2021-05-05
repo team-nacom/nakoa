@@ -77,8 +77,6 @@ div.adminBox {
 
 }
 
-// TODO : integrate '.blog' with '.markdown' (in blog.scss)
-
 .panelWrapper {
     height: 400px;
     min-height: 300px;
@@ -139,9 +137,11 @@ button.showManualBtn{
     margin-right: 30px;
     font-size: 14px;
 
+    position: relative;
+    top: -27px;
+
     cursor: pointer;
 }
-
 button.autoRenderBtn{
     float: right;
     background-color: #f5dfec;

@@ -57,13 +57,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         root: (p: any) => (
             <>
                 { p.children[0] }
-                <div className='blog-preview'>
+                <div className='markdown'>
                     { p.children.slice(1) }
                 </div>
             </>
         ),
         toc: (p: any) => (
-            <div className='toc box'>
+            <div className='toc'>
                 <div className='label'> Contents </div>
                 { p.children }
             </div>
@@ -73,13 +73,14 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
         footnoteDefinition: FootnoteDefinitionRenderer,
-        footnoteList: (p: any) => (
+        footnoteList: (p: any) => ( p.children.length?
             <div className='footnoteList'>
                 <hr />
                 <ol>
                     { p.children }
                 </ol>
             </div>
+            :<></>
         ),
 
         //handled directives
@@ -94,7 +95,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             }
 
             return (
-                <div className='exercise box'>
+                <div className='exercise'>
                     <div className='label'>연습문제 { label }</div>
                     { children }
                 </div>
