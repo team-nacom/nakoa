@@ -108,7 +108,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 
                 <button className='submit link' onClick={
                     () => upload(
-                        { name, content, priority, category, section, authors: author.split(',').map(s => s.trim()) },
+                        { name, content, priority, category, section, authors: author.split(',').map(s => s.trim()), isPublic },
                         setMessage
                     )
                 }> 
