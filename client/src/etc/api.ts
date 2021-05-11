@@ -132,7 +132,10 @@ export interface GuideType {
 }
 
 export const getGuides = async () => {
-    let response = await Axios.get(`${apiAddress}/guide`);
+    let response = await Axios.get(`${apiAddress}/guide`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType[];
 }
@@ -144,7 +147,10 @@ export const getGuideMaxIndex = async () => {
 }
 
 export const getGuide = async (id: number) => {
-    let response = await Axios.get(`${apiAddress}/guide/${id}`);
+    let response = await Axios.get(`${apiAddress}/guide/${id}`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType;
 }
