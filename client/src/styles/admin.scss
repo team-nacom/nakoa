@@ -57,6 +57,15 @@ div.adminBox {
         }
     }
 
+    div.editorBottom {
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 2px #E8E8E8 solid;
+        margin: 0px;
+        margin-top: 15px;
+        padding: 0px 30px;
+    }
     
     button.submit {
         float: right;

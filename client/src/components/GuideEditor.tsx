@@ -18,12 +18,13 @@ interface Props {
 }
 
 function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props) {
-    let [name, setName] = React.useState<string>(initialGuide?.name || '');
-    let [category, setCategory] = React.useState<string>(initialGuide?.category || '');
-    let [section, setSection] = React.useState<string>(initialGuide?.section || '');
-    let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') || _author || '');
-    let [content, setContent] = React.useState<string>(initialGuide?.content || '');
-    let [priority, setPriority] = React.useState<number>(initialGuide?.priority || 5);
+    let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
+    let [category, setCategory] = React.useState<string>(initialGuide?.category ?? '');
+    let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
+    let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') ?? _author ?? '');
+    let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
+    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 5);
+    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
     let user = useSelector((state: RootReducer) => state.user);
 
@@ -90,9 +91,6 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
                 </div>
             </div>
 
-            <div className='flexbox'>
-            </div>
-
             <div className='adminForm'>
                 <label> 가이드 제목 </label>
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
@@ -100,7 +98,14 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 
             <MarkdownEditor className='adminForm' body={ content } update={ (c) => setContent(c) } />
 
-            <div style={{borderTop: '2px #E8E8E8 solid', margin: '0px', marginTop: '15px', padding: '0px 30px'}}>
+            <div className='editorBottom'>
+                <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
+                    <span> { isPublic ? '공개' : '비공개' } </span>
+                    <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
+                        { isPublic ? 'check_box' : 'check_box_outline_blank'} 
+                    </span>
+                </div>
+
                 <button className='submit link' onClick={
                     () => upload(
                         { name, content, priority, category, section, authors: author.split(',').map(s => s.trim()) },
