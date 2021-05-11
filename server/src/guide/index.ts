@@ -18,6 +18,8 @@ router.post('/', checkAdminMiddleware, async (ctx) => {
 // Update an existing guide
 router.put('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
   const index: number = Number.parseInt(ctx.params.index);
+  const guideObj = ctx.request.body;
+  if(!isAdmin(ctx) && "authors" in guideObj) throw createHttpError(401, "Only admin can change authors");
   await updateOneGuide(ctx.request.body, index);
   ctx.body = "Success";
 });
