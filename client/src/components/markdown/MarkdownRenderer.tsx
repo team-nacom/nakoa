@@ -14,10 +14,9 @@ import CodeFrontmatter from 'remark-code-frontmatter';
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-// import highlighter from 'remark-highlight.js';
+import Highlight from 'react-highlight';
+import 'highlight.js/styles/github.css';
+// import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
@@ -44,16 +43,6 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
 
     const renderers : {[nodeType: string]: Renderer}
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
-        math: (p: any) => <TeX block math = { p.value as string } />,
-        inlineMath: (p: any) => <TeX math = { p.value as string } />,
-        // code: ({language, value}) => {
-        //     try{
-        //         return <SyntaxHighlighter language={ language }>{ value }</SyntaxHighlighter>; //style={ dark }
-        //     } catch (error){
-        //         return <></>;
-        //     }
-        // }
-
         root: (p: any) => (
             <>
                 { p.children[0] }
@@ -82,6 +71,18 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             </div>
             :<></>
         ),
+
+        math: (p: any) => <TeX block math = { p.value as string } />,
+        inlineMath: (p: any) => <TeX math = { p.value as string } />,
+        code: (p: any) => { // ({language, value}) => {
+            // if(!p.value) return <></>; //edge case : no contents, etc
+            return ( 
+                <Highlight className = { p.language } >
+                    { p.value }
+                </Highlight>
+            ); 
+        },
+        // inlineCode: ???
 
         //handled directives
         exercise: (p: any) => {
