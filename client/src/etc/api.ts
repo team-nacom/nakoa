@@ -1,5 +1,6 @@
 import Axios from 'axios';
-import store from 'store';
+import { useSelector } from 'react-redux';
+import store, { RootReducer } from 'store';
 import { clearUser, setUser } from 'store/user';
 import config from './config';
 
@@ -91,6 +92,12 @@ export const isLoggedIn = () => {
 
 export const isAdmin = () => {
     return store.getState().user?.email === config.adminEmail;
+}
+
+export const useIsAdmin = () => {
+    let email = useSelector((state: RootReducer) => state.user.email);
+
+    return email === config.adminEmail;
 }
 
 export interface LoginData {

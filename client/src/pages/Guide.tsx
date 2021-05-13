@@ -1,7 +1,7 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuide, isAdmin, removeGuide } from 'etc/api';
+import { getGuide, removeGuide, useIsAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, match, Redirect } from 'react-router-dom';
@@ -22,6 +22,7 @@ function Guide({ match } : Props) {
     let [guideLoading, guide] = usePromise(() => getGuide(id));
     let [redirectToList, setRedirectToList] = React.useState(false);
     let user = useSelector((state: RootReducer) => state.user);
+    let isAdmin = useIsAdmin();
 
     if (redirectToList) return <Redirect to='/guide' />
     if (guideLoading) return <Loading/>;
@@ -30,7 +31,7 @@ function Guide({ match } : Props) {
             <Header />
 
             <div className='flexbox'>
-                { isAdmin() && 
+                { isAdmin && 
                     <button className='button' onClick={async (e) => {
                         e.preventDefault();
                         if (await removeGuide(id)) {
@@ -41,7 +42,7 @@ function Guide({ match } : Props) {
                     </button> 
                 }
 
-                { (isAdmin() || (user.loggedIn && guide && guide.authors.filter(x => x === user.nickname).length > 0)) && 
+                { (isAdmin || (user.loggedIn && guide && guide.authors.filter(x => x === user.nickname).length > 0)) && 
                     <span>
                         <Link to={`/guide/${id}/edit`}>
                             <button className='button'>

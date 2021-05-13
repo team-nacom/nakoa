@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuides, isAdmin } from 'etc/api';
+import { getGuides, useIsAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ import Loading from './Loading';
 
 function GuideList() {
     let [guidesLoading, guides] = usePromise(getGuides);
+    let isAdmin = useIsAdmin();
 
     let categories = React.useMemo(() => {
         if (!guides) return;
@@ -19,7 +20,7 @@ function GuideList() {
         <>
             <Header/>
             <div className='guideBackground' />
-            { isAdmin() && <Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link> }
+            { isAdmin && <Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link> }
             { categories?.map((category) => {
                 let nowGuides = guides.filter((guide) => guide.category === category);
 

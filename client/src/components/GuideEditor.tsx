@@ -3,10 +3,8 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { GuideType, isAdmin } from 'etc/api';
+import { GuideType, useIsAdmin } from 'etc/api';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { RootReducer } from 'store';
 
 interface Props {
     initialGuide?: GuideType,
@@ -26,12 +24,8 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
     let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 5);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
-    let user = useSelector((state: RootReducer) => state.user);
+    let isAdmin = useIsAdmin();
 
-    React.useEffect(() => {
-        if (!isAdmin()) setAuthor(user.nickname);
-    }, [user]);
-    
 //    let [lastModify, setLastModify] = React.useState<number>();
 //    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
 
@@ -73,7 +67,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
                 <div className='adminForm'>
                     <label> 작성자 </label>
                     <div>
-                        { isAdmin() 
+                        { isAdmin
                             ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
                             : <input value={author} readOnly />
                         }
