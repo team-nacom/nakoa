@@ -13,4 +13,4 @@ jobs:
       with:
         node-version: 14
     - run: CI=false; yarn install-all
-    - run: yarn build
+    - run: CI=false; yarn build
