@@ -8,6 +8,8 @@ import ReactMarkdown from 'react-markdown';
 import Math from 'remark-math';
 import TeX from '@matejmazur/react-katex';
 
+import { HashLink } from 'react-router-hash-link';
+
 function nodeDeepCopy(node: Node, depth?: number) {
     let {type, position, children, ...others} = node as Parent;
 
@@ -58,20 +60,20 @@ const SectionEnumerator : Plugin = () => {
                     subsectionNum = 0;
                     subsubsectionNum = 0;
 
-                    child.label = `${sectionNum}.`;
+                    child.numbering = [sectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 } else if (child.depth === 2){ //subsection
                     subsectionNum += 1;
                     subsubsectionNum = 0;
 
-                    child.label = `${sectionNum}.${subsectionNum}.`;
+                    child.numbering = [sectionNum, subsectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 } else if (child.depth === 3){ //subsubsection
                     subsubsectionNum += 1;
 
-                    child.label = `${sectionNum}.${subsectionNum}.${subsubsectionNum}.`;
+                    child.numbering = [sectionNum, subsectionNum, subsubsectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 }
@@ -96,14 +98,38 @@ const SectionRenderer = (p : any) => {
 
     var n = p;
 
-    return (        
-        <div className={ hnames[n.depth] }>
-            <div className={ hnames[n.depth] + 'Text' }> { n.label } </div>
-            {/* <h2>{ n.children }</h2> */}
-            { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-            { !(n.copied) && <span style={ {fontSize:'10px'} }>{ priorityTags[n.data.priority] }</span> }
-        </div>
-    )
+    if(n.copied){ //toc
+        return (        
+            <div className={ hnames[n.depth] }>
+                <HashLink
+                    to={ '#heading-'+n.numbering.join('-') }
+                    className={ hnames[n.depth] + 'Num' }
+                >
+                    { n.numbering.join('.')+'.' }
+                </HashLink>
+                {/* <div className={ hnames[n.depth] + 'Num' }>
+                    { n.numbering.join('.') }
+                </div> */}
+                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+            </div>
+        )
+    }
+    else{ //contents
+        return (        
+            <div className={ hnames[n.depth] }>
+                <HashLink
+                    to='#toc-label' id={ 'heading-'+n.numbering.join('-') }
+                    className={ hnames[n.depth] + 'Num' }
+                >
+                    { n.numbering.join('.')+'.' }
+                </HashLink>
+                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+                <span style={ {fontSize:'10px'} }>
+                    { priorityTags[n.data.priority] }
+                </span>
+            </div>
+        )
+    }
 }
 
 export { SectionRenderer };

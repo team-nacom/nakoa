@@ -169,26 +169,27 @@ $lBoxPadding : 10px;
         // }
     }
 
-    .sectionText, .subsectionText, .subsubsectionText {
+    .sectionNum, .subsectionNum, .subsubsectionNum {
+        text-decoration: none;
         font-family: 'Montserrat', 'SeoulNamsan';
         float: left;
         margin-right: 10px;
         color: #F06498;
     }
 
-    .sectionText {
+    .sectionNum {
         font-size: 28px;
         line-height: 28px;
         font-weight: bold;
     }
 
-    .subsectionText {
+    .subsectionNum {
         font-size: 22px;
         line-height: 22px;
         font-weight: bold;
     }
 
-    .subsubsectionText {
+    .subsubsectionNum {
         font-size: 18px;
         line-height: 18px;
         font-weight: bold;
@@ -300,7 +301,7 @@ $lBoxPadding : 10px;
         padding-left: 40px;
     }
 
-    .sectionText, .subsectionText, .subsubsectionText {
+    .sectionNum, .subsectionNum, .subsubsectionNum {
         font-family: 'SeoulHangang';
         float: left;
         margin-right: 10px;
@@ -314,7 +315,7 @@ $lBoxPadding : 10px;
         //margin: 0px;
         //margin-bottom: 10px;
     }
-    h1, h2, h3, h4, .sectionText, .subsectionText, .subsubsectionText {
+    h1, h2, h3, h4, .sectionNum, .subsectionNum, .subsubsectionNum {
         font-size: 15px;
         line-height: 24px;
         font-weight: 300;

@@ -53,7 +53,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         ),
         toc: (p: any) => (
             <div className='toc'>
-                <div className='label'> Contents </div>
+                <div id='toc-label' className='label'> Contents </div>
                 { p.children }
             </div>
         ),
@@ -75,7 +75,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         math: (p: any) => <TeX block math = { p.value as string } />,
         inlineMath: (p: any) => <TeX math = { p.value as string } />,
         code: (p: any) => { // ({language, value}) => {
-            // if(!p.value) return <></>; //edge case : no contents, etc
+            if(!p.language){
+                return (
+                    <pre>
+                        <code>{ p.value }</code>
+                    </pre>
+                );
+            }
             return ( 
                 <Highlight className = { p.language } >
                     { p.value }
