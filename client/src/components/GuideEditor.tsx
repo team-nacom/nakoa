@@ -94,10 +94,10 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 
             <div className='editorBottom'>
                 <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
-                    <span> { isPublic ? '공개' : '비공개' } </span>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
+                    <span> { isPublic ? '공개' : '비공개' } </span>
                 </div>
 
                 <button className='submit link' onClick={
