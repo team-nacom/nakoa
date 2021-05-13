@@ -21,7 +21,7 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
-import UnnumberedSectionHandler from './UnnumberedSectionHandler';
+import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
@@ -36,7 +36,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         CodeFrontmatter,
 
         // custom plugins
-        UnnumberedSectionHandler,
+        SectionPriorityHandler,
         DirectiveHandler,
         SectionEnumerator,
         FootnoteEnumerator,
