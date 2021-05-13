@@ -12,7 +12,12 @@ function GuideList() {
 
     let categories = React.useMemo(() => {
         if (!guides) return;
-        return [...new Set(guides.map(x => x.category))]
+        return [...new Set(guides.map(x => x.category))];
+    }, [guides]);
+
+    let sections = React.useMemo(() => {
+        if (!guides) return;
+        return [...new Set(guides.map(x => [x.category, x.section] as [string, string] ))];
     }, [guides]);
 
     if (guidesLoading) return <Loading/>;
@@ -28,11 +33,17 @@ function GuideList() {
                     <div key={category} className='guideList'>
                         <h1> { category || '분류되지 않음' } </h1>
                         <div className='guideListContainer'>
-                            { nowGuides.map((guide, k) => (
+                            { sections?.filter(([c, s]) => c === category).map(([c, section], k) => (
+                                <div className='guideListSection'>
+                                    <span style={{flex: '0 0 50px', fontWeight: 'bold'}}> { k+1 } </span>
+                                    <span style={{flexGrow: 1}}>  {section} </span>
+                                </div>
+                            ))
+                            }
+                            { nowGuides.map((guide) => (
                                 <Link to={`/guide/${guide.index}`}>
                                     <div className='guideListItem'>
-                                        <span style={{flex: '0 0 50px', fontWeight: 'bold'}}> { k+1 } </span>
-                                        <span style={{flexGrow: 1}}>  {guide.name} </span>
+                                        <span style={{flexGrow: 1}}> { guide.name } </span>
                                     </div>
                                 </Link> 
                             ))}
