@@ -34,19 +34,21 @@ function GuideList() {
                         <h1> { category || '분류되지 않음' } </h1>
                         <div className='guideListContainer'>
                             { sections?.filter(([c, s]) => c === category).map(([c, section], k) => (
-                                <div className='guideListSection'>
-                                    <span style={{flex: '0 0 50px', fontWeight: 'bold'}}> { k+1 } </span>
-                                    <span style={{flexGrow: 1}}>  {section} </span>
-                                </div>
+                                <>
+                                    <div className='guideListSection'>
+                                        <span style={{flex: '0 0 50px', fontWeight: 'bold'}}> { k+1 } </span>
+                                        <span style={{flexGrow: 1}}>  {section} </span>
+                                    </div>
+                                    { nowGuides.filter((guide) => guide.category === category && guide.section === section).map((guide) => (
+                                        <Link to={`/guide/${guide.index}`}>
+                                            <div className='guideListItem'>
+                                                <span style={{flexGrow: 1}}> { guide.name } </span>
+                                            </div>
+                                        </Link> 
+                                    ))}
+                                </>
                             ))
                             }
-                            { nowGuides.map((guide) => (
-                                <Link to={`/guide/${guide.index}`}>
-                                    <div className='guideListItem'>
-                                        <span style={{flexGrow: 1}}> { guide.name } </span>
-                                    </div>
-                                </Link> 
-                            ))}
                         </div>
                     </div>
                 )
