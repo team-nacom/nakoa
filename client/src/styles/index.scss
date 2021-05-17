@@ -100,29 +100,6 @@ label {
 }
 
 
-button {
-    background-color: $main-background;
-    padding: 16px;
-    margin: 8px;
-    border: none;
-    width: fit-content;
-
-    &.button {
-        margin: 20px;
-        padding: 10px 30px;
-        border: 2px solid #F06498;
-        background: white;
-        color: #F06498;
-        font-size: 14px;
-        border-radius: 27px;
-
-        &:hover {
-            background: #F06498;
-            color: white;
-        }
-    }
-}
-
 .pageTitle {
 	font-family: SeoulNamsan;
 	margin: 25px 0px;
@@ -145,6 +122,7 @@ button {
 @import './layout/footer.scss';
 @import './layout/header.scss';
 
+@import './components/buttons.scss';
 @import './components/guide.scss';
 @import './components/challenge.scss';
 @import './components/markdown.scss';
