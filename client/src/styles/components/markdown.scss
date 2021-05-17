@@ -6,6 +6,8 @@ $boxMargin : 10px;
 $boxPadding : 10px;
 $lBoxPadding : 10px;
 
+$code-color: #f0f0f0;
+
 @mixin box($border-color: gray, $background-color: #f8f8f8, $color: black) {
     background: $background-color 0% 0% no-repeat padding-box;
     border-left: 3px solid $border-color;
@@ -161,7 +163,7 @@ $lBoxPadding : 10px;
         margin-bottom: 15px;
         padding-top: 5px;
         padding-bottom: 15px;
-        border-bottom: 1px #F06498 solid;
+        border-bottom: 1px $primary-color solid;
     }
     
     .subsection {
@@ -170,7 +172,7 @@ $lBoxPadding : 10px;
         padding-left: 20px;
         padding-top: 5px;
         padding-bottom: 10px;
-        border-left: 1px #F06498 solid;
+        border-left: 1px $primary-color solid;
     }
 
     .subsubsection {
@@ -179,7 +181,7 @@ $lBoxPadding : 10px;
         padding-left: 20px;
         padding-top: 5px;
         padding-bottom: 5px;
-        border-left: 1px #F06498 solid;
+        border-left: 1px $primary-color solid;
     }
 
     .section, .subsection, .subsubsection {
@@ -200,7 +202,7 @@ $lBoxPadding : 10px;
         font-family: 'Montserrat', 'SeoulNamsan';
         float: left;
         margin-right: 10px;
-        color: #F06498;
+        color: $primary-color;
     }
 
     .sectionNum {
@@ -224,13 +226,13 @@ $lBoxPadding : 10px;
     hr {
         border: none;
         height: 1px;
-        background-color: #F06498;
-        color:#F06498;
+        background-color: $primary-color;
+        color:$primary-color;
     }
 
     pre {
         padding: 10px;
-        background: #f0f0f0;
+        background: $code-color;
         margin: 10px 0px;
         font-family: 'Roboto Mono', monospace;
         display: flex;
@@ -239,7 +241,7 @@ $lBoxPadding : 10px;
 
     code {
         padding: 0 3px;
-        background-color: #f0f0f0;
+        background-color: $code-color;
     }
 
     blockquote {
@@ -256,12 +258,12 @@ $lBoxPadding : 10px;
         position: relative;
 
         div {
-            @include labeled-box(#F06498,#FFF2F3,black,white);
+            @include labeled-box($primary-color,$primary-color-light,black,white);
             margin: 0px;
         }
 
         summary {
-            @include boxlabel(#F06498,white);
+            @include boxlabel($primary-color,white);
 
             position: initial;
             left: 0;
@@ -276,7 +278,7 @@ $lBoxPadding : 10px;
     }
 
     .exercise {
-        @include labeled-box(#F06498,#FFF2F3,black,white);
+        @include labeled-box($primary-color,$primary-color-light,black,white);
 
         margin-bottom:10px;
     }
