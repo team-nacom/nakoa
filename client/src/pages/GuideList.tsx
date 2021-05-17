@@ -25,7 +25,9 @@ function GuideList() {
         <>
             <Header/>
             <div className='guideBackground' />
-            { isAdmin && <Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link> }
+            <div className='flexbox'>
+                { isAdmin && <span><Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link></span> }
+            </div>
             { categories?.map((category) => {
                 let nowGuides = guides.filter((guide) => guide.category === category);
 
