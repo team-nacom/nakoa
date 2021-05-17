@@ -39,22 +39,6 @@ div.adminBox {
             border-bottom: #A5AAC0 1px solid;
         }
 
-        button {
-            border-radius: 30px;
-            padding: 10px 30px;
-            font-family: Montserrat;
-            border: none;
-
-            &.active {
-                background: #2A97AA 0% 0% no-repeat padding-box;
-                color: black;
-            }
-    
-            &.inactive {
-                background: #F1F2F8 0% 0% no-repeat padding-box;
-                color: #A5AAC0;
-            }
-        }
     }
 
     div.editorBottom {

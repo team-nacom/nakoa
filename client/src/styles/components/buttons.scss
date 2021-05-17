@@ -1,0 +1,33 @@
+
+button {
+    background-color: $main-background;
+    padding: 16px;
+    margin: 8px;
+    border: none;
+    font-family: Montserrat;
+    width: fit-content;
+
+    &.button {
+        margin: 20px;
+        padding: 10px 30px;
+        border: 2px solid #F06498;
+        background: white;
+        color: #F06498;
+        font-size: 14px;
+        border-radius: 27px;
+
+        &:hover {
+            background: #F06498;
+            color: white;
+        }
+    }
+}
+
+
+div.buttonContainer {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    height: 46px;
+    width: fit-content;
+    margin: 0px auto;
+}
