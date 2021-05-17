@@ -67,16 +67,18 @@ a {
 }
 
 
-@import 'admin.scss';
-@import 'basic.scss';
-@import 'blog.scss'; //should be renamed into 'guide.scss'
-@import 'challenge.scss';
-@import 'footer.scss';
-@import 'header.scss';
-@import 'markdown.scss';
-@import 'popup.scss';
-@import 'quiz.scss';
-@import 'signin.scss';
-@import 'signup.scss';
-@import 'table.scss';
-@import 'tabs.scss';
+@import './basic.scss';
+@import './admin.scss';
+
+@import './layout/footer.scss';
+@import './layout/header.scss';
+
+@import './components/blog.scss'; //should be renamed into 'guide.scss'
+@import './components/challenge.scss';
+@import './components/markdown.scss';
+@import './components/popup.scss';
+@import './components/quiz.scss';
+@import './components/signin.scss';
+@import './components/signup.scss';
+@import './components/table.scss';
+@import './components/tabs.scss';
