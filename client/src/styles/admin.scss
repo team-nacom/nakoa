@@ -1,5 +1,5 @@
 @import './consts.scss';
-
+@import './components/popup.scss';
 
 div.adminBox {
     box-shadow: 0px 3px 20px #0000004D;
@@ -206,4 +206,20 @@ button.autoRenderBtn.autoRenderActive{
 .dropzone * {
     margin-left: 30px;
     cursor: pointer;
+}
+
+div.manualShadow {
+    @include popupShadow;
+}
+
+div.manualContainer {
+    @include popupContainer(
+        unquote('min(calc(100%),768px)'),
+        unquote('min(calc(80%),640px)'),
+        scroll
+    );
+    
+    div.manualHeader {
+        @include popupHeader(20px 0px 50px 0px);
+    }
 }

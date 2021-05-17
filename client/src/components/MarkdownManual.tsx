@@ -19,10 +19,10 @@ function MarkdownManual({visible, setVisible} : PopupProps) {
     if(!visible) return <></>;
     else return (
         <>
-            <div className='popupShadow' onClick={() => setVisible(false) }></div>
-            <div className='popupContainer previewArea'>
+            <div className='manualShadow' onClick={() => setVisible(false) }></div>
+            <div className='manualContainer previewArea'>
                 <span className='material-icons backButton link' onClick={() => setVisible(false)}> arrow_back </span>
-                <div className='popupHeader'> 편집기 문법 가이드 </div>
+                <div className='manualHeader'> 편집기 문법 가이드 </div>
                 <MarkdownRenderer>
                     { manual }
                 </MarkdownRenderer>

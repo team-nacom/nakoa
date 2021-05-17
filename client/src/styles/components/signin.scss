@@ -2,31 +2,18 @@
 @import './popup.scss';
 
 div.signinShadow {
-    @extend div.popupShadow;
+    @include popupShadow;
 }
 
 div.signinContainer {
-    @extend div.popupContainer;
-    
-    width: 461px;
-    height: 493px;
-//    padding: 40px;
-    // border-top: 59px solid #313131;
-
-    overflow-x: auto;
-    overflow-y: auto;
+    @include popupContainer(460px, 460px, auto);
 
     @media (max-width: 461px) {
         width: 100%;
     }
 
     div.signinHeader {
-        width: 100%;
-        font-size: 30px;
-        font-weight: 500;
-        color: #000000;
-        text-align: center;
-        margin: 35px 0px 35px 0px;
+        @include popupHeader(35px 0px 35px 0px);
     }
 
     input.signinForm {
@@ -41,14 +28,6 @@ div.signinContainer {
         box-sizing: border-box;
         border-radius: 9px;
     }
-
-    // .insideIcon {
-    //     top: -46px;
-    //     left: 365.39px;
-    //     position: relative;
-    //     font-size: 24px;
-    //     height: 0px;
-    // }
 
     .helpText {
         width: 100%;

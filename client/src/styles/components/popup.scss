@@ -1,6 +1,6 @@
 @import '../consts.scss';
 
-div.popupShadow {
+@mixin popupShadow {
     position: fixed;
     left: 0;
     top: 0;
@@ -11,13 +11,23 @@ div.popupShadow {
     margin: 0 !important;
 }
 
-div.popupContainer {
+@mixin popupHeader($margin) {
+    width: 100%;
+    font-size: 30px;
+    font-weight: 500;
+    color: #000000;
+    text-align: center;
+    // margin: 20px 0px 35px 0px;
+    margin: $margin;
+}
+
+@mixin popupContainer($width, $height, $overflow-y) {
     position: fixed;
     left: calc(50%);
     top: calc(50%);
     transform: translate(-50%, -50%);
-    width: unquote('min(calc(100%),768px)');
-    height: unquote('min(calc(80%),640px)');
+    width: $width;
+    height: $height;
     background: white;
 
     box-shadow: 0 0 50px #00000080;
@@ -27,7 +37,7 @@ div.popupContainer {
     padding: 40px;
 
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: $overflow-y;
 
     .backButton {
         position: absolute;
@@ -37,18 +47,5 @@ div.popupContainer {
         width: 40px;
         color: black;
         font-size: 40px;
-    }
-
-    div.popupHeader {
-        // position: fixed;
-        // left: 0;
-        // top: 0;
-
-        width: 100%;
-        font-size: 30px;
-        font-weight: 500;
-        color: #000000;
-        text-align: center;
-        margin: 20px 0px 35px 0px;
     }
 }
