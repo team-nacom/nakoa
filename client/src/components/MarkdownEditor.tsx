@@ -235,7 +235,9 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
-                    } } >자동 갱신 { autoRender? '켜짐' : '꺼짐'}</button>
+                    } } >
+                        <span className="material-icons">{autoRender ? "sync" : "sync_disabled"}</span>
+                    </button>
                 </PanelMenu>
                 <div style={ {clear:'both'} } />
             </div>
@@ -275,7 +277,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             </div>
 
             <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
-                ?
+                <span className="material-icons">help_outline</span>
             </button>
         </div>
         <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
