@@ -73,12 +73,11 @@ a {
 @import './layout/footer.scss';
 @import './layout/header.scss';
 
-@import './components/blog.scss'; //should be renamed into 'guide.scss'
+@import './components/guide.scss';
 @import './components/challenge.scss';
 @import './components/markdown.scss';
 @import './components/popup.scss';
 @import './components/quiz.scss';
 @import './components/signin.scss';
 @import './components/signup.scss';
-@import './components/table.scss';
 @import './components/tabs.scss';
