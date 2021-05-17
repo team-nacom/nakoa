@@ -6,10 +6,10 @@ $boxMargin : 10px;
 $boxPadding : 10px;
 $lBoxPadding : 10px;
 
-.box {
-    background: #f8f8f8 0% 0% no-repeat padding-box;
-    border-left: 3px solid gray;
-    color: #000000;
+@mixin box($border-color: gray, $background-color: #f8f8f8, $color: black) {
+    background: $background-color 0% 0% no-repeat padding-box;
+    border-left: 3px solid $border-color;
+    color: $color;
 
     height: fit-content;
     position: relative;
@@ -20,18 +20,18 @@ $lBoxPadding : 10px;
     // margin-bottom: $boxMargin;
 }
 
-.labeledBox {
-    @extend .box;
+@mixin labeled-box($border-color: gray, $background-color: #f8f8f8, $color: black, $label-color:white) {
+    @include box($border-color,$background-color, $color);
 
     box-sizing: border-box;
     margin-top: 25px + $boxMargin; //25px = text height + 2*label padding.
     padding: $lBoxPadding;
-}
-.labeledBox .label{
-    @extend .boxlabel;
-}
 
-.boxlabel{
+    .label{
+        @include boxlabel($border-color, $label-color);
+    }
+}
+@mixin boxlabel($background-color: gray, $color: white) {
     position: relative;
     left: -3px - $lBoxPadding;
     top: -25px - $lBoxPadding; //same 25px
@@ -40,7 +40,9 @@ $lBoxPadding : 10px;
     font-size: 15px;
     line-height: 15px;
     margin-bottom: -25px;
-    color: white;
+
+    background-color: $background-color;
+    color: $color;
 }
 
 /////////////////////////////////
@@ -228,7 +230,7 @@ $lBoxPadding : 10px;
 
     pre {
         padding: 10px;
-        background: #e0e0e0;
+        background: #f0f0f0;
         margin: 10px 0px;
         font-family: 'Roboto Mono', monospace;
         display: flex;
@@ -237,20 +239,15 @@ $lBoxPadding : 10px;
 
     code {
         padding: 0 3px;
-        background-color: #e0e0e0;
+        background-color: #f0f0f0;
     }
 
     blockquote {
-        @extend .box;
-        background-color: #f8f8f8;
-        border-color: gray;
+        @include box(gray,#f8f8f8,black);
     }
 
     .textframe {
-        @extend .box;
-        background-color: lightyellow;
-        border-color: darkorange;
-        color: black;
+        @include box(darkorange,lightyellow,black);
     }
 
     details {
@@ -259,23 +256,12 @@ $lBoxPadding : 10px;
         position: relative;
 
         div {
-            @extend .labeledBox;
-            background-color: #FFF2F3;
-            border-color: #F06498;
-            color: black;
-
-            // box-sizing: border-box;
-            // padding: 20px;
+            @include labeled-box(#F06498,#FFF2F3,black,white);
             margin: 0px;
-
-            // padding: 10px;
         }
 
         summary {
-            @extend .boxlabel;
-            font-family: 'Montserrat', 'SeoulNamsan';
-            background: #F06498;
-            color: white;
+            @include boxlabel(#F06498,white);
 
             position: initial;
             left: 0;
@@ -290,25 +276,14 @@ $lBoxPadding : 10px;
     }
 
     .exercise {
-        @extend .labeledBox;
-        background-color: #FFF2F3;
-        border-color: #F06498;
-        color: black;
+        @include labeled-box(#F06498,#FFF2F3,black,white);
 
         margin-bottom:10px;
-    }
-    .exercise .label{
-        @extend .boxlabel;
-        font-family: 'Montserrat', 'SeoulNamsan';
-        background: #F06498;
     }
 }
 
 .toc {
-    @extend .labeledBox;
-    background-color: #F9FFEF;
-    border-color: #A8CB61;
-    color: #A8CB61;
+    @include labeled-box(#A8CB61,#F9FFEF,#A8CB61,white);
 
     white-space: pre-line;
     word-break: break-all;
@@ -346,10 +321,4 @@ $lBoxPadding : 10px;
         margin-top: 0px;
         margin-bottom: 0px;
     }
-}
-.toc .label {
-    @extend .boxlabel;
-    background-color: #A8CB61;
-
-    font-family: 'Montserrat', 'SeoulNamsan';
 }
