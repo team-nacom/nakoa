@@ -27,6 +27,7 @@ const SectionPriorityHandler : Plugin = () => {
                     
                     if(h !== -1 && [undefined,'#','##','###','####','#####','######'].indexOf(str.slice(0,h)) !== -1 ){ //indexOf result should be equal to h
                         for(var j = 0; j< node.children.length; j++){
+                            if(!node.children[j].value) continue;
                             const k = node.children[j].value.indexOf('\n');
                             if(k !== -1){
                                 const N = {
@@ -44,7 +45,7 @@ const SectionPriorityHandler : Plugin = () => {
                             }
                         }
 
-                        node.children[0].value = str.slice(h + marker.length).trimStart();
+                        node.children[0].value = node.children[0].value.slice(h + marker.length).trimStart();
                         node.type = 'heading';
                         node.depth = h;
                         node.data = {
