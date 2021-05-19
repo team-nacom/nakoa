@@ -21,7 +21,7 @@ const dateString = (date: Date) => {
 
 function ChallengeView({ match }: Props) {
     const id = Number.parseInt(match.params.id);
-    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
+    let [problemLoading, problem] = usePromise(() => getChallInfo(id));
     let time = React.useMemo(() => new Date(), []);
     let problemOpenTime = React.useMemo(() => new Date(problem ? problem.problemOpenDate: 0), [problem]);
 

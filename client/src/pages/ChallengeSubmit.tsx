@@ -23,7 +23,7 @@ $n^2$와 같이 수식을 작성할 수 있으며, markdown 형식을 사용할 
 
 function ChallengeSubmit({ match }: Props) {
     const id = Number.parseInt(match.params.id);
-    let [problemLoading, problem, problemError] = usePromise(() => getChallInfo(id));
+    let [problemLoading, problem] = usePromise(() => getChallInfo(id));
 
     if (problemLoading) return <Loading/>;
     else return (

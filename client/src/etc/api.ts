@@ -1,5 +1,6 @@
 import Axios from 'axios';
-import store from 'store';
+import { useSelector } from 'react-redux';
+import store, { RootReducer } from 'store';
 import { clearUser, setUser } from 'store/user';
 import config from './config';
 
@@ -85,8 +86,18 @@ export const setUserInfo = async () => {
     else store.dispatch(clearUser());
 }
 
+export const isLoggedIn = () => {
+    return store.getState().user.loggedIn;
+}
+
 export const isAdmin = () => {
     return store.getState().user?.email === config.adminEmail;
+}
+
+export const useIsAdmin = () => {
+    let email = useSelector((state: RootReducer) => state.user.email);
+
+    return email === config.adminEmail;
 }
 
 export interface LoginData {
@@ -116,34 +127,73 @@ export const logout = async () => {
     };
 }
 
-interface GuideType {
-    index: number;
+export interface GuideType {
+    index?: number;
     name: string;
     content: string;
     priority: number;
+    isPublic?: boolean;
+    category: string;
+    section: string;
+    authors: string[];
 }
 
 export const getGuides = async () => {
-    let response = await Axios.get(`${apiAddress}/guide`);
+    let response = await Axios.get(`${apiAddress}/guide`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType[];
 }
 
+export const getGuideMaxIndex = async () => {
+    let response = await Axios.get(`${apiAddress}/guide/indices`);
+
+    return response.data;
+}
+
 export const getGuide = async (id: number) => {
-    let response = await Axios.get(`${apiAddress}/guide/${id}`);
+    let response = await Axios.get(`${apiAddress}/guide/${id}`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType;
 }
 
 export const postGuide = async (data: GuideType) => {
-    let response = await Axios.post(`${apiAddress}/guide`, data, { validateStatus: authValidateStatus, withCredentials: true });
+    if (data.isPublic === undefined) data.isPublic = true;
+    
+    let response = await Axios.post(`${apiAddress}/guide`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return {
+        success: response.status < 300,
+        index: response.data.index,
+    };
+}
+
+export const editGuide = async (index: number, data: GuideType) => {    
+    data.index = index;
+    delete data.isPublic;
+    
+    let response = await Axios.put(`${apiAddress}/guide/${index}`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.status < 300;
 }
 
-export const postTempGuide = async (data: GuideType) => {
-    console.log('Now trying(?) to auto-save..');
-    console.log('Title: ', data.name);
-    console.log('Content: ', data.content);
-    // This will be written after server-side draft logic is done.
+export const removeGuide = async (id: number) => {
+    let response = await Axios.delete(`${apiAddress}/guide/${id}`, { withCredentials: true })
+
+    return response.status < 300;
 }
+
+//export const postTempGuide = async (data: GuideType) => {
+    // This will be written after server-side draft logic is done.
+//}

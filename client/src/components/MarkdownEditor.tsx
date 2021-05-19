@@ -1,99 +1,287 @@
-import React, { useState, Component } from 'react';
+import React, { useState, useRef, useEffect, Component } from 'react';
 import styled from 'styled-components';
+import { useDropzone } from 'react-dropzone';
 
 import { useMediaQuery } from 'react-responsive';
 
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown/MarkdownRenderer';
+// import { readBuilderProgram } from 'typescript';
+import MarkdownManual from './MarkdownManual';
 
-function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
+import { fileUpload, imgUpload } from '../etc/FileUpload'
+
+const usePrevious = <T extends unknown>(value: T): T | undefined => {
+    const ref = useRef<T>();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+
+function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
-        <textarea {...props} />
-        // className={ (props.className || '') + ' markdownArea' }
+        <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
+        // className={ (props.className || '') + ' editorArea' }
     )
 }
 
-function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
+const MemoizedRenderer = React.memo(MarkdownRenderer);
+function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
     return(
         <div {...props} />
-        // className={ (props.className || '') + ' previewArea' }
     )
 }
 
-interface PanelProps extends React.HTMLAttributes<HTMLElement>{
-    collapse: boolean;
-    activeIndex: number | string;
-    index: number | string;
-}
 
-function Panel({children, collapse, activeIndex, index, ...other} : PanelProps){
+
+interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
+
+function Panel({children, ...other} : PanelProps){
     return(
-        <div style={ {
-            float: 'left',
-            width: collapse? '100%' : '50%',
-            display: (collapse && activeIndex !== index) ? 'none' : 'flex'
-        } }>
+        <div className={ other.className }>
             { children }
         </div>
     )
 }
 
 interface PanelMenuProps extends React.HTMLAttributes<HTMLElement>{
-    collapse: boolean;
-    activeIndex: number | string;
-    index: number | string;
-    callback: (newActiveIndex : number | string) => void;
+    callback: () => void;
+    label: string;
 }
 
-function PanelMenu({children, collapse, activeIndex, index, callback, ...other} : PanelMenuProps){
+function PanelMenu({children, label, callback, ...other} : PanelMenuProps){
     return(
+        <div className={ other.className } onClick = { (e) => callback() }>
+            <label>{ label }</label>
+            { children }
+        </div>
+    );
+}
+
+interface FileDropzoneProps {
+    handleDrop: (acceptedFiles: File[]) => void;
+    message?: string;
+};
+
+function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
+    const onDrop = React.useCallback(handleDrop, []);
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+  
+    return (
         <>
-            <div className = 'panelMenuWrapper' style={ {
-                float: 'left',
-                width: collapse? 'auto' : '50%',
-            } }>
-                <button
-                className = { 'panelMenu' + ((collapse && activeIndex === index) ? ' selected' : '') }
-                onClick = { (e)=> { callback(index) } }
-                disabled = { !collapse }>
-                    { children }
-                </button>
-            </div>
+            <label {...getRootProps()}>{ message }</label>
+            <input {...getInputProps()} />
         </>
     )
-}
+  }
 
 interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     body?: string;
-    collapse?: boolean;
-    update: (c : string) => void //can we do this w/o callback?
+    update?: (c : string) => void //can we do this w/o callback?
 }
 
-function MarkdownEditor({ body, collapse, update, ...other } : EditorProps) {
+function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [value,setValue] = useState(body || '');
-    const [activeIndex,setActiveIndex] = useState(1 as number | string);
-    let _collapse = useMediaQuery({ query: `(max-width:768px)` }) || collapse || false;
-    // collapse priority: mobile true > argument > default false(i.e. parallel)
+    const [previewValue,setPreviewValue] = useState(body || '');
+    const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
+    const [manualVisible,setManualVisible] = useState(false);
 
-    const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
-        setValue(e.target.value);
-        update(e.target.value);
+    const preview = () => { setPreviewValue(value) }
+
+    let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
+    const prevCollapse = usePrevious(collapse);
+    useEffect(()=>{
+        if(prevCollapse && !collapse){
+            preview();
+        }
+    }, [collapse])
+
+    const [autoRender,setAutoRender] = useState(true);
+
+    const insertText = (text : string) => {
+        const isSuccess = document.execCommand('insertText', false, text);
+
+        if(!isSuccess){
+            const mdArea = document.getElementsByTagName('textarea')[0] as HTMLTextAreaElement;
+
+            if(!mdArea) return;
+
+            // source: https://kubyshkin.name/posts/insert-text-into-textarea-at-cursor-position/
+            const st = mdArea.selectionStart;
+            const ed = mdArea.selectionEnd;
+
+            mdArea.setRangeText(text, st, ed);
+            mdArea.selectionStart = mdArea.selectionEnd = st + text.length;
+
+            // notify to event listeners
+            const e = document.createEvent('UIEvent');
+            e.initEvent('input',true,false);
+            mdArea.dispatchEvent(e);
+        }
     }
 
-    return (
-        <>
-            <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={1} callback = { setActiveIndex }>편집</PanelMenu>
-            <PanelMenu collapse = { _collapse } activeIndex={ activeIndex } index={2} callback = { setActiveIndex }>미리보기</PanelMenu>
-            <Panel collapse = { _collapse } activeIndex={ activeIndex } index={1} >
-                <MarkdownArea {...other} className={ `${other.className || ''} markdownArea` } placeholder='Markdown 및 LaTeX 수식 입력 가능' onChange={ innerUpdate } value = { value } />
-            </Panel>
-            <Panel collapse = { _collapse } style={ { float: 'right'} } activeIndex={ activeIndex } index={2}>
-                <PreviewArea className='blog previewArea'>
-                    <MarkdownRenderer style={ {padding: '4px'} } source={ value } />
-                </PreviewArea>
-            </Panel>
-            <div style={ {clear:'both'} }></div>
-        </>
-    );
+    const valueUpdate = (v : string) => {
+        setValue(v);
+        if(update){
+            update(v);
+        }
+    }
+
+    const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        //can we prevent double rendering??
+        valueUpdate(e.target.value);
+        if(!collapse && autoRender){
+            setPreviewValue(e.target.value);
+        }
+    }
+
+    const pasteHandler = async (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
+    handler : {
+        let text = e.clipboardData.getData('text/plain');
+        if(text){
+            insertText(text);
+            break handler;
+        }
+
+        // images
+        for(const item of e.clipboardData.items){
+            if(item.type.indexOf('image') === 0){ //image detected
+                const blob = item.getAsFile();
+                if(blob == null) continue;
+
+                imgUploadHandler(blob);
+                break handler;
+            }
+        }
+    }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    const imgUploadHandler = async (file: File) => {
+        try{
+            const imgUrl = await imgUpload(file);
+            insertText(`\n![](${ imgUrl })\n`);
+        } catch (error){
+            // img uploading error handler
+            alert('이미지 업로드에 실패했습니다.');
+        }
+
+        return;
+    }
+
+    const fileUploadHandler = async (file: File) => {
+        try{
+            const fileUrl = await fileUpload(file);
+            insertText(`[💾 ${ file.name }](${ fileUrl })`);
+        } catch (error){
+            // file uploading error handler
+            alert('파일 업로드에 실패했습니다.');
+        }
+
+        return;
+    }
+
+    const [height,setHeight] = useState(400);
+    const [y,setY] = useState(0);
+    const [drag,setDrag] = useState(false);
+    const resizeMouseMove = (e : MouseEvent) => {
+        if(!drag) return;
+
+        const dy = e.clientY - y;
+        setY(e.clientY);
+        setHeight( Math.min(Math.max(300,height + dy),800) );
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const resizeMouseUp = (e : MouseEvent) => {
+        setDrag(false);
+        document.body.style.removeProperty('cursor');
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const resizeMouseDown = (e : React.MouseEvent) => {
+        setDrag(true);
+        document.body.style.cursor = 'ns-resize';
+        
+        setY(e.clientY);
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    useEffect(() => {
+        if(drag){
+            document.addEventListener('mousemove',resizeMouseMove);
+            document.addEventListener('mouseup',resizeMouseUp);
+        }
+
+        return () => {
+            document.removeEventListener('mousemove',resizeMouseMove);
+            document.removeEventListener('mouseup',resizeMouseUp);
+        }
+    },[drag]);
+    // });
+
+    return (<>
+        <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
+            <div>
+                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }> </PanelMenu>
+                <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
+                    <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
+                        setAutoRender(!autoRender);preview()
+                    } } >
+                        <span className="material-icons">{autoRender ? "sync" : "sync_disabled"}</span>
+                    </button>
+                </PanelMenu>
+                <div style={ {clear:'both'} } />
+            </div>
+            <div className='panelWrapper' style={ {height: height} }>
+                <Panel className='panel1'>
+                    <EditorArea
+                        {...other}
+                        className={ `${other.className || ''} editorArea` } 
+                        onChange={ innerUpdate }
+                        onPaste={ pasteHandler }
+                        value = { value }
+                    />
+                </Panel>
+                <Panel className='panel2'>
+                    <PreviewArea className='previewArea'>
+                        <MemoizedRenderer>
+                            { previewValue }
+                        </MemoizedRenderer>
+                    </PreviewArea>
+                </Panel>
+                <div
+                    className='resizer'
+                    style={ {
+                        clear:'both',
+                        width: '100%',
+                        height:'10px',
+                        cursor: 'ns-resize'
+                    } }
+                    onMouseDown={ resizeMouseDown }
+                />
+            </div>
+            
+
+            <div className='dropzone'>
+                <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
+                <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
+            </div>
+
+            <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
+                <span className="material-icons">help_outline</span>
+            </button>
+        </div>
+        <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
+    </>);
 }
 
 export default MarkdownEditor;

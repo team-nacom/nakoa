@@ -1,5 +1,5 @@
 import React from 'react';
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 interface Props {
     id: number;
@@ -10,7 +10,7 @@ interface Props {
 
 function Exercise({ id, title, content, answer } : Props) {
     return (
-        <div className='exercise box'>
+        <div className='exercise'>
             <div className='label'>
                 { `Exercise ${id}` }
             </div>
