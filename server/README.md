@@ -25,16 +25,8 @@ MODE=production
 DB_CONN=mongodb+srv://<username>:<password>@cluster0.frhrs.mongodb.net/<dbname>?retryWrites=true&w=majority
 ```
 
-If you want to use local MongoDB, change `DB_CONN` respectively. Server will connect to `nacom` collection. refer to `server/src/setup/atlas.ts` for detail.
+You also can use your local mongodb. Put your connection string to `DB_CONN`. Server will connect to `nacom` collection. Refer to `server/src/setup/atlas.ts` for detail.
 
-Fully configured developer's `server/.env` will look like this:
-```
-DB_USER=username
-DB_PASS=password1234
-S3_BUCKET=nacom-dev
-USE_LOCAL_DB=true
-LOCAL_DB_STR=dbstring
-```
 
 ## How to run
 

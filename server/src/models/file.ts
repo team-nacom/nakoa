@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 import { PutObjectCommand, PutObjectCommandInput, GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
-import { s3, BUCKET, connected } from "../setup/aws";
+import { s3, BUCKET, connectedPromise } from "../setup/aws";
 
 export interface FileDocument extends Document {
     path: string,
@@ -19,7 +19,7 @@ const fileSchema = new Schema<FileDocument>({
 export default model<FileDocument>('File', fileSchema, 'files');
 
 export async function uploadFileToS3(path: string, fileStream: Buffer, type: string): Promise<void> {
-    if(!connected) throw Error("S3 not connected. Cannot upload file to S3.");
+    if(! (await connectedPromise)) throw Error("S3 not connected. Cannot upload file to S3.");
     const params: PutObjectCommandInput = {
         Bucket: BUCKET,
         ACL: 'public-read',

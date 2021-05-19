@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 
+import { rootUrlPromise } from "../setup/aws";
 import File, { uploadFileToS3 } from '../models/file';
 import { checkAdminMiddleware } from "../utils";
 
@@ -14,13 +15,13 @@ const router = new Router();
 
 router.post('/upload', checkAdminMiddleware);
 router.post('/upload', async (ctx) => {
-
     const folder = ctx.request.body.folder;
     //@ts-ignore
     const file: any = ctx.request.files?.file;
 
     if(!folder || !file){
-        throw createHttpError(400);
+        // console.error(folder, file);
+        throw createHttpError(400, `Invalid form (folder: ${folder}, file: ${file}`);
     }
 
     const randomKey = nanoid();
@@ -34,8 +35,8 @@ router.post('/upload', async (ctx) => {
     const doc = new File({ path: s3Path, mime: file.type });
     await doc.save();
 
-    console.log(`Successfully uploaded ${file.path} of type ${file.type} to ${s3Path}`);
-    ctx.body = s3Path;
+    console.log(`Successfully uploaded ${file.path} of type ${file.type} on ${s3Path}`);
+    ctx.body = (await rootUrlPromise) + s3Path;
 });
 
 export default router;

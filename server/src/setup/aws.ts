@@ -1,7 +1,6 @@
 // Import required AWS SDK clients and commands for Node.js
 import { S3Client, PutObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { fromIni } from "@aws-sdk/credential-provider-ini"
-import pathlib from "path";
 
 // Set the AWS region
 const REGION = "ap-northeast-2"; // SEOUL
@@ -10,12 +9,12 @@ export const BUCKET = process.env.S3_BUCKET;
 // Create an S3 client service object
 export const s3 = new S3Client({
   region: REGION,
-  credentials: fromIni({profile: 'nacom'})
+  credentials: fromIni({profile: BUCKET})
 });
 
 async function initialRun() {
   if(!BUCKET){
-    console.log("Not connecting to S3 bucket...");
+    console.log("Not connecting to S3 bucket... Perhaps you're missing .env file?");
     return false;
   }
   console.log(`Trying to connect to ${BUCKET}...`);
@@ -23,13 +22,26 @@ async function initialRun() {
     const data = await s3.send(new ListObjectsCommand({
       Bucket: BUCKET,
     }));
-    console.log("Initial S3 connection successful!");
+    console.log(`Initial S3 connection to ${BUCKET} successful!`);
     return true;
   } catch (err) {
-    console.error("Error on initial S3 connection");
+    console.error(`Error on initial S3 connection to ${BUCKET}`);
     console.error(err);
     return false;
   }
 };
 
-export const connected = initialRun();
+async function getRootUrl() {
+  if(!BUCKET){
+    console.log("Not connected to S3 bucket... Perhaps you're missing .env file?");
+    return "";
+  }
+  let endpoint = await s3.config.endpoint();
+  // i.e. https:// nacom-dev . s3.ap-northeast-2.amazonaws.com / 
+  let result = `${endpoint.protocol}${BUCKET}.${endpoint.hostname}${endpoint.path}`;
+
+  return result;
+}
+
+export const connectedPromise : Promise<boolean> = initialRun();
+export const rootUrlPromise : Promise<string> = getRootUrl();
