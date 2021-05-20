@@ -19,14 +19,18 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
+import SectionEnumerator, { SectionRenderer, SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
-function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
+interface RendererOptionProps{
+    isManual?: boolean
+}
+
+function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
     const plugins : PluggableList = [
         GFM,
         Math,
@@ -51,13 +55,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
                 </div>
             </>
         ),
-        toc: (p: any) => (
-            <div className='toc'>
-                <div id='toc-label' className='label'> Contents </div>
-                { p.children }
-            </div>
-        ),
-        section: SectionRenderer,
+        toc: TocRendererFactory(props.isManual),
+        section: SectionRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,

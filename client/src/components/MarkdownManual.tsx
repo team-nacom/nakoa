@@ -23,7 +23,7 @@ function MarkdownManual({visible, setVisible} : PopupProps) {
             <div className='manualContainer previewArea'>
                 <span className='material-icons backButton link' onClick={() => setVisible(false)}> arrow_back </span>
                 <div className='manualHeader'> 편집기 문법 가이드 </div>
-                <MarkdownRenderer>
+                <MarkdownRenderer isManual={ true }>
                     { manual }
                 </MarkdownRenderer>
             </div>
