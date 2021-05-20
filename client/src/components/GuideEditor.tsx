@@ -21,7 +21,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
     let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
     let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') ?? _author ?? '');
     let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 5);
+    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
     let isAdmin = useIsAdmin();

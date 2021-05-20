@@ -12,6 +12,8 @@ interface GuideSectionProps {
     guides: GuideType[];
 };
 
+let priorityString = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
+
 function GuideSection({ index, title, guides } : GuideSectionProps) {
     return (
         <>
@@ -23,7 +25,8 @@ function GuideSection({ index, title, guides } : GuideSectionProps) {
                 { guides.map((guide) => (
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
-                            <span style={{flexGrow: 1}}> { guide.name } </span>
+                            <span className='title'> { guide.name } </span>
+                            <span className='priority'> { priorityString[guide.priority] } </span>
                         </div>
                     </Link> 
                 ))}
