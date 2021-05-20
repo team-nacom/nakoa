@@ -17,7 +17,8 @@ function GuideList() {
 
     let sections = React.useMemo(() => {
         if (!guides) return;
-        return [...new Set(guides.map(x => [x.category, x.section] as [string, string] ))];
+
+        return [...new Set(guides.map(x => x.section ))];
     }, [guides]);
 
     if (guidesLoading) return <Loading/>;
@@ -35,7 +36,8 @@ function GuideList() {
                     <div key={category} className='guideList'>
                         <h1> { category || '분류되지 않음' } </h1>
                         <div className='guideListContainer'>
-                            { sections?.filter(([c, s]) => c === category).map(([c, section], k) => (
+                            { sections?.filter((section) => nowGuides.filter((guide) => section === guide.section).length > 0)
+                                       .map((section, k) => (
                                 <div className='guideListItemContainer'>
                                     <div className='guideListSection'>
                                         <span className='index'> { k+1 } </span>
