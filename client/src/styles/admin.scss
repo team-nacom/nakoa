@@ -15,6 +15,7 @@ div.adminBox {
         input, select {
             padding: 15px;
             margin: 10px;
+            box-sizing: border-box;
     
             font-size: 16px;
             font-weight: 300;
@@ -26,20 +27,30 @@ div.adminBox {
             opacity: 1;
         }
 
-
-        input.title {
-            padding: 15px;
-            margin: 10px 0px;
-    
-            font-size: 16px;
-            font-weight: 300;
-            width: calc(100% - 30px);
-            background: none;
-            border: none;
-            border-radius: 0;
-            border-bottom: #A5AAC0 1px solid;
+        @media (max-width: 648px) {
+            width: 100%;
+            input, select { width: 90%; }
         }
+        @media (min-width: 649px) and (max-width: 1200px) {
+            width: 50%;
+            input, select { width: 90%; }
+        }
+        // @media (min-width: 1201px) {
+        //     width: 25%;
+        // }
+    }
 
+    input.title {
+        padding: 15px;
+        margin: 10px 0px;
+
+        font-size: 16px;
+        font-weight: 300;
+        width: 100%; // calc(100% - 30px);
+        background: none;
+        border: none;
+        border-radius: 0;
+        border-bottom: #A5AAC0 1px solid;
     }
 
     div.editorBottom {
@@ -90,6 +101,7 @@ div.adminBox {
     align-items: center;
 
     width: calc(50% - 30px);
+    height: 35px;
     margin-left: 30px;
 
     label {
@@ -132,6 +144,10 @@ button.showManualBtn{
     @include roundButton;
 
     margin-left: auto;
+
+    @media (max-width: $max-mobile-width) {
+        margin-right: 0;
+    }
 }
 button.autoRenderBtn{
     @include roundButton;
