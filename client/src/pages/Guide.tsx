@@ -34,7 +34,7 @@ function Guide({ match } : Props) {
                 { isAdmin && 
                     <button className='button' onClick={async (e) => {
                         e.preventDefault();
-                        if (await removeGuide(id)) {
+                        if (window.confirm('정말 삭제하시겠습니까?') && await removeGuide(id)) {
                             setRedirectToList(true);
                         }
                     }}>
@@ -56,7 +56,7 @@ function Guide({ match } : Props) {
             { guide ? (
                 <GuideView guide={guide} />
             ) : (
-                <p> 해당 가이드가 존재하지 않습니다. </p>
+                <p> 존재하지 않는 가이드입니다. </p>
             )}
             <Footer />
         </>
