@@ -15,14 +15,17 @@ interface GuideSectionProps {
 let priorityString = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
 
 function GuideSection({ index, title, guides } : GuideSectionProps) {
+    let [isCollapsed, setIsCollapsed] = React.useState(true);
+
     return (
         <>
-            <div className='guideListItemContainer'>
-                <div className='guideListSection'>
+            <div className='guideListItemContainer link'>
+                <div className='guideListSection' onClick={(e) => { e.preventDefault(); setIsCollapsed(!isCollapsed); }}>
                     <span className='index'> { index } </span>
                     <span className='title'>  { title } </span>
+                    <span className='collapseButton material-icons'> { isCollapsed ? 'expand_more' : 'expand_less' } </span>
                 </div>
-                { guides.map((guide) => (
+                { !isCollapsed && guides.map((guide) => (
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
                             <span className='title'> { guide.name } </span>
