@@ -86,9 +86,16 @@ div.adminBox {
 }
 .panelMenu1, .panelMenu2 {
     float: left;
-    display: block;
+    display: flex;
+    align-items: center;
+
     width: calc(50% - 30px);
     margin-left: 30px;
+
+    label {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 }
 
 .collapse.active1 {
@@ -124,11 +131,12 @@ div.adminBox {
 button.showManualBtn{
     @include roundButton;
 
-    position: relative;
-    top: -27px;
+    margin-left: auto;
 }
 button.autoRenderBtn{
     @include roundButton;
+
+    margin-left: auto;
 }
 button.autoRenderBtn.autoRenderActive{
     background-color: $primary-color;
