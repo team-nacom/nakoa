@@ -41,9 +41,10 @@ const SectionEnumerator : Plugin = () => {
             switch(child.type){
             case 'heading':
                 child.type = 'section';
+                child.numbering = [];
 
-                // skip unnumbered(priority 0)
-                if(child.data?.priority === 0){
+                // skip unnumbered(priority -1)
+                if(child.data?.priority === -1){
                     continue;
                 }
 
@@ -101,12 +102,14 @@ const SectionRenderer = (p : any) => {
     if(n.copied){ //toc
         return (        
             <div className={ hnames[n.depth] }>
-                <HashLink
-                    to={ '#heading-'+n.numbering.join('-') }
-                    className={ hnames[n.depth] + 'Num' }
-                >
-                    { n.numbering.join('.')+'.' }
-                </HashLink>
+                { n.data.priority !== -1 &&
+                    <HashLink
+                        to={ '#heading-'+n.numbering.join('-') }
+                        className={ hnames[n.depth] + 'Num' }
+                    >
+                        { n.numbering.join('.')+'.' }
+                    </HashLink>
+                }
                 {/* <div className={ hnames[n.depth] + 'Num' }>
                     { n.numbering.join('.') }
                 </div> */}
@@ -117,12 +120,14 @@ const SectionRenderer = (p : any) => {
     else{ //contents
         return (        
             <div className={ hnames[n.depth] }>
-                <HashLink
-                    to='#toc-label' id={ 'heading-'+n.numbering.join('-') }
-                    className={ hnames[n.depth] + 'Num' }
-                >
-                    { n.numbering.join('.')+'.' }
-                </HashLink>
+                { n.data.priority !== -1 &&
+                    <HashLink
+                        to='#toc-label' id={ 'heading-'+n.numbering.join('-') }
+                        className={ hnames[n.depth] + 'Num' }
+                    >
+                        { n.numbering.join('.')+'.' }
+                    </HashLink>
+                }
                 { [ React.createElement( htags[n.depth], {children: n.children}) ] }
                 <span style={ {fontSize:'10px'} }>
                     { priorityTags[n.data.priority] }

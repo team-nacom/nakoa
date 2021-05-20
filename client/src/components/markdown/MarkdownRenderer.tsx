@@ -148,7 +148,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
                 <p>렌더링 실패, 다시 시도해 보세요.</p>
             </div>
         ) } onError = {
-            (error: Error) => { } // may do some error handling
+            (error: Error) => { console.log(error) } // may do some error handling
         } resetKeys={[props.children]} >
             <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
         </ErrorBoundary>
