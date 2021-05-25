@@ -57,5 +57,15 @@ router.delete('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
   ctx.body = "Success";
 })
 
+// Get list of all categories
+router.get('/category', async (ctx) => {
+  ctx.body = await Guide.distinct('category');
+});
+
+// Get list of all sections in given category
+router.get('/category/:name', async (ctx) => {
+  ctx.body = await Guide.distinct('section', { category: ctx.params.name });
+});
+
 
 export default router;
