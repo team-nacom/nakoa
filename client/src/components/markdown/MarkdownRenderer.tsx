@@ -19,14 +19,18 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
+import SectionEnumerator, { SectionRenderer, SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
-function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
+interface RendererOptionProps{
+    isManual?: boolean
+}
+
+function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
     const plugins : PluggableList = [
         GFM,
         Math,
@@ -51,13 +55,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
                 </div>
             </>
         ),
-        toc: (p: any) => (
-            <div className='toc'>
-                <div id='toc-label' className='label'> Contents </div>
-                { p.children }
-            </div>
-        ),
-        section: SectionRenderer,
+        toc: TocRendererFactory(props.isManual),
+        section: SectionRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
@@ -148,7 +147,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
                 <p>렌더링 실패, 다시 시도해 보세요.</p>
             </div>
         ) } onError = {
-            (error: Error) => { } // may do some error handling
+            (error: Error) => { console.log(error) } // may do some error handling
         } resetKeys={[props.children]} >
             <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
         </ErrorBoundary>

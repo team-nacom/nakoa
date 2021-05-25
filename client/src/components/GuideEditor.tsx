@@ -21,7 +21,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
     let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
     let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') ?? _author ?? '');
     let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 5);
+    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
     let isAdmin = useIsAdmin();
@@ -85,12 +85,12 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
                 </div>
             </div>
 
-            <div className='adminForm'>
+            <div className=''>
                 <label> 가이드 제목 </label>
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
-            <MarkdownEditor className='adminForm' body={ content } update={ (c) => setContent(c) } />
+            <MarkdownEditor className='' body={ content } update={ (c) => setContent(c) } />
 
             <div className='editorBottom'>
                 <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
