@@ -39,7 +39,7 @@ router.use('/guide', guideRouter.routes());
 
 // local / production config
 const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
-const origin = (isProduction ? 'https://beta.team-na.com' : 'http://localhost:3000');
+const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
 const port = (isProduction ? 3884 : 3885);
 
 // Koa app
