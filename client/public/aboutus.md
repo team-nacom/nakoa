@@ -14,10 +14,18 @@
 
 # 버전 로그
 
+##+ 0.2.0
+
+- About page가 추가되었습니다.
+- 이미지 업로드가 추가되었습니다.
+- 가이드 편집기에 도움말이 추가되었습니다.
+- 가이드들을 section에 따라 listing 할 수 있게 되었습니다.
+- CSS의 변경이 있었습니다.
+
 ##+ 0.1.1
 
 - Server side hot fix
 
 ##+ 0.1.0
 
-- Initial release of team-na.com
+- 초기 버전의 team-na.com 이 release 되었습니다.
