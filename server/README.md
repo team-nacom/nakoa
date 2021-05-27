@@ -15,15 +15,17 @@ To connect to the Atlas MongoDB, you would need a valid connection string, inclu
 DB_CONN=mongodb://localhost/nacom
 ```
 
-Also, the production server will have different configurations (i.e. port, allowed CORS origin), so it will have an extra `MODE` variable in `server/.env`. The production server will have `server/.env` like this:
+You can set `S3_BUCKET` variable if you want to connect to a S3 bucket. A valid AWS S3 credential for the provided bucket should be set up in your local device. Refer to [AWS Docs](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started-nodejs.html) for details.
+
+Also, the production server will have different configurations (i.e. port, allowed CORS origin), so it will have an extra `MODE` variable in `server/.env`.
+
+The production server will have `server/.env` like this:
 ```
 MODE=production
 DB_CONN=mongodb+srv://<username>:<password>@cluster0.frhrs.mongodb.net/<dbname>?retryWrites=true&w=majority
 ```
 
-If you want to use local MongoDB, change `DB_CONN` respectively. Server will connect to `nacom` collection. refer to `server/src/setup/atlas.ts` for detail.
-
-AWS is currently not used yet, so its credential setting is not required for now.
+You also can use your local mongodb. Put your connection string to `DB_CONN`. Server will connect to `nacom` collection. Refer to `server/src/setup/atlas.ts` for detail.
 
 
 ## How to run

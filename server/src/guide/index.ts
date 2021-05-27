@@ -18,6 +18,8 @@ router.post('/', checkAdminMiddleware, async (ctx) => {
 // Update an existing guide
 router.put('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
   const index: number = Number.parseInt(ctx.params.index);
+  const guideObj = ctx.request.body;
+  if(!isAdmin(ctx) && "authors" in guideObj) throw createHttpError(401, "Only admin can change authors");
   await updateOneGuide(ctx.request.body, index);
   ctx.body = "Success";
 });
@@ -48,16 +50,22 @@ router.get('/:index(\\d+)', async (ctx) => {
     });
 });
 
-router.delete('/:index(\\d+)', async (ctx) => {
-  if (!isAdmin(ctx)) {
-    ctx.throw(401);
-    return;
-  }
-
-  const index: number = ctx.params.index;
-  await Guide.deleteOne({ isPublic: true, index });
+// Delete a post with given index
+router.delete('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
+  const index = ctx.params.index;
+  await Guide.deleteOne({ index });
   ctx.body = "Success";
 })
+
+// Get list of all categories
+router.get('/category', async (ctx) => {
+  ctx.body = await Guide.distinct('category');
+});
+
+// Get list of all sections in given category
+router.get('/category/:name', async (ctx) => {
+  ctx.body = await Guide.distinct('section', { category: ctx.params.name });
+});
 
 
 export default router;

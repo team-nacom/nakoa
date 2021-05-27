@@ -2,19 +2,20 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import Logger from 'koa-logger';
 import Cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
+import koaBody from "koa-body";
 
 import session from 'koa-session';
 import passport from 'koa-passport';
 
 import './setup/atlas'; // connect Atlas mongoDB
-// import './setup/aws'; // connect aws S3
+import './setup/aws'; // connect aws S3
 import './setup/passport'; // set up passportJS
 
 import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 import guideRouter from './guide';
+import fileRouter from './file';
 
 import { handleErrorMiddleware } from "./utils";
 
@@ -36,6 +37,8 @@ router.use('/quiz', quizRouter.routes());
 router.use('/user', userRouter.routes());
 // Guides
 router.use('/guide', guideRouter.routes());
+// Files
+router.use('/file', fileRouter.routes());
 
 // local / production config
 const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
@@ -45,7 +48,10 @@ const port = (isProduction ? 3884 : 3885);
 // Koa app
 const app = new Koa();
 app.use(Logger());
-app.use(bodyParser());
+app.use(koaBody({
+  multipart: true,
+  formidable: { keepExtensions: true }
+}));
 app.use(Cors({
   origin: origin,
   credentials: true,

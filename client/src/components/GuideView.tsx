@@ -15,7 +15,7 @@ function GuideView({ guide }: Params) {
             <div className='metadata'> { `${guide.category} > ${guide.section}`} </div>
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
-            <div className='guideContent markdown'>
+            <div className='guideContent'>
                 <MarkdownRenderer>
                     { guide.content }
                 </MarkdownRenderer>

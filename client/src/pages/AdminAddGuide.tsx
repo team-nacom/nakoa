@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { GuideType, isAdmin, postGuide } from 'etc/api';
+import { GuideType, postGuide, useIsAdmin } from 'etc/api';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import GuideEditor from 'components/GuideEditor';
 function AdminAddGuide() {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
+    let isAdmin = useIsAdmin();
 
     let upload = (guide: GuideType, setMessage: (message: string) => void) => {
         if (!guide.name || !guide.content || !guide.priority || !guide.category || !guide.section || guide.authors.length < 1) {
@@ -31,7 +32,7 @@ function AdminAddGuide() {
     return (
         <>
             <Header/>
-            <GuideEditor upload={upload} author={isAdmin() ? undefined : user.nickname} behavior='add' />
+            <GuideEditor upload={upload} author={isAdmin ? undefined : user.nickname} behavior='add' />
             <Footer/>
         </>
     )

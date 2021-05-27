@@ -1,0 +1,326 @@
+@import '../consts.scss';
+
+// box template; do we need a separate file(box.scss)?
+
+$boxMargin : 10px;
+$boxPadding : 10px;
+$lBoxPadding : 10px;
+
+$code-color: #f0f0f0;
+
+@mixin box($border-color: gray, $background-color: #f8f8f8, $color: black) {
+    background: $background-color 0% 0% no-repeat padding-box;
+    border-left: 3px solid $border-color;
+    color: $color;
+
+    height: fit-content;
+    position: relative;
+    padding: $boxPadding;
+
+    margin: $boxMargin 0;
+    // margin-top: $boxMargin;
+    // margin-bottom: $boxMargin;
+}
+
+@mixin labeled-box($border-color: gray, $background-color: #f8f8f8, $color: black, $label-color:white) {
+    @include box($border-color,$background-color, $color);
+
+    box-sizing: border-box;
+    margin-top: 25px + $boxMargin; //25px = text height + 2*label padding.
+    padding: $lBoxPadding;
+
+    .label{
+        @include boxlabel($border-color, $label-color);
+    }
+}
+@mixin boxlabel($background-color: gray, $color: white) {
+    position: relative;
+    left: -3px - $lBoxPadding;
+    top: -25px - $lBoxPadding; //same 25px
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 15px;
+    line-height: 15px;
+    margin-bottom: -25px;
+
+    background-color: $background-color;
+    color: $color;
+}
+
+/////////////////////////////////
+// guideContent: table of content (.toc) + rendered markdown (.markdown)
+
+.markdown {
+    h1 {
+        font-size: 40px;
+        line-height: 40px;
+        font-weight: 500;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: 500;
+    }
+
+    h3 {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: 500;
+    }
+
+    h4 {
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: 500;
+    }
+
+    p {
+        font-size: 15px;
+        line-height: 30px;
+        font-weight: 300;
+
+        overflow: hidden;
+    }
+
+    a {
+        color: $main-color;
+        text-decoration: underline;
+    }
+
+    ol, ul {
+        margin-left: 32px;
+    }
+
+    li::marker {
+        margin-left: 20px;
+        color: $main-color;
+        font-weight: bold;
+    }
+
+    li {
+        margin: 8px 0px;
+    }
+
+    sub {
+        vertical-align: sub;
+        font-size: 8px;
+    }
+
+    sup {
+        vertical-align: super;
+        font-size: 8px;
+    }
+
+    img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+    }
+
+    table {
+        width: 100%;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+    
+    thead {
+        font-weight: 500;
+    }
+    
+    tbody {
+        font-weight: 300;
+    }
+    
+    th, td {
+        font-weight: inherit;
+        padding: 8px;
+    }
+
+    > * {
+        margin-top: 17px;
+        margin-bottom: 17px;
+    }
+
+    .katex-display > .katex {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden; //a bug in katex renderer?
+        text-align: center!important;
+    }
+
+    //////migrated from .blog .blog-preview////////
+    white-space: pre-line;
+    word-break: break-all;
+    overflow-wrap: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+
+    .section {
+        margin-top: 35px;
+        margin-bottom: 15px;
+        padding-top: 5px;
+        padding-bottom: 15px;
+        border-bottom: 1px $primary-color solid;
+    }
+    
+    .subsection {
+        margin-top: 35px;
+        margin-bottom: 15px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        border-left: 1px $primary-color solid;
+    }
+
+    .subsubsection {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-left: 1px $primary-color solid;
+    }
+
+    .section, .subsection, .subsubsection {
+        font-family: 'Montserrat', 'SeoulNamsan';
+        // .markdown > * {
+        //     margin-top: 0;
+        //     margin-bottom: 0;
+        // }
+
+        .katex {
+            font-size: inherit;
+            line-height: inherit;
+        }
+    }
+
+    .sectionNum, .subsectionNum, .subsubsectionNum {
+        text-decoration: none;
+        font-family: 'Montserrat', 'SeoulNamsan';
+        float: left;
+        margin-right: 10px;
+        color: $primary-color;
+    }
+
+    .sectionNum {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: bold;
+    }
+
+    .subsectionNum {
+        font-size: 22px;
+        line-height: 22px;
+        font-weight: bold;
+    }
+
+    .subsubsectionNum {
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: bold;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        background-color: $primary-color;
+        color:$primary-color;
+    }
+
+    pre {
+        padding: 10px;
+        background: $code-color;
+        margin: 10px 0px;
+        font-family: 'Roboto Mono', monospace;
+        display: flex;
+        overflow-y: scroll;
+    }
+
+    code {
+        padding: 0 3px;
+        background-color: $code-color;
+    }
+
+    blockquote {
+        @include box(gray,#f8f8f8,black);
+    }
+
+    .textframe {
+        @include box(darkorange,lightyellow,black);
+    }
+
+    details {
+        margin: 10px 0px;
+        height: fit-content;
+        position: relative;
+
+        div {
+            @include labeled-box($primary-color,$primary-color-light,black,white);
+            margin: 0px;
+        }
+
+        summary {
+            @include boxlabel($primary-color,white);
+
+            position: initial;
+            left: 0;
+            top: 0;
+            margin: 0;
+
+            cursor: pointer;
+            p {
+                display : inline;
+            }
+        }
+    }
+
+    .exercise {
+        @include labeled-box($primary-color,$primary-color-light,black,white);
+
+        margin-bottom:10px;
+    }
+}
+
+.toc {
+    @include labeled-box(#A8CB61,#F9FFEF,#A8CB61,white);
+
+    white-space: pre-line;
+    word-break: break-all;
+    overflow-wrap: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+    
+    .subsection {
+        padding-left: 20px;
+    }
+    .subsubsection {
+        padding-left: 40px;
+    }
+
+    .sectionNum, .subsectionNum, .subsubsectionNum {
+        font-family: 'SeoulHangang';
+        float: left;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+
+    .section, .subsection, .subsubsection {
+        font-family: 'SeoulHangang';
+        border: none;
+        //margin: 0px;
+        //margin-bottom: 10px;
+    }
+    h1, h2, h3, h4, .sectionNum, .subsectionNum, .subsubsectionNum {
+        font-size: 15px;
+        line-height: 24px;
+        font-weight: 300;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+}

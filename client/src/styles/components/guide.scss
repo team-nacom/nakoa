@@ -1,0 +1,121 @@
+@import '../consts.scss';
+
+.guideBackground {
+    position: fixed;
+    z-index: -1;
+    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.guide {
+    div.metadata {
+        font-family: 'SeoulNamsan';
+        font-size: 15px;
+        line-height: 20px;
+        color: white;
+        text-shadow: 0px 5px 5px #0000004D;
+    }
+
+    h2.subtitle {
+        font-family: 'Montserrat', 'SeoulNamsan';
+        text-align: center;
+        font-size: 24px;
+        line-height: 32px;
+        color: white;
+        margin-top: 70px;
+        margin-bottom: 10px;
+        text-shadow: 0px 5px 5px #0000004D;
+    }
+
+    h1.title {
+        font-family: 'SeoulHangang';
+        text-align: center;
+        font-size: 45px;
+        line-height: 60px;
+        color: white;
+        margin-bottom: 70px;
+        margin-top: 10px;
+        text-shadow: 0px 5px 5px #0000004D;
+    }
+
+    .guideContent {
+//        font-family: 'SeoulHangang';
+        background: white;
+        padding: unquote('min(calc(10%),80px)');
+        min-width: 80%;
+        box-shadow: 0px 3px 20px #0000004D;
+        border-radius: 10px;
+    }
+}
+
+.guideList {
+    h1 {
+        font-family: 'SeoulHangang';
+        margin: 20px;
+        font-size: 24px;
+        line-height: 32px;
+        color: #FFFFFF;
+        text-shadow: 0px 4px 5px #0000004D;
+    }
+
+    .guideListContainer {
+        background: white;
+        border-left: 10px $primary-color solid;
+        box-shadow: 0px 10px 15px #00000026;
+        border-radius: 10px;
+
+    }
+
+    .guideListSection {
+        padding: 20px 10px;
+        margin: 0px 20px;
+        font-size: 20px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        .index {
+            flex: 0 0 50px;
+            font-weight: bold;
+            color: $primary-color;
+        }
+
+        .title {
+            flex-grow: 1;
+        }
+
+        div {
+            overflow: auto;
+        }
+    }
+
+    .guideListItem {
+        padding: 15px 20px;
+        margin: 0px 60px;
+        font-size: 16px;
+        font-weight: 200;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        .title {
+            flex-grow: 1;
+        }
+
+        .priority {
+            flex: 0 0 50px;
+            font-size: 12px;
+            font-weight: 300;
+            text-align: right;
+        }
+
+        div {
+            overflow: auto;
+        }
+    }
+}

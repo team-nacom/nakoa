@@ -1,5 +1,6 @@
 import Axios from 'axios';
-import store from 'store';
+import { useSelector } from 'react-redux';
+import store, { RootReducer } from 'store';
 import { clearUser, setUser } from 'store/user';
 import config from './config';
 
@@ -93,6 +94,12 @@ export const isAdmin = () => {
     return store.getState().user?.email === config.adminEmail;
 }
 
+export const useIsAdmin = () => {
+    let email = useSelector((state: RootReducer) => state.user.email);
+
+    return email === config.adminEmail;
+}
+
 export interface LoginData {
     email: string;
     password: string;
@@ -132,7 +139,10 @@ export interface GuideType {
 }
 
 export const getGuides = async () => {
-    let response = await Axios.get(`${apiAddress}/guide`);
+    let response = await Axios.get(`${apiAddress}/guide`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType[];
 }
@@ -144,7 +154,10 @@ export const getGuideMaxIndex = async () => {
 }
 
 export const getGuide = async (id: number) => {
-    let response = await Axios.get(`${apiAddress}/guide/${id}`);
+    let response = await Axios.get(`${apiAddress}/guide/${id}`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
 
     return response.data as GuideType;
 }
@@ -184,3 +197,23 @@ export const removeGuide = async (id: number) => {
 //export const postTempGuide = async (data: GuideType) => {
     // This will be written after server-side draft logic is done.
 //}
+
+export const uploadFile = async (collection: string, file: File) => {
+    const config = {
+        withCredentials: true,
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', collection);
+
+    let response = await Axios.post(`${apiAddress}/file/upload`, formData, config);
+
+    return {
+        success: response.status < 300,
+        url: response.data,
+    };
+}

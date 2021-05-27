@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
+import MarkdownManual from './MarkdownManual';
 
 import { fileUpload, imgUpload } from '../etc/FileUpload'
 
@@ -17,20 +18,21 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
     return ref.current;
   };
 
-function MarkdownArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
+function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
         <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
-        // className={ (props.className || '') + ' markdownArea' }
-    )
-}
-function PreviewArea(props : React.HTMLAttributes<HTMLDivElement>){
-    return(
-        <div {...props} />
-        // className={ (props.className || '') + ' previewArea' }
+        // className={ (props.className || '') + ' editorArea' }
     )
 }
 
 const MemoizedRenderer = React.memo(MarkdownRenderer);
+function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
+    return(
+        <div {...props} />
+    )
+}
+
+
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
@@ -82,6 +84,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [value,setValue] = useState(body || '');
     const [previewValue,setPreviewValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
+    const [manualVisible,setManualVisible] = useState(false);
 
     const preview = () => { setPreviewValue(value) }
 
@@ -225,29 +228,35 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     },[drag]);
     // });
 
-    return (
+    return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
-                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }> </PanelMenu>
+                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }>
+                    <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
+                        <span className="material-icons">help_outline</span>
+                    </button>
+                </PanelMenu>
                 <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
-                    } } >자동 갱신 { autoRender? 'ON' : 'OFF'}</button>
+                    } } >
+                        <span className="material-icons">{autoRender ? "sync" : "sync_disabled"}</span>
+                    </button>
                 </PanelMenu>
                 <div style={ {clear:'both'} } />
             </div>
             <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
-                    <MarkdownArea
+                    <EditorArea
                         {...other}
-                        className={ `${other.className || ''} markdownArea` } 
+                        className={ `${other.className || ''} editorArea` } 
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
                         value = { value }
                     />
                 </Panel>
                 <Panel className='panel2'>
-                    <PreviewArea className='previewArea markdown'>
+                    <PreviewArea className='previewArea'>
                         <MemoizedRenderer>
                             { previewValue }
                         </MemoizedRenderer>
@@ -270,9 +279,9 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
                 <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
             </div>
-
         </div>
-    );
+        <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
+    </>);
 }
 
 export default MarkdownEditor;

@@ -1,0 +1,16 @@
+{
+    "short_name": "nacom",
+    "name": "Team NaCom",
+    "description": "팀 나무컴퍼스",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#F06498",
+    "background_color": "#FFF2F3"
+}

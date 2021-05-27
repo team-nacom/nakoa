@@ -1,3 +1,4 @@
+@import './consts.scss';
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
@@ -67,14 +68,66 @@ a {
 }
 
 
-@import 'admin.scss';
-@import 'basic.scss';
-@import 'blog.scss';
-@import 'challenge.scss';
-@import 'footer.scss';
-@import 'header.scss';
-@import 'quiz.scss';
-@import 'signin.scss';
-@import 'signup.scss';
-@import 'table.scss';
-@import 'tabs.scss';
+html {
+    font-family: 'Montserrat', 'SeoulNamsan';
+//    font-family: 'Noto Sans KR', sans-serif;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 300;  
+}
+
+.flexbox {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.link {
+    cursor: pointer;
+}
+
+
+label {
+    font-size: 14px;
+    color: #666666;
+    margin: 10px;
+    line-height: 30px;
+}
+
+
+.pageTitle {
+	font-family: SeoulNamsan;
+	margin: 25px 0px;
+}
+
+.desktopOnly {
+    @media (max-width: $max-mobile-width) {
+        display: none;
+    }
+}
+
+.mobileOnly {
+    @media (min-width: $min-tablet-width) {
+        display: none;
+    }
+}
+
+@import './admin.scss';
+
+@import './layout/footer.scss';
+@import './layout/header.scss';
+
+@import './components/buttons.scss';
+@import './components/guide.scss';
+@import './components/challenge.scss';
+@import './components/markdown.scss';
+@import './components/popup.scss';
+@import './components/quiz.scss';
+@import './components/signin.scss';
+@import './components/signup.scss';
+@import './components/tabs.scss';

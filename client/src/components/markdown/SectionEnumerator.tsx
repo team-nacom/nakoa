@@ -8,6 +8,8 @@ import ReactMarkdown from 'react-markdown';
 import Math from 'remark-math';
 import TeX from '@matejmazur/react-katex';
 
+import { HashLink } from 'react-router-hash-link';
+
 function nodeDeepCopy(node: Node, depth?: number) {
     let {type, position, children, ...others} = node as Parent;
 
@@ -22,6 +24,7 @@ function nodeDeepCopy(node: Node, depth?: number) {
     return {
         type : type,
         children : copiedChildren,
+        copied : true,
         ...others
         //ignore position
     } as Node;
@@ -38,18 +41,11 @@ const SectionEnumerator : Plugin = () => {
             switch(child.type){
             case 'heading':
                 child.type = 'section';
+                child.numbering = [];
 
-                // skip unnumbered
-                if(child.data?.unnumbered){
+                // skip unnumbered(priority -1)
+                if(child.data?.priority === -1){
                     continue;
-                }
-
-                // ensure height
-                if('children' in child && Array.isArray(child.children) && child.children.length === 0){
-                    child.children.push({
-                        type: 'text',
-                        value: '　' //full-width whitespace;
-                    })
                 }
 
                 if (child.depth === 1){ //section
@@ -57,20 +53,20 @@ const SectionEnumerator : Plugin = () => {
                     subsectionNum = 0;
                     subsubsectionNum = 0;
 
-                    child.label = `${sectionNum}.`;
+                    child.numbering = [sectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 } else if (child.depth === 2){ //subsection
                     subsectionNum += 1;
                     subsubsectionNum = 0;
 
-                    child.label = `${sectionNum}.${subsectionNum}.`;
+                    child.numbering = [sectionNum, subsectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 } else if (child.depth === 3){ //subsubsection
                     subsubsectionNum += 1;
 
-                    child.label = `${sectionNum}.${subsectionNum}.${subsubsectionNum}.`;
+                    child.numbering = [sectionNum, subsectionNum, subsubsectionNum];
 
                     tocList.push( nodeDeepCopy(child) );
                 }
@@ -91,19 +87,104 @@ const SectionRenderer = (p : any) => {
 
     const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
 
-    // console.log(p);
+    const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
 
     var n = p;
-    // var n = p.node;
 
-    return (        
-        <div className={ hnames[n.depth] }>
-            <div className={ hnames[n.depth] + 'Text' }> { n.label } </div>
-            {/* <h2>{ n.children }</h2> */}
-            { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+    if(n.copied){ //toc
+        return (        
+            <div className={ hnames[n.depth] }>
+                { n.data.priority !== -1 &&
+                    <HashLink
+                        to={ '#heading-'+n.numbering.join('-') }
+                        className={ hnames[n.depth] + 'Num' }
+                    >
+                        { n.numbering.join('.')+'.' }
+                    </HashLink>
+                }
+                {/* <div className={ hnames[n.depth] + 'Num' }>
+                    { n.numbering.join('.') }
+                </div> */}
+                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+            </div>
+        )
+    }
+    else{ //contents
+        return (        
+            <div className={ hnames[n.depth] }>
+                { n.data.priority !== -1 &&
+                    <HashLink
+                        to='#toc-label' id={ 'heading-'+n.numbering.join('-') }
+                        className={ hnames[n.depth] + 'Num' }
+                    >
+                        { n.numbering.join('.')+'.' }
+                    </HashLink>
+                }
+                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+                <span style={ {fontSize:'10px'} }>
+                    { priorityTags[n.data.priority] }
+                </span>
+            </div>
+        )
+    }
+}
+
+const SectionRendererFactory = (isManual? : boolean) => {
+    return (n : any) => {
+        const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
+
+        const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
+
+        const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
+
+        if(n.copied){ //toc
+            return (        
+                <div className={ hnames[n.depth] }>
+                    { n.data.priority !== -1 &&
+                        <HashLink
+                            to={ (isManual ? '#man-':'#') + 'heading-' + n.numbering.join('-') }
+                            className={ hnames[n.depth] + 'Num' }
+                        >
+                            { n.numbering.join('.')+'.' }
+                        </HashLink>
+                    }
+                    { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+                </div>
+            )
+        }
+        else{ //contents
+            return (        
+                <div className={ hnames[n.depth] }>
+                    { n.data.priority !== -1 &&
+                        <HashLink
+                            to={ (isManual ? '#man-':'#') + 'toc-label' }
+                            id={ (isManual ? 'man-':'') + 'heading-' + n.numbering.join('-') }
+                            className={ hnames[n.depth] + 'Num' }
+                        >
+                            { n.numbering.join('.')+'.' }
+                        </HashLink>
+                    }
+                    { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+                    {
+                        !isManual &&
+                        <span style={ {fontSize:'10px'} }>
+                            { priorityTags[n.data.priority] }
+                        </span>
+                    }
+                </div>
+            )
+        }
+    }
+}
+
+const TocRendererFactory = (isManual? : boolean) => {
+    return (p: any) => (
+        <div className='toc'>
+            <div id={ isManual ? 'man-toc-label' : 'toc-label' } className='label'> Contents </div>
+            { p.children }
         </div>
     )
 }
 
-export { SectionRenderer };
+export { SectionRenderer, SectionRendererFactory, TocRendererFactory };
 export default SectionEnumerator;

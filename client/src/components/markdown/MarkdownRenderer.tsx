@@ -3,6 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'unified';
 import { Node, Parent } from 'unist';
 
+import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
+
 import GFM from 'remark-gfm';
 import Math from 'remark-math';
 import Footnotes from 'remark-footnotes';
@@ -12,20 +14,23 @@ import CodeFrontmatter from 'remark-code-frontmatter';
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-// import highlighter from 'remark-highlight.js';
+import Highlight from 'react-highlight';
+import 'highlight.js/styles/github.css';
+// import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRenderer } from './SectionEnumerator';
-import UnnumberedSectionHandler from './UnnumberedSectionHandler';
+import SectionEnumerator, { SectionRenderer, SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
+import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
-function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
+interface RendererOptionProps{
+    isManual?: boolean
+}
+
+function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
     const plugins : PluggableList = [
         GFM,
         Math,
@@ -34,7 +39,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
         CodeFrontmatter,
 
         // custom plugins
-        UnnumberedSectionHandler,
+        SectionPriorityHandler,
         DirectiveHandler,
         SectionEnumerator,
         FootnoteEnumerator,
@@ -42,43 +47,47 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
 
     const renderers : {[nodeType: string]: Renderer}
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
-        math: (p: any) => <TeX block math = { p.value as string } />,
-        inlineMath: (p: any) => <TeX math = { p.value as string } />,
-        // code: ({language, value}) => {
-        //     try{
-        //         return <SyntaxHighlighter language={ language }>{ value }</SyntaxHighlighter>; //style={ dark }
-        //     } catch (error){
-        //         return <></>;
-        //     }
-        // }
-
         root: (p: any) => (
             <>
                 { p.children[0] }
-                <div className='blog-preview'>
+                <div className='markdown'>
                     { p.children.slice(1) }
                 </div>
             </>
         ),
-        toc: (p: any) => (
-            <div className='toc box'>
-                <div className='label'> Contents </div>
-                { p.children }
-            </div>
-        ),
-        section: SectionRenderer,
+        toc: TocRendererFactory(props.isManual),
+        section: SectionRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
         footnoteDefinition: FootnoteDefinitionRenderer,
-        footnoteList: (p: any) => (
+        footnoteList: (p: any) => ( p.children.length?
             <div className='footnoteList'>
                 <hr />
                 <ol>
                     { p.children }
                 </ol>
             </div>
+            :<></>
         ),
+
+        math: (p: any) => <TeX block math = { p.value as string } />,
+        inlineMath: (p: any) => <TeX math = { p.value as string } />,
+        code: (p: any) => { // ({language, value}) => {
+            if(!p.language){
+                return (
+                    <pre>
+                        <code>{ p.value }</code>
+                    </pre>
+                );
+            }
+            return ( 
+                <Highlight className = { p.language } >
+                    { p.value }
+                </Highlight>
+            ); 
+        },
+        // inlineCode: ???
 
         //handled directives
         exercise: (p: any) => {
@@ -92,7 +101,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             }
 
             return (
-                <div className='exercise box'>
+                <div className='exercise'>
                     <div className='label'>연습문제 { label }</div>
                     { children }
                 </div>
@@ -131,9 +140,17 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps) {
             );
         }
     }
-    
+
     return (
-        <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
+        <ErrorBoundary FallbackComponent = { ({error, resetErrorBoundary}) => (
+            <div role='alert'>
+                <p>렌더링 실패, 다시 시도해 보세요.</p>
+            </div>
+        ) } onError = {
+            (error: Error) => { console.log(error) } // may do some error handling
+        } resetKeys={[props.children]} >
+            <ReactMarkdown {...props} plugins = { plugins } renderers = { renderers } className='markdown'/>
+        </ErrorBoundary>
     );
 }
 
