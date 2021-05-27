@@ -231,7 +231,11 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
-                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }> </PanelMenu>
+                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }>
+                    <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
+                        <span className="material-icons">help_outline</span>
+                    </button>
+                </PanelMenu>
                 <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
@@ -275,10 +279,6 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
                 <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
             </div>
-
-            <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
-                <span className="material-icons">help_outline</span>
-            </button>
         </div>
         <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
     </>);
