@@ -1,0 +1,17 @@
+<html>
+  <body>
+    <h1>File Upload Demo</h1>
+    <p>Should log in before submitting</p>
+
+    <form action="http://localhost:3885/file/upload" enctype="multipart/form-data" method="POST">
+      <label for="folder_input">Name of collection to put: </label>
+      <input id="folder_input" type="text" name="folder">
+      <br>
+      <label for="file_input">File: </label>
+      <input id="file_input" type="file" name="file">
+
+      <input type="submit">
+    </form>
+  </body>
+</html>
+
