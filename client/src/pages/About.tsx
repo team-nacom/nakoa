@@ -1,15 +1,24 @@
 import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+
 
 
 function About() {
+    let [message, setMessage] = React.useState('');
+
+    fetch('./aboutus.md')
+        .then(response => response.text())
+        .then(text => setMessage(text));
+
     return (
         <>
             <Header/>
 
-            안녕하세요. Team 나무컴퍼스는 수학과 관련된 무료 컨텐츠를 제공합니다.<br/>
-            자세한 소개는 업데이트 예정입니다.
+            <MarkdownRenderer isManual={true}>
+                { message }
+            </MarkdownRenderer>
             
             <Footer/>
         </>
