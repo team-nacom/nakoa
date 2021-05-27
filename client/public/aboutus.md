@@ -10,22 +10,33 @@
 
 # 팀원 소개
 
-- 윤창기(TAMREF): Project Manager
+- 윤창기(TAMREF): 프로젝트 매니저
+- 김준원(junie): 개발자
+- 노영훈(Diuven): 개발자
+- 손태승(Paul Sohn): 개발자
+- 이종서(leejseo): 개발자
+- 용도리(yongdori): 디자이너
 
 # 버전 로그
 
 ##+ 0.2.0
 
+Release Date: 2021-05-27
+
 - About page가 추가되었습니다.
 - 이미지 업로드가 추가되었습니다.
 - 가이드 편집기에 도움말이 추가되었습니다.
-- 가이드들을 section에 따라 listing 할 수 있게 되었습니다.
+- 가이드들을 section에 따라 묶어볼 수 있게 되었습니다.
 - CSS의 변경이 있었습니다.
 
 ##+ 0.1.1
 
-- Server side hot fix
+Release Date: 2021-05-13
+
+- 서버와 관련한 긴급한 수정이 있었습니다.
 
 ##+ 0.1.0
+
+Release Date: 2021-05-13
 
 - 초기 버전의 team-na.com 이 release 되었습니다.
