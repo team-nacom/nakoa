@@ -38,7 +38,7 @@ async function getRootUrl() {
   }
   let endpoint = await s3.config.endpoint();
   // i.e. https:// nacom-dev . s3.ap-northeast-2.amazonaws.com / 
-  let result = `${endpoint.protocol}${BUCKET}.${endpoint.hostname}${endpoint.path}`;
+  let result = `${endpoint.protocol}//${BUCKET}.${endpoint.hostname}${endpoint.path}`;
 
   return result;
 }
