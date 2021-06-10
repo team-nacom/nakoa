@@ -56,8 +56,8 @@ function CategoryInput({ category, setCategory }: CategoryInputProps) {
                 <input 
                     value={category} 
                     onChange={(e) => setCategory(e.target.value)} 
-                    onFocus={() => setDeltaCandidateOpacity(0.1) } 
-                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
             { candidateOpacity > 0 && candidates.length > 0 && (
@@ -98,13 +98,13 @@ function SectionInput({ category, section, setSection } : SectionInputProps) {
                 <input 
                     value={section} 
                     onChange={(e) => setSection(e.target.value)} 
-                    onFocus={() => {
+                    onMouseEnter={() => {
                         setDeltaCandidateOpacity(0.1);
                         if (category !== loadedCategory) {
                             setLoadedCategory(category);
                         }
                     }} 
-                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
             { candidateOpacity > 0 && candidates.length > 0 && (
@@ -123,20 +123,56 @@ function SectionInput({ category, section, setSection } : SectionInputProps) {
 
 interface AuthorInputProps {
     isAdmin: boolean;
-    author: string;
-    setAuthor: (author: string) => void;
+    authors: string[];
+    setAuthors: (authors: string[]) => void;
 }
 
-function AuthorInput({ isAdmin, author, setAuthor } : AuthorInputProps) {
+function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
+    let [authorsOpacity, setDeltaAuthorsOpacity] = useDynamicValue(0);
+    const editable = isAdmin;
+
     return (
         <div className='adminForm'>
             <label> 작성자 </label>
             <div>
-                { isAdmin
-                    ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-                    : <input value={author} readOnly />
-                }
+                <input 
+                    value={ authors.join(', ') } 
+                    readOnly
+                    onMouseEnter={() => setDeltaAuthorsOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaAuthorsOpacity(-0.1) }
+                />
             </div>
+            { authorsOpacity > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity: authorsOpacity }}
+                    onMouseEnter={() => setDeltaAuthorsOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaAuthorsOpacity(-0.1) }
+                >
+                    { authors.map((value, index) => editable ? (
+                        <div className='candidate'>
+                            <input 
+                                value={value} 
+                                onChange={(e) => setAuthors(authors.map((s) => (s === value) ? e.target.value.replace(',', '') : s ))} 
+                                onBlur={() => setDeltaAuthorsOpacity(-0.1) }
+                            />
+                            <span 
+                                className='candidateRemove material-icons' 
+                                onClick={() => setAuthors(authors.slice(0, index).concat(authors.slice(index+1)))}
+                            >
+                                close
+                            </span>
+                        </div>
+                    ) : (
+                        <div className='candidate'>
+                            <input value={value} readOnly />
+                        </div>
+                    ))}
+                    { editable && (
+                        <div className='candidate' onClick={() => setAuthors(authors.concat(['']))} style={{textAlign: 'center'}} > + </div>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
@@ -157,14 +193,16 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
                 <input 
                     value={ candidates[priority] } 
                     readOnly
-                    onFocus={() => setDeltaCandidateOpacity(0.1) } 
-                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
             { candidateOpacity > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity: candidateOpacity }}
+                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 >
                     { [1, 2, 3, 4, 5].map((value) => (
                         <div className='candidate' onClick={() => setPriority(value) }> {candidates[value]} </div> 
@@ -185,13 +223,13 @@ interface Props {
 }
 
 
-function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props) {
+function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
     let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
     let [category, setCategory] = React.useState<string>(initialGuide?.category ?? '');
     let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
-    let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') ?? _author ?? '');
+    let [authors, setAuthors] = React.useState<string[]>(initialGuide?.authors ?? (initialAuthor ? [ initialAuthor ] : []));
     let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
     let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
@@ -206,7 +244,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
             <div className='flexbox'>
                 <CategoryInput category={category} setCategory={setCategory} />
                 <SectionInput section={section} setSection={setSection} category={category} />
-                <AuthorInput author={author} setAuthor={setAuthor} isAdmin={isAdmin} />
+                <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
 
@@ -227,7 +265,7 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 
                 <button className='submit link' onClick={
                     () => upload(
-                        { name, content, priority, category, section, authors: author.split(',').map(s => s.trim()), isPublic },
+                        { name, content, priority, category, section, authors: authors.filter((s) => s.length > 0), isPublic },
                         setMessage
                     )
                 }> 
