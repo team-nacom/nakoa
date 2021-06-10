@@ -12,6 +12,28 @@ function isStringRelated(current: string, target: string) {
     return target.startsWith(current);
 }
 
+function useDynamicValue(defaultValue = 0, maxValue = 1, minValue = 0) {
+    let [value, setValue] = React.useState<number>(defaultValue);
+    let [deltaValue, setDeltaValue] = React.useState<number>(0);
+
+    React.useEffect(() => {
+        if (deltaValue !== 0) {
+            let nextValue = value + deltaValue;
+            if (nextValue >= maxValue) {
+                setDeltaValue(0);
+                nextValue = maxValue;
+            }
+            if (nextValue <= minValue) {
+                setDeltaValue(0);
+                nextValue = minValue;
+            }
+            setTimeout(() => setValue(nextValue), 25);
+        }
+    }, [value, deltaValue]);
+
+    return [value, setDeltaValue] as [number, React.Dispatch<React.SetStateAction<number>>];
+}
+
 interface CategoryInputProps {
     category: string;
     setCategory: (category: string) => void;
@@ -19,7 +41,7 @@ interface CategoryInputProps {
 
 function CategoryInput({ category, setCategory }: CategoryInputProps) {
     let [candidates, setCandidates] = React.useState<string[]>([]);
-    let [nowFocus, setNowFocus] = React.useState<boolean>(false);
+    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     React.useEffect(() => {
         getGuideCategories().then((categories) => {
@@ -34,13 +56,18 @@ function CategoryInput({ category, setCategory }: CategoryInputProps) {
                 <input 
                     value={category} 
                     onChange={(e) => setCategory(e.target.value)} 
-                    onFocus={() => setNowFocus(true)} 
-                    onBlur={() => setNowFocus(false)}
+                    onFocus={() => setDeltaCandidateOpacity(0.1) } 
+                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
-            { nowFocus && candidates.length > 0 && (
-                <div className='candidateContainer'>
-                    { candidates.filter((s) => isStringRelated(category, s)).map((value) => <div className='candidate'> {value} </div> )}
+            { candidateOpacity > 0 && candidates.length > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{opacity: candidateOpacity }}
+                >
+                    { candidates.filter((s) => isStringRelated(category, s)).map((value) => (
+                        <div className='candidate' onClick={() => setCategory(value)}> {value} </div>
+                    ))}
                 </div>
             )}
         </div>
@@ -56,14 +83,14 @@ interface SectionInputProps {
 function SectionInput({ category, section, setSection } : SectionInputProps) {
     let [candidates, setCandidates] = React.useState<string[]>([]);
     let [loadedCategory, setLoadedCategory] = React.useState<string>('');
-    let [nowFocus, setNowFocus] = React.useState<boolean>(false);
+    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     React.useEffect(() => {
         getGuideSections(loadedCategory).then((sections) => {
             setCandidates(sections);
         })
     }, [loadedCategory]);
-
+    
     return (
         <div className='adminForm'>
             <label> SECTION </label>
@@ -72,17 +99,76 @@ function SectionInput({ category, section, setSection } : SectionInputProps) {
                     value={section} 
                     onChange={(e) => setSection(e.target.value)} 
                     onFocus={() => {
-                        setNowFocus(true);
+                        setDeltaCandidateOpacity(0.1);
                         if (category !== loadedCategory) {
                             setLoadedCategory(category);
                         }
                     }} 
-                    onBlur={() => setNowFocus(false)}
+                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
-            { nowFocus && candidates.length > 0 && (
-                <div className='candidateContainer'>
-                    { candidates.filter((s) => isStringRelated(section, s)).map((value) => <div className='candidate'> {value} </div> )}
+            { candidateOpacity > 0 && candidates.length > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity: candidateOpacity }}
+                >
+                    { candidates.filter((s) => isStringRelated(section, s)).map((value) => (
+                        <div className='candidate' onClick={() => setSection(value) }> {value} </div> 
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+interface AuthorInputProps {
+    isAdmin: boolean;
+    author: string;
+    setAuthor: (author: string) => void;
+}
+
+function AuthorInput({ isAdmin, author, setAuthor } : AuthorInputProps) {
+    return (
+        <div className='adminForm'>
+            <label> 작성자 </label>
+            <div>
+                { isAdmin
+                    ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+                    : <input value={author} readOnly />
+                }
+            </div>
+        </div>
+    )
+}
+
+interface PriorityInputProps {
+    priority: number;
+    setPriority: (priority: number) => void;
+}
+
+function PriorityInput({ priority, setPriority }: PriorityInputProps) {
+    const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'];
+    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
+
+    return (
+        <div className='adminForm'>
+            <label> 중요도 </label>
+            <div>
+                <input 
+                    value={ candidates[priority] } 
+                    readOnly
+                    onFocus={() => setDeltaCandidateOpacity(0.1) } 
+                    onBlur={() => setDeltaCandidateOpacity(-0.1) }
+                />
+            </div>
+            { candidateOpacity > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity: candidateOpacity }}
+                >
+                    { candidates.map((value, index) => (
+                        <div className='candidate' onClick={() => setPriority(index) }> {value} </div> 
+                    ))}
                 </div>
             )}
         </div>
@@ -119,26 +205,9 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
 
             <div className='flexbox'>
                 <CategoryInput category={category} setCategory={setCategory} />
-                <SectionInput category={category} section={section} setSection={setSection} />
-                <div className='adminForm'>
-                    <label> 작성자 </label>
-                    <div>
-                        { isAdmin
-                            ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-                            : <input value={author} readOnly />
-                        }
-                    </div>
-                </div>
-                <div className='adminForm'>
-                    <label> 중요도 </label>
-                    <div>
-                        <select onChange={(e) => setPriority(Number.parseInt(e.target.value))}>
-                            { ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'].map((s, i) => (
-                                <option value={i}> {s} </option>
-                            )) }
-                        </select>
-                    </div>
-                </div>
+                <SectionInput section={section} setSection={setSection} category={category} />
+                <AuthorInput author={author} setAuthor={setAuthor} isAdmin={isAdmin} />
+                <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
 
             <div className=''>

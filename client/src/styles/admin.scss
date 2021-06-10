@@ -34,15 +34,17 @@ div.adminBox {
         div.candidateContainer {
             position: absolute;
             margin: 0px 10px;
+            padding: 5px 5px;
             width: 200px;
             box-sizing: border-box;
             background: #F1F2F8 0% 0%;
             border: 1px solid #aaaaaaaa;
             border-radius: 10px;
             opacity: 1;
+            cursor: pointer;
 
             div.candidate {
-                padding: 5px 15px;
+                padding: 3px 5px;
         
                 font-size: 16px;
                 font-weight: 300;
