@@ -12,6 +12,10 @@ div.adminBox {
     }
 
     .adminForm {
+        > * {
+            box-sizing: border-box;
+        }
+
         input, select {
             padding: 15px;
             margin: 10px;
@@ -25,6 +29,25 @@ div.adminBox {
             border: none;
             border-radius: 10px;
             opacity: 1;
+        }
+
+        div.candidateContainer {
+            position: absolute;
+            margin: 0px 10px;
+            width: 200px;
+            box-sizing: border-box;
+            background: #F1F2F8 0% 0%;
+            border: 1px solid #aaaaaaaa;
+            border-radius: 10px;
+            opacity: 1;
+
+            div.candidate {
+                padding: 5px 15px;
+        
+                font-size: 16px;
+                font-weight: 300;
+                color: #333333;
+            }
         }
 
         @media (max-width: 648px) {

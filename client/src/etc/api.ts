@@ -169,6 +169,8 @@ export const getGuideCategories = async () => {
 }
 
 export const getGuideSections = async (categoryName: string) => {
+    if (categoryName.length === 0) return [];
+    
     let response = await Axios.get(`${apiAddress}/guide/category/${categoryName}`);
 
     return response.data as string[];
