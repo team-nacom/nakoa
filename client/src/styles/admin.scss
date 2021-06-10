@@ -34,21 +34,27 @@ div.adminBox {
         div.candidateContainer {
             position: absolute;
             margin: 0px 10px;
-            padding: 5px 5px;
+            padding: 1px 3px;
             width: 200px;
             box-sizing: border-box;
             background: #F1F2F8 0% 0%;
-            border: 1px solid #aaaaaaaa;
+            border: 1px solid #bbbbbbbb;
             border-radius: 10px;
             opacity: 1;
             cursor: pointer;
 
             div.candidate {
-                padding: 3px 5px;
+                padding: 6px 6px;
+                margin: 2px 0px;
         
                 font-size: 16px;
                 font-weight: 300;
                 color: #333333;
+                border-radius: 8px;
+
+                &:hover {
+                    background: #E1E2E8;
+                }
             }
         }
 

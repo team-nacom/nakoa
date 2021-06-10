@@ -147,7 +147,7 @@ interface PriorityInputProps {
 }
 
 function PriorityInput({ priority, setPriority }: PriorityInputProps) {
-    const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'];
+    const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     return (
@@ -166,8 +166,8 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
                     className='candidateContainer' 
                     style={{ opacity: candidateOpacity }}
                 >
-                    { candidates.map((value, index) => (
-                        <div className='candidate' onClick={() => setPriority(index) }> {value} </div> 
+                    { [1, 2, 3, 4, 5].map((value) => (
+                        <div className='candidate' onClick={() => setPriority(value) }> {candidates[value]} </div> 
                     ))}
                 </div>
             )}
