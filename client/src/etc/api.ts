@@ -162,6 +162,18 @@ export const getGuide = async (id: number) => {
     return response.data as GuideType;
 }
 
+export const getGuideCategories = async () => {
+    let response = await Axios.get(`${apiAddress}/guide/category`);
+
+    return response.data as string[];
+}
+
+export const getGuideSections = async (categoryName: string) => {
+    let response = await Axios.get(`${apiAddress}/guide/category/${categoryName}`);
+
+    return response.data as string[];
+}
+
 export const postGuide = async (data: GuideType) => {
     if (data.isPublic === undefined) data.isPublic = true;
     

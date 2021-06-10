@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuides, GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuides, getGuideSections, GuideType, useIsAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -41,11 +41,13 @@ function GuideSection({ index, title, guides } : GuideSectionProps) {
 interface GuideCategoryProps {
     title: string;
     guides: GuideType[];
-    sections: string[];
 }
 
-function GuideCategory({ title, guides, sections } : GuideCategoryProps) {
-    return (
+function GuideCategory({ title, guides } : GuideCategoryProps) {
+    let [sectionsLoading, sections] = usePromise(() => getGuideSections(title));
+
+    if (sectionsLoading) return <></>;
+    else return (
         <div key={title} className='guideList'>
             <h1> { title || '분류되지 않음' } </h1>
             <div className='guideListContainer'>
@@ -60,21 +62,12 @@ function GuideCategory({ title, guides, sections } : GuideCategoryProps) {
 }
 
 function GuideList() {
-    let [guidesLoading, guides] = usePromise(getGuides);
     let isAdmin = useIsAdmin();
 
-    let categories = React.useMemo(() => {
-        if (!guides) return;
-        return [...new Set(guides.map(x => x.category))];
-    }, [guides]);
+    let [guidesLoading, guides] = usePromise(getGuides);
+    let [categoryLoading, categories] = usePromise(getGuideCategories);
 
-    let sections = React.useMemo(() => {
-        if (!guides) return;
-
-        return [...new Set(guides.map(x => x.section ))];
-    }, [guides]);
-
-    if (guidesLoading) return <Loading/>;
+    if (guidesLoading || categoryLoading) return <Loading/>;
     else return (
         <>
             <Header/>
@@ -82,12 +75,9 @@ function GuideList() {
             <div className='flexbox'>
                 { isAdmin && <span><Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link></span> }
             </div>
-            { categories?.map((category) => {
-                if (!sections) return;
-                let nowGuides = guides.filter((guide) => guide.category === category);
-                let nowSections = sections.filter((section) => nowGuides.filter((guide) => section === guide.section).length > 0);
-                return <GuideCategory title={category} guides={nowGuides} sections={nowSections} />
-            })}
+            { categories?.map((category) => 
+                <GuideCategory title={category} guides={guides.filter((guide) => guide.category === category)} />
+            )}
             <Footer/>
         </>
     );
