@@ -5,7 +5,7 @@ import { getChallInfo } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface MatchParams {
     id: string;
@@ -15,13 +15,7 @@ interface Props {
     match: match<MatchParams>;
 };
 
-const submitPlaceholder = 
-`여기에 풀이를 작성하거나 아래 버튼을 이용해 풀이를 담은 파일을 첨부해주세요.
-$n^2$와 같이 수식을 작성할 수 있으며, markdown 형식을 사용할 수 있습니다.
-작성한 풀이는 운영진이 읽고 피드백해 드립니다.
-`
-
-function ChallengeSubmit({ match }: Props) {
+function ChallengeSubmissions({ match } : Props) {
     const id = Number.parseInt(match.params.id);
     let [problemLoading, problem] = usePromise(() => getChallInfo(id));
 
@@ -40,7 +34,7 @@ function ChallengeSubmit({ match }: Props) {
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
-                    active: true,
+                    active: false,
                 }, {
                     name: '풀이',
                     link: `/challenge/${id}/solution`,
@@ -48,15 +42,33 @@ function ChallengeSubmit({ match }: Props) {
                 }, {
                     name: '답안',
                     link: `/challenge/${id}/submissions`,
-                    active: false,
+                    active: true,
                 }
-        ]} />
-            <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
-            <input type='file' style={{margin: '16px'}}/>
-            <button className='button submitChallenge'> 제출 </button>
+            ]} />
+            <p> 각 행을 클릭하면 사람들이 제출한 풀이를 확인할 수 있습니다. </p>
+            <p> 공식 풀이를 제외한 풀이는 문제를 푼 사람만 열람할 수 있습니다. </p>
+            <p/>
+            <table>
+                <thead>
+                    <tr>
+                        <th style={{width: '10%'}}> # </th>
+                        <th style={{width: '20%'}}> 닉네임 </th>
+                        <th style={{width: '20%'}}> 점수 </th>
+                        <th style={{width: '30%'}}> 제출 시각 </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td> 29 </td>
+                        <td> 듀벤 </td>
+                        <td> 100 / 100 </td>
+                        <td> 2021년 1월 3일 4시 56분 </td>
+                    </tr>
+                </tbody>
+            </table>
             <Footer/>
         </>
     )
 }
 
-export default ChallengeSubmit;
+export default ChallengeSubmissions;

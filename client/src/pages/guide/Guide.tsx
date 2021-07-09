@@ -5,7 +5,7 @@ import { getGuide, removeGuide, useIsAdmin } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, match, Redirect } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 

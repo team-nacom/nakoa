@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import GuideEditor from 'components/GuideEditor';
 
-function AdminAddGuide() {
+function GuideWrite() {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let isAdmin = useIsAdmin();
@@ -39,4 +39,4 @@ function AdminAddGuide() {
 }
 
 
-export default AdminAddGuide;
+export default GuideWrite;

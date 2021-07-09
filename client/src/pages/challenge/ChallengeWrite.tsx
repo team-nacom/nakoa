@@ -3,14 +3,14 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import React from 'react';
 
-function AdminAddChallenge() {
+function ChallengeWrite() {
     return (<>
         <Header/>
         <PageTitle style={{marginBottom: '20px'}}> 챌린지 추가 </PageTitle>
 
-        <div className='adminBox'>
+        <div className='writeBox'>
             <div className='adminLabel'> 챌린지 제목 </div>
-            <input className='adminForm'/>
+            <input className='writeForm'/>
 
             <div className='adminLabel'> 문제 파일 </div>
             <input type='file'/>
@@ -25,4 +25,4 @@ function AdminAddChallenge() {
 }
 
 
-export default AdminAddChallenge;
+export default ChallengeWrite;

@@ -5,7 +5,7 @@ import { getChallInfo } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface MatchParams {
     id: string;

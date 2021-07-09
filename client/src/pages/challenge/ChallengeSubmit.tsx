@@ -5,7 +5,7 @@ import { getChallInfo } from 'etc/api';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface MatchParams {
     id: string;
@@ -15,15 +15,15 @@ interface Props {
     match: match<MatchParams>;
 };
 
-const dateString = (date: Date) => {
-    return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`;
-}
+const submitPlaceholder = 
+`여기에 풀이를 작성하거나 아래 버튼을 이용해 풀이를 담은 파일을 첨부해주세요.
+$n^2$와 같이 수식을 작성할 수 있으며, markdown 형식을 사용할 수 있습니다.
+작성한 풀이는 운영진이 읽고 피드백해 드립니다.
+`
 
-function ChallengeView({ match }: Props) {
+function ChallengeSubmit({ match }: Props) {
     const id = Number.parseInt(match.params.id);
     let [problemLoading, problem] = usePromise(() => getChallInfo(id));
-    let time = React.useMemo(() => new Date(), []);
-    let problemOpenTime = React.useMemo(() => new Date(problem ? problem.problemOpenDate: 0), [problem]);
 
     if (problemLoading) return <Loading/>;
     else return (
@@ -36,11 +36,11 @@ function ChallengeView({ match }: Props) {
                 {
                     name: '문제',
                     link: `/challenge/${id}`,
-                    active: true,
+                    active: false,
                 }, {
                     name: '제출',
                     link: `/challenge/${id}/submit`,
-                    active: false,
+                    active: true,
                 }, {
                     name: '풀이',
                     link: `/challenge/${id}/solution`,
@@ -50,20 +50,13 @@ function ChallengeView({ match }: Props) {
                     link: `/challenge/${id}/submissions`,
                     active: false,
                 }
-            ]} />
-            { problemOpenTime <= time ? (
-                <object 
-                    data={problem.problemUrl}
-                    type="application/pdf" 
-                    style={{width: '100%', height: '600px'}}>
-                    Sorry, Your browser is outdated, or your PDF plugin is deactivated
-                </object>
-            ) : (
-                <p> 문제는 {dateString(problemOpenTime)}에 공개됩니다. </p>
-            )}
+        ]} />
+            <textarea placeholder={submitPlaceholder} className='submitChallenge'/>
+            <input type='file' style={{margin: '16px'}}/>
+            <button className='button submitChallenge'> 제출 </button>
             <Footer/>
         </>
     )
 }
 
-export default ChallengeView;
+export default ChallengeSubmit;

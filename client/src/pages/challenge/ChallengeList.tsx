@@ -5,7 +5,7 @@ import Tabs from 'components/Tabs';
 import { Link } from 'react-router-dom';
 import usePromise from 'etc/usePromise';
 import { getChallList, useIsAdmin } from 'etc/api';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 function ChallengeList() {
     let [challLoading, challs] = usePromise(getChallList);
@@ -22,7 +22,7 @@ function ChallengeList() {
                     active: true,
                 }
             ]} />
-            { isAdmin && <Link to='/admin/challenge/add'><button className='button'> 챌린지 추가하기 </button></Link> }
+            { isAdmin && <Link to='/challenge/write'><button className='button'> 챌린지 추가하기 </button></Link> }
             <table>
                 <thead>
                     <tr>

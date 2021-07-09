@@ -4,7 +4,7 @@ import { getGuideCategories, getGuides, getGuideSections, GuideType, useIsAdmin 
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface GuideSectionProps {
     index: number;
@@ -73,7 +73,7 @@ function GuideList() {
             <Header/>
             <div className='guideBackground' />
             <div className='flexbox'>
-                { isAdmin && <span><Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link></span> }
+                { isAdmin && <span><Link to='/guide/write'><button className='button'> 글 쓰기 </button></Link></span> }
             </div>
             { categories?.map((category) => 
                 <GuideCategory title={category} guides={guides.filter((guide) => guide.category === category)} />
