@@ -1,7 +1,8 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuide, removeGuide, useIsAdmin } from 'etc/api';
+import { getGuide, removeGuide } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, match, Redirect } from 'react-router-dom';

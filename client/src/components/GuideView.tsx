@@ -1,6 +1,5 @@
-import { GuideType } from 'etc/api';
+import { GuideType } from 'etc/api/guide';
 import React from 'react';
-import Exercise from './Exercise';
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 interface Params {

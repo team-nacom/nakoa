@@ -4,7 +4,8 @@ import Footer from 'components/Footer';
 import Tabs from 'components/Tabs';
 import { Link } from 'react-router-dom';
 import usePromise from 'etc/usePromise';
-import { getChallList, useIsAdmin } from 'etc/api';
+import { getChallList } from 'etc/api/chall';
+import { useIsAdmin } from 'etc/api/user';
 import Loading from '../Loading';
 
 function ChallengeList() {

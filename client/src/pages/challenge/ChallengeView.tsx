@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Tabs from 'components/Tabs';
-import { getChallInfo } from 'etc/api';
+import { getChallInfo } from 'etc/api/chall';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';

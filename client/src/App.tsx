@@ -12,7 +12,7 @@ import QuizWrite from 'pages/quiz/QuizWrite';
 import ChallengeWrite from 'pages/challenge/ChallengeWrite';
 import Guide from 'pages/guide/Guide';
 import usePromise from 'etc/usePromise';
-import { setUserInfo } from 'etc/api';
+import { setUserInfo } from 'etc/api/user';
 import Logout from 'pages/Logout';
 import SignUpDone from 'pages/signup/SignupDone';
 import GuideList from 'pages/guide/GuideList';

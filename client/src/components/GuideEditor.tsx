@@ -3,7 +3,8 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { getGuideCategories, getGuideSections, GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuideSections, GuideType } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import usePromise from 'etc/usePromise';
 

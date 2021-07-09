@@ -1,7 +1,8 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-import { getQuizInfo, Quiz, useIsAdmin } from 'etc/api';
+import { getQuizInfo, Quiz } from 'etc/api/quiz';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Link, match } from 'react-router-dom';
 import Loading from '../Loading';

@@ -1,6 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuideCategories, getGuides, getGuideSections, GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuides, getGuideSections, GuideType } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';

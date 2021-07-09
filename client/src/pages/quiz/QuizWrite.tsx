@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
-import { postQuiz } from 'etc/api';
+import { postQuiz } from 'etc/api/quiz';
 import React from 'react';
 
 

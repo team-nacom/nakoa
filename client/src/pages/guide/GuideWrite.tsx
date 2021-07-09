@@ -1,7 +1,8 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { GuideType, postGuide, useIsAdmin } from 'etc/api';
+import { GuideType, postGuide } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
