@@ -2,6 +2,7 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 import { getGuideCategories, getGuides, getGuideSections, GuideType } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
+import { priorityTags } from 'etc/consts';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -12,8 +13,6 @@ interface GuideSectionProps {
     title: string;
     guides: GuideType[];
 };
-
-let priorityString = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
 
 function GuideSection({ index, title, guides } : GuideSectionProps) {
     let [isCollapsed, setIsCollapsed] = React.useState(true);
@@ -30,7 +29,7 @@ function GuideSection({ index, title, guides } : GuideSectionProps) {
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
                             <span className='title'> { guide.name } </span>
-                            <span className='priority'> { priorityString[guide.priority] } </span>
+                            <span className='priority'> { priorityTags[guide.priority] } </span>
                         </div>
                     </Link> 
                 ))}

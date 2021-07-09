@@ -9,6 +9,7 @@ import Math from 'remark-math';
 import TeX from '@matejmazur/react-katex';
 
 import { HashLink } from 'react-router-hash-link';
+import { priorityTags } from 'etc/consts';
 
 function nodeDeepCopy(node: Node, depth?: number) {
     let {type, position, children, ...others} = node as Parent;
@@ -87,8 +88,6 @@ const SectionRenderer = (p : any) => {
 
     const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
 
-    const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
-
     var n = p;
 
     if(n.copied){ //toc
@@ -134,8 +133,6 @@ const SectionRendererFactory = (isManual? : boolean) => {
         const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
         const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
-
-        const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
 
         if(n.copied){ //toc
             return (        
