@@ -126,23 +126,22 @@
 }
 
 .guideSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
 
-    @media (max-width: $max-tablet-width) {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-    }
-
-    @media (min-width: $min-desktop-width) {
-        position: absolute;
-        left: calc(10% - 99px);
-        width: 70px;
-        top: 375px;
-
-        &.scrolledDown {
-            position: fixed;
-            top: 150px;
-        }
+    &.post {
+        @media (min-width: $min-desktop-width) {
+            position: absolute;
+            left: calc(9% - 89px);
+            width: 70px;
+            top: 375px;
+    
+            &.scrolledDown {
+                position: fixed;
+                top: 150px;
+            }
+        }    
     }
 
     button {

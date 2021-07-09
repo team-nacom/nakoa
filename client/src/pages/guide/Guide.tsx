@@ -32,7 +32,7 @@ function Guide({ match } : Props) {
         <>
             <Header />
 
-            <GuideSidebar>
+            <GuideSidebar on='post'>
                 { isAdmin && 
                     <button className='material-icons' onClick={async (e) => {
                         e.preventDefault();

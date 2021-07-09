@@ -73,7 +73,7 @@ function GuideList() {
         <>
             <Header/>
             <div className='guideBackground' />
-            <GuideSidebar>
+            <GuideSidebar on='list'>
                 { isAdmin && (
                     <span>
                         <Link to='/guide/write'>
