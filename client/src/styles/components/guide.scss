@@ -44,8 +44,13 @@
     .guideContent {
 //        font-family: 'SeoulHangang';
         background: white;
-        padding: unquote('min(calc(10%),80px)');
-        min-width: 80%;
+        box-sizing: border-box;
+        width: 100%;
+        padding: calc(10% - 40px);
+
+        @media (max-width: $max-mobile-width) {
+            padding: 20px;
+        }
         box-shadow: 0px 3px 20px #0000004D;
         border-radius: 10px;
     }
@@ -117,5 +122,30 @@
         div {
             overflow: auto;
         }
+    }
+}
+
+.guideSidebar {
+
+    @media (max-width: $max-tablet-width) {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+    }
+
+    @media (min-width: $min-desktop-width) {
+        position: absolute;
+        left: calc(10% - 99px);
+        width: 70px;
+        top: 375px;
+
+        &.scrolledDown {
+            position: fixed;
+            top: 150px;
+        }
+    }
+
+    button {
+        @include sidebarButton;
     }
 }

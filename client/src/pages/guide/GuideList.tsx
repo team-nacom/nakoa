@@ -1,4 +1,5 @@
 import Footer from 'components/Footer';
+import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
 import { getGuideCategories, getGuides, getGuideSections, GuideType } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
@@ -72,9 +73,17 @@ function GuideList() {
         <>
             <Header/>
             <div className='guideBackground' />
-            <div className='flexbox'>
-                { isAdmin && <span><Link to='/guide/write'><button className='button'> 글 쓰기 </button></Link></span> }
-            </div>
+            <GuideSidebar>
+                { isAdmin && (
+                    <span>
+                        <Link to='/guide/write'>
+                            <button className='roundButton material-icons'> 
+                                create
+                            </button>
+                        </Link>
+                    </span>
+                )}
+            </GuideSidebar>
             { categories?.map((category) => 
                 <GuideCategory title={category} guides={guides.filter((guide) => guide.category === category)} />
             )}

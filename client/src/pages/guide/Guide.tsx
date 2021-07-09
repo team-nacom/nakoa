@@ -9,6 +9,7 @@ import { Link, match, Redirect } from 'react-router-dom';
 import Loading from '../Loading';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
+import GuideSidebar from 'components/GuideSidebar';
 
 interface MatchParams {
     id: string;
@@ -31,28 +32,28 @@ function Guide({ match } : Props) {
         <>
             <Header />
 
-            <div className='flexbox'>
+            <GuideSidebar>
                 { isAdmin && 
-                    <button className='button' onClick={async (e) => {
+                    <button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
                         if (window.confirm('정말 삭제하시겠습니까?') && await removeGuide(id)) {
                             setRedirectToList(true);
                         }
                     }}>
-                        글 지우기
+                        delete
                     </button> 
                 }
 
                 { (isAdmin || (user.loggedIn && guide && guide.authors.filter(x => x === user.nickname).length > 0)) && 
                     <span>
                         <Link to={`/guide/${id}/edit`}>
-                            <button className='button'>
-                                수정하기
+                            <button className='material-icons'>
+                                edit
                             </button> 
                         </Link>
                     </span>
                 }
-            </div>
+            </GuideSidebar>
 
             { guide ? (
                 <GuideView guide={guide} />
