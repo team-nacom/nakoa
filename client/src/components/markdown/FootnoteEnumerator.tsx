@@ -99,11 +99,19 @@ const FootnoteDefinitionRenderer = (p : any) => {
         refstr = 'link-' + idstr;
     }
 
+    console.log(n)
+
     return (
-        <li id={ `fn-${ refstr }`  }>
-            <a href={ `#fnref-${ refstr }` } className="footnote-backref">↩</a>&nbsp;
-            { n.children }
-        </li>
+        <div className='footnoteItem' id={`fn-${ refstr }`}>
+            <span className='footnoteNumber'>
+                <p>
+                    <a href={ `#fnref-${ refstr }` } className="footnote-backref"> { `${n.label}.` } </a>
+                </p>
+            </span> 
+            <span className='footnoteBody'>
+                { n.identifier[0] == ']' ? <p> { n.children } </p> : n.children }
+            </span>
+        </div>
     )
 }
 

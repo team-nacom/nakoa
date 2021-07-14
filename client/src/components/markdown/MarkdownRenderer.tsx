@@ -61,14 +61,12 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
         footnoteDefinition: FootnoteDefinitionRenderer,
-        footnoteList: (p: any) => ( p.children.length?
-            <div className='footnoteList'>
-                <hr />
-                <ol>
-                    { p.children }
-                </ol>
-            </div>
-            :<></>
+        footnoteList: (p: any) => ( p.children.length ?
+                <div className='footnoteList'>
+                    <hr/>
+                    <div> { p.children } </div>
+                </div>
+            : (<></>)
         ),
 
         math: (p: any) => <TeX block math = { p.value as string } />,

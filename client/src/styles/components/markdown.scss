@@ -324,3 +324,17 @@ $code-color: #f0f0f0;
         margin-bottom: 0px;
     }
 }
+
+.footnoteItem {
+    display: flex;
+    width: 100%;
+
+    .footnoteNumber {
+        a { text-decoration: none; }
+        flex: 0 0 30px;
+    }
+
+    .footnoteBody {
+        flex: 1 0 0;
+    }
+}
