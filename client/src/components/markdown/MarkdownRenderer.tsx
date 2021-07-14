@@ -19,7 +19,7 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRenderer, SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
+import SectionEnumerator, { SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';

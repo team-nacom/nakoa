@@ -147,4 +147,25 @@
     button {
         @include sidebarButton;
     }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: 100px;
+        top: -10px;
+        z-index: 2;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 25px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004D;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
 }

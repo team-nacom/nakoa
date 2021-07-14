@@ -1,9 +1,8 @@
 import Footer from 'components/Footer';
 import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
-import { getGuideCategories, getGuides, getGuideSections, GuideType } from 'etc/api/guide';
+import { getGuideCategories, getGuides, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
-import { priorityTags } from 'etc/consts';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';

@@ -15,6 +15,24 @@ export interface GuideType {
     authors: string[];
 }
 
+const realPriorityTags = ['Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'] as const;
+
+export const priorityTags = [''].concat(realPriorityTags);
+
+export type PriorityTags = typeof realPriorityTags[number];
+
+export type GuideFilterType = {
+    [k in PriorityTags]: boolean
+};
+
+export const positiveGuideFilter : GuideFilterType = {
+    Optional: true,
+    Readable: true,
+    Recommendable: true,
+    Essential: true,
+    Draft: true,
+}
+
 export const getGuides = async () => {
     let response = await Axios.get(`${apiAddress}/guide`, {
         validateStatus: authValidateStatus, 
