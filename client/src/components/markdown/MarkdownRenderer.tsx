@@ -62,7 +62,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         footnoteReference: FootnoteReferenceRenderer,
         footnoteDefinition: FootnoteDefinitionRenderer,
         footnoteList: (p: any) => ( p.children.length ?
-                <div className='footnoteList'>
+                <div className='footnoteContainer'>
                     <hr/>
                     <div> { p.children } </div>
                 </div>

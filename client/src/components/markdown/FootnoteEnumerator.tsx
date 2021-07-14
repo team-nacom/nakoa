@@ -99,8 +99,6 @@ const FootnoteDefinitionRenderer = (p : any) => {
         refstr = 'link-' + idstr;
     }
 
-    console.log(n)
-
     return (
         <div className='footnoteItem' id={`fn-${ refstr }`}>
             <span className='footnoteNumber'>

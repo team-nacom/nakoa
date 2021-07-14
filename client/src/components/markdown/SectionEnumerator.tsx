@@ -105,6 +105,17 @@ const SectionRendererFactory = (isManual? : boolean) => {
             )
         }
         else{ //contents
+
+            let children = n.children;
+            console.log(children);
+            if (!isManual) {
+                children = children.concat([(
+                    <span style={{ fontSize: '10px', marginLeft: '10px' }}>
+                        { priorityTags[n.data.priority] }
+                    </span>
+                )])
+            }
+
             return (        
                 <div className={ hnames[n.depth] }>
                     { n.data.priority !== -1 &&
@@ -116,13 +127,7 @@ const SectionRendererFactory = (isManual? : boolean) => {
                             { n.numbering.join('.')+'.' }
                         </HashLink>
                     }
-                    { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-                    {
-                        !isManual &&
-                        <span style={ {fontSize:'10px'} }>
-                            { priorityTags[n.data.priority] }
-                        </span>
-                    }
+                    { [ React.createElement( htags[n.depth], { children }) ] }
                 </div>
             )
         }

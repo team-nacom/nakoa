@@ -162,7 +162,7 @@ $code-color: #f0f0f0;
         margin-top: 35px;
         margin-bottom: 15px;
         padding-top: 5px;
-        padding-bottom: 15px;
+        padding-bottom: 7px;
         border-bottom: 1px $primary-color solid;
     }
     
@@ -170,8 +170,8 @@ $code-color: #f0f0f0;
         margin-top: 35px;
         margin-bottom: 15px;
         padding-left: 20px;
-        padding-top: 5px;
-        padding-bottom: 10px;
+        padding-top: 8px;
+        padding-bottom: 5px;
         border-left: 1px $primary-color solid;
     }
 
@@ -179,7 +179,7 @@ $code-color: #f0f0f0;
         margin-top: 12px;
         margin-bottom: 12px;
         padding-left: 20px;
-        padding-top: 5px;
+        padding-top: 7px;
         padding-bottom: 5px;
         border-left: 1px $primary-color solid;
     }
@@ -325,16 +325,20 @@ $code-color: #f0f0f0;
     }
 }
 
-.footnoteItem {
-    display: flex;
-    width: 100%;
+.footnoteContainer {
+    margin-top: 50px;
 
-    .footnoteNumber {
-        a { text-decoration: none; }
-        flex: 0 0 30px;
-    }
-
-    .footnoteBody {
-        flex: 1 0 0;
+    .footnoteItem {
+        display: flex;
+        width: 100%;
+    
+        .footnoteNumber {
+            a { text-decoration: none; }
+            flex: 0 0 30px;
+        }
+    
+        .footnoteBody {
+            flex: 1 0 0;
+        }
     }
 }
