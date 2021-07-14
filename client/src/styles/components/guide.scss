@@ -129,6 +129,7 @@
     position: fixed;
     right: 20px;
     bottom: 20px;
+    z-index: 3;
 
     &.post {
         @media (min-width: $min-desktop-width) {
@@ -153,7 +154,11 @@
         width: 180px;
         left: 100px;
         top: -10px;
-        z-index: 2;
+        
+        @media (max-width: $max-tablet-width) {
+            left: 20px;
+            top: -210px;
+        }
 
         .prioritySelector {
             width: 100%;
