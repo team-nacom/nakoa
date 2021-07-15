@@ -9,6 +9,7 @@ import Math from 'remark-math';
 import TeX from '@matejmazur/react-katex';
 
 import { HashLink } from 'react-router-hash-link';
+import { priorityTags } from 'etc/api/guide';
 
 function nodeDeepCopy(node: Node, depth?: number) {
     let {type, position, children, ...others} = node as Parent;
@@ -82,60 +83,11 @@ const SectionEnumerator : Plugin = () => {
     return sectionEnumerator;
 }
 
-const SectionRenderer = (p : any) => {
-    const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
-
-    const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
-
-    const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
-
-    var n = p;
-
-    if(n.copied){ //toc
-        return (        
-            <div className={ hnames[n.depth] }>
-                { n.data.priority !== -1 &&
-                    <HashLink
-                        to={ '#heading-'+n.numbering.join('-') }
-                        className={ hnames[n.depth] + 'Num' }
-                    >
-                        { n.numbering.join('.')+'.' }
-                    </HashLink>
-                }
-                {/* <div className={ hnames[n.depth] + 'Num' }>
-                    { n.numbering.join('.') }
-                </div> */}
-                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-            </div>
-        )
-    }
-    else{ //contents
-        return (        
-            <div className={ hnames[n.depth] }>
-                { n.data.priority !== -1 &&
-                    <HashLink
-                        to='#toc-label' id={ 'heading-'+n.numbering.join('-') }
-                        className={ hnames[n.depth] + 'Num' }
-                    >
-                        { n.numbering.join('.')+'.' }
-                    </HashLink>
-                }
-                { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-                <span style={ {fontSize:'10px'} }>
-                    { priorityTags[n.data.priority] }
-                </span>
-            </div>
-        )
-    }
-}
-
 const SectionRendererFactory = (isManual? : boolean) => {
     return (n : any) => {
         const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
         const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
-
-        const priorityTags = ['','Essential','Recommendable','Readable','Optional','Draft'];
 
         if(n.copied){ //toc
             return (        
@@ -153,6 +105,17 @@ const SectionRendererFactory = (isManual? : boolean) => {
             )
         }
         else{ //contents
+
+            let children = n.children;
+            console.log(children);
+            if (!isManual) {
+                children = children.concat([(
+                    <span style={{ fontSize: '10px', marginLeft: '10px' }}>
+                        { priorityTags[n.data.priority] }
+                    </span>
+                )])
+            }
+
             return (        
                 <div className={ hnames[n.depth] }>
                     { n.data.priority !== -1 &&
@@ -164,13 +127,7 @@ const SectionRendererFactory = (isManual? : boolean) => {
                             { n.numbering.join('.')+'.' }
                         </HashLink>
                     }
-                    { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-                    {
-                        !isManual &&
-                        <span style={ {fontSize:'10px'} }>
-                            { priorityTags[n.data.priority] }
-                        </span>
-                    }
+                    { [ React.createElement( htags[n.depth], { children }) ] }
                 </div>
             )
         }
@@ -186,5 +143,5 @@ const TocRendererFactory = (isManual? : boolean) => {
     )
 }
 
-export { SectionRenderer, SectionRendererFactory, TocRendererFactory };
+export { SectionRendererFactory, TocRendererFactory };
 export default SectionEnumerator;

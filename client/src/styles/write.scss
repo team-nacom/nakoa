@@ -2,7 +2,7 @@
 @import './components/popup.scss';
 @import './components/buttons.scss';
 
-div.adminBox {
+div.writeBox {
     box-shadow: 0px 3px 20px #0000004D;
     border-radius: 10px;
     margin: 40px 20px;
@@ -11,7 +11,7 @@ div.adminBox {
         margin: 20px 30px;
     }
 
-    .adminForm {
+    .writeForm {
         > * {
             box-sizing: border-box;
         }

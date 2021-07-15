@@ -1,18 +1,18 @@
 import Footer from 'components/Footer';
+import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
-import { getGuideCategories, getGuides, getGuideSections, GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuides, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface GuideSectionProps {
     index: number;
     title: string;
     guides: GuideType[];
 };
-
-let priorityString = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
 
 function GuideSection({ index, title, guides } : GuideSectionProps) {
     let [isCollapsed, setIsCollapsed] = React.useState(true);
@@ -29,7 +29,7 @@ function GuideSection({ index, title, guides } : GuideSectionProps) {
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
                             <span className='title'> { guide.name } </span>
-                            <span className='priority'> { priorityString[guide.priority] } </span>
+                            <span className='priority'> { priorityTags[guide.priority] } </span>
                         </div>
                     </Link> 
                 ))}
@@ -72,9 +72,17 @@ function GuideList() {
         <>
             <Header/>
             <div className='guideBackground' />
-            <div className='flexbox'>
-                { isAdmin && <span><Link to='/guide/add'><button className='button'> 글 쓰기 </button></Link></span> }
-            </div>
+            <GuideSidebar on='list'>
+                { isAdmin && (
+                    <span>
+                        <Link to='/guide/write'>
+                            <button className='roundButton material-icons'> 
+                                create
+                            </button>
+                        </Link>
+                    </span>
+                )}
+            </GuideSidebar>
             { categories?.map((category) => 
                 <GuideCategory title={category} guides={guides.filter((guide) => guide.category === category)} />
             )}

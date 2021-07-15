@@ -1,10 +1,11 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-import { getQuizInfo, Quiz, useIsAdmin } from 'etc/api';
+import { getQuizInfo, Quiz } from 'etc/api/quiz';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Link, match } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface MatchParams {
     id: string;
@@ -40,7 +41,7 @@ function QuizView({ match } : Props) {
     else return (
         <>
             <Header/>
-            { isAdmin && <Link to='/admin/quiz/add'><button className='button'> 퀴즈 추가하기 </button></Link> }
+            { isAdmin && <Link to='/quiz/write'><button className='button'> 퀴즈 추가하기 </button></Link> }
             <div className={`quizBox shadowOver${Math.min(3, maxId - id)}`}>
                 <div style={{marginBottom: '27px'}}> { `#${id}. ${quiz.name}` } </div>
                 { description }

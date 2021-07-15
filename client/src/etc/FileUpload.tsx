@@ -1,6 +1,4 @@
-import axios from "axios";
 import { uploadFile } from "./api";
-import config from "./config";
 
 async function fileUpload(file: File){
     let result = await uploadFile('guide', file);

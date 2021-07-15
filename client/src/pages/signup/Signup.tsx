@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
-import { register } from 'etc/api';
+import { register } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 

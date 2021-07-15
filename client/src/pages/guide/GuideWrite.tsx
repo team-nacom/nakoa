@@ -1,14 +1,15 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { GuideType, postGuide, useIsAdmin } from 'etc/api';
+import { GuideType, postGuide } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import GuideEditor from 'components/GuideEditor';
 
-function AdminAddGuide() {
+function GuideWrite() {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let isAdmin = useIsAdmin();
@@ -39,4 +40,4 @@ function AdminAddGuide() {
 }
 
 
-export default AdminAddGuide;
+export default GuideWrite;

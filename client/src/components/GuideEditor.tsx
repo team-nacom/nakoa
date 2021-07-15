@@ -3,7 +3,8 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { getGuideCategories, getGuideSections, GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuideSections, GuideType } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import usePromise from 'etc/usePromise';
 
@@ -50,7 +51,7 @@ function CategoryInput({ category, setCategory }: CategoryInputProps) {
     }, []);
 
     return (
-        <div className='adminForm'>
+        <div className='writeForm'>
             <label> CATEGORY </label>
             <div>
                 <input 
@@ -92,7 +93,7 @@ function SectionInput({ category, section, setSection } : SectionInputProps) {
     }, [loadedCategory]);
     
     return (
-        <div className='adminForm'>
+        <div className='writeForm'>
             <label> SECTION </label>
             <div>
                 <input 
@@ -132,7 +133,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
     const editable = isAdmin;
 
     return (
-        <div className='adminForm'>
+        <div className='writeForm'>
             <label> 작성자 </label>
             <div>
                 <input 
@@ -187,7 +188,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     return (
-        <div className='adminForm'>
+        <div className='writeForm'>
             <label> 중요도 </label>
             <div>
                 <input 
@@ -236,7 +237,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
     let [message, setMessage] = React.useState<string>();
 
     return (<>
-        <div className='adminBox guide'>
+        <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
                 { behavior == 'add' ? '가이드 추가' : '가이드 수정'} 
             </PageTitle>

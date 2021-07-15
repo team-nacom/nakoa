@@ -19,7 +19,7 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRenderer, SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
+import SectionEnumerator, { SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
@@ -61,14 +61,12 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
         footnoteDefinition: FootnoteDefinitionRenderer,
-        footnoteList: (p: any) => ( p.children.length?
-            <div className='footnoteList'>
-                <hr />
-                <ol>
-                    { p.children }
-                </ol>
-            </div>
-            :<></>
+        footnoteList: (p: any) => ( p.children.length ?
+                <div className='footnoteContainer'>
+                    <hr/>
+                    <div> { p.children } </div>
+                </div>
+            : (<></>)
         ),
 
         math: (p: any) => <TeX block math = { p.value as string } />,

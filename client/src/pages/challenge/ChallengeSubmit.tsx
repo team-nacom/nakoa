@@ -1,11 +1,11 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Tabs from 'components/Tabs';
-import { getChallInfo } from 'etc/api';
+import { getChallInfo } from 'etc/api/chall';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { match } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 interface MatchParams {
     id: string;

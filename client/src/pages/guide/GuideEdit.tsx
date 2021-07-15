@@ -1,4 +1,4 @@
-import { editGuide, getGuide, GuideType, isAdmin, postGuide } from 'etc/api';
+import { editGuide, getGuide, GuideType } from 'etc/api/guide';
 import React from 'react';
 import usePromise from 'etc/usePromise';
 import { match, Redirect } from 'react-router-dom';

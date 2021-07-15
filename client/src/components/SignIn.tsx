@@ -1,4 +1,4 @@
-import { login } from 'etc/api';
+import { login } from 'etc/api/user';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
