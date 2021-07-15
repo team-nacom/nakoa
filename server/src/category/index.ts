@@ -18,11 +18,11 @@ router.get('/', async (ctx) => {
 });
 
 // Get list of Gories
+// TODO: avoid naming collision with get guides
 router.get('/:index(\\d+)', async (ctx) => {
-  const index = ctx.params.index;
+  const index: number = +ctx.params.index;
 
-  let filter: any = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
-  filter.cate = index; // TODO parse to number
+  let filter: any = {cate: +index};
 
   const cateName = await getCateName(index);
   const query = Gory.find(filter).select('index name guides');
