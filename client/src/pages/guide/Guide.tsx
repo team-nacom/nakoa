@@ -1,7 +1,7 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuide, GuideFilterType, positiveGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
+import { getGuide, getGuideCategories, GuideFilterType, positiveGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -22,14 +22,16 @@ interface Props {
 
 function Guide({ match } : Props) {
     let id = Number.parseInt(match.params.id);
-    let [guideLoading, guide] = usePromise(() => getGuide(id));
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
 
+    let [guideLoading, guide] = usePromise(() => getGuide(id));
+
     let [redirectToList, setRedirectToList] = React.useState(false);
     let [selectingPriority, setSelectingPriority] = React.useState(false);
-    let [guideFilter, setGuideFilter] = React.useState<GuideFilterType>(positiveGuideFilter);
+    let [filter, setFilter] = React.useState<GuideFilterType>(positiveGuideFilter);
 
+    
     if (redirectToList) return <Redirect to='/guide' />
     if (guideLoading) return <Loading/>;
     return (
@@ -50,12 +52,12 @@ function Guide({ match } : Props) {
                             { priorityTags.filter((s) => s.length > 0).map((tag, k) => (
                                 <div 
                                     className='prioritySelector link'
-                                    onClick={() => setGuideFilter({
-                                        ...guideFilter, 
-                                        [tag]: !guideFilter[tag as PriorityTags]
+                                    onClick={() => setFilter({
+                                        ...filter, 
+                                        [tag]: !filter[tag as PriorityTags]
                                     })}
                                 > 
-                                    { guideFilter[tag as PriorityTags] && <span className='material-icons' style={{fontSize: '15px', transform: 'translateY(2px)', margin: '0px 4px'}}> check </span> }
+                                    { filter[tag as PriorityTags] && <span className='material-icons' style={{fontSize: '15px', transform: 'translateY(2px)', margin: '0px 4px'}}> check </span> }
                                     { tag } 
                                 </div>
                             ))}
@@ -87,7 +89,7 @@ function Guide({ match } : Props) {
             </GuideSidebar>
 
             { guide ? (
-                <GuideView guide={guide} />
+                <GuideView guide={guide} filter={filter} />
             ) : (
                 <p> 존재하지 않는 가이드입니다. </p>
             )}

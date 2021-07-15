@@ -17,6 +17,24 @@
         line-height: 20px;
         color: white;
         text-shadow: 0px 5px 5px #0000004D;
+
+        .metadataItem {
+            font-family: 'Montserrat', 'SeoulNamsan';
+            color: white;
+            font-size: 17px;
+
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            
+            width: 150px;
+            height: 30px;
+            background: #ffffff22;
+            border-radius: 15px;
+            border: 1px solid #88888888;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
     }
 
     h2.subtitle {
