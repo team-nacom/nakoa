@@ -27,7 +27,7 @@ router.put('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
 // Get list of guides
 router.get('/', async (ctx) => {
   const filter = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
-  const query = Guide.find(filter).select('index name category section priority');
+  const query = Guide.find(filter).select('index name cate gory priority');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);
@@ -59,12 +59,12 @@ router.delete('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
 
 // Get list of all categories
 router.get('/category', async (ctx) => {
-  ctx.body = await Guide.distinct('category');
+  ctx.body = await Guide.distinct('cate');
 });
 
 // Get list of all sections in given category
 router.get('/category/:name', async (ctx) => {
-  ctx.body = await Guide.distinct('section', { category: ctx.params.name });
+  ctx.body = await Guide.distinct('gory', { cate: ctx.params.name });
 });
 
 

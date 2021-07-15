@@ -8,8 +8,8 @@ export interface GuideDocument extends Document {
     content: string,
     
     isPublic: boolean,
-    category: string,
-    section: string,
+    cate: number,
+    gory: string,
     priority: number,
 
     createDate: number
@@ -23,8 +23,8 @@ const guideSchema = new Schema<GuideDocument>({
     content: String,
 
     isPublic: { type: Boolean, default: false },
-    category: String,
-    section: String,
+    cate: Number,
+    gory: String,
     priority: Number, // 1 is highest, 5 is lowest
 
     createDate: { type: Number, default: Date.now }
