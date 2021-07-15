@@ -21,16 +21,18 @@
         .metadataItem {
             font-family: 'Montserrat', 'SeoulNamsan';
             color: white;
+            text-shadow: 0px 5px 5px #0000004D;
             font-size: 17px;
+            font-weight: bold;
 
             -moz-appearance: none;
             -webkit-appearance: none;
             appearance: none;
             
             width: 150px;
-            height: 30px;
-            background: #ffffff22;
-            border-radius: 15px;
+            height: 32px;
+            background: #ffffff11;
+            border-radius: 16px;
             border: 1px solid #88888888;
             padding-left: 10px;
             padding-right: 10px;
@@ -43,7 +45,7 @@
         font-size: 21px;
         line-height: 30px;
         color: white;
-        margin-top: 30px;
+        margin-top: 20px;
         margin-bottom: 6px;
         text-shadow: 0px 5px 5px #0000004D;
     }
@@ -54,9 +56,39 @@
         font-size: 40px;
         line-height: 55px;
         color: white;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
         margin-top: 6px;
         text-shadow: 0px 5px 5px #0000004D;
+    }
+
+    .guideNavigateBar {
+        padding: 15px calc(10% - 40px);
+        @media (max-width: $max-mobile-width) {
+            padding: 15px 20px;
+        }
+
+        display: flex;
+        color: white;
+        text-shadow: 0px 5px 5px #0000004D;
+        font-size: 16px;
+        .material-icons {
+            transform: translateY(7px);
+        }
+
+        .guideNavigateLeft {
+            flex: 0 0 50%;
+            text-align: left;
+        }
+        .guideNavigateRight {
+            flex: 0 0 50%;
+            text-align: right;
+        }
+
+        .guideNavigateItemName {
+            @media (max-width: $max-mobile-width) {
+                display: none;
+            }
+        }
     }
 
     .guideContent {
@@ -64,10 +96,10 @@
         background: white;
         box-sizing: border-box;
         width: 100%;
-        padding: calc(10% - 40px);
+        padding: 20px calc(10% - 40px);
 
         @media (max-width: $max-mobile-width) {
-            padding: 20px;
+            padding: 20px 20px;
         }
         box-shadow: 0px 3px 20px #0000004D;
         border-radius: 10px;
