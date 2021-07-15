@@ -1,14 +1,16 @@
 import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import { useIntl } from 'react-intl';
 
 
 function Main() {
+    let intl = useIntl();
     return (
         <>
             <Header/>
 
-            안녕하세요, 팀 나무컴퍼스입니다!
+            { intl.formatMessage({ id: 'main.greeting' })}
             
             <Footer/>
         </>

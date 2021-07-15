@@ -1,14 +1,49 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { RootReducer } from 'store';
+import { localeList, localeName, setLocale } from 'store/locale';
 import SignIn from './SignIn';
+
+function LocaleButton() {
+    let [selectActive, setSelectActive] = React.useState(false);
+    let nowLocale = useSelector((state: RootReducer) => state.locale.locale);
+    let dispatch = useDispatch();
+
+    return (
+        <>
+            <span className='link material-icons' onClick={() => setSelectActive(!selectActive)}>
+                translate
+            </span>
+            { selectActive && (
+                <div className='localeSelect'>
+                    { localeList.map((locale) => (
+                        <div 
+                            className={'localeSelectItem' + (locale === nowLocale ? ' focus' : '')} 
+                            onClick={() => dispatch(setLocale(locale))}
+                            style={{display: 'flex'}}
+                        > 
+                            <span className='material-icons' style={{flex: '0 0 10%'}}>
+                                { locale === nowLocale && 'check' }
+                            </span>
+                            <span style={{flex: '1 0 0'}}>
+                                { localeName[locale] } 
+                            </span>
+                        </div> 
+                    ))} 
+                </div>
+            )}
+        </>
+    )
+}
 
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
     let user = useSelector((state: RootReducer) => state.user);
     let [expanded, setExpanded] = React.useState<boolean>(false);
-    
+    let intl = useIntl();
+
     const pathname = window.location.pathname;
     
     return (
@@ -17,21 +52,24 @@ function Header() {
                 <nav className='navbar'>
                     <div className='title'>
                         <Link to='/'>
-                            <img src={process.env.PUBLIC_URL + '/logo.png'} alt='팀 나무컴퍼스'/>
+                            <img src={process.env.PUBLIC_URL + '/logo.png'} alt={intl.formatMessage({id: 'team'})}/>
                         </Link>
                     </div>
                     <ul className={'menu' + (expanded ? ' expanded' : '')}>
                         { user.loggedIn && (
                             <li className='inactive'>
-                                { user.nickname + '님, 안녕하세요!' }
+                                <FormattedMessage 
+                                    id='header.hello'
+                                    values={{name: user.nickname}}
+                                />
                             </li>
                         )}
                         <li className={pathname.startsWith('/about') ? 'active' : ''}>
-                            <Link to='/about'>About</Link>
+                            <Link to='/about'>{ intl.formatMessage({id: 'header.about'})} </Link>
                         </li>
-                        <li> <a href='https://chal.team-na.com'> 챌린지 </a> </li>
+                        <li> <a href='https://chal.team-na.com'> { intl.formatMessage({id: 'header.chal'})} </a> </li>
                         <li className={pathname.startsWith('/guide') ? 'active' : ''}>
-                            <Link to='/guide'>가이드</Link>
+                            <Link to='/guide'> { intl.formatMessage({id: 'header.guide'}) } </Link>
                         </li>
                         {/*
                         <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
@@ -61,6 +99,9 @@ function Header() {
                             setExpanded(!expanded);
                         }}>
                             menu
+                        </li>
+                        <li>
+                            <LocaleButton/>
                         </li>
                     </ul>
                 </nav>

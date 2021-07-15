@@ -20,35 +20,49 @@ import GuideWrite from 'pages/guide/GuideWrite';
 import About from 'pages/About'
 import GuideEdit from 'pages/guide/GuideEdit';
 
+import messageEn from './locale/en.json';
+import messageKo from './locale/ko.json';
+import { IntlProvider } from 'react-intl';
+import { useSelector } from 'react-redux';
+import { RootReducer } from 'store';
+
+const localeMessages = {
+  'en': messageEn,
+  'ko': messageKo
+} as const;
+
 function App() {
   let [userInfoLoading] = usePromise(() => setUserInfo());
+  let locale = useSelector((state: RootReducer) => state.locale.locale);
 
   if (userInfoLoading) return <></>;
   else return (
-    <BrowserRouter>
-      <Switch>
-        <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
-        <Route path='/challenge/:id/solution' component={ChallengeSolution} />
-        <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
-        <Route path='/challenge/:id' component={ChallengeView} />
-        <Route path='/challenge' component={ChallengeList} />
-        <Route path='/guide/write' component={GuideWrite} />
-        <Route path='/guide/:id/edit' component={GuideEdit} />
-        <Route path='/guide/:id' component={Guide} />
-        <Route path='/guide' component={GuideList} />
-        <Redirect path='/problem' to='/challenge' />
-        <Redirect path='/challenges' to='/challenge' />
-        <Route path='/quiz/:id' component={QuizView} />
-        <Redirect path='/quiz' to='/quiz/1'/>
-        <Route path='/quiz/write' component={QuizWrite} />
-        <Route path='/challenge/write' component={ChallengeWrite} />
-        <Route path='/signup/done' component={SignUpDone} />
-        <Route path='/signup' component={SignUp} />
-        <Route path='/logout' component={Logout} />
-        <Route path='/about' component={About} />
-        <Route path='/' component={Main} />
-      </Switch>
-    </BrowserRouter>
+    <IntlProvider locale={locale} messages={localeMessages[locale]}>
+      <BrowserRouter>
+        <Switch>
+          <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
+          <Route path='/challenge/:id/solution' component={ChallengeSolution} />
+          <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
+          <Route path='/challenge/:id' component={ChallengeView} />
+          <Route path='/challenge' component={ChallengeList} />
+          <Route path='/guide/write' component={GuideWrite} />
+          <Route path='/guide/:id/edit' component={GuideEdit} />
+          <Route path='/guide/:id' component={Guide} />
+          <Route path='/guide' component={GuideList} />
+          <Redirect path='/problem' to='/challenge' />
+          <Redirect path='/challenges' to='/challenge' />
+          <Route path='/quiz/:id' component={QuizView} />
+          <Redirect path='/quiz' to='/quiz/1'/>
+          <Route path='/quiz/write' component={QuizWrite} />
+          <Route path='/challenge/write' component={ChallengeWrite} />
+          <Route path='/signup/done' component={SignUpDone} />
+          <Route path='/signup' component={SignUp} />
+          <Route path='/logout' component={Logout} />
+          <Route path='/about' component={About} />
+          <Route path='/' component={Main} />
+        </Switch>
+      </BrowserRouter>
+    </IntlProvider>    
   );
 }
 
