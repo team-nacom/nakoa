@@ -35,8 +35,8 @@ export async function checkAdminMiddleware(ctx :any, next :any) {
 };
 
 
-// utility function for removing all docuemtns and resetting a count of a collection
-const collections = ["guide"];
+// utility function for removing all documents and resetting a count of a collection
+const collections = ["guide", "cate", "gory"];
 export async function resetCollection(name :string) {
   if(!collections.includes(name)) throw Error("??");
   // currently supports only guide collection

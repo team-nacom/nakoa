@@ -3,11 +3,49 @@ import Router from 'koa-router';
 import Cate from '../models/cate';
 import Gory from '../models/gory';
 import Guide from '../models/guide';
+import Count from '../models/count';
 import { isAdmin, checkAdminMiddleware } from "../utils";
 import createHttpError from 'http-errors';
 
 const router = new Router();
 
+router.post('/cate', checkAdminMiddleware, async (ctx) => {
+  const cateObj = ctx.request.body;
+  // TODO: check type
+
+  try{
+    const index = await Count.getNextCount('cate');
+    cateObj.index = index;
+    
+    const cate = new Cate(cateObj);
+    await cate.save();
+    console.log(`Cate "${cate.name}" upload successful`);
+
+    ctx.body = {
+      index: cate.index
+    };
+  } catch(e) {
+    ctx.throw(500, e);
+  }
+});
+
+router.post('/gory', checkAdminMiddleware, async (ctx) => {
+  const goryObj = ctx.request.body;
+  // TODO: check type
+
+  try{
+    // NOTE: index will be fed with default nanoid generator, and it is not guaranteed to be collision-free
+    const gory = new Gory(goryObj);
+    await gory.save();
+    console.log(`gory "${gory.name}" upload successful`);
+
+    ctx.body = {
+      index: gory.index
+    };
+  } catch(e) {
+    ctx.throw(500, e);
+  }
+});
 
 // Get list of Cates
 router.get('/', async (ctx) => {
@@ -19,7 +57,7 @@ router.get('/', async (ctx) => {
 
 // Get list of Gories
 // TODO: avoid naming collision with get guides
-router.get('/:index(\\d+)', async (ctx) => {
+router.get('/cate/:index(\\d+)', async (ctx) => {
   const index: number = +ctx.params.index;
 
   let filter: any = {cate: +index};
@@ -34,6 +72,20 @@ router.get('/:index(\\d+)', async (ctx) => {
     });
 });
 
+router.get('/gory/:gindex', async (ctx) => {
+  const gindex: string = ctx.params.gindex;
+
+  try {
+    const goryName = await getGoryName(gindex);
+    // TODO get cateName?
+    const docs = await getGuides(isAdmin(ctx), gindex);
+
+    ctx.body = { goryName: goryName, guides: docs };
+  } catch(e) {
+    ctx.throw(500, e);
+  }
+});
+
 // Get list of Guides
 router.get('/:cindex(\\d+)/:gindex', async (ctx) => {
   const gindex: string = ctx.params.gindex;
@@ -46,20 +98,6 @@ router.get('/:cindex(\\d+)/:gindex', async (ctx) => {
     const docs = await getGuides(isAdmin(ctx), gindex, cindex);
     
     ctx.body = { cateName: cateName, goryName: goryName, guides: docs };
-  } catch(e) {
-    ctx.throw(500, e);
-  }
-});
-
-router.get('/:gindex', async (ctx) => {
-  const gindex: string = ctx.params.gindex;
-
-  try {
-    const goryName = await getGoryName(gindex);
-    // TODO get cateName?
-    const docs = await getGuides(isAdmin(ctx), gindex);
-
-    ctx.body = { goryName: goryName, guides: docs };
   } catch(e) {
     ctx.throw(500, e);
   }
