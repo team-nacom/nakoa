@@ -10,6 +10,7 @@ import TeX from '@matejmazur/react-katex';
 
 import { HashLink } from 'react-router-hash-link';
 import { priorityTags } from 'etc/api/guide';
+import { FormattedMessage } from 'react-intl';
 
 function nodeDeepCopy(node: Node, depth?: number) {
     let {type, position, children, ...others} = node as Parent;
@@ -137,7 +138,9 @@ const SectionRendererFactory = (isManual? : boolean) => {
 const TocRendererFactory = (isManual? : boolean) => {
     return (p: any) => (
         <div className='toc'>
-            <div id={ isManual ? 'man-toc-label' : 'toc-label' } className='label'> Contents </div>
+            <div id={ isManual ? 'man-toc-label' : 'toc-label' } className='label'>
+                <FormattedMessage id='markdown.contents' />
+            </div>
             { p.children }
         </div>
     )
