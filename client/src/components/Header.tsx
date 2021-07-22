@@ -52,7 +52,16 @@ function Header() {
                 <nav className='navbar'>
                     <div className='title'>
                         <Link to='/'>
-                            <img src={process.env.PUBLIC_URL + '/logo.png'} alt={intl.formatMessage({id: 'team'})}/>
+                            <img 
+                                src={process.env.PUBLIC_URL + '/logo.png'} 
+                                alt={intl.formatMessage({id: 'team'})}
+                                className='desktopOnly'
+                            />
+                            <img 
+                                src={process.env.PUBLIC_URL + '/icon.png'} 
+                                alt={intl.formatMessage({id: 'team'})}
+                                className='mobileOnly'
+                            />
                         </Link>
                     </div>
                     <ul className={'menu' + (expanded ? ' expanded' : '')}>
@@ -94,14 +103,14 @@ function Header() {
                                 <Link className="material-icons" to='/signup'>person_add</Link>
                             </li>
                         </>)}
+                        <li>
+                            <LocaleButton/>
+                        </li>
                         <li className={'mobileOnly material-icons link' + (expanded ? ' active' : '')} onClick={(e) => {
                             e.preventDefault();
                             setExpanded(!expanded);
                         }}>
                             menu
-                        </li>
-                        <li>
-                            <LocaleButton/>
                         </li>
                     </ul>
                 </nav>
