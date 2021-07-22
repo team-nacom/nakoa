@@ -7,11 +7,14 @@ export const givenOptions = { "usernameField": "email" };
 export interface UserDocumenet extends Document {
     email: string,
     nickname: string,
-    password: string
+    password: string,
+    authed: boolean
 }
 
 const userSchema = new Schema<UserDocumenet>({
-    nickname: String,
+    email: {type: String, unique: true, required: true, index: true},
+    nickname: {type: String, unique: true, required: true},
+    password: {type: String, required: true},
     joinDate: { type: Number, default: Date.now }
 });
 
