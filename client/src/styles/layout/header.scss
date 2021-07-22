@@ -45,7 +45,7 @@ header {
             @media (min-width: $min-tablet-width) {
                 position: absolute;
                 top: 35px;
-                right: 72px;
+                right: 112px;
                 margin-right: 12%;
                 width: calc(100% - 200px);
     
@@ -111,6 +111,39 @@ header {
 
                 &:hover, &.active {
                     color: $main-color;
+                }
+
+                .localeSelect {
+                    position: absolute;
+                    width: 150px;
+                    background: white;
+                    border-radius: 6px;
+                    border: 2px solid #666666;
+                    right: 0;
+                    top: 40px;
+                    z-index: 999;
+                    text-align: right;
+                    transition: all .2s ease-in-out;
+
+                    .localeSelectItem {
+                        padding: 12px;
+                        font-size: 16px;
+                        border-radius: 5px;
+                        color: black;
+
+                        .material-icons {
+                            font-size: 16px;
+                        }
+
+                        &.focus {
+                            background: #eeeeee;
+                        }
+
+                        &:hover {
+                            background: #cccccc;
+                            color: $main-color;
+                        }
+                    }
                 }
             }
         }
