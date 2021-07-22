@@ -13,7 +13,7 @@ function LocaleButton() {
 
     return (
         <>
-            <span className='link material-icons' onClick={() => setSelectActive(!selectActive)}>
+            <span className='link icon material-icons' onClick={() => setSelectActive(!selectActive)}>
                 translate
             </span>
             { selectActive && (
@@ -49,61 +49,57 @@ function Header() {
     return (
         <>
             <header>
-                <nav className='navbar'>
+                <nav className={'navbar' + (expanded ? ' expanded' : '')}>
                     <div className='title'>
                         <Link to='/'>
-                            <img src={process.env.PUBLIC_URL + '/logo.png'} alt={intl.formatMessage({id: 'team'})}/>
+                            <img 
+                                src={process.env.PUBLIC_URL + '/logo.png'} 
+                                alt={intl.formatMessage({id: 'team'})}
+                            />
                         </Link>
                     </div>
-                    <ul className={'menu' + (expanded ? ' expanded' : '')}>
-                        { user.loggedIn && (
-                            <li className='inactive'>
+                    { user.loggedIn && (
+                        <span className='navitem menu inactive'>
+                            <div>
                                 <FormattedMessage 
                                     id='header.hello'
                                     values={{name: user.nickname}}
                                 />
-                            </li>
-                        )}
-                        <li className={pathname.startsWith('/about') ? 'active' : ''}>
-                            <Link to='/about'>{ intl.formatMessage({id: 'header.about'})} </Link>
-                        </li>
-                        <li> <a href='https://chal.team-na.com'> { intl.formatMessage({id: 'header.chal'})} </a> </li>
-                        <li className={pathname.startsWith('/guide') ? 'active' : ''}>
-                            <Link to='/guide'> { intl.formatMessage({id: 'header.guide'}) } </Link>
-                        </li>
-                        {/*
-                        <li className={pathname.startsWith('/quiz') ? 'active' : ''}>
-                            <Link to='/quiz'>퀴즈</Link>
-                        </li>
-                        <li className={pathname.startsWith('/challenge') ? 'active' : ''}>
-                            <Link to='/challenge'>챌린지</Link>
-                        </li>
-                         */}
-                    </ul>
-                    <ul className='account'>
+                            </div>
+                        </span>
+                    )}
+                    <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>
+                        <Link to='/about'>
+                            <div> { intl.formatMessage({id: 'header.about'})} </div>
+                        </Link>
+                    </span>
+                    <span className='navitem menu'> 
+                        <a href='https://chal.team-na.com'> 
+                            <div> { intl.formatMessage({id: 'header.chal'})} </div>
+                        </a>
+                    </span>
+                    <span className={'navitem menu' + (pathname.startsWith('/guide') ? ' active' : '')}>
+                        <Link to='/guide'> 
+                            <div> { intl.formatMessage({id: 'header.guide'}) } </div>
+                        </Link>
+                    </span>
+                    <span className='navitem icons'>
                         { user.loggedIn ? (
-                            <li>
-                                <Link className="material-icons" to='/logout'>logout</Link>
-                            </li>
-                        ) : (<>
-                            <li>
-                                <i className='material-icons link' onClick={() => setSignInVisible(true) }>login</i>
-                            </li>
-
-                            <li>
-                                <Link className="material-icons" to='/signup'>person_add</Link>
-                            </li>
-                        </>)}
-                        <li className={'mobileOnly material-icons link' + (expanded ? ' active' : '')} onClick={(e) => {
-                            e.preventDefault();
-                            setExpanded(!expanded);
-                        }}>
-                            menu
-                        </li>
-                        <li>
-                            <LocaleButton/>
-                        </li>
-                    </ul>
+                            <span> <Link className='icon material-icons' to='/logout'> logout </Link> </span>
+                        ) : (
+                            <>
+                                <span className='icon material-icons link' onClick={() => setSignInVisible(true)}> login </span>
+                                <span> <Link className='icon material-icons' to='/signup'> person_add </Link></span>
+                            </>
+                        ) }
+                        <LocaleButton />
+                    </span>
+                    <span className={'icon material-icons expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
+                        e.preventDefault();
+                        setExpanded(!expanded);
+                    }}>
+                        menu
+                    </span>
                 </nav>
             </header>
             <SignIn visible={signInVisible} setVisible={setSignInVisible} />
