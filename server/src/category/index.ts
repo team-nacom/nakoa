@@ -33,18 +33,20 @@ router.post('/gory', checkAdminMiddleware, async (ctx) => {
   const goryObj = ctx.request.body;
   // TODO: check type
 
-  try{
-    // NOTE: index will be fed with default nanoid generator, and it is not guaranteed to be collision-free
-    const gory = new Gory(goryObj);
-    await gory.save();
-    console.log(`gory "${gory.name}" upload successful`);
-
-    ctx.body = {
-      index: gory.index
-    };
-  } catch(e) {
-    ctx.throw(500, e);
+  try {
+    await Cate.updateOne({index: goryObj.cate}, {$push: goryObj.index}).exec();
+  } catch (e) {
+    console.log("Error while updating cate for adding gory: " + goryObj.index);
   }
+
+  // NOTE: index will be fed with default nanoid generator, and it is not guaranteed to be collision-free
+  const gory = new Gory(goryObj);
+  await gory.save();
+  console.log(`gory "${gory.name}" upload successful`);
+
+  ctx.body = {
+    index: gory.index
+  };
 });
 
 // Get list of Cates

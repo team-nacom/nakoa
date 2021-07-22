@@ -13,7 +13,7 @@ const cateSchema = new Schema<CateDocument>({
     index: { type: Number, index: true, unique: true },
     name: String,
     
-    gories: [String],
+    gories: { type: [String], default: [] },
 
     createDate: { type: Number, default: Date.now }
 });
