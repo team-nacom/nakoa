@@ -59,7 +59,7 @@ function Header() {
                         </Link>
                     </div>
                     { user.loggedIn && (
-                        <span className='menu inactive'>
+                        <span className='navitem menu inactive'>
                             <div>
                                 <FormattedMessage 
                                     id='header.hello'
