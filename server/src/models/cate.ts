@@ -4,7 +4,7 @@ export interface CateDocument extends Document {
     index: number
     name: string
 
-    gories: [number]
+    gories: [string]
 
     createDate: number
 }
@@ -13,7 +13,7 @@ const cateSchema = new Schema<CateDocument>({
     index: { type: Number, index: true, unique: true },
     name: String,
     
-    gories: [Number],
+    gories: [String],
 
     createDate: { type: Number, default: Date.now }
 });

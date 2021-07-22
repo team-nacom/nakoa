@@ -9,7 +9,7 @@ export interface GoryDocument extends Document {
     name: string
 
     cate: number,
-    guides: [string]
+    guides: [number]
 
     createDate: number
 }
@@ -19,7 +19,7 @@ const GorySchema = new Schema<GoryDocument>({
     name: String,
 
     cate: Number,
-    guides: [String],
+    guides: [Number],
 
     createDate: { type: Number, default: Date.now }
 });

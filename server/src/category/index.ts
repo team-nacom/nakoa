@@ -52,7 +52,7 @@ router.get('/', async (ctx) => {
   const query = Cate.find({}).select('index name gories');
   await query.lean().
     catch(err => ctx.throw(500, err)).
-    then(docs => ctx.body = docs);
+    then(docs => ctx.body = {cates: docs.sort((a, b) => a.index - b.index)});
 });
 
 // Get list of Gories
