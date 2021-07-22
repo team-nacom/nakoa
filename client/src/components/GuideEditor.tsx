@@ -6,11 +6,10 @@ import MarkdownEditor from 'components/MarkdownEditor';
 import { getGuideCategories, getGuideSections, GuideType } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
-import usePromise from 'etc/usePromise';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
-    return target.startsWith(current);
+    return target.includes(current);
 }
 
 function useDynamicValue(defaultValue = 0, maxValue = 1, minValue = 0) {
