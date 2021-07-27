@@ -1,7 +1,7 @@
 import { Document, model, Schema } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
-import { nanoid } from "nanoid";
 import { createHash } from "crypto";
+import { baseid } from "../utils";
 
 export const givenOptions = { "usernameField": "email" };
 
@@ -37,7 +37,7 @@ function getHash(secret: string): string {
 }
 
 userSchema.methods.sendEmailVerification = async function(): Promise<UserDocumenet> {
-    const secret = nanoid(32); // TODO base64url
+    const secret = baseid(32);
     this.hash = getHash(secret);
     // send url
     return this;

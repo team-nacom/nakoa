@@ -1,8 +1,5 @@
 import { Document, model, Schema } from "mongoose";
-import { customAlphabet } from 'nanoid'
-
-// base64+1
-const nanoid = customAlphabet('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=', 8);
+import { baseid } from '../utils'
 
 export interface GoryDocument extends Document {
     index: string
@@ -15,7 +12,7 @@ export interface GoryDocument extends Document {
 }
 
 const GorySchema = new Schema<GoryDocument>({
-    index: { type: String, index: true, unique: true, default: () => nanoid() },
+    index: { type: String, index: true, unique: true, default: () => baseid(8) },
     name: String,
 
     cate: Number,

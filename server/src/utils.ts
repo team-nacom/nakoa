@@ -1,6 +1,13 @@
 import Count from "./models/count";
 import Guide from "./models/guide";
+import { customAlphabet } from 'nanoid'
 
+// base64+1
+const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
+export function baseid(count: number): string {
+  const nanoid = customAlphabet(base64url, count);
+  return nanoid();
+}
 
 // wrapping middleware for unified error logging
 export async function handleErrorMiddleware(ctx :any, next :any) {
