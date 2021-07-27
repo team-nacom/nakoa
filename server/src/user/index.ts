@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import passport from 'koa-passport';
 
 import User, {givenOptions} from '../models/user';
+import createHttpError from 'http-errors';
 
 const router = new Router();
 
@@ -42,6 +43,27 @@ router.get('/', (ctx) => {
   }
 });
 
+// verify email
+router.get('/verify/:email/:secret', async (ctx) => {
+  const email = ctx.params.email;
+  const secret = ctx.params.secret;
+
+  try {
+    const user = await User.findOne({email: email}).exec();
+    const success = await user.checkEmailVerification(secret);
+    if(success){
+      await User.findOneAndUpdate({email: email},
+        {$set: {verified: true}, $unset: {verifyHash: ""}});
+      ctx.body = "Success";
+    } else {
+      ctx.throw(400);
+    }
+  } catch (e) {
+    ctx.throw(404, e);
+  }
+});
+
+
 // register new user (email, password)
 router.post('/register', validateAllTokens);
 router.post('/register', async (ctx, next) => {
@@ -61,7 +83,8 @@ router.post('/register', async (ctx, next) => {
     try {
       await user.setPassword(userObj.password);
       await user.save();
-      await user.sendEmailVerification();
+      const info = await user.sendEmailVerification();
+      console.log(`Email sent: ${info.messageId}`);
     } catch (err) {
       console.error(err);
       ctx.throw(500, err.message);
