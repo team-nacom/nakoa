@@ -32,7 +32,8 @@ router.get('/', (ctx) => {
     ctx.body = {
       "isAuth": true,
       "email": user.email,
-      "nickname": user.nickname
+      "nickname": user.nickname,
+      "verified": user.verified
     };
   } else {
     ctx.body = {
@@ -60,11 +61,12 @@ router.post('/register', async (ctx, next) => {
     try {
       await user.setPassword(userObj.password);
       await user.save();
+      await user.sendEmailVerification();
     } catch (err) {
       console.error(err);
       ctx.throw(500, err.message);
     }
-    console.log(`New user ${userObj.email} successfully registered!`);
+    console.log(`New user ${userObj.email} successfully registered! Please check your e-mail to verify this account.`);
     ctx.body = "Success";
   }
 });
