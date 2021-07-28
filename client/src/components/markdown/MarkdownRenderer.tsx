@@ -19,7 +19,7 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
+import SectionEnumerator, { TocRendererFactory, TocHeadingRendererFactory, ContentsHeadingRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
@@ -56,7 +56,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             </>
         ),
         toc: TocRendererFactory(props.isManual),
-        section: SectionRendererFactory(props.isManual),
+        tocHeading : TocHeadingRendererFactory(props.isManual),
+        contentsHeading: ContentsHeadingRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,

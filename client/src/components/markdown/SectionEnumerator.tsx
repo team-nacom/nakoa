@@ -32,6 +32,14 @@ function nodeDeepCopy(node: Node, depth?: number) {
     } as Node;
 }
 
+function tocHeadingCopy(node: Node){
+    let copied = nodeDeepCopy(node);
+
+    //priority should have been copied at this point
+    copied.type = 'tocHeading';
+    return copied;
+}
+
 const SectionEnumerator : Plugin = () => {
     const sectionEnumerator : Transformer = (tree, file) => {
         let sectionNum = 0, subsectionNum = 0, subsubsectionNum = 0;
@@ -39,99 +47,98 @@ const SectionEnumerator : Plugin = () => {
         const root = tree as Parent;
         const tocList : Node[] = [];
 
-        for(const child of root.children){
-            switch(child.type){
-            case 'heading':
-                child.type = 'section';
-                child.numbering = [];
+        // wrap section block
+        var stack: number[] = [];
+        for(var nodeno = 0; nodeno < root.children.length; ++nodeno){
+            //root.children.length may (certainly) change during iteration.
+            const node = root.children[nodeno]
 
-                // skip unnumbered(priority -1)
-                if(child.data?.priority === -1){
-                    continue;
-                }
+            node.numbering = [] as Number[];
 
-                if (child.depth === 1){ //section
-                    sectionNum += 1;
+            if(node.type === 'heading'){
+                node.type = 'contentsHeading';
+                if (node.depth === 1){ //section
+                    if(node.data?.priority !== -1){
+                        sectionNum += 1;
+                        node.numbering = [sectionNum];
+                        tocList.push( tocHeadingCopy(node) );
+                    }
                     subsectionNum = 0;
                     subsubsectionNum = 0;
-
-                    child.numbering = [sectionNum];
-
-                    tocList.push( nodeDeepCopy(child) );
-                } else if (child.depth === 2){ //subsection
-                    subsectionNum += 1;
+                } else if (node.depth === 2){ //subsection
+                    if(node.data?.priority !== -1){
+                        subsectionNum += 1;
+                        node.numbering = [sectionNum,subsectionNum];
+                        tocList.push( tocHeadingCopy(node) );
+                    }
                     subsubsectionNum = 0;
-
-                    child.numbering = [sectionNum, subsectionNum];
-
-                    tocList.push( nodeDeepCopy(child) );
-                } else if (child.depth === 3){ //subsubsection
-                    subsubsectionNum += 1;
-
-                    child.numbering = [sectionNum, subsectionNum, subsubsectionNum];
-
-                    tocList.push( nodeDeepCopy(child) );
+                } else if (node.depth === 3){ //subsubsection
+                    if(node.data?.priority !== -1){
+                        subsubsectionNum += 1;
+                        node.numbering = [sectionNum,subsectionNum,subsubsectionNum];
+                        tocList.push( tocHeadingCopy(node) );
+                    }
                 }
-                break;
             }
         }
 
+
         root.children.unshift({ type: 'toc', children: tocList });
 
-        // console.log(root);
+        console.log(root);
     }
 
     return sectionEnumerator;
 }
 
-const SectionRendererFactory = (isManual? : boolean) => {
-    return (n : any) => {
-        const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
-        const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
+const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
-        if(n.copied){ //toc
-            return (        
-                <div className={ hnames[n.depth] }>
-                    { n.data.priority !== -1 &&
-                        <HashLink
-                            to={ (isManual ? '#man-':'#') + 'heading-' + n.numbering.join('-') }
-                            className={ hnames[n.depth] + 'Num' }
-                        >
-                            { n.numbering.join('.')+'.' }
-                        </HashLink>
-                    }
-                    { [ React.createElement( htags[n.depth], {children: n.children}) ] }
-                </div>
-            )
-        }
-        else{ //contents
+const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
 
-            let children = n.children;
-            console.log(children);
-            if (!isManual) {
-                children = children.concat([(
-                    <span style={{ fontSize: '10px', marginLeft: '10px' }}>
-                        { priorityTags[n.data.priority] }
-                    </span>
-                )])
+const TocHeadingRendererFactory = (isManual? : boolean) =>{
+    return (n : any) => (        
+        <div className={ hnames[n.depth] }>
+            { n.priority !== -1 &&
+                <HashLink
+                    to={ (isManual ? '#man-':'#') + 'heading-' + n.numbering.join('-') }
+                    className={ hnames[n.depth] + 'Num' }
+                >
+                    { n.numbering.join('.')+'.' }
+                </HashLink>
             }
+            { [ React.createElement( htags[n.depth], {children: n.children}) ] }
+        </div>
+    )
+}
 
-            return (        
-                <div className={ hnames[n.depth] }>
-                    { n.data.priority !== -1 &&
-                        <HashLink
-                            to={ (isManual ? '#man-':'#') + 'toc-label' }
-                            id={ (isManual ? 'man-':'') + 'heading-' + n.numbering.join('-') }
-                            className={ hnames[n.depth] + 'Num' }
-                        >
-                            { n.numbering.join('.')+'.' }
-                        </HashLink>
-                    }
-                    { [ React.createElement( htags[n.depth], { children }) ] }
-                </div>
-            )
+const ContentsHeadingRendererFactory = (isManual? : boolean) => {
+    return (n : any) => {
+        // console.log(n);
+        let children = n.children;
+        // console.log(children);
+        if (!isManual) {
+            children = children.concat([(
+                <span style={{ fontSize: '10px', marginLeft: '10px' }}>
+                    { priorityTags[n.priority] }
+                </span>
+            )])
         }
+
+        return (        
+            <div className={ hnames[n.depth] }>
+                { n.priority !== -1 &&
+                    <HashLink
+                        to={ (isManual ? '#man-':'#') + 'toc-label' }
+                        id={ (isManual ? 'man-':'') + 'heading-' + n.numbering.join('-') }
+                        className={ hnames[n.depth] + 'Num' }
+                    >
+                        { n.numbering.join('.')+'.' }
+                    </HashLink>
+                }
+                { [ React.createElement( htags[n.depth], { children }) ] }
+            </div>
+        )
     }
 }
 
@@ -146,5 +153,5 @@ const TocRendererFactory = (isManual? : boolean) => {
     )
 }
 
-export { SectionRendererFactory, TocRendererFactory };
+export { TocRendererFactory, TocHeadingRendererFactory, ContentsHeadingRendererFactory };
 export default SectionEnumerator;

@@ -48,9 +48,7 @@ const SectionPriorityHandler : Plugin = () => {
                         node.children[0].value = node.children[0].value.slice(h + marker.length).trimStart();
                         node.type = 'heading';
                         node.depth = h;
-                        node.data = {
-                            priority : prio[i]
-                        }
+                        node.priority = prio[i];
 
                         break;
                     }
@@ -66,10 +64,8 @@ const SectionPriorityHandler : Plugin = () => {
                         value: '　' //whitespace with height;
                     })
                 }
-                node.data = {
-                    priority : 1 //same as Essential
-                    // priority : -1 //unnumbered
-                }
+                node.priority = 1; //same as Essential
+                // node.priority = -1; //unnumbered
             }
         }
     }
