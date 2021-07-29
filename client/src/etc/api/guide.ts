@@ -15,11 +15,9 @@ export interface GuideType {
     authors: string[];
 }
 
-const realPriorityTags = ['Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'] as const;
+export const priorityTags = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'] as const;
 
-export const priorityTags = [''].concat(realPriorityTags);
-
-export type PriorityTags = typeof realPriorityTags[number];
+export type PriorityTags = typeof priorityTags[number];
 
 export type GuideFilterType = {
     [k in PriorityTags]: boolean

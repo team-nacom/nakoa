@@ -52,7 +52,14 @@ function GuideView({ guide, filter = positiveGuideFilter }: Params) {
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
             <GuideNavigateBar />
-            <div className='guideContent'>
+            <div className={
+                'guideContent'
+                + (filter.Essential ? '' : ' hideEssential')
+                + (filter.Recommendable ? '' : ' hideRecommendable')
+                + (filter.Readable ? '' : ' hideReadable')
+                + (filter.Optional ? '' : ' hideOptional')
+                + (filter.Draft ? '' : ' showDraft')
+            }>
                 <MarkdownRenderer>
                     { guide.content }
                 </MarkdownRenderer>

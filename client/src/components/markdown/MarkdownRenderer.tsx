@@ -11,6 +11,8 @@ import Footnotes from 'remark-footnotes';
 import Directive from 'remark-directive';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
+
+
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
@@ -19,7 +21,7 @@ import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
-import SectionEnumerator, { SectionRendererFactory, TocRendererFactory } from './SectionEnumerator';
+import SectionEnumerator, { TocRendererFactory, TocHeadingRendererFactory, SectionRendererFactory, SectionHeadingRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
@@ -55,8 +57,14 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
                 </div>
             </>
         ),
+
+        //toc renderers
         toc: TocRendererFactory(props.isManual),
+        tocHeading : TocHeadingRendererFactory(props.isManual),
+
+        //section renderers
         section: SectionRendererFactory(props.isManual),
+        sectionHeading: SectionHeadingRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
