@@ -90,7 +90,7 @@ const SectionEnumerator : Plugin = () => {
                 if (node.depth === 1){ //section
                     newChildren = wrapSection(newChildren, 1);
 
-                    if(node.data?.priority !== -1){
+                    if(node.priority !== -1){
                         sectionNum += 1;
                         node.numbering = [sectionNum];
                         tocList.push( tocHeadingCopy(node) );
@@ -100,7 +100,7 @@ const SectionEnumerator : Plugin = () => {
                 } else if (node.depth === 2){ //subsection
                     newChildren = wrapSection(newChildren, 2);
 
-                    if(node.data?.priority !== -1){
+                    if(node.priority !== -1){
                         subsectionNum += 1;
                         node.numbering = [sectionNum,subsectionNum];
                         tocList.push( tocHeadingCopy(node) );
@@ -109,7 +109,7 @@ const SectionEnumerator : Plugin = () => {
                 } else if (node.depth === 3){ //subsubsection
                     newChildren = wrapSection(newChildren, 3);
 
-                    if(node.data?.priority !== -1){
+                    if(node.priority !== -1){
                         subsubsectionNum += 1;
                         node.numbering = [sectionNum,subsectionNum,subsubsectionNum];
                         tocList.push( tocHeadingCopy(node) );
@@ -130,7 +130,7 @@ const SectionEnumerator : Plugin = () => {
 
         root.children = [{ type: 'toc', children: tocList } as Node].concat(newChildren);
 
-        console.log(root);
+        // console.log(root);
     }
 
     return sectionEnumerator;
@@ -140,6 +140,17 @@ const SectionEnumerator : Plugin = () => {
 const hnames = [ 'NA', 'section', 'subsection', 'subsubsection', 'h4', 'h5', 'h6' ];
 
 const htags = [ 'div', 'h2', 'h3', 'h4', 'h5', 'h6', 'h6' ]; // can be 'h1', 'h2', ...
+
+const TocRendererFactory = (isManual? : boolean) => {
+    return (p: any) => (
+        <div className='toc'>
+            <div id={ isManual ? 'man-toc-label' : 'toc-label' } className='label'>
+                <FormattedMessage id='markdown.contents' />
+            </div>
+            { p.children }
+        </div>
+    )
+}
 
 const TocHeadingRendererFactory = (isManual? : boolean) =>{
     return (n : any) => (        
@@ -157,7 +168,17 @@ const TocHeadingRendererFactory = (isManual? : boolean) =>{
     )
 }
 
-const ContentsHeadingRendererFactory = (isManual? : boolean) => {
+const SectionRendererFactory = (isManual? : boolean) => {
+    return (n : any) => {
+        return (
+            <div className={ priorityTags[n.priority] }>
+                { n.children }
+            </div>
+        )
+    }
+}
+
+const SectionHeadingRendererFactory = (isManual? : boolean) => {
     return (n : any) => {
         // console.log(n);
         let children = n.children;
@@ -187,16 +208,5 @@ const ContentsHeadingRendererFactory = (isManual? : boolean) => {
     }
 }
 
-const TocRendererFactory = (isManual? : boolean) => {
-    return (p: any) => (
-        <div className='toc'>
-            <div id={ isManual ? 'man-toc-label' : 'toc-label' } className='label'>
-                <FormattedMessage id='markdown.contents' />
-            </div>
-            { p.children }
-        </div>
-    )
-}
-
-export { TocRendererFactory, TocHeadingRendererFactory, ContentsHeadingRendererFactory };
+export { TocRendererFactory, TocHeadingRendererFactory, SectionRendererFactory, SectionHeadingRendererFactory };
 export default SectionEnumerator;

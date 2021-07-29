@@ -3,7 +3,7 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { getGuideCategories, getGuideSections, GuideType } from 'etc/api/guide';
+import { getGuideCategories, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
@@ -183,7 +183,7 @@ interface PriorityInputProps {
 }
 
 function PriorityInput({ priority, setPriority }: PriorityInputProps) {
-    const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
+    // const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     return (
@@ -191,7 +191,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
             <label> 중요도 </label>
             <div>
                 <input 
-                    value={ candidates[priority] } 
+                    value={ priorityTags[priority] } 
                     readOnly
                     onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
                     onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
@@ -205,7 +205,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
                     onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 >
                     { [1, 2, 3, 4, 5].map((value) => (
-                        <div className='candidate' onClick={() => setPriority(value) }> {candidates[value]} </div> 
+                        <div className='candidate' onClick={() => setPriority(value) }> {priorityTags[value]} </div> 
                     ))}
                 </div>
             )}
