@@ -49,7 +49,7 @@ function Guide({ match } : Props) {
                     </button>
                     { selectingPriority && (
                         <div className='prioritySelectorContainer'>
-                            { priorityTags.filter((s) => s.length > 0).map((tag, k) => (
+                            { priorityTags.slice(0).reverse().map((tag, k) => (
                                 <div 
                                     className='prioritySelector link'
                                     onClick={() => setFilter({
