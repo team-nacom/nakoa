@@ -40,6 +40,39 @@ function tocHeadingCopy(node: Node){
     return copied;
 }
 
+function wrapSection(nodes: Node[], depth: Number){
+    var stack: Node[] = [];
+    while(nodes.length > 0){
+        const node = nodes.pop();
+        if(node){
+            stack.unshift(node);
+
+            if(node.type === 'sectionHeading'
+            && Number(node.depth) >= depth
+            && Number(node.depth) <= 3){
+                nodes.push(
+                    {
+                        type : 'section',
+                        depth : Number(node.depth),
+                        priority : node.priority,
+                        numbering : node.numbering,
+                        children : stack
+                    } as Node
+                )
+                stack = [];
+
+                if(Number(node.depth) === depth) break;
+            }
+
+        }
+    }
+    if(nodes.length === 0){
+        nodes = stack.concat(nodes);
+    }
+
+    return nodes;
+}
+
 const SectionEnumerator : Plugin = () => {
     const sectionEnumerator : Transformer = (tree, file) => {
         let sectionNum = 0, subsectionNum = 0, subsubsectionNum = 0;
@@ -47,17 +80,16 @@ const SectionEnumerator : Plugin = () => {
         const root = tree as Parent;
         const tocList : Node[] = [];
 
-        // wrap section block
-        var stack: number[] = [];
-        for(var nodeno = 0; nodeno < root.children.length; ++nodeno){
-            //root.children.length may (certainly) change during iteration.
-            const node = root.children[nodeno]
-
+        // wrap section block and enumerate.
+        var newChildren: Node[] = [];
+        for(const node of root.children){
             node.numbering = [] as Number[];
 
             if(node.type === 'heading'){
-                node.type = 'contentsHeading';
+                node.type = 'sectionHeading';
                 if (node.depth === 1){ //section
+                    newChildren = wrapSection(newChildren, 1);
+
                     if(node.data?.priority !== -1){
                         sectionNum += 1;
                         node.numbering = [sectionNum];
@@ -66,6 +98,8 @@ const SectionEnumerator : Plugin = () => {
                     subsectionNum = 0;
                     subsubsectionNum = 0;
                 } else if (node.depth === 2){ //subsection
+                    newChildren = wrapSection(newChildren, 2);
+
                     if(node.data?.priority !== -1){
                         subsectionNum += 1;
                         node.numbering = [sectionNum,subsectionNum];
@@ -73,6 +107,8 @@ const SectionEnumerator : Plugin = () => {
                     }
                     subsubsectionNum = 0;
                 } else if (node.depth === 3){ //subsubsection
+                    newChildren = wrapSection(newChildren, 3);
+
                     if(node.data?.priority !== -1){
                         subsubsectionNum += 1;
                         node.numbering = [sectionNum,subsectionNum,subsubsectionNum];
@@ -80,10 +116,19 @@ const SectionEnumerator : Plugin = () => {
                     }
                 }
             }
+
+            newChildren.push(node);
         }
 
+        if(sectionNum > 0){
+            newChildren = wrapSection(newChildren, 1);
+        } else if(subsectionNum > 0){
+            newChildren = wrapSection(newChildren, 2);
+        } else if(subsubsectionNum > 0){
+            newChildren = wrapSection(newChildren, 3);
+        }
 
-        root.children.unshift({ type: 'toc', children: tocList });
+        root.children = [{ type: 'toc', children: tocList } as Node].concat(newChildren);
 
         console.log(root);
     }

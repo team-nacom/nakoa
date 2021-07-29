@@ -57,7 +57,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         ),
         toc: TocRendererFactory(props.isManual),
         tocHeading : TocHeadingRendererFactory(props.isManual),
-        contentsHeading: ContentsHeadingRendererFactory(props.isManual),
+
+        section: (p: any) => (
+            <div>
+                { p.children }
+            </div>
+        ),
+        sectionHeading: ContentsHeadingRendererFactory(props.isManual),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,
