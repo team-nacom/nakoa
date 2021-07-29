@@ -25,7 +25,8 @@ const guideSchema = new Schema<GuideDocument>({
     isPublic: { type: Boolean, default: false },
     cate: Number,
     gory: String,
-    priority: Number, // 1 is highest, 5 is lowest
+    // 0 is least important, 4 is most important
+    priority: { type: Number, default: 4, min: 0, max: 4},
 
     createDate: { type: Number, default: Date.now }
 });
