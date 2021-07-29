@@ -10,7 +10,7 @@ import MarkdownManual from './MarkdownManual';
 
 import { fileUpload, imgUpload } from '../etc/FileUpload'
 
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const usePrevious = <T extends unknown>(value: T): T | undefined => {
     const ref = useRef<T>();
@@ -21,11 +21,10 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
   };
 
 function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
+    let intl = useIntl(); //IS THIS OK???
+
     return(
-        <FormattedMessage id = 'editor.placeholder'>
-            {(ph) => (<textarea {...props} placeholder={String(ph)} />)}
-        </FormattedMessage>
-        // <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
+        <textarea {...props} placeholder={ intl.formatMessage({id: 'editor.placeholder'}) } />
         // className={ (props.className || '') + ' editorArea' }
     )
 }
@@ -90,6 +89,9 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     const [previewValue,setPreviewValue] = useState(body || '');
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
     const [manualVisible,setManualVisible] = useState(false);
+    const [autoRender,setAutoRender] = useState(true);
+
+    const intl = useIntl();
 
     const preview = () => { setPreviewValue(value) }
 
@@ -101,7 +103,6 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         }
     }, [collapse])
 
-    const [autoRender,setAutoRender] = useState(true);
 
     const insertText = (text : string) => {
         const isSuccess = document.execCommand('insertText', false, text);
@@ -172,7 +173,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             insertText(`\n![](${ imgUrl })\n`);
         } catch (error){
             // img uploading error handler
-            alert('이미지 업로드에 실패했습니다.');
+            alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
         }
 
         return;
@@ -184,7 +185,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             insertText(`[💾 ${ file.name }](${ fileUrl })`);
         } catch (error){
             // file uploading error handler
-            alert('파일 업로드에 실패했습니다.');
+            alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
         }
 
         return;
@@ -236,12 +237,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
     return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
-                <PanelMenu className='panelMenu1' label='편집' callback = { () => setActiveIndex(1) }>
+                <PanelMenu className='panelMenu1' label={ intl.formatMessage({id: 'editor.edit'}) } callback = { () => setActiveIndex(1) }>
                     <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
                         <span className="material-icons">help_outline</span>
                     </button>
                 </PanelMenu>
-                <PanelMenu className='panelMenu2' label='미리보기' callback = { () => {setActiveIndex(2);preview()} }> 
+                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
                     } } >
@@ -281,8 +282,8 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             
 
             <div className='dropzone'>
-                <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message='이미지 첨부하기' />
-                <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message='파일 첨부하기' />
+                <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
+                <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
             </div>
         </div>
         <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />

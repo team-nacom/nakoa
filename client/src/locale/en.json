@@ -22,5 +22,6 @@
     "editor.edit": "Edit",
     "editor.preview": "Preview",
     "editor.attachImages": "Attach Images",
-    "editor.attachFiles": "Attach Files"
+    "editor.attachFiles": "Attach Files",
+    "editor.uploadFailed": "Upload failed. Please try again."
 }

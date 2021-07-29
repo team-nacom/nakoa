@@ -22,5 +22,6 @@
     "editor.edit": "편집",
     "editor.preview": "미리보기",
     "editor.attachImages": "이미지 첨부하기",
-    "editor.attachFiles": "파일 첨부하기"
+    "editor.attachFiles": "파일 첨부하기",
+    "editor.uploadFailed": "업로드에 실패했습니다. 다시 시도해 보세요."
 }
