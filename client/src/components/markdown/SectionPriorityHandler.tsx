@@ -8,7 +8,7 @@ const SectionPriorityHandler : Plugin = () => {
     const sectionPriorityHandler : Transformer = (tree, file) => {
         const root = tree as Parent;
         const markers = ['D','C','B','A','E','+'];
-        const prio = [1,2,3,4,5,-1];
+        const prio = [1,2,3,4,0,-1];
 
         for(var nodeno = 0; nodeno < root.children.length; ++nodeno){
             //root.children.length may change during iteration.
@@ -64,7 +64,7 @@ const SectionPriorityHandler : Plugin = () => {
                         value: '　' //whitespace with height;
                     })
                 }
-                node.priority = 1; //same as Essential
+                node.priority = 4; //same as Essential
                 // node.priority = -1; //unnumbered
             }
         }

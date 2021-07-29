@@ -204,7 +204,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
                     onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
                     onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 >
-                    { [1, 2, 3, 4, 5].map((value) => (
+                    { [0, 1, 2, 3, 4].map((value) => (
                         <div className='candidate' onClick={() => setPriority(value) }> {priorityTags[value]} </div> 
                     ))}
                 </div>
