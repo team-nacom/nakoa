@@ -5,5 +5,22 @@
     "header.about": "프로젝트 소개",
     "header.hello": "{name}님, 안녕하세요!",
     "main.greeting": "안녕하세요, 팀 나무컴퍼스입니다!",
-    "markdown.contents": "목차"
+
+    "markdown.contents": "목차",
+    "editor.manual": "편집기 설명서",
+    "editor.author": "작성자",
+    "editor.priority": "중요도",
+    "editor.guidetitle": "가이드 제목",
+    "editor.addguide": "가이드 추가",
+    "editor.updateguide": "가이드 수정",
+    "editor.public": "공개",
+    "editor.private": "비공개",
+    "editor.confirm": "확인",
+    
+
+    "editor.placeholder": "Markdown 및 LaTeX 수식 입력 가능. 물음표 버튼을 누르면 사용법을 볼 수 있습니다.",
+    "editor.edit": "편집",
+    "editor.preview": "미리보기",
+    "editor.attachImages": "이미지 첨부하기",
+    "editor.attachFiles": "파일 첨부하기"
 }

@@ -5,5 +5,22 @@
     "header.about": "About us",
     "header.hello": "Hello, {name}!",
     "main.greeting": "Hello, we are Team WoodenCompass!",
-    "markdown.contents": "Contents"
+
+    "markdown.contents": "Contents",
+    "editor.manual": "Editor Manual",
+    "editor.author": "Author(s)",
+    "editor.priority": "Priority",
+    "editor.guidetitle": "Guide Title",
+    "editor.addguide": "Add Guide",
+    "editor.updateguide": "Update Guide",
+    "editor.public": "public",
+    "editor.private": "private",
+    "editor.confirm": "confirm",
+    
+
+    "editor.placeholder": "Provides Markdown & LaTeX syntaces. Click the question mark button to see the editor manual(KR).",
+    "editor.edit": "Edit",
+    "editor.preview": "Preview",
+    "editor.attachImages": "Attach Images",
+    "editor.attachFiles": "Attach Files"
 }

@@ -7,6 +7,8 @@ import { getGuideCategories, getGuideSections, GuideType } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
+import { FormattedMessage } from 'react-intl';
+
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
     return target.includes(current);
@@ -133,7 +135,9 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
 
     return (
         <div className='writeForm'>
-            <label> 작성자 </label>
+            <label>
+                <FormattedMessage id='editor.author' />
+            </label>
             <div>
                 <input 
                     value={ authors.join(', ') } 
@@ -188,7 +192,9 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
 
     return (
         <div className='writeForm'>
-            <label> 중요도 </label>
+            <label>
+                <FormattedMessage id='editor.priority' />
+            </label>
             <div>
                 <input 
                     value={ candidates[priority] } 
@@ -238,7 +244,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
     return (<>
         <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
-                { behavior == 'add' ? '가이드 추가' : '가이드 수정'} 
+                <FormattedMessage id={ behavior == 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
 
             <div className='flexbox'>
@@ -249,7 +255,9 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
             </div>
 
             <div className=''>
-                <label> 가이드 제목 </label>
+                <label>
+                    <FormattedMessage id='editor.guidetitle' />
+                </label>
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
@@ -260,7 +268,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
-                    <span> { isPublic ? '공개' : '비공개' } </span>
+                    <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
                 </div>
 
                 <button className='submit link' onClick={
@@ -269,7 +277,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                         setMessage
                     )
                 }> 
-                    { behavior == 'add' ? '게시하기' : '수정하기' }
+                    <FormattedMessage id='editor.confirm' />
                 </button>
             </div>
             {message}

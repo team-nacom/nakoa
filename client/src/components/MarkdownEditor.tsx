@@ -10,6 +10,8 @@ import MarkdownManual from './MarkdownManual';
 
 import { fileUpload, imgUpload } from '../etc/FileUpload'
 
+import { FormattedMessage } from 'react-intl';
+
 const usePrevious = <T extends unknown>(value: T): T | undefined => {
     const ref = useRef<T>();
     useEffect(() => {
@@ -20,7 +22,10 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
 
 function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     return(
-        <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
+        <FormattedMessage id = 'editor.placeholder'>
+            {(ph) => (<textarea {...props} placeholder={String(ph)} />)}
+        </FormattedMessage>
+        // <textarea {...props} placeholder='Markdown 및 LaTeX 수식 입력 가능' />
         // className={ (props.className || '') + ' editorArea' }
     )
 }
