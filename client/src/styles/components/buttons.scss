@@ -1,6 +1,5 @@
 
 @mixin standardButton {
-    margin: 20px;
     padding: 10px 30px;
     border: 2px solid $primary-color;
     background: white;
@@ -12,7 +11,6 @@
         background: $primary-color;
         color: white;
     }
-
 }
 
 @mixin roundButton {
@@ -32,6 +30,10 @@
     font-size: 14px;
 
     cursor: pointer;
+
+    &:hover {
+        background-color: $primary-color;
+    }
 }
 
 @mixin sidebarButton {
@@ -46,6 +48,10 @@
     z-index: 1;
     font-size: 30px;
     cursor: pointer;
+
+    &:hover {
+        background-color: $primary-color;
+    }
 }
 
 button {
@@ -55,6 +61,7 @@ button {
     border: none;
     font-family: Montserrat;
     width: fit-content;
+    cursor: pointer;
 
     &.button {
         @include standardButton;
@@ -62,9 +69,8 @@ button {
 }
 
 div.buttonContainer {
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 20px;
-    height: 46px;
     width: fit-content;
     margin: 0px auto;
 }

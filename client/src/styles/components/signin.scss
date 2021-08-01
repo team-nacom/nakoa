@@ -8,12 +8,16 @@ div.signinShadow {
 div.signinContainer {
     @include popupContainer(460px, 460px, auto);
 
-    @media (max-width: 461px) {
-        width: 100%;
+    @media (max-width: $max-mobile-width) {
+        width: calc(100% - 20px);
     }
 
     div.signinHeader {
         @include popupHeader(35px 0px 35px 0px);
+    }
+
+    button.signin {
+        @include standardButton;
     }
 
     input.signinForm {
@@ -26,7 +30,12 @@ div.signinContainer {
         background: #EFEFEF;
         width: calc(100% - 102px);
         box-sizing: border-box;
-        border-radius: 9px;
+        border-radius: 10px;
+
+        @media (max-width: $max-mobile-width) {
+            margin: 12px 0px;
+            width: 100%;
+        }
     }
 
     .helpText {
