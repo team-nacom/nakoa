@@ -7,7 +7,7 @@ import { getGuideCategories, getGuideSections, GuideType, priorityTags } from 'e
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 
@@ -46,11 +46,14 @@ interface CateInputProps {
 }
 
 function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
-    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let intl = useIntl();
     
     return (
         <div className='writeForm'>
-            <label> CATEGORY </label>
+            <label> 
+                { intl.formatMessage({ id: 'editor.cate' }) } 
+            </label>
             <div>
                 <input 
                     value={cateName} 
@@ -62,14 +65,16 @@ function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProp
                         if (cate) setCateIndex(cate.index);
                         else setCateIndex(undefined);
                     }} 
-                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { candidateOpacity > 0 && cates && cates.length > 0 && (
+            { opacity > 0 && cates && cates.length > 0 && (
                 <div 
                     className='candidateContainer' 
-                    style={{opacity: candidateOpacity }}
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { cates.filter((cate) => isStringRelated(cateName, cate.name)).map((cate) => (
                         <div className='candidate' onClick={() => setCateName(cate.name)}> { cate.name } </div>
@@ -88,11 +93,14 @@ interface GoryInputProps {
 }
 
 function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
-    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let intl = useIntl();
 
     return (
         <div className='writeForm'>
-            <label> SECTION </label>
+            <label>
+                { intl.formatMessage({ id: 'editor.gory' }) } 
+            </label>
             <div>
                 <input 
                     value={goryName} 
@@ -104,14 +112,16 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputPr
                         if (gory) setGoryIndex(gory.index);
                         else setGoryIndex(undefined);
                     }} 
-                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { candidateOpacity > 0 && gories && gories.length > 0 && (
+            { opacity > 0 && gories && gories.length > 0 && (
                 <div 
                     className='candidateContainer' 
-                    style={{ opacity: candidateOpacity }}
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { gories.filter((gory) => isStringRelated(goryName, gory.name)).map((gory) => (
                         <div className='candidate' onClick={() => setGoryName(gory.name) }> {gory.name} </div> 
@@ -129,35 +139,36 @@ interface AuthorInputProps {
 }
 
 function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
-    let [authorsOpacity, setDeltaAuthorsOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useDynamicValue(0);
     const editable = isAdmin;
+    let intl = useIntl();
 
     return (
         <div className='writeForm'>
             <label>
-                <FormattedMessage id='editor.author' />
+                { intl.formatMessage({ id: 'editor.author' }) }
             </label>
             <div>
                 <input 
                     value={ authors.join(', ') } 
                     readOnly
-                    onMouseEnter={() => setDeltaAuthorsOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaAuthorsOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { authorsOpacity > 0 && (
+            { opacity > 0 && (
                 <div 
                     className='candidateContainer' 
-                    style={{ opacity: authorsOpacity }}
-                    onMouseEnter={() => setDeltaAuthorsOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaAuthorsOpacity(-0.1) }
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { authors.map((value, index) => editable ? (
                         <div className='candidate'>
                             <input 
                                 value={value} 
                                 onChange={(e) => setAuthors(authors.map((s) => (s === value) ? e.target.value.replace(',', '') : s ))} 
-                                onBlur={() => setDeltaAuthorsOpacity(-0.1) }
+                                onBlur={() => setDeltaOpacity(-0.1) }
                             />
                             <span 
                                 className='candidateRemove material-icons' 
@@ -186,27 +197,28 @@ interface PriorityInputProps {
 }
 
 function PriorityInput({ priority, setPriority }: PriorityInputProps) {
-    let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let intl = useIntl();
 
     return (
         <div className='writeForm'>
             <label>
-                <FormattedMessage id='editor.priority' />
+                { intl.formatMessage({ id: 'editor.priority' }) }
             </label>
             <div>
                 <input 
                     value={ priorityTags[priority] } 
                     readOnly
-                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { candidateOpacity > 0 && (
+            { opacity > 0 && (
                 <div 
                     className='candidateContainer' 
-                    style={{ opacity: candidateOpacity }}
-                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
-                    onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { [0, 1, 2, 3, 4].map((value) => (
                         <div className='candidate' onClick={() => setPriority(value) }> {priorityTags[value]} </div> 

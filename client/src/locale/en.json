@@ -8,6 +8,8 @@
 
     "markdown.contents": "Contents",
     "editor.manual": "Editor Manual",
+    "editor.cate": "Category",
+    "editor.gory": "Section",
     "editor.author": "Author(s)",
     "editor.priority": "Priority",
     "editor.guidetitle": "Guide Title",
@@ -15,7 +17,7 @@
     "editor.updateguide": "Update Guide",
     "editor.public": "public",
     "editor.private": "private",
-    "editor.confirm": "confirm",
+    "editor.confirm": "Confirm",
     
 
     "editor.placeholder": "Provides Markdown & LaTeX syntaces. Click the question mark button to see the editor manual(KR).",

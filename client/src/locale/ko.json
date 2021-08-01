@@ -8,6 +8,8 @@
 
     "markdown.contents": "목차",
     "editor.manual": "편집기 설명서",
+    "editor.cate": "대분류",
+    "editor.gory": "소분류",
     "editor.author": "작성자",
     "editor.priority": "중요도",
     "editor.guidetitle": "가이드 제목",
