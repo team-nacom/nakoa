@@ -1,3 +1,4 @@
+import { getCateDetail, getCates, getGoryDetail } from 'etc/api/category';
 import { getGuideCategories, getGuideSections, GuideFilterType, GuideType, positiveGuideFilter } from 'etc/api/guide';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -30,22 +31,23 @@ interface Params {
 }
 
 function GuideView({ guide, filter = positiveGuideFilter }: Params) {
-    let [_, categories] = usePromise(() => getGuideCategories());
-    let [__, sections] = usePromise(() => getGuideSections(guide.category), [guide]);
+    let [catesLoading, cates] = usePromise(() => getCates());
+    let [cateDetailLoading, { name: cateName, gories }] = usePromise(() => getCateDetail(guide.cate), [guide]);
+    let [goryDetailLoading, { name: goryName, guides }] = usePromise(() => getGoryDetail(guide.gory), [guide]);
 
     return (
         <div className='guide'>
             <div className='guideBackground' />
             <div className='metadata'> 
-                <select className='metadataItem' value={ guide.category }> 
-                    { (categories || [guide.category]).map((category) => (
-                        <option value={category}> { category } </option>
+                <select className='metadataItem' value={ guide.cate }> 
+                    { cates.map((cate) => (
+                        <option value={cate.index}> { cate.name } </option>
                     )) } 
                 </select>
                 <span> { '>' } </span> 
-                <select className='metadataItem' value={ guide.category }> 
-                    { (sections || [guide.section]).map((section) => (
-                        <option value={section}> { section } </option>
+                <select className='metadataItem' value={ guide.gory }> 
+                    { gories.map((gory) => (
+                        <option value={gory.index}> { gory.name } </option>
                     )) } 
                 </select>
             </div>

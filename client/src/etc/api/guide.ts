@@ -10,8 +10,8 @@ export interface GuideType {
     content: string;
     priority: number;
     isPublic?: boolean;
-    category: string;
-    section: string;
+    cate: number;
+    gory: string;
     authors: string[];
 }
 

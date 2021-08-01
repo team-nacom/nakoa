@@ -20,7 +20,7 @@ function GuideEdit({ match }: Props) {
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     let upload = (guide: GuideType, setMessage: (message: string) => void) => {
-        if (!guide.name || !guide.content || !guide.priority || !guide.category || !guide.section || guide.authors.length < 1) {
+        if (!guide.name || !guide.content || !guide.priority || !guide.cate || !guide.gory || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
             return;
         }

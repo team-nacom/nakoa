@@ -8,6 +8,8 @@ import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
+import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
+import usePromise from 'etc/usePromise';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
@@ -36,39 +38,41 @@ function useDynamicValue(defaultValue = 0, maxValue = 1, minValue = 0) {
     return [value, setDeltaValue] as [number, React.Dispatch<React.SetStateAction<number>>];
 }
 
-interface CategoryInputProps {
-    category: string;
-    setCategory: (category: string) => void;
+interface CateInputProps {
+    cates: CateType[] | undefined;
+    cateName: string;
+    setCateName: (cateName: string) => void;
+    setCateIndex: (cateIndex: number | undefined) => void;
 }
 
-function CategoryInput({ category, setCategory }: CategoryInputProps) {
-    let [candidates, setCandidates] = React.useState<string[]>([]);
+function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
-
-    React.useEffect(() => {
-        getGuideCategories().then((categories) => {
-            setCandidates(categories);
-        });
-    }, []);
-
+    
     return (
         <div className='writeForm'>
             <label> CATEGORY </label>
             <div>
                 <input 
-                    value={category} 
-                    onChange={(e) => setCategory(e.target.value)} 
+                    value={cateName} 
+                    onChange={(e) => {
+                        let cateName = e.target.value;
+                        setCateName(cateName);
+
+                        let cate = cates?.find((cate) => cate.name === cateName);
+                        if (cate) setCateIndex(cate.index);
+                        else setCateIndex(undefined);
+                    }} 
                     onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
                     onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
-            { candidateOpacity > 0 && candidates.length > 0 && (
+            { candidateOpacity > 0 && cates && cates.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{opacity: candidateOpacity }}
                 >
-                    { candidates.filter((s) => isStringRelated(category, s)).map((value) => (
-                        <div className='candidate' onClick={() => setCategory(value)}> {value} </div>
+                    { cates.filter((cate) => isStringRelated(cateName, cate.name)).map((cate) => (
+                        <div className='candidate' onClick={() => setCateName(cate.name)}> { cate.name } </div>
                     ))}
                 </div>
             )}
@@ -76,46 +80,41 @@ function CategoryInput({ category, setCategory }: CategoryInputProps) {
     )
 }
 
-interface SectionInputProps {
-    category: string;
-    section: string;
-    setSection: (section: string) => void;
+interface GoryInputProps {
+    gories: GoryType[] | undefined;
+    goryName: string;
+    setGoryName: (goryName: string) => void;
+    setGoryIndex: (goryIndex: string | undefined) => void;
 }
 
-function SectionInput({ category, section, setSection } : SectionInputProps) {
-    let [candidates, setCandidates] = React.useState<string[]>([]);
-    let [loadedCategory, setLoadedCategory] = React.useState<string>('');
+function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
-    React.useEffect(() => {
-        getGuideSections(loadedCategory).then((sections) => {
-            setCandidates(sections);
-        })
-    }, [loadedCategory]);
-    
     return (
         <div className='writeForm'>
             <label> SECTION </label>
             <div>
                 <input 
-                    value={section} 
-                    onChange={(e) => setSection(e.target.value)} 
-                    onMouseEnter={() => {
-                        setDeltaCandidateOpacity(0.1);
-                        if (category !== loadedCategory) {
-                            setLoadedCategory(category);
-                        }
+                    value={goryName} 
+                    onChange={(e) => {
+                        let goryName = e.target.value;
+                        setGoryName(goryName);
+
+                        let gory = gories?.find((gory) => gory.name === goryName);
+                        if (gory) setGoryIndex(gory.index);
+                        else setGoryIndex(undefined);
                     }} 
+                    onMouseEnter={() => setDeltaCandidateOpacity(0.1) } 
                     onMouseLeave={() => setDeltaCandidateOpacity(-0.1) }
                 />
             </div>
-            { candidateOpacity > 0 && candidates.length > 0 && (
+            { candidateOpacity > 0 && gories && gories.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity: candidateOpacity }}
                 >
-                    { candidates.filter((s) => isStringRelated(section, s)).map((value) => (
-                        <div className='candidate' onClick={() => setSection(value) }> {value} </div> 
+                    { gories.filter((gory) => isStringRelated(goryName, gory.name)).map((gory) => (
+                        <div className='candidate' onClick={() => setGoryName(gory.name) }> {gory.name} </div> 
                     ))}
                 </div>
             )}
@@ -187,7 +186,6 @@ interface PriorityInputProps {
 }
 
 function PriorityInput({ priority, setPriority }: PriorityInputProps) {
-    // const candidates = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential', 'Draft'];
     let [candidateOpacity, setDeltaCandidateOpacity] = useDynamicValue(0);
 
     return (
@@ -233,13 +231,38 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
     let isAdmin = useIsAdmin();
 
     let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
-    let [category, setCategory] = React.useState<string>(initialGuide?.category ?? '');
-    let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
+    let [cateName, setCateName] = React.useState<string>('');
+    let [goryName, setGoryName] = React.useState<string>('');
     let [authors, setAuthors] = React.useState<string[]>(initialGuide?.authors ?? (initialAuthor ? [ initialAuthor ] : []));
     let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
     let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
+
+    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide?.cate);
+    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide?.gory);
+
+    let [catesLoading, cates] = usePromise(getCates);
+    let [gories, setGories] = React.useState<GoryType[]>();
+
+    React.useEffect(() => {
+        if (initialGuide) {
+            getCategoryDetail(initialGuide.cate, initialGuide.gory).then(({ cateName, goryName }) => {
+                setCateName(cateName);
+                setGoryName(goryName);
+            });
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (cateIndex !== undefined) {
+            getCateDetail(cateIndex).then(({ gories }) => {
+                setGories(gories);
+            })
+        } else {
+            setGories(undefined);
+        }
+    }, [cateIndex]);
 
     return (<>
         <div className='writeBox guide'>
@@ -248,8 +271,8 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
             </PageTitle>
 
             <div className='flexbox'>
-                <CategoryInput category={category} setCategory={setCategory} />
-                <SectionInput section={section} setSection={setSection} category={category} />
+                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={setCateIndex} />
+                <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
                 <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
@@ -272,10 +295,20 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                 </div>
 
                 <button className='submit link' onClick={
-                    () => upload(
-                        { name, content, priority, category, section, authors: authors.filter((s) => s.length > 0), isPublic },
-                        setMessage
-                    )
+                    async () => {
+                        if (!cateName || !goryName) {
+                            setMessage('카테고리를 적어주세요.');
+                            return;
+                        }
+                        
+                        let cate = cateIndex ?? (await postCate({ name: cateName, gories: [], })).index;
+                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;
+                        
+                        upload(
+                            { name, content, priority, cate, gory, authors: authors.filter((s) => s.length > 0), isPublic },
+                            setMessage
+                        );
+                    }
                 }> 
                     <FormattedMessage id='editor.confirm' />
                 </button>

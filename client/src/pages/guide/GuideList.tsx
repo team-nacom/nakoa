@@ -1,6 +1,7 @@
 import Footer from 'components/Footer';
 import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
+import { CateType, getCateDetail, getCates, getGoryDetail, GoryType } from 'etc/api/category';
 import { getGuideCategories, getGuides, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
@@ -8,24 +9,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../Loading';
 
-interface GuideSectionProps {
+interface GoryViewProps {
     index: number;
-    title: string;
-    guides: GuideType[];
+    gory: GoryType;
 };
 
-function GuideSection({ index, title, guides } : GuideSectionProps) {
+function GoryView({ index, gory } : GoryViewProps) {
     let [isCollapsed, setIsCollapsed] = React.useState(true);
+    let [goryDetailLoading, goryDetail] = usePromise(() => getGoryDetail(gory.index));
 
+    if (goryDetailLoading) return <></>;
     return (
         <>
             <div className='guideListItemContainer link'>
                 <div className='guideListSection' onClick={(e) => { e.preventDefault(); setIsCollapsed(!isCollapsed); }}>
                     <span className='index'> { index } </span>
-                    <span className='title'>  { title } </span>
+                    <span className='title'>  { gory.name } </span>
                     <span className='collapseButton material-icons'> { isCollapsed ? 'expand_more' : 'expand_less' } </span>
                 </div>
-                { !isCollapsed && guides.map((guide) => (
+                { !isCollapsed && goryDetail.guides.map((guide) => (
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
                             <span className='title'> { guide.name } </span>
@@ -38,23 +40,20 @@ function GuideSection({ index, title, guides } : GuideSectionProps) {
     )
 }
 
-interface GuideCategoryProps {
-    title: string;
-    guides: GuideType[];
+interface CateViewProps {
+    cate: CateType;
 }
 
-function GuideCategory({ title, guides } : GuideCategoryProps) {
-    let [sectionsLoading, sections] = usePromise(() => getGuideSections(title));
+function CateView({ cate } : CateViewProps) {
+    let [cateDetailLoading, cateDetail] = usePromise(() => getCateDetail(cate.index));
 
-    if (sectionsLoading) return <></>;
+    if (cateDetailLoading) return <></>;
     else return (
-        <div key={title} className='guideList'>
-            <h1> { title || '분류되지 않음' } </h1>
+        <div key={cate.name} className='guideList'>
+            <h1> { cate.name || '분류되지 않음' } </h1>
             <div className='guideListContainer'>
                 { 
-                    sections.map((section, k) => 
-                        <GuideSection title={section} index={k+1} guides={guides.filter((guide) => guide.section === section)} />
-                    )
+                    cateDetail.gories.map((gory, k) => <GoryView gory={gory} index={k+1} />)
                 }
             </div>
         </div>
@@ -64,10 +63,9 @@ function GuideCategory({ title, guides } : GuideCategoryProps) {
 function GuideList() {
     let isAdmin = useIsAdmin();
 
-    let [guidesLoading, guides] = usePromise(getGuides);
-    let [categoryLoading, categories] = usePromise(getGuideCategories);
+    let [catesLoading, cates] = usePromise(getCates);
 
-    if (guidesLoading || categoryLoading) return <Loading/>;
+    if (catesLoading) return <Loading/>;
     else return (
         <>
             <Header/>
@@ -83,9 +81,7 @@ function GuideList() {
                     </span>
                 )}
             </GuideSidebar>
-            { categories?.map((category) => 
-                <GuideCategory title={category} guides={guides.filter((guide) => guide.category === category)} />
-            )}
+            { cates.map((cate) => <CateView cate={cate} />) }
             <Footer/>
         </>
     );
