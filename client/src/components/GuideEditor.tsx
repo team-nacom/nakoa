@@ -77,7 +77,7 @@ function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProp
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { cates.filter((cate) => isStringRelated(cateName, cate.name)).map((cate) => (
-                        <div className='candidate' onClick={() => setCateName(cate.name)}> { cate.name } </div>
+                        <div className='candidate' onClick={() => { setCateName(cate.name); setCateIndex(cate.index); }}> { cate.name } </div>
                     ))}
                 </div>
             )}
@@ -124,7 +124,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputPr
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { gories.filter((gory) => isStringRelated(goryName, gory.name)).map((gory) => (
-                        <div className='candidate' onClick={() => setGoryName(gory.name) }> {gory.name} </div> 
+                        <div className='candidate' onClick={() => { setGoryName(gory.name); setGoryIndex(gory.index); } }> {gory.name} </div> 
                     ))}
                 </div>
             )}
@@ -264,7 +264,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                 setGoryName(goryName);
             });
         }
-    }, []);
+    }, [initialGuide]);
 
     React.useEffect(() => {
         if (cateIndex !== undefined) {
@@ -275,6 +275,8 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
             setGories(undefined);
         }
     }, [cateIndex]);
+
+    console.log(cateName, cateIndex, goryName, goryIndex);
 
     return (<>
         <div className='writeBox guide'>
