@@ -25,7 +25,7 @@ function Guide({ match } : Props) {
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
 
-    let [guideLoading, guide] = usePromise(() => getGuide(id));
+    let [guideLoading, guide] = usePromise(() => getGuide(id), [id]);
 
     let [redirectToList, setRedirectToList] = React.useState(false);
     let [selectingPriority, setSelectingPriority] = React.useState(false);
