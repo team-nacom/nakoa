@@ -18,7 +18,6 @@ function GoryView({ index, gory } : GoryViewProps) {
     let [isCollapsed, setIsCollapsed] = React.useState(true);
     let [goryDetailLoading, goryDetail] = usePromise(() => getGoryDetail(gory.index));
 
-    if (goryDetailLoading) return <></>;
     return (
         <>
             <div className='guideListItemContainer link'>
@@ -27,7 +26,7 @@ function GoryView({ index, gory } : GoryViewProps) {
                     <span className='title'>  { gory.name } </span>
                     <span className='collapseButton material-icons'> { isCollapsed ? 'expand_more' : 'expand_less' } </span>
                 </div>
-                { !isCollapsed && goryDetail.guides.map((guide) => (
+                { !isCollapsed && goryDetail?.guides.map((guide) => (
                     <Link to={`/guide/${guide.index}`}>
                         <div className='guideListItem'>
                             <span className='title'> { guide.name } </span>
@@ -47,14 +46,11 @@ interface CateViewProps {
 function CateView({ cate } : CateViewProps) {
     let [cateDetailLoading, cateDetail] = usePromise(() => getCateDetail(cate.index));
 
-    if (cateDetailLoading) return <></>;
-    else return (
+    return (
         <div key={cate.name} className='guideList'>
             <h1> { cate.name || '분류되지 않음' } </h1>
             <div className='guideListContainer'>
-                { 
-                    cateDetail.gories.map((gory, k) => <GoryView gory={gory} index={k+1} />)
-                }
+                { cateDetail?.gories.map((gory, k) => <GoryView gory={gory} index={k+1} />) }
             </div>
         </div>
     );
@@ -81,7 +77,7 @@ function GuideList() {
                     </span>
                 )}
             </GuideSidebar>
-            { cates.map((cate) => <CateView cate={cate} />) }
+            { cates?.map((cate) => <CateView cate={cate} />) }
             <Footer/>
         </>
     );

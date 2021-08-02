@@ -33,7 +33,7 @@ function ChallengeList() {
                     </tr>
                 </thead>
                 <tbody>
-                    { challs.map((chall) => (
+                    { challs?.map((chall) => (
                         <tr>
                             <td> { chall.index } </td>
                             <td> <Link to={`/challenge/${chall.index}`}> {chall.name} </Link> </td>
