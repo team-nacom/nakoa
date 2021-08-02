@@ -6,20 +6,43 @@ import { Link } from 'react-router-dom';
 import MarkdownRenderer from './markdown/MarkdownRenderer';
 
 interface GuideNavigateBarProps {
-
+    guideIndex: number;
+    guides: GuideType[] | undefined;
 }
 
-function GuideNavigateBar({ } : GuideNavigateBarProps) {
+function GuideNavigateBar({ guideIndex, guides } : GuideNavigateBarProps) {
+    let guideOrder = React.useMemo(() => {
+        if (!guides) return undefined;
+        let order = guides.findIndex((guide) => guide.index === guideIndex);
+
+        if (order === -1) return undefined;
+        return order;
+    }, [guideIndex, guides]);
+
+    let befGuide = React.useMemo(() => {
+        if (!guides || guideOrder === undefined || guideOrder === 0) return undefined;
+        return guides[guideOrder-1];
+    }, [guides, guideOrder]);
+
+    let nxtGuide = React.useMemo(() => {
+        if (!guides || guideOrder === undefined || guideOrder === guides.length - 1) return undefined;
+        return guides[guideOrder+1];
+    }, [guides, guideOrder]);
+
     return (
         <h3 className='guideNavigateBar'>
-            <Link to='/guide/1' className='guideNavigateLeft'>
-                <span className='material-icons'> navigate_before </span>
-                <span className='guideNavigateItemName'> 이전 글 제목 </span>
-            </Link>
-            <Link to='/guide/3' className='guideNavigateRight'>
-                <span className='guideNavigateItemName'> 다음 글 제목 </span> 
-                <span className='material-icons'> navigate_next </span>
-            </Link>
+            { befGuide && (
+                <Link to={`/guide/${befGuide.index}`} className='guideNavigateLeft'>
+                    <span className='material-icons'> navigate_before </span>
+                    <span className='guideNavigateItemName'> { befGuide.name } </span>
+                </Link> 
+            )}
+            { nxtGuide && (
+                <Link to={`/guide/${nxtGuide.index}`} className='guideNavigateRight'>
+                    <span className='guideNavigateItemName'> { nxtGuide.name } </span> 
+                    <span className='material-icons'> navigate_next </span>
+                </Link>
+            )}
         </h3>
     )
 }
@@ -53,7 +76,7 @@ function GuideView({ guide, filter = positiveGuideFilter }: Params) {
             </div>
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
-            <GuideNavigateBar />
+            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
             <div className={
                 'guideContent'
                 + (filter.Essential ? '' : ' hideEssential')
@@ -66,7 +89,7 @@ function GuideView({ guide, filter = positiveGuideFilter }: Params) {
                     { guide.content }
                 </MarkdownRenderer>
             </div>
-            <GuideNavigateBar />
+            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
         </div>
     );
 }
