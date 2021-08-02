@@ -32,21 +32,21 @@ interface Params {
 
 function GuideView({ guide, filter = positiveGuideFilter }: Params) {
     let [catesLoading, cates] = usePromise(() => getCates());
-    let [cateDetailLoading, { name: cateName, gories }] = usePromise(() => getCateDetail(guide.cate), [guide]);
-    let [goryDetailLoading, { name: goryName, guides }] = usePromise(() => getGoryDetail(guide.gory), [guide]);
+    let [cateDetailLoading, cate] = usePromise(() => getCateDetail(guide.cate), [guide]);
+    let [goryDetailLoading, gory] = usePromise(() => getGoryDetail(guide.gory), [guide]);
 
     return (
         <div className='guide'>
             <div className='guideBackground' />
             <div className='metadata'> 
                 <select className='metadataItem' value={ guide.cate }> 
-                    { cates.map((cate) => (
+                    { cates?.map((cate) => (
                         <option value={cate.index}> { cate.name } </option>
                     )) } 
                 </select>
                 <span> { '>' } </span> 
                 <select className='metadataItem' value={ guide.gory }> 
-                    { gories.map((gory) => (
+                    { cate?.gories.map((gory) => (
                         <option value={gory.index}> { gory.name } </option>
                     )) } 
                 </select>

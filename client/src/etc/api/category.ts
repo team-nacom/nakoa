@@ -43,6 +43,7 @@ export interface GoryType {
 export const getCateDetail = async (cateIndex: number) => {
     let response = await Axios.get(`${apiAddress}/category/cate/${cateIndex}`);
 
+    console.log(response.data);
     return {
         name: response.data.name as string,
         gories: response.data.gories as GoryType[],
