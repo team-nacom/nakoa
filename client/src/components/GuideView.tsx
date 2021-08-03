@@ -1,5 +1,5 @@
 import { getCateDetail, getCates, getGoryDetail } from 'etc/api/category';
-import { getGuideCategories, getGuideSections, GuideFilterType, GuideType, positiveGuideFilter } from 'etc/api/guide';
+import { getGuideCategories, getGuideSections, GuideFilterType, GuideType, defaultGuideFilter } from 'etc/api/guide';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
@@ -53,7 +53,7 @@ interface Params {
     filter?: GuideFilterType;
 }
 
-function GuideView({ guide, filter = positiveGuideFilter }: Params) {
+function GuideView({ guide, filter = defaultGuideFilter }: Params) {
     let [catesLoading, cates] = usePromise(() => getCates());
     let [cateDetailLoading, cate] = usePromise(() => getCateDetail(guide.cate), [guide]);
     let [goryDetailLoading, gory] = usePromise(() => getGoryDetail(guide.gory), [guide]);
@@ -65,13 +65,13 @@ function GuideView({ guide, filter = positiveGuideFilter }: Params) {
         <div className='guide'>
             <div className='guideBackground' />
             <div className='metadata'> 
-                <select className='metadataItem' defaultValue={ guide.cate } onChange={(e) => setRedirectTo(`/guide?cate=${e.target.value}`)}> 
+                <select className='metadataItem' value={ guide.cate } onChange={(e) => setRedirectTo(`/guide?cate=${e.target.value}`)}> 
                     { cates?.map((cate) => (
                         <option value={cate.index}> { cate.name } </option>
                     )) } 
                 </select>
                 <span> { '>' } </span> 
-                <select className='metadataItem' defaultValue={ guide.gory } onChange={(e) => setRedirectTo(`/guide?cate=${guide.cate}&gory=${e.target.value}`)}> 
+                <select className='metadataItem' value={ guide.gory } onChange={(e) => setRedirectTo(`/guide?cate=${guide.cate}&gory=${e.target.value}`)}> 
                     { cate?.gories.map((gory) => (
                         <option value={gory.index}> { gory.name } </option>
                     )) } 

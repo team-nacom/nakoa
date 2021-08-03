@@ -23,12 +23,12 @@ export type GuideFilterType = {
     [k in PriorityTags]: boolean
 };
 
-export const positiveGuideFilter : GuideFilterType = {
+export const defaultGuideFilter : GuideFilterType = {
     Optional: true,
     Readable: true,
     Recommendable: true,
     Essential: true,
-    Draft: true,
+    Draft: false,
 }
 
 export const getGuides = async () => {

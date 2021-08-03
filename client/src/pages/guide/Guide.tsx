@@ -1,7 +1,7 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuide, getGuideCategories, GuideFilterType, positiveGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
+import { getGuide, getGuideCategories, GuideFilterType, defaultGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -29,7 +29,7 @@ function Guide({ match } : Props) {
 
     let [redirectToList, setRedirectToList] = React.useState(false);
     let [selectingPriority, setSelectingPriority] = React.useState(false);
-    let [filter, setFilter] = React.useState<GuideFilterType>(positiveGuideFilter);
+    let [filter, setFilter] = React.useState<GuideFilterType>(defaultGuideFilter);
 
     
     if (redirectToList) return <Redirect to='/guide' />

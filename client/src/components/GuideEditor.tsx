@@ -164,10 +164,10 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 >
                     { authors.map((value, index) => editable ? (
-                        <div className='candidate'>
+                        <div className='candidate' key={index}>
                             <input 
                                 value={value} 
-                                onChange={(e) => setAuthors(authors.map((s) => (s === value) ? e.target.value.replace(',', '') : s ))} 
+                                onChange={(e) => setAuthors(authors.slice(0, index).concat([e.target.value]).concat(authors.slice(index+1)))} 
                                 onBlur={() => setDeltaOpacity(-0.1) }
                             />
                             <span 
@@ -178,7 +178,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
                             </span>
                         </div>
                     ) : (
-                        <div className='candidate'>
+                        <div className='candidate' key={index}>
                             <input value={value} readOnly />
                         </div>
                     ))}
