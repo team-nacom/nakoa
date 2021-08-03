@@ -7,6 +7,12 @@ import config from '../config';
 
 const apiAddress = config.apiAddress;
 
+export const verifyEmail = async (email: string, code: string) => {
+    let response = await Axios.get(`${apiAddress}/user/verify/${email}/${code}`);
+
+    console.log(response);
+    return response.status === 200;
+}
 
 export interface RegisterData {
     email: string;
@@ -16,6 +22,7 @@ export interface RegisterData {
 
 export const register = async (data : RegisterData) => {
     let response = await Axios.post(`${apiAddress}/user/register`, data, { validateStatus: () => true });
+    console.log(response);
     return {
         success: response.status < 300,
         message: response.data as string,

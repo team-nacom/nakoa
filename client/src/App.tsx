@@ -25,6 +25,8 @@ import messageKo from './locale/ko.json';
 import { IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
+import SignUpVerify from 'pages/signup/SignupVerify';
+import SignUpPending from 'pages/signup/SignupPending';
 
 const localeMessages = {
   'en': messageEn,
@@ -56,6 +58,8 @@ function App() {
           <Route path='/quiz/write' component={QuizWrite} />
           <Route path='/challenge/write' component={ChallengeWrite} />
           <Route path='/signup/done' component={SignUpDone} />
+          <Route path='/signup/pending' component={SignUpPending} />
+          <Route path='/signup/verify/:email/:code' component={SignUpVerify} />
           <Route path='/signup' component={SignUp} />
           <Route path='/logout' component={Logout} />
           <Route path='/about' component={About} />

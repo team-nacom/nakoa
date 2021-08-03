@@ -52,9 +52,10 @@ userSchema.methods.checkEmailVerification = async function(secret: string): Prom
 export default model<UserDocument>('User', userSchema, 'users');
 
 const subject = "Welcome to Team Wooden Compass!"
+const nacomUrl = "https://team-na.com";
 
 function createMessage(email: string, secret: string): string {
-    const url = `https://team-na.com/user/verify/${email}/${secret}`;
+    const url = `${nacomUrl}/signup/verify/${email}/${secret}`;
     const nacomMail = 'nacommanager@gmail.com';
     let msg = 
         "Welcome to Team Wooden Compass!\n" + 
@@ -68,7 +69,7 @@ function createMessage(email: string, secret: string): string {
 
 function createhtml(email: string, secret: string): string {
     // TODO add anchor tags
-    const url = `https://team-na.com/user/verify/${email}/${secret}`;
+    const url = `${nacomUrl}/signup/verify/${email}/${secret}`;
     const nacomMail = 'nacommanager@gmail.com';
     let msg = 
         "<p>Welcome to Team Wooden Compass!\n" + 

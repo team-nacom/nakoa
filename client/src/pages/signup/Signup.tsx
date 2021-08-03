@@ -6,7 +6,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 function SignUp() {
-    let [redirectToDone, setRedirectToDone] = React.useState(false);
+    let [redirectToPending, setRedirectToPending] = React.useState(false);
 
     let [message, setMessage] = React.useState('');
     
@@ -126,9 +126,9 @@ function SignUp() {
     }
 
     
-    if (redirectToDone) return <Redirect to={{
-        pathname: '/signup/done',
-        state: { nickname, }
+    if (redirectToPending) return <Redirect to={{
+        pathname: '/signup/pending',
+        state: { nickname, email }
     }} />;
     return (
         <>
@@ -154,7 +154,7 @@ function SignUp() {
                     let { success, message } = await register({ email, password, nickname });
                     console.log(success, message);
                     if (success) {
-                        setRedirectToDone(true);
+                        setRedirectToPending(true);
                     } else {
                         setMessage('가입에 실패했습니다: ' + message);
                     }
