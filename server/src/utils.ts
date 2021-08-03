@@ -44,6 +44,18 @@ export async function handleErrorMiddleware(ctx :any, next :any) {
   }
 };
 
+export async function isVerifiedMiddleware(ctx: any, next: any) {
+  // @ts-ignore
+  if(!ctx.isAuthenticated()){
+    ctx.throw(401, "Should log in");
+  } else {
+    const user = ctx.state.user;
+    if(!user.verified){
+      ctx.throw(401, "Should verify");
+    }
+  }
+  await next();
+}
 
 // utility function for checking admin credential
 export function isAdmin(ctx :any): boolean {

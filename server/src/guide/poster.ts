@@ -3,6 +3,7 @@ import Cate from '../models/cate';
 import Gory from '../models/gory';
 import Count from '../models/count';
 import createError from "http-errors";
+import { UserDocument } from '../models/user';
 
 // type guard
 function isGuideDocument(obj: any): obj is GuideDocument{
@@ -12,6 +13,10 @@ function isGuideDocument(obj: any): obj is GuideDocument{
   // TODO properly check types & contents
   // TODO check exercises
   let result: boolean = keys.every((val: string) => (val in guide));
+
+  // tentative; approve iff one author
+  result = result && ("authors" in guide) && guide.authors.length === 1;
+
   return result;
 }
 
@@ -50,7 +55,7 @@ export async function postOneGuide(guideObj: any) {
   }
 }
 
-export async function updateOneGuide(guideObj: any, index: number) {
+export async function updateOneGuide(guideObj: any, index: number, user: UserDocument) {
   if(index !== guideObj.index) throw createError(400, "Index does not match with URI");
   const guide = await Guide.findOne({ index: guideObj.index }).exec();
 
@@ -60,6 +65,8 @@ export async function updateOneGuide(guideObj: any, index: number) {
   }
   else if(guide === null) {
     throw createError(401, `Guide with index ${guideObj.index} doesn't exist`);
+  } else if(!guide.hasWriteAuthority(user)) {
+    throw createError(401, `User ${user.email} is unauthorized to update guide ${guide.index}`);
   }
   else {
     await updateGory(guideObj.index, guideObj.gory, guide.gory);

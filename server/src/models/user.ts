@@ -7,18 +7,19 @@ import { SentMessageInfo } from "nodemailer";
 export const givenOptions = { "usernameField": "email" };
 
 
-export interface UserDocumenet extends Document {
+export interface UserDocument extends Document {
     email: string,
     nickname: string,
     verified: boolean,
     verifyHash: string,
-    sendEmailVerification: () => Promise<UserDocumenet>,
-    checkEmailVerification: (secret: string) => Promise<boolean>,
 
-    joinDate: number
+    joinDate: number,
+    
+    sendEmailVerification: () => Promise<UserDocument>,
+    checkEmailVerification: (secret: string) => Promise<boolean>,
 }
 
-const userSchema = new Schema<UserDocumenet>({
+const userSchema = new Schema<UserDocument>({
     email: {type: String, unique: true, required: true, index: true},
     nickname: {type: String, unique: true, required: true},
     verified: {type: Boolean, default: false},
@@ -48,7 +49,7 @@ userSchema.methods.checkEmailVerification = async function(secret: string): Prom
     return (this.verifyHash === getHash(secret));
 }
 
-export default model<UserDocumenet>('User', userSchema, 'users');
+export default model<UserDocument>('User', userSchema, 'users');
 
 const subject = "Welcome to Team Wooden Compass!"
 
