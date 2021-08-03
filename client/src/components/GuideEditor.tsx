@@ -10,32 +10,11 @@ import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
+import useSmoothValue from 'etc/useSmoothValue';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
     return target.includes(current);
-}
-
-function useDynamicValue(defaultValue = 0, maxValue = 1, minValue = 0) {
-    let [value, setValue] = React.useState<number>(defaultValue);
-    let [deltaValue, setDeltaValue] = React.useState<number>(0);
-
-    React.useEffect(() => {
-        if (deltaValue !== 0) {
-            let nextValue = value + deltaValue;
-            if (nextValue >= maxValue) {
-                setDeltaValue(0);
-                nextValue = maxValue;
-            }
-            if (nextValue <= minValue) {
-                setDeltaValue(0);
-                nextValue = minValue;
-            }
-            setTimeout(() => setValue(nextValue), 25);
-        }
-    }, [value, deltaValue]);
-
-    return [value, setDeltaValue] as [number, React.Dispatch<React.SetStateAction<number>>];
 }
 
 interface CateInputProps {
@@ -46,7 +25,7 @@ interface CateInputProps {
 }
 
 function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
-    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
     
     return (
@@ -93,7 +72,7 @@ interface GoryInputProps {
 }
 
 function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
-    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
 
     return (
@@ -139,7 +118,7 @@ interface AuthorInputProps {
 }
 
 function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
-    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
     const editable = isAdmin;
     let intl = useIntl();
 
@@ -197,7 +176,7 @@ interface PriorityInputProps {
 }
 
 function PriorityInput({ priority, setPriority }: PriorityInputProps) {
-    let [opacity, setDeltaOpacity] = useDynamicValue(0);
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
 
     return (

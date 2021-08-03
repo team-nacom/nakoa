@@ -1,3 +1,4 @@
+import useSmoothValue from 'etc/useSmoothValue';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,27 +8,36 @@ import { localeList, localeName, setLocale } from 'store/locale';
 import SignIn from './SignIn';
 
 function LocaleButton() {
-    let [selectActive, setSelectActive] = React.useState(false);
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let nowLocale = useSelector((state: RootReducer) => state.locale.locale);
     let dispatch = useDispatch();
 
     return (
         <>
-            <span className='link icon material-icons' onClick={() => setSelectActive(!selectActive)}>
+            <span 
+                className='link icon material-icons'
+                onMouseEnter={() => setDeltaOpacity(0.1) } 
+                onMouseLeave={() => setDeltaOpacity(-0.1) }
+            >
                 translate
             </span>
-            { selectActive && (
-                <div className='localeSelect'>
+            { opacity > 0 && (
+                <div 
+                    className='localeSelect' 
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                    style={{ opacity }}
+                >
                     { localeList.map((locale) => (
                         <div 
                             className={'localeSelectItem' + (locale === nowLocale ? ' focus' : '')} 
                             onClick={() => dispatch(setLocale(locale))}
-                            style={{display: 'flex'}}
+                            style={{display: 'flex' }}
                         > 
-                            <span className='material-icons' style={{flex: '0 0 10%'}}>
+                            <span className='material-icons' style={{flex: '0 0 10%' }}>
                                 { locale === nowLocale && 'check' }
                             </span>
-                            <span style={{flex: '1 0 0'}}>
+                            <span style={{flex: '1 0 0' }}>
                                 { localeName[locale] } 
                             </span>
                         </div> 
