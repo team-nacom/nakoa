@@ -47,6 +47,12 @@ export const isLoggedIn = () => {
     return store.getState().user.loggedIn;
 }
 
+export const useIsLoggedIn = () => {
+    let loggedIn = useSelector((state: RootReducer) => state.user.loggedIn);
+
+    return loggedIn;
+}
+
 export const isAdmin = () => {
     return store.getState().user?.email === config.adminEmail;
 }

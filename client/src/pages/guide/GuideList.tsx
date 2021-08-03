@@ -2,8 +2,8 @@ import Footer from 'components/Footer';
 import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
 import { CateType, getCateDetail, getCates, getGoryDetail, GoryType } from 'etc/api/category';
-import { getGuideCategories, getGuides, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
-import { useIsAdmin } from 'etc/api/user';
+import { GuideType, priorityTags } from 'etc/api/guide';
+import { useIsLoggedIn } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -89,7 +89,7 @@ interface Props {
 }
 
 function GuideList({ location } : Props) {
-    let isAdmin = useIsAdmin();
+    let isLoggedIn = useIsLoggedIn();
 
     let parsedQuery = queryString.parse(location.search);
 
@@ -114,7 +114,7 @@ function GuideList({ location } : Props) {
             <Header/>
             <div className='guideBackground' />
             <GuideSidebar on='list'>
-                { isAdmin && (
+                { isLoggedIn && (
                     <span>
                         <Link to='/guide/write'>
                             <button className='roundButton material-icons'> 

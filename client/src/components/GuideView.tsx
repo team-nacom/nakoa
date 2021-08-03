@@ -59,7 +59,6 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
     let [goryDetailLoading, gory] = usePromise(() => getGoryDetail(guide.gory), [guide]);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
-    console.log(redirectTo);
     if (redirectTo) return <Redirect push to={redirectTo}/>
     else return (
         <div className='guide'>

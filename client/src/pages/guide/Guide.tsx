@@ -24,13 +24,18 @@ function Guide({ match } : Props) {
     let id = Number.parseInt(match.params.id);
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
-
+    
     let [guideLoading, guide] = usePromise(() => getGuide(id), [id]);
 
     let [redirectToList, setRedirectToList] = React.useState(false);
     let [selectingPriority, setSelectingPriority] = React.useState(false);
     let [filter, setFilter] = React.useState<GuideFilterType>(defaultGuideFilter);
 
+    let isEditable = React.useMemo(() => {
+        if (!guide) return false;
+        if (isAdmin) return true;
+        return !guide.authors.every((author) => author !== user.nickname);
+    }, [user, isAdmin, guide]);
     
     if (redirectToList) return <Redirect to='/guide' />
     if (guideLoading) return <Loading/>;
@@ -65,7 +70,7 @@ function Guide({ match } : Props) {
                     ) }
                 </span>
 
-                { isAdmin && 
+                { isEditable && 
                     <button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
                         if (window.confirm('정말 삭제하시겠습니까?') && await removeGuide(id)) {
@@ -76,7 +81,7 @@ function Guide({ match } : Props) {
                     </button> 
                 }
 
-                { (isAdmin || (user.loggedIn && guide && guide.authors.filter(x => x === user.nickname).length > 0)) && 
+                { isEditable && 
                     <span>
                         <Link to={`/guide/${id}/edit`}>
                             <button className='material-icons'>
