@@ -1,4 +1,5 @@
 import { login } from 'etc/api/user';
+import encryptPassword from 'etc/encryptPassword';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -48,8 +49,9 @@ function SignIn({ visible, setVisible } : SignInProps) {
                                 setMessage('비밀번호는 8글자 이상으로 적어 주세요.');
                                 return;
                             }
+                            const encryptedPassword = await encryptPassword(email, password);
                             login({
-                                email, password,
+                                email, password: encryptedPassword,
                             }).then(({ success, message }) => {
                                 if (success) setVisible(false);
                                 else setMessage(message);

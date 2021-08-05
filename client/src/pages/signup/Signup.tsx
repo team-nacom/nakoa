@@ -2,6 +2,7 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import { register } from 'etc/api/user';
+import encryptPassword from 'etc/encryptPassword';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
@@ -182,8 +183,9 @@ function SignUp() {
                 <button type='submit' className='button' onClick={async (e) => {
                     e.preventDefault();
                     if (!await validateAll()) return false;
-                    let { success, message } = await register({ email, password, nickname });
-                    console.log(success, message);
+                    const encryptedPassword = await encryptPassword(email, password);
+                    let { success, message } = await register({ email, password: encryptedPassword, nickname });
+
                     if (success) {
                         setRedirectToPending(true);
                     } else {
