@@ -29,7 +29,9 @@ router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
 // Get list of guides
 router.get('/', async (ctx) => {
   // TODO: show drafts of their own, and hide if not
-  const filter = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  const name: string = ctx.state.user.nickname ?? null;
+
+  const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
   const query = Guide.find(filter).select('index name cate gory priority');
   await query.lean().
     catch(err => ctx.throw(500, err)).
@@ -39,8 +41,9 @@ router.get('/', async (ctx) => {
 // Get specific guide with given index
 router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
+  const name: string = ctx.state.user.nickname ?? null;
 
-  let filter: any = (isAdmin(ctx) ? {} : { isPublic: true }); // show all for admin
+  let filter: any = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]});
   filter.index = index;
 
   const query = Guide.find(filter);
@@ -55,7 +58,7 @@ router.get('/:index(\\d+)', async (ctx) => {
 
 // Delete a post with given index
 // for now, only admin can erase
-router.delete('/:index(\\d+)', checkAdminMiddleware, async (ctx) => {
+router.delete('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
   const index = ctx.params.index;
   await Guide.deleteOne({ index });
   ctx.body = "Success";
