@@ -130,7 +130,7 @@ async function getGoryName(index: string) {
 async function getGuides(isAdmin: boolean, gindex: string, cindex?: number) {
   let filter: any = {gory: gindex};
   if (cindex) filter.cate = cindex;
-  if (isAdmin) filter.isPublic = true;
+  if (!isAdmin) filter.isPublic = true;
 
   const query = Guide.find(filter).select('index name authors priority createDate');
   return await query.exec();
