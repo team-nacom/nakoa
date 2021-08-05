@@ -45,3 +45,5 @@ Developed with Typescript, koajs, Create React App, MongoDB.
 
 
 ## Notes
+
+To use SSL, you might want to use nginx or such to proxy ports.

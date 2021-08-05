@@ -1,20 +1,21 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { GuideType, postGuide, useIsAdmin } from 'etc/api';
+import { GuideType, postGuide } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import GuideEditor from 'components/GuideEditor';
 
-function AdminAddGuide() {
+function GuideWrite() {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let isAdmin = useIsAdmin();
 
     let upload = (guide: GuideType, setMessage: (message: string) => void) => {
-        if (!guide.name || !guide.content || !guide.priority || !guide.category || !guide.section || guide.authors.length < 1) {
+        if (!guide.name || !guide.content || !guide.priority || !guide.cate || !guide.gory || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
             return;
         }
@@ -39,4 +40,4 @@ function AdminAddGuide() {
 }
 
 
-export default AdminAddGuide;
+export default GuideWrite;

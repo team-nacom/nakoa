@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import passport from 'koa-passport';
 
 import User, {givenOptions} from '../models/user';
+import createHttpError from 'http-errors';
 
 const router = new Router();
 
@@ -15,7 +16,7 @@ async function validateAllTokens(ctx, next, checkNickname = true) {
     ctx.throw(400, "Missing field");
   } else if (!emailRegex.test(body.email)) {
     ctx.throw(400, "Invalid email address");
-  } else if (32 < body.password.length || body.password.length < 8) {
+  } else if (body.password.length > 3885) {
     ctx.throw(400, "Invalid password length");
   } else if (checkNickname && !nickRegex.test(body.nickname)) {
     ctx.throw(400, "Invalid nickname");
@@ -32,7 +33,8 @@ router.get('/', (ctx) => {
     ctx.body = {
       "isAuth": true,
       "email": user.email,
-      "nickname": user.nickname
+      "nickname": user.nickname,
+      "verified": user.verified
     };
   } else {
     ctx.body = {
@@ -40,6 +42,27 @@ router.get('/', (ctx) => {
     };
   }
 });
+
+// verify email
+router.get('/verify/:email/:secret', async (ctx) => {
+  const email = ctx.params.email;
+  const secret = ctx.params.secret;
+
+  try {
+    const user = await User.findOne({email: email}).exec();
+    const success = await user.checkEmailVerification(secret);
+    if(success){
+      await User.findOneAndUpdate({email: email},
+        {$set: {verified: true}, $unset: {verifyHash: ""}});
+      ctx.body = "Success";
+    } else {
+      ctx.throw(400);
+    }
+  } catch (e) {
+    ctx.throw(404, e);
+  }
+});
+
 
 // register new user (email, password)
 router.post('/register', validateAllTokens);
@@ -60,11 +83,13 @@ router.post('/register', async (ctx, next) => {
     try {
       await user.setPassword(userObj.password);
       await user.save();
+      const info = await user.sendEmailVerification();
+      console.log(`Email sent: ${info.messageId}`);
     } catch (err) {
       console.error(err);
       ctx.throw(500, err.message);
     }
-    console.log(`New user ${userObj.email} successfully registered!`);
+    console.log(`New user ${userObj.email} successfully registered! Please check your e-mail to verify this account.`);
     ctx.body = "Success";
   }
 });

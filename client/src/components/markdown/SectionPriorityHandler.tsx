@@ -7,8 +7,8 @@ import { Node, Parent } from 'unist';
 const SectionPriorityHandler : Plugin = () => {
     const sectionPriorityHandler : Transformer = (tree, file) => {
         const root = tree as Parent;
-        const markers = ['A','B','C','D','E','+'];
-        const prio = [1,2,3,4,5,-1];
+        const markers = ['D','C','B','A','E','+'];
+        const prio = [1,2,3,4,0,-1];
 
         for(var nodeno = 0; nodeno < root.children.length; ++nodeno){
             //root.children.length may change during iteration.
@@ -48,9 +48,7 @@ const SectionPriorityHandler : Plugin = () => {
                         node.children[0].value = node.children[0].value.slice(h + marker.length).trimStart();
                         node.type = 'heading';
                         node.depth = h;
-                        node.data = {
-                            priority : prio[i]
-                        }
+                        node.priority = prio[i];
 
                         break;
                     }
@@ -66,10 +64,8 @@ const SectionPriorityHandler : Plugin = () => {
                         value: '　' //whitespace with height;
                     })
                 }
-                node.data = {
-                    priority : 1 //same as Essential
-                    // priority : -1 //unnumbered
-                }
+                node.priority = 4; //same as Essential
+                // node.priority = -1; //unnumbered
             }
         }
     }

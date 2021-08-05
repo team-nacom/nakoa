@@ -1,18 +1,11 @@
 @import '../consts.scss';
 
-#root {
-    margin-top: 120px;
-    margin-left: calc(10% - 20px);
-    margin-right: calc(10% - 20px);
-}
-
 header {
     .navbar {
         top: 0;
         left: 0;
         right: 0;
         width: 100%;
-        min-height: 88px;
         position: fixed;
         z-index: 2;
         
@@ -20,7 +13,6 @@ header {
         font-weight: normal;
         font-size: 14px;
         line-height: 16px;
-        display: flex;
         align-items: center;
         
         color: #000000;
@@ -33,48 +25,99 @@ header {
             font-weight: 500;
             font-size: 18px;
             line-height: 24px;
-            left: 10%;
-            top: 14px;
 
             z-index: 1;
-
-            img {
-                height: 60px;
-            }
         }
 
-        ul.menu {
-            @media (min-width: $min-tablet-width) {
+        .navitem {
+            .localeSelect {
                 position: absolute;
-                top: 35px;
-                right: 72px;
-                margin-right: 12%;
-                width: calc(100% - 200px);
+                width: 150px;
+                background: white;
+                border-radius: 10px;
+                z-index: 999;
+                text-align: right;
     
-                li {
+    
+                background-color: white;
+                box-shadow: 0px 3px 10px #0000004D;
+    
+                .localeSelectItem {
+                    margin: 4px;
+                    padding: 10px;
+                    font-size: 16px;
+                    border-radius: 10px;
+                    color: black;
+    
+                    .material-icons {
+                        font-size: 16px;
+                    }
+    
+                    &.focus {
+                        background: #eeeeee;
+                    }
+    
+                    &:hover {
+                        background: #cccccc;
+                        color: $main-color;
+                    }
+                }
+            }    
+        }
+    }
+}
+
+
+@media (max-width: $max-mobile-width) {
+    #root {
+        margin-top: 60px;
+    }
+    
+    header {
+        .navbar {
+            padding-top: 45px;
+    
+            div.title {
+                top: 4px;
+                left: 16px;
+                
+                img {
+                    height: 24px;
+                    margin: 7px 0px;
+                }
+            }
+
+            .navitem {
+                display: none;
+            }
+                
+            &.expanded {
+                .navitem {
+                    display: block;
+                    width: 100%;
+                    box-sizing: border-box;
+
                     color: #666666;
                     font-size: 15px;
                     font-weight: 300;
-                    padding: 16px 12px;
-                    float: right;
-                    overflow: hidden;
-                    border: 2px rgba(0, 0, 0, 0) solid;
+
                     transition: all .2s ease-in-out;
                     
-                    &:hover:not(.inactive), &.active {
-                        color: $main-color;
-                        border-bottom: 2px $main-color solid;
+                    &.menu {
+                        padding: 12px;
+                        &:hover:not(.inactive), &.active {
+                            color: $main-color;
+                        }
                     }
-                }
-            }
-            @media (max-width: $max-mobile-width) {
-                display: none;
-                                
-                &.expanded {
-                    display: block;
-                    width: 100%;
-                    margin-top: 88px;
-
+    
+                    &.icons {
+                        padding: 8px 4px;
+                        .icon {
+                            font-size: 21px;
+                            padding: 0px 8px;
+                        }
+                    }
+    
                     li {
                         color: #666666;
                         font-size: 15px;
@@ -92,21 +135,22 @@ header {
                     }
                 }
             }
-        }
 
-        ul.account {
-            position: absolute;
-            margin: 0;
-            right: 0;
-            margin-right: 10%;
+            ul.account {
+                top: 0px;
+                margin-right: 10px;
+            }
 
-            top: 38px;
+            .expandMenu {
+                position: absolute;
+                margin: 0;
+                right: 0;
+                top: 0;
 
-            li {
                 color: #666666;
                 font-size: 22px;
                 font-weight: 300;
-                padding: 12px;
+                padding: 12px 20px;
                 float: left;
                 overflow: hidden;
                 transition: all .2s ease-in-out;
@@ -117,4 +161,62 @@ header {
             }
         }
     }
-}  
+}
+
+@media (min-width: $min-tablet-width) {
+    #root {
+        margin-top: 95px;
+    }
+    
+    header {
+        .navbar {
+            min-height: 70px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding-right: 10%;
+            box-sizing: border-box;
+
+            div.title {
+                bottom: 9px;
+                left: 10%;
+
+                img {
+                    height: 32px;
+                    margin: 3px 0px;
+                }
+            }
+
+            .navitem {
+                color: #666666;
+                font-size: 15px;
+                font-weight: 300;
+
+                &.menu div {
+                    padding: 16px 12px;
+                }
+
+                border: 2px rgba(0, 0, 0, 0) solid;
+                transition: all .2s ease-in-out;
+                
+                &.menu {
+                    &:hover:not(.inactive), &.active {
+                        color: $main-color;
+                        border-bottom: 2px $main-color solid;
+                    }
+                }
+
+                &.icons {
+                    .icon {
+                        font-size: 24px;
+                        padding: 10px 7px;
+                    }
+                }
+            }
+
+            .expandMenu {
+                display: none;
+            }
+        }
+    }
+}

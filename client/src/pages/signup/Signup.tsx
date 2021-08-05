@@ -1,12 +1,16 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
-import { register } from 'etc/api';
+import { register } from 'etc/api/user';
+import encryptPassword from 'etc/encryptPassword';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 function SignUp() {
-    let [redirectToDone, setRedirectToDone] = React.useState(false);
+    let intl = useIntl();
+
+    let [redirectToPending, setRedirectToPending] = React.useState(false);
 
     let [message, setMessage] = React.useState('');
     
@@ -77,43 +81,68 @@ function SignUp() {
 
     let entries = [
         {
-            name: '이메일 (아이디)',
+            name: intl.formatMessage({ id: 'signup.email' }),
             body: (
                 <>
-                    <input className='signupForm' autoComplete='email' placeholder='예시: example@gmail.com' onChange={(e) => setEmail(e.target.value)} value={email} />
+                    <input 
+                        className='signupForm' 
+                        autoComplete='email' 
+                        placeholder={ intl.formatMessage({ id: 'signup.email.placeholder'})} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        value={email} 
+                    />
                 </>
             ),
             message: emailMessage,
             validate: validateEmail,
         }, {
-            name: '비밀번호',
+            name: intl.formatMessage({ id: 'signup.password' }),
             body: (
                 <>
-                    <input type='password' className='signupForm' autoComplete='new-password' placeholder='8글자 이상 영문, 숫자 혼합' onChange={(e) => setPassword(e.target.value) } value={password}/>
+                    <input 
+                        type='password' 
+                        className='signupForm' 
+                        autoComplete='new-password' 
+                        placeholder={ intl.formatMessage({ id: 'signup.password.placeholder' })}
+                        onChange={(e) => setPassword(e.target.value) } 
+                        value={password}
+                    />
                 </>
             ),
             message: passwordMessage,
             validate: validatePassword,
         }, {
-            name: '비밀번호 확인',
+            name: intl.formatMessage({ id: 'signup.passwordconfirm' }),
             body: (
                 <>
-                    <input type='password' className='signupForm' autoComplete='new-password'  onChange={(e) => { setPasswordConfirm(e.target.value); }} value={passwordConfirm}/>
+                    <input 
+                        type='password' 
+                        className='signupForm' 
+                        autoComplete='new-password' 
+                        onChange={(e) => { setPasswordConfirm(e.target.value); }} 
+                        value={passwordConfirm}
+                    />
                 </>
             ),
             message: passwordConfirmMessage,
             validate: validatePasswordConfirm,
         }, {
-            name: '닉네임',
+            name: intl.formatMessage({ id: 'signup.nickname' }),
             body: (
                 <>
-                    <input className='signupForm' autoComplete='name' placeholder='2글자 이상 10글자 이하 한글, 영문, 숫자' onChange={(e) => setNickname(e.target.value)} value={nickname}/>
+                    <input 
+                        className='signupForm' 
+                        autoComplete='name' 
+                        placeholder={ intl.formatMessage({ id: 'signup.nickname.placeholder' })}
+                        onChange={(e) => setNickname(e.target.value)} 
+                        value={nickname}
+                    />
                 </>
             ),
             message: nicknameMessage,
             validate: validateNickname,
         }
-    ]
+    ];
 
     let validateAll = async () => {
         let result = true;
@@ -126,16 +155,19 @@ function SignUp() {
     }
 
     
-    if (redirectToDone) return <Redirect to={{
-        pathname: '/signup/done',
-        state: { nickname, }
+    if (redirectToPending) return <Redirect to={{
+        pathname: '/signup/pending',
+        state: { nickname, email }
     }} />;
     return (
         <>
             <Header/>
-            <PageTitle> 가입 </PageTitle>
-            <p> 나무컴퍼스에 관심을 가지고 가입해주셔서 감사합니다. </p>
-            <p> 가입하시려면, 아래 항목을 채워주세요. 입력해주신 개인정보는 로그인 외 다른 용도로 이용되지 않습니다.</p>
+            <PageTitle> { intl.formatMessage({ id: "signup.title" }) } </PageTitle>
+            {
+                intl.formatMessage({ id: "signup.description" })
+                    .split('\n')
+                    .map((str) => <p> {str} </p>)
+            }
 
             <form>
                 <div className='signupBox'>
@@ -151,14 +183,15 @@ function SignUp() {
                 <button type='submit' className='button' onClick={async (e) => {
                     e.preventDefault();
                     if (!await validateAll()) return false;
-                    let { success, message } = await register({ email, password, nickname });
-                    console.log(success, message);
+                    const encryptedPassword = await encryptPassword(email, password);
+                    let { success, message } = await register({ email, password: encryptedPassword, nickname });
+
                     if (success) {
-                        setRedirectToDone(true);
+                        setRedirectToPending(true);
                     } else {
-                        setMessage('가입에 실패했습니다: ' + message);
+                        setMessage( intl.formatMessage({ id: 'signup.problem' }) + message);
                     }
-                }}> 가입하기 </button>
+                }}> { intl.formatMessage({ id: 'signup.signup' }) } </button>
                 { message && <p style={{marginBottom: '8px'}}> { message } </p> }
                 { entries.map(({ name, message } ) => {
                     if (message) return <p style={{marginBottom: '8px'}}> { `${name}: ${message}` } </p>   

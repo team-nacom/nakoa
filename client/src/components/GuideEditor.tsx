@@ -3,8 +3,210 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { GuideType, useIsAdmin } from 'etc/api';
+import { getGuideCategories, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
+import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
+
+import { FormattedMessage, useIntl } from 'react-intl';
+import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
+import usePromise from 'etc/usePromise';
+import useSmoothValue from 'etc/useSmoothValue';
+
+// This function can be well modified for better auto-complete support
+function isStringRelated(current: string, target: string) {
+    return target.includes(current);
+}
+
+interface CateInputProps {
+    cates: CateType[] | undefined;
+    cateName: string;
+    setCateName: (cateName: string) => void;
+    setCateIndex: (cateIndex: number | undefined) => void;
+}
+
+function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
+    let intl = useIntl();
+    
+    return (
+        <div className='writeForm'>
+            <label> 
+                { intl.formatMessage({ id: 'editor.cate' }) } 
+            </label>
+            <div>
+                <input 
+                    value={cateName} 
+                    onChange={(e) => {
+                        let cateName = e.target.value;
+                        setCateName(cateName);
+
+                        let cate = cates?.find((cate) => cate.name === cateName);
+                        if (cate) setCateIndex(cate.index);
+                        else setCateIndex(undefined);
+                    }} 
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                />
+            </div>
+            { opacity > 0 && cates && cates.length > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                >
+                    { cates.filter((cate) => isStringRelated(cateName, cate.name)).map((cate) => (
+                        <div className='candidate' onClick={() => { setCateName(cate.name); setCateIndex(cate.index); }}> { cate.name } </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+interface GoryInputProps {
+    gories: GoryType[] | undefined;
+    goryName: string;
+    setGoryName: (goryName: string) => void;
+    setGoryIndex: (goryIndex: string | undefined) => void;
+}
+
+function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
+    let intl = useIntl();
+
+    return (
+        <div className='writeForm'>
+            <label>
+                { intl.formatMessage({ id: 'editor.gory' }) } 
+            </label>
+            <div>
+                <input 
+                    value={goryName} 
+                    onChange={(e) => {
+                        let goryName = e.target.value;
+                        setGoryName(goryName);
+
+                        let gory = gories?.find((gory) => gory.name === goryName);
+                        if (gory) setGoryIndex(gory.index);
+                        else setGoryIndex(undefined);
+                    }} 
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                />
+            </div>
+            { opacity > 0 && gories && gories.length > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                >
+                    { gories.filter((gory) => isStringRelated(goryName, gory.name)).map((gory) => (
+                        <div className='candidate' onClick={() => { setGoryName(gory.name); setGoryIndex(gory.index); } }> {gory.name} </div> 
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+interface AuthorInputProps {
+    isAdmin: boolean;
+    authors: string[];
+    setAuthors: (authors: string[]) => void;
+}
+
+function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
+    const editable = isAdmin;
+    let intl = useIntl();
+
+    return (
+        <div className='writeForm'>
+            <label>
+                { intl.formatMessage({ id: 'editor.author' }) }
+            </label>
+            <div>
+                <input 
+                    value={ authors.join(', ') } 
+                    readOnly
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                />
+            </div>
+            { opacity > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                >
+                    { authors.map((value, index) => editable ? (
+                        <div className='candidate' key={index}>
+                            <input 
+                                value={value} 
+                                onChange={(e) => setAuthors(authors.slice(0, index).concat([e.target.value]).concat(authors.slice(index+1)))} 
+                                onBlur={() => setDeltaOpacity(-0.1) }
+                            />
+                            <span 
+                                className='candidateRemove material-icons' 
+                                onClick={() => setAuthors(authors.slice(0, index).concat(authors.slice(index+1)))}
+                            >
+                                close
+                            </span>
+                        </div>
+                    ) : (
+                        <div className='candidate' key={index}>
+                            <input value={value} readOnly />
+                        </div>
+                    ))}
+                    { editable && (
+                        <div className='candidate' onClick={() => setAuthors(authors.concat(['']))} style={{textAlign: 'center'}} > + </div>
+                    )}
+                </div>
+            )}
+        </div>
+    )
+}
+
+interface PriorityInputProps {
+    priority: number;
+    setPriority: (priority: number) => void;
+}
+
+function PriorityInput({ priority, setPriority }: PriorityInputProps) {
+    let [opacity, setDeltaOpacity] = useSmoothValue(0);
+    let intl = useIntl();
+
+    return (
+        <div className='writeForm'>
+            <label>
+                { intl.formatMessage({ id: 'editor.priority' }) }
+            </label>
+            <div>
+                <input 
+                    value={ priorityTags[priority] } 
+                    readOnly
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                />
+            </div>
+            { opacity > 0 && (
+                <div 
+                    className='candidateContainer' 
+                    style={{ opacity }}
+                    onMouseEnter={() => setDeltaOpacity(0.1) } 
+                    onMouseLeave={() => setDeltaOpacity(-0.1) }
+                >
+                    { [0, 1, 2, 3, 4].map((value) => (
+                        <div className='candidate' onClick={() => setPriority(value) }> {priorityTags[value]} </div> 
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
 
 interface Props {
     initialGuide?: GuideType,
@@ -15,78 +217,61 @@ interface Props {
     behavior: 'add' | 'edit'
 }
 
-function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props) {
+
+function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } : Props) {
+    let isAdmin = useIsAdmin();
+
     let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
-    let [category, setCategory] = React.useState<string>(initialGuide?.category ?? '');
-    let [section, setSection] = React.useState<string>(initialGuide?.section ?? '');
-    let [author, setAuthor] = React.useState<string>(initialGuide?.authors.join(', ') ?? _author ?? '');
+    let [cateName, setCateName] = React.useState<string>('');
+    let [goryName, setGoryName] = React.useState<string>('');
+    let [authors, setAuthors] = React.useState<string[]>(initialGuide?.authors ?? (initialAuthor ? [ initialAuthor ] : []));
     let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
     let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
-    let isAdmin = useIsAdmin();
 
-//    let [lastModify, setLastModify] = React.useState<number>();
-//    let [recentlySaved, setRecentlySaved] = React.useState<boolean>(true);
+    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide?.cate);
+    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide?.gory);
 
-//    React.useEffect(() => {
-//        setLastModify(new Date().getTime());
-//    }, [name, content, priority]);
+    let [catesLoading, cates] = usePromise(getCates);
+    let [gories, setGories] = React.useState<GoryType[]>();
 
-//    React.useEffect(() => {
-//        if (recentlySaved) return;
-//
-//        postTempGuide({
-//            index: 0, name, content, priority,
-//        }).then(() => {
-//            setRecentlySaved(true);
-//        })
-//
-//        setTimeout(() => setRecentlySaved(false), 1000);
-//    }, [lastModify]);
+    React.useEffect(() => {
+        if (initialGuide) {
+            getCategoryDetail(initialGuide.cate, initialGuide.gory).then(({ cateName, goryName }) => {
+                setCateName(cateName);
+                setGoryName(goryName);
+            });
+        }
+    }, [initialGuide]);
+
+    React.useEffect(() => {
+        if (cateIndex !== undefined) {
+            getCateDetail(cateIndex).then(({ gories }) => {
+                setGories(gories);
+            })
+        } else {
+            setGories(undefined);
+        }
+    }, [cateIndex]);
 
     return (<>
-        <div className='adminBox guide'>
+        <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
-                { behavior == 'add' ? '가이드 추가' : '가이드 수정'} 
+                <FormattedMessage id={ behavior == 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
 
             <div className='flexbox'>
-            <div className='adminForm'>
-                    <label> CATEGORY </label>
-                    <div>
-                        <input value={category} onChange={(e) => setCategory(e.target.value)} />
-                    </div>
-                </div>
-                <div className='adminForm'>
-                    <label> SECTION </label>
-                    <div>
-                        <input value={section} onChange={(e) => setSection(e.target.value)} />
-                    </div>
-                </div>
-                <div className='adminForm'>
-                    <label> 작성자 </label>
-                    <div>
-                        { isAdmin
-                            ? <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-                            : <input value={author} readOnly />
-                        }
-                    </div>
-                </div>
-                <div className='adminForm'>
-                    <label> 중요도 </label>
-                    <div>
-                        <select onChange={(e) => setPriority(Number.parseInt(e.target.value))}>
-                            { ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'].map((s, i) => (
-                                <option value={i}> {s} </option>
-                            )) }
-                        </select>
-                    </div>
-                </div>
+                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
+                <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
+                <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
+                <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
 
             <div className=''>
-                <label> 가이드 제목 </label>
+                <label>
+                    <FormattedMessage id='editor.guidetitle' />
+                </label>
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
@@ -97,16 +282,26 @@ function GuideEditor({ initialGuide, upload, author: _author, behavior } : Props
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
-                    <span> { isPublic ? '공개' : '비공개' } </span>
+                    <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
                 </div>
 
                 <button className='submit link' onClick={
-                    () => upload(
-                        { name, content, priority, category, section, authors: author.split(',').map(s => s.trim()), isPublic },
-                        setMessage
-                    )
+                    async () => {
+                        if (!cateName || !goryName) {
+                            setMessage('카테고리를 적어주세요.');
+                            return;
+                        }
+                        
+                        let cate = cateIndex ?? (await postCate({ name: cateName, gories: [], })).index;
+                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;
+                        
+                        upload(
+                            { name, content, priority, cate, gory, authors: authors.filter((s) => s.length > 0), isPublic },
+                            setMessage
+                        );
+                    }
                 }> 
-                    { behavior == 'add' ? '게시하기' : '수정하기' }
+                    <FormattedMessage id='editor.confirm' />
                 </button>
             </div>
             {message}
