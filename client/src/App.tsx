@@ -63,7 +63,8 @@ function App() {
           <Route path='/signup' component={SignUp} />
           <Route path='/logout' component={Logout} />
           <Route path='/about' component={About} />
-          <Route path='/' component={Main} />
+          <Redirect path='/' to='/guide' />
+{/*          <Route path='/' component={Main} /> */}
         </Switch>
       </BrowserRouter>
     </IntlProvider>    
