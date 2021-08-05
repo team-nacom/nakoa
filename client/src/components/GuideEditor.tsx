@@ -264,7 +264,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
             </PageTitle>
 
             <div className='flexbox'>
-                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={setCateIndex} />
+                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
                 <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
                 <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
