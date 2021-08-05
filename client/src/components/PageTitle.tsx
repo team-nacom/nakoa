@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface Params {
-    style?: object;
-    children: any;
+    style?: React.CSSProperties;
+    children: React.ReactNode;
 }
 
 function PageTitle({style, children} : Params) {

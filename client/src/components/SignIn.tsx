@@ -1,5 +1,6 @@
 import { login } from 'etc/api/user';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 interface SignInProps {
@@ -21,6 +22,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
     let [email, setEmail] = React.useState('');
     let [password, setPassword] = React.useState('');
     let [message, setMessage] = React.useState<string>();
+    let intl = useIntl();
 
     if (!visible) return <></>;
     else return (
@@ -28,13 +30,13 @@ function SignIn({ visible, setVisible } : SignInProps) {
             <div className='signinShadow' onClick={() => setVisible(false)} />
             <div className='signinContainer'>
                 <span className='material-icons backButton link' onClick={() => setVisible(false)}> arrow_back </span>
-                <div className='signinHeader'> 로그인 </div>
+                <div className='signinHeader'> { intl.formatMessage({ id: 'signin.title' }) } </div>
                 <form>
-                    <input className='signinForm' autoComplete='email' placeholder='아이디 (이메일)' onChange={(e) => setEmail(e.target.value)} value={email} />
-                    <input className='signinForm' autoComplete='current-password' placeholder='비밀번호 (8글자 이상)' type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
+                    <input className='signinForm' autoComplete='email' placeholder={ intl.formatMessage({ id: 'signin.email' }) }  onChange={(e) => setEmail(e.target.value)} value={email} />
+                    <input className='signinForm' autoComplete='current-password' placeholder= { intl.formatMessage({ id: 'signin.password' }) } type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
                     { message && <p className='helpText'> { message } </p> }
                     <div style={{marginBottom: '42px'}}/>
-                    <Link to='/signup'> <p className='helpText'> 처음 오셨나요? </p> </Link>
+                    <Link to='/signup'> <p className='helpText'> { intl.formatMessage({ id: 'signin.newhere' }) } </p> </Link>
                     <div className='buttonContainer'>
                         <button type='submit' className='signin' onClick={async (e) => {
                             e.preventDefault();
@@ -52,7 +54,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                                 if (success) setVisible(false);
                                 else setMessage(message);
                             });
-                        }}> 로그인 </button>
+                        }}>  { intl.formatMessage({ id: 'signin.signin' }) }  </button>
                     </div>
                 </form>
             </div>
