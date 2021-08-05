@@ -41,7 +41,7 @@ guideSchema.methods.hasWriteAuthority = function(user: UserDocument){
     if(!this.authors || this.authors.length != 1) throw createHttpError(500, "Error while checking authority");
 
     const isAdmin = (user.email === "nacommanager@gmail.com");
-    const isAuthor = (user.email === this.authors[0]);
+    const isAuthor = (user.nickname === this.authors[0]);
     return isAdmin || isAuthor;    
 }
 
