@@ -4,12 +4,12 @@ import Cate from '../models/cate';
 import Gory from '../models/gory';
 import Guide from '../models/guide';
 import Count from '../models/count';
-import { isAdmin, checkAdminMiddleware } from "../utils";
+import { isAdmin, checkAdminMiddleware, isVerifiedMiddleware } from "../utils";
 import createHttpError from 'http-errors';
 
 const router = new Router();
 
-router.post('/cate', checkAdminMiddleware, async (ctx) => {
+router.post('/cate', isVerifiedMiddleware, async (ctx) => {
   const cateObj = ctx.request.body;
   // TODO: check type
 
@@ -29,12 +29,12 @@ router.post('/cate', checkAdminMiddleware, async (ctx) => {
   }
 });
 
-router.post('/gory', checkAdminMiddleware, async (ctx) => {
+router.post('/gory', isVerifiedMiddleware, async (ctx) => {
   const goryObj = ctx.request.body;
   // TODO: check type
 
   try {
-    await Cate.updateOne({index: goryObj.cate}, {$push: goryObj.index}).exec();
+    await Cate.updateOne({index: goryObj.cate}, {$push: {gories: goryObj.index}}).exec();
   } catch (e) {
     console.log("Error while updating cate for adding gory: " + goryObj.index);
   }
