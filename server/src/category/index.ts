@@ -50,7 +50,10 @@ router.post('/gory', isVerifiedMiddleware, async (ctx) => {
 });
 
 // Get list of Cates
-router.get('/', cleanGory, cleanCate, async (ctx) => {
+router.get('/', async (ctx) => {
+  await cleanGory();
+  await cleanCate();
+  
   const query = Cate.find({}).select('index name gories');
   await query.lean().
     catch(err => ctx.throw(500, err)).
@@ -59,7 +62,9 @@ router.get('/', cleanGory, cleanCate, async (ctx) => {
 
 // Get list of Gories
 // TODO: avoid naming collision with get guides
-router.get('/cate/:index(\\d+)', cleanGory, async (ctx) => {
+router.get('/cate/:index(\\d+)', async (ctx) => {
+  await cleanGory();
+
   const index: number = +ctx.params.index;
 
   let filter: any = {cate: +index};
