@@ -19,7 +19,9 @@ router.post('/', isVerifiedMiddleware, async (ctx) => {
 router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
   const index: number = Number.parseInt(ctx.params.index);
   const guideObj = ctx.request.body;
-  if(!isAdmin(ctx) && "authors" in guideObj) throw createHttpError(401, "Only admin can change authors");
+  const email = ctx.state.user.email;
+  if(!(isAdmin(ctx) || ("authors" in guideObj && guideObj.authors[0] === email)))
+    throw createHttpError(401, "Only admin and the author can change authors");
   await updateOneGuide(ctx.request.body, index, ctx.state.user);
   ctx.body = "Success";
 });
