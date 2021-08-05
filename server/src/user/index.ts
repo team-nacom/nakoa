@@ -16,7 +16,7 @@ async function validateAllTokens(ctx, next, checkNickname = true) {
     ctx.throw(400, "Missing field");
   } else if (!emailRegex.test(body.email)) {
     ctx.throw(400, "Invalid email address");
-  } else if (32 < body.password.length || body.password.length < 8) {
+  } else if (32 < body.password.length || body.password.length < 3885) {
     ctx.throw(400, "Invalid password length");
   } else if (checkNickname && !nickRegex.test(body.nickname)) {
     ctx.throw(400, "Invalid nickname");
