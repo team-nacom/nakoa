@@ -6,6 +6,28 @@
     "header.hello": "Hello, {name}!",
     "main.greeting": "Hello, we are Team WoodenCompass!",
 
+    "signin.title": "Sign In",
+    "signin.email": "Email",
+    "signin.password": "Password (8+ letters)",
+    "signin.newhere": "New here?",
+    "signin.signin": "Sign in",
+
+    "signup.title": "Sign Up",
+    "signup.description": "Thank you for your attention on WoodenCompass.\nTo sign up, please fill up your informations on the form. These informations will not be used on purpose other than signing in to our service.",
+    "signup.email": "Email (ID)",
+    "signup.email.placeholder": "Example: example@gmail.com",
+    "signup.password": "Password",
+    "signup.password.placeholder": "8+ letters, Must include one alphabet and one numeric digit",
+    "signup.passwordconfirm": "Retype Password",
+    "signup.nickname": "Nickname",
+    "signup.nickname.placeholder": "2 - 10 letters. Korean, alphabets and digits can be used",
+    "signup.signup": "Sign up",
+    "signup.problem": "A problem has occured while signing up.",
+    "signup.pleaseverifyemail": "Hello, {nickname}, Thank you. We sent an mail to {email} in order to verify your email. You can activate your account by clicking a link on the mail.",
+    "signup.verifyingemail": "We are verifying your email. Please wait for a second.",
+    "signup.success": "We've verified your email and the process is done! Thank you for being the member of Team WoodenCompass. Now you can sign in with your email and password.",
+    "signup.failure": "We could not verify your email... Contact nacommanager@gmail.com if this happens several times.",
+
     "markdown.contents": "Contents",
     "editor.manual": "Editor Manual",
     "editor.cate": "Category",
@@ -18,7 +40,6 @@
     "editor.public": "public",
     "editor.private": "private",
     "editor.confirm": "Confirm",
-    
 
     "editor.placeholder": "Provides Markdown & LaTeX syntaces. Click the question mark button to see the editor manual(KR).",
     "editor.edit": "Edit",
