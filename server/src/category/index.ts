@@ -50,7 +50,7 @@ router.post('/gory', isVerifiedMiddleware, async (ctx) => {
 });
 
 // Get list of Cates
-router.get('/', async (ctx) => {
+router.get('/', cleanGory, cleanCate, async (ctx) => {
   const query = Cate.find({}).select('index name gories');
   await query.lean().
     catch(err => ctx.throw(500, err)).
@@ -59,7 +59,7 @@ router.get('/', async (ctx) => {
 
 // Get list of Gories
 // TODO: avoid naming collision with get guides
-router.get('/cate/:index(\\d+)', async (ctx) => {
+router.get('/cate/:index(\\d+)', cleanGory, async (ctx) => {
   const index: number = +ctx.params.index;
 
   let filter: any = {cate: +index};
@@ -127,6 +127,20 @@ async function getGuides(isAdmin: boolean, gindex: string, cindex?: number) {
 
   const query = Guide.find(filter).select('index name authors priority createDate');
   return await query.exec();
+}
+
+async function cleanCate(){
+  const filter = {$or: [{gories: { $exists: false }}, {gories: { $eq: [] }}]};
+  const docs = await Cate.deleteMany(filter);
+}
+
+async function cleanGory(){
+  const filter: any = {$or: [{guides: { $exists: false }}, {guides: { $eq: [] }}]};
+  const docs = await Gory.find(filter).exec();
+  docs.forEach(async doc => {
+    const cate = doc.cate;
+    await Cate.updateOne({index: cate}, {$pull: {$pull: doc.index}});
+  });
 }
 
 export default router;
