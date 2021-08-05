@@ -79,7 +79,7 @@ function SignUp() {
         return true;
     }
 
-    let entries = React.useMemo(() => [
+    let entries = [
         {
             name: intl.formatMessage({ id: 'signup.email' }),
             body: (
@@ -142,7 +142,7 @@ function SignUp() {
             message: nicknameMessage,
             validate: validateNickname,
         }
-    ], [intl]);
+    ];
 
     let validateAll = async () => {
         let result = true;
