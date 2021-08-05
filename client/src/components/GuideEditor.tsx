@@ -255,8 +255,6 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
         }
     }, [cateIndex]);
 
-    console.log(cateName, cateIndex, goryName, goryIndex);
-
     return (<>
         <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
