@@ -11,6 +11,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
+import Button from './Button';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
@@ -288,7 +289,7 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
                     <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
                 </div>
 
-                <button className='submit link' onClick={
+                <Button className='submit link' onClick={
                     async () => {
                         if (!cateName || !goryName) {
                             setMessage('카테고리를 적어주세요.');
@@ -305,7 +306,7 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
                     }
                 }> 
                     <FormattedMessage id='editor.confirm' />
-                </button>
+                </Button>
             </div>
             {message}
         </div>

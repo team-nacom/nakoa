@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
@@ -55,7 +56,7 @@ function QuizView({ match } : Props) {
                     );
                 }) }
                 <div style={{marginBottom: '10px'}} />
-                <button className='button' onClick={choice ? (() => setStatus(2)) : undefined}> 제출 </button>
+                <Button className='button' onClick={choice ? (() => setStatus(2)) : undefined}> 제출 </Button>
                 { status === 2 && (
                     <>
                         <p> {quiz.answer === choice ? '맞았습니다!' : '틀렸습니다..'} {` 정답은 ${quiz.answer}입니다.`} </p>
