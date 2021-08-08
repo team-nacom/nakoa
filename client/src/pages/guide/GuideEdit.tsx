@@ -39,7 +39,7 @@ function GuideEdit({ match }: Props) {
     return (
         <>
             <Header/>
-            <GuideEditor initialGuide={guide} upload={upload} behavior='edit' />
+            <GuideEditor initialGuide={guide ?? {}} upload={upload} behavior='edit' />
             <Footer/>
         </>
     )

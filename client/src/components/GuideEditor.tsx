@@ -209,39 +209,42 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
 }
 
 interface Props {
-    initialGuide?: GuideType,
+    initialGuide: Partial<GuideType>,
     upload: (guide: GuideType, 
              setMessage: (message: string) => void) 
         => void,
-    author?: string,
     behavior: 'add' | 'edit'
 }
 
 
-function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } : Props) {
+function GuideEditor({ initialGuide, upload, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
-    let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
+    let [name, setName] = React.useState<string>(initialGuide.name ?? '');
     let [cateName, setCateName] = React.useState<string>('');
     let [goryName, setGoryName] = React.useState<string>('');
-    let [authors, setAuthors] = React.useState<string[]>(initialGuide?.authors ?? (initialAuthor ? [ initialAuthor ] : []));
-    let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
-    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
+    let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
+    let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
+    let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
+    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
 
-    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide?.cate);
-    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide?.gory);
+    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
+    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
 
     let [catesLoading, cates] = usePromise(getCates);
     let [gories, setGories] = React.useState<GoryType[]>();
 
     React.useEffect(() => {
-        if (initialGuide) {
-            getCategoryDetail(initialGuide.cate, initialGuide.gory).then(({ cateName, goryName }) => {
-                setCateName(cateName);
-                setGoryName(goryName);
-            });
+        if (initialGuide?.cate) {
+            getCateDetail(initialGuide.cate).then(({ name }) => {
+                setCateName(name);
+            })
+        }
+        if (initialGuide?.gory) {
+            getGoryDetail(initialGuide.gory).then(({ name }) => {
+                setGoryName(name);
+            })
         }
     }, [initialGuide]);
 
