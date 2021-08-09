@@ -42,7 +42,7 @@ router.get('/', async (ctx) => {
 // Get specific guide with given index
 router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
-  const name: string = ctx.state.user.nickname ?? null;
+  const name: string = ctx.state.user?.nickname ?? null;
 
   let filter: any = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]});
   filter.index = index;

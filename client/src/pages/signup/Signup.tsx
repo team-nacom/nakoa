@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
@@ -180,18 +181,18 @@ function SignUp() {
                     )))}
                 </div>
 
-                <button type='submit' className='button' onClick={async (e) => {
+                <Button type='submit' className='button' onClick={async (e) => {
                     e.preventDefault();
                     if (!await validateAll()) return false;
+                    
                     const encryptedPassword = await encryptPassword(email, password);
                     let { success, message } = await register({ email, password: encryptedPassword, nickname });
 
-                    if (success) {
-                        setRedirectToPending(true);
-                    } else {
-                        setMessage( intl.formatMessage({ id: 'signup.problem' }) + message);
-                    }
-                }}> { intl.formatMessage({ id: 'signup.signup' }) } </button>
+                    if (success) setRedirectToPending(true);
+                    else setMessage( intl.formatMessage({ id: 'signup.problem' }) + message);
+                }}> 
+                    { intl.formatMessage({ id: 'signup.signup' }) } 
+                </Button>
                 { message && <p style={{marginBottom: '8px'}}> { message } </p> }
                 { entries.map(({ name, message } ) => {
                     if (message) return <p style={{marginBottom: '8px'}}> { `${name}: ${message}` } </p>   
