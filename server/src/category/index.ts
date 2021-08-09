@@ -33,14 +33,15 @@ router.post('/gory', isVerifiedMiddleware, async (ctx) => {
   const goryObj = ctx.request.body;
   // TODO: check type
 
-  try {
-    await Cate.updateOne({index: goryObj.cate}, {$push: {gories: goryObj.index}}).exec();
-  } catch (e) {
-    console.log("Error while updating cate for adding gory: " + goryObj.index);
-  }
 
   // NOTE: index will be fed with default nanoid generator, and it is not guaranteed to be collision-free
   const gory = new Gory(goryObj);
+
+  try {
+    await Cate.updateOne({index: gory.cate}, {$push: {gories: gory.index}}).exec();
+  } catch (e) {
+    console.log("Error while updating cate for adding gory: " + goryObj.index);
+  }
   await gory.save();
   console.log(`gory "${gory.name}" upload successful`);
 
@@ -57,7 +58,7 @@ router.get('/', async (ctx) => {
   const filter: any = {gories: {$exists: true, $ne: []}};
 
   const query = Cate.find(filter).select('index name gories');
-  await query.lean().
+  await query.exec().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = {cates: docs.sort((a, b) => a.index - b.index)});
 });
@@ -136,18 +137,23 @@ async function getGuides(isAdmin: boolean, gindex: string, cindex?: number) {
   return await query.exec();
 }
 
-async function cleanCate(){
-  const filter = {$or: [{gories: { $exists: false }}, {gories: { $eq: [] }}]};
-  const docs = await Cate.deleteMany(filter);
-}
+// async function cleanCate(){
+//   //@ts-ignore
+//   await Cate.updateMany({}, {$pull: {gories: null}}, {multi: true});
 
-async function cleanGory(){
-  const filter: any = {$or: [{guides: { $exists: false }}, {guides: { $eq: [] }}]};
-  const docs = await Gory.find(filter).exec();
-  docs.forEach(async doc => {
-    const cate = doc.cate;
-    await Cate.updateOne({index: cate}, {$pull: {$pull: doc.index}});
-  });
-}
+//   const filter = {$or: [{gories: { $exists: false }}, {gories: { $eq: [] }}]};
+//   const docs = await Cate.deleteMany(filter);
+// }
+
+// async function cleanGory(){
+//   const filter: any = {$or: [{guides: { $exists: false }}, {guides: { $eq: [] }}]};
+//   const docs = await Gory.find(filter).exec();
+//   for (const key in docs) {
+//     if (Object.prototype.hasOwnProperty.call(docs, key)) {
+//       const doc = docs[key];
+//       await Cate.updateOne({index: doc.cate}, {$pull: {gories: doc.index}});
+//     }
+//   }
+// }
 
 export default router;

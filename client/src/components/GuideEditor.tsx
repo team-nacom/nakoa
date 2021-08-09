@@ -11,6 +11,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
+import Button from './Button';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
@@ -209,39 +210,42 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
 }
 
 interface Props {
-    initialGuide?: GuideType,
+    initialGuide: Partial<GuideType>,
     upload: (guide: GuideType, 
              setMessage: (message: string) => void) 
         => void,
-    author?: string,
     behavior: 'add' | 'edit'
 }
 
 
-function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } : Props) {
+function GuideEditor({ initialGuide, upload, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
-    let [name, setName] = React.useState<string>(initialGuide?.name ?? '');
+    let [name, setName] = React.useState<string>(initialGuide.name ?? '');
     let [cateName, setCateName] = React.useState<string>('');
     let [goryName, setGoryName] = React.useState<string>('');
-    let [authors, setAuthors] = React.useState<string[]>(initialGuide?.authors ?? (initialAuthor ? [ initialAuthor ] : []));
-    let [content, setContent] = React.useState<string>(initialGuide?.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide?.priority ?? 4);
-    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide?.isPublic ?? true);
+    let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
+    let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
+    let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
+    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
 
-    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide?.cate);
-    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide?.gory);
+    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
+    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
 
     let [catesLoading, cates] = usePromise(getCates);
     let [gories, setGories] = React.useState<GoryType[]>();
 
     React.useEffect(() => {
-        if (initialGuide) {
-            getCategoryDetail(initialGuide.cate, initialGuide.gory).then(({ cateName, goryName }) => {
-                setCateName(cateName);
-                setGoryName(goryName);
-            });
+        if (initialGuide?.cate) {
+            getCateDetail(initialGuide.cate).then(({ name }) => {
+                setCateName(name);
+            })
+        }
+        if (initialGuide?.gory) {
+            getGoryDetail(initialGuide.gory).then(({ name }) => {
+                setGoryName(name);
+            })
         }
     }, [initialGuide]);
 
@@ -285,7 +289,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                     <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
                 </div>
 
-                <button className='submit link' onClick={
+                <Button className='submit link' onClick={
                     async () => {
                         if (!cateName || !goryName) {
                             setMessage('카테고리를 적어주세요.');
@@ -302,7 +306,7 @@ function GuideEditor({ initialGuide, upload, author: initialAuthor, behavior } :
                     }
                 }> 
                     <FormattedMessage id='editor.confirm' />
-                </button>
+                </Button>
             </div>
             {message}
         </div>

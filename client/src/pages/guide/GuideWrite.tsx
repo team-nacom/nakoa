@@ -7,13 +7,31 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
+import queryString from 'query-string';
 import GuideEditor from 'components/GuideEditor';
 
-function GuideWrite() {
+interface Query {
+    cate?: string;
+    gory?: string;
+}
+
+interface Props {
+    location: Location;
+}
+
+
+function GuideWrite({ location } : Props) {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let isAdmin = useIsAdmin();
 
+    let rawQuery = location.search;
+    let parsedQuery = queryString.parse(rawQuery);
+    let query: Query = {
+        cate: parsedQuery.cate?.toString(),
+        gory: parsedQuery.gory?.toString(),
+    };
+    
     let upload = (guide: GuideType, setMessage: (message: string) => void) => {
         if (!guide.name || !guide.content || !guide.priority || !guide.cate || !guide.gory || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
@@ -29,11 +47,17 @@ function GuideWrite() {
         })
     }
 
+    let initialGuide: Partial<GuideType> = {
+        cate: query.cate ? Number.parseInt(query.cate) : undefined,
+        gory: query.gory,
+        authors: isAdmin ? undefined : [user.nickname],
+    };
+
     if (redirectTo) return <Redirect to={redirectTo} />
     return (
         <>
             <Header/>
-            <GuideEditor upload={upload} author={isAdmin ? undefined : user.nickname} behavior='add' />
+            <GuideEditor initialGuide={initialGuide} upload={upload} behavior='add' />
             <Footer/>
         </>
     )

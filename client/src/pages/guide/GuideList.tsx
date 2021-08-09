@@ -11,11 +11,6 @@ import Loading from '../Loading';
 import queryString from 'query-string';
 import { useContext } from 'react';
 
-interface Query {
-    cate?: string;
-    gory?: string;
-    search?: string;
-}
 
 const ListQueryContext = React.createContext<Query>({});
 
@@ -61,6 +56,12 @@ function GoryView({ index, gory } : GoryViewProps) {
     )
 }
 
+interface Query {
+    cate?: string;
+    gory?: string;
+    search?: string;
+}
+
 interface CateViewProps {
     cate: CateType;
 }
@@ -91,7 +92,8 @@ interface Props {
 function GuideList({ location } : Props) {
     let isLoggedIn = useIsLoggedIn();
 
-    let parsedQuery = queryString.parse(location.search);
+    let rawQuery = location.search;
+    let parsedQuery = queryString.parse(rawQuery);
 
     let query: Query = {
         cate: parsedQuery.cate?.toString(),
@@ -116,7 +118,7 @@ function GuideList({ location } : Props) {
             <GuideSidebar on='list'>
                 { isLoggedIn && (
                     <span>
-                        <Link to='/guide/write'>
+                        <Link to={'/guide/write' + rawQuery}>
                             <button className='roundButton material-icons'> 
                                 create
                             </button>

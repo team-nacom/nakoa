@@ -3,6 +3,7 @@ import encryptPassword from 'etc/encryptPassword';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+import Button from './Button';
 
 interface SignInProps {
     visible: boolean;
@@ -39,7 +40,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                     <div style={{marginBottom: '42px'}}/>
                     <Link to='/signup'> <p className='helpText'> { intl.formatMessage({ id: 'signin.newhere' }) } </p> </Link>
                     <div className='buttonContainer'>
-                        <button type='submit' className='signin' onClick={async (e) => {
+                        <Button type='submit' className='signin' onClick={async (e) => {
                             e.preventDefault();
                             if (!validateEmail(email)) {
                                 setMessage('이메일을 형식에 맞게 입력해주세요.');
@@ -56,7 +57,7 @@ function SignIn({ visible, setVisible } : SignInProps) {
                                 if (success) setVisible(false);
                                 else setMessage(message);
                             });
-                        }}>  { intl.formatMessage({ id: 'signin.signin' }) }  </button>
+                        }}>  { intl.formatMessage({ id: 'signin.signin' }) }  </Button>
                     </div>
                 </form>
             </div>

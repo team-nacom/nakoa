@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
@@ -36,7 +37,7 @@ function QuizWrite() {
 
             <div className='adminLabel'> 풀이 </div>
             <textarea className='writeForm' placeholder='Markdown 및 Mathjax 사용 가능' value={explanation} onChange={(e) => setExplanation(e.target.value)}/>
-            <button className='button' onClick={() => {
+            <Button className='button' onClick={async () => {
                 if (!name || !description || !choiceString || !answer || !explanation) {
                     setMessage('모든 항목을 채워주세요.');
                     return;
@@ -51,8 +52,9 @@ function QuizWrite() {
                 postQuiz({index, name, description, choices, answer, explanation}).then((success) => {
                     if (success) setMessage('업로드에 성공했습니다!');
                     else setMessage('업로드에 실패했습니다...');
+                    return;
                 })
-            }}> 추가하기 </button>
+            }}> 추가하기 </Button>
             {message}
         </div>
 

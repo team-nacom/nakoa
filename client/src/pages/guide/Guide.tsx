@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import GuideSidebar from 'components/GuideSidebar';
 import { priorityTags } from 'etc/api/guide';
+import Button from 'components/Button';
 
 interface MatchParams {
     id: string;
@@ -71,14 +72,14 @@ function Guide({ match } : Props) {
                 </span>
 
                 { isEditable && 
-                    <button className='material-icons' onClick={async (e) => {
+                    <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
                         if (window.confirm('정말 삭제하시겠습니까?') && await removeGuide(id)) {
                             setRedirectToList(true);
                         }
                     }}>
                         delete
-                    </button> 
+                    </Button> 
                 }
 
                 { isEditable && 
