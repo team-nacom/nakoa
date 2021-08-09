@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 
 import Guide from '../models/guide';
+import Gory from '../models/gory';
 import { isAdmin, checkAdminMiddleware, isVerifiedMiddleware } from "../utils";
 import { postOneGuide, updateOneGuide } from "./poster";
 import createHttpError from 'http-errors';
@@ -60,7 +61,12 @@ router.get('/:index(\\d+)', async (ctx) => {
 // for now, only admin can erase
 router.delete('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
   const index = ctx.params.index;
-  await Guide.deleteOne({ index });
+  const doc = await Guide.findOne({ index: index });
+  if(doc != null){
+    await Guide.deleteOne({ index: index });
+    //@ts-ignore
+    await Gory.onDeleteGuide(doc);
+  }
   ctx.body = "Success";
 })
 
