@@ -17,7 +17,8 @@ import Logout from 'pages/Logout';
 import SignUpDone from 'pages/signup/SignupDone';
 import GuideList from 'pages/guide/GuideList';
 import GuideWrite from 'pages/guide/GuideWrite';
-import About from 'pages/About'
+import About from 'pages/About';
+import NotFound from 'pages/NotFound';
 import GuideEdit from 'pages/guide/GuideEdit';
 
 import messageEn from './locale/en.json';
@@ -63,8 +64,9 @@ function App() {
           <Route path='/signup' component={SignUp} />
           <Route path='/logout' component={Logout} />
           <Route path='/about' component={About} />
-          <Redirect path='/' to='/guide' />
+          <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}
+          <Route component={NotFound}/>
         </Switch>
       </BrowserRouter>
     </IntlProvider>    
