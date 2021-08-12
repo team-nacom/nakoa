@@ -71,7 +71,7 @@ export async function updateOneGuide(guideObj: any, index: number, user: UserDoc
   else {
     await updateGory(guideObj.index, guideObj.gory, guide.gory);
     
-    await Guide.findOneAndUpdate({ index: guideObj.index }, { $set: {content: guideObj.content, priority: guideObj.priority, isPublic: guideObj.isPublic, name: guideObj.name} }, { runValidators: true }).exec();
+    await Guide.findOneAndUpdate({ index: guideObj.index }, { $set: {content: guideObj.content, priority: guideObj.priority, name: guideObj.name} }, { runValidators: true }).exec();
 
     console.log(`Guide update "${guide.name}" successful`);
   }
