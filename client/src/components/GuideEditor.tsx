@@ -23,9 +23,10 @@ interface CateInputProps {
     cateName: string;
     setCateName: (cateName: string) => void;
     setCateIndex: (cateIndex: number | undefined) => void;
+    readonly?: boolean;
 }
 
-function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
+function CateInput({ cates, cateName, setCateName, setCateIndex, readonly = false }: CateInputProps) {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
     
@@ -37,6 +38,7 @@ function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProp
             <div>
                 <input 
                     value={cateName} 
+                    readOnly={readonly}
                     onChange={(e) => {
                         let cateName = e.target.value;
                         setCateName(cateName);
@@ -49,7 +51,7 @@ function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProp
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { opacity > 0 && cates && cates.length > 0 && (
+            { !readonly && opacity > 0 && cates && cates.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -70,9 +72,10 @@ interface GoryInputProps {
     goryName: string;
     setGoryName: (goryName: string) => void;
     setGoryIndex: (goryIndex: string | undefined) => void;
+    readonly?: boolean;
 }
 
-function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
+function GoryInput({ gories, goryName, setGoryName, setGoryIndex, readonly = false } : GoryInputProps) {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
 
@@ -84,6 +87,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputPr
             <div>
                 <input 
                     value={goryName} 
+                    readOnly={readonly}
                     onChange={(e) => {
                         let goryName = e.target.value;
                         setGoryName(goryName);
@@ -96,7 +100,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputPr
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { opacity > 0 && gories && gories.length > 0 && (
+            { !readonly && opacity > 0 && gories && gories.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -136,7 +140,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { opacity > 0 && (
+            { editable && opacity > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -266,8 +270,8 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
             </PageTitle>
 
             <div className='flexbox'>
-                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
-                <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
+                <CateInput cateName={cateName} setCateName={setCateName} readonly={behavior !== 'add'} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
+                <GoryInput goryName={goryName} setGoryName={setGoryName} readonly={behavior !== 'add'} gories={gories} setGoryIndex={setGoryIndex} />
                 <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
@@ -282,12 +286,12 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
             <MarkdownEditor className='' body={ content } update={ (c) => setContent(c) } />
 
             <div className='editorBottom'>
-                <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
+                {/*<div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
                     <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
-                </div>
+                </div>*/}
 
                 <Button className='submit link' onClick={
                     async () => {
