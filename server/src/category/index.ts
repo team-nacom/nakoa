@@ -90,7 +90,7 @@ router.get('/gory/:gindex', async (ctx) => {
     // TODO get cateName?
     const docs = await getGuides(isAdmin(ctx), gindex);
 
-    ctx.body = { goryName: goryName, guides: docs };
+    ctx.body = { name: goryName, guides: docs };
   } catch(e) {
     ctx.throw(500, e);
   }

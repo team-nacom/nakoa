@@ -171,7 +171,7 @@ const TocHeadingRendererFactory = (isManual? : boolean) =>{
 const SectionRendererFactory = (isManual? : boolean) => {
     return (n : any) => {
         return (
-            <div className={ priorityTags[n.priority] }>
+            <div className={ 'sectionBlock ' + priorityTags[n.priority] }>
                 { n.children }
             </div>
         )
@@ -192,7 +192,7 @@ const SectionHeadingRendererFactory = (isManual? : boolean) => {
         }
 
         return (        
-            <div className={ hnames[n.depth] }>
+            <div className={ 'headingBlock ' + hnames[n.depth] }>
                 { n.priority !== -1 &&
                     <HashLink
                         to={ (isManual ? '#man-':'#') + 'toc-label' }
