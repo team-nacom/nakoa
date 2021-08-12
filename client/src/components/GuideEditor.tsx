@@ -270,8 +270,8 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
             </PageTitle>
 
             <div className='flexbox'>
-                <CateInput cateName={cateName} setCateName={setCateName} readonly={behavior !== 'add'} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
-                <GoryInput goryName={goryName} setGoryName={setGoryName} readonly={behavior !== 'add'} gories={gories} setGoryIndex={setGoryIndex} />
+                <CateInput cateName={cateName} setCateName={setCateName} readonly={behavior !== 'add' && !isAdmin} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
+                <GoryInput goryName={goryName} setGoryName={setGoryName} readonly={behavior !== 'add' && !isAdmin} gories={gories} setGoryIndex={setGoryIndex} />
                 <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
