@@ -103,11 +103,19 @@
         border-radius: 10px;
     }
 
-    .guideContent.hideEssential .Essential,
-    .guideContent.hideRecommendable .Recommendable,
-    .guideContent.hideReadable .Readable,
-    .guideContent.hideOptional .Optional,
-    .guideContent.hideDraft .Draft{
+    // .guideContent.hideEssential .Essential > *:not(:first-child),
+    // .guideContent.hideRecommendable .Recommendable > *:not(:first-child),
+    // .guideContent.hideReadable .Readable > *:not(:first-child),
+    // .guideContent.hideOptional .Optional > *:not(:first-child),
+    // .guideContent.hideDraft .Draft > *:not(:first-child){
+    //     display: none;
+    // }
+
+    .guideContent.hideEssential .Essential > *:not(.headingBlock),
+    .guideContent.hideRecommendable .Recommendable > *:not(.headingBlock),
+    .guideContent.hideReadable .Readable > *:not(.headingBlock),
+    .guideContent.hideOptional .Optional > *:not(.headingBlock),
+    .guideContent.hideDraft .Draft > *:not(.headingBlock){
         display: none;
     }
 }
