@@ -118,6 +118,14 @@
     .guideContent.hideDraft .Draft > *:not(.headingBlock){
         display: none;
     }
+
+    .guideContent.hideEssential .Essential > .headingBlock,
+    .guideContent.hideRecommendable .Recommendable > .headingBlock,
+    .guideContent.hideReadable .Readable > .headingBlock,
+    .guideContent.hideOptional .Optional > .headingBlock,
+    .guideContent.hideDraft .Draft > .headingBlock {
+        opacity: 0.5;
+    }
 }
 
 .guideList {
