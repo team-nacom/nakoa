@@ -5,7 +5,7 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
 
 
-function About() {
+function NotFound() {
     let [message, setMessage] = React.useState('');
 
     fetch('./404.md')
@@ -25,4 +25,4 @@ function About() {
     );
 }
 
-export default About;
+export default NotFound;
