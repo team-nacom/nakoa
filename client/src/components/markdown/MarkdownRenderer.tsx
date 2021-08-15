@@ -96,6 +96,25 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         // inlineCode: ???
 
         //handled directives
+        guide: (p: any) =>{
+            console.log(p);
+
+            var children = p.children;
+
+            var id = 0;
+            if(p.attributes?.id){
+                var i = Number(p.attributes.id);
+                if(!isNaN(i)) id = i;
+            }
+            
+            return(
+                <a href={ '/guide/' + String(id) }>
+                    { '🔗' }
+                    { p.children }
+                </a>
+            );
+        },
+
         exercise: (p: any) => {
             var label : any = '';
             var children = p.children;

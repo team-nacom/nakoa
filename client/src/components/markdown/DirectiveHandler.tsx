@@ -7,7 +7,7 @@ import visit from 'unist-util-visit';
 type Visitor = visit.Visitor<Node>;
 
 const textDirectives = [
-
+    'guide',
 ] as const;
 type TextDirectives = typeof textDirectives[number];
 
