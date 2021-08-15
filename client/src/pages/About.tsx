@@ -8,7 +8,7 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 function About() {
     let [message, setMessage] = React.useState('');
 
-    fetch('./aboutus.md')
+    fetch(process.env.PUBLIC_URL + '/aboutus.md')
         .then(response => response.text())
         .then(text => setMessage(text));
 

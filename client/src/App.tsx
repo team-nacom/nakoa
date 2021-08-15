@@ -65,8 +65,8 @@ function App() {
           <Redirect path='/quiz' to='/quiz/1'/>
           <Route path='/quiz/write' component={QuizWrite} />*/}
           <Route exact path='/guide/write' component={GuideWrite} />
-          <Route exact path='/guide/:id/edit' component={GuideEdit} />
-          <Route exact path='/guide/:id' component={Guide} />
+          <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
+          <Route exact path='/guide/:id(\d+)' component={Guide} />
           <Route exact path='/guide' component={GuideList} />
           <Route exact path='/signup/done' component={SignUpDone} />
           <Route exact path='/signup/pending' component={SignUpPending} />
