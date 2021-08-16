@@ -1,22 +1,20 @@
 import { editGuide, getGuide, GuideType } from 'etc/api/guide';
 import React from 'react';
 import usePromise from 'etc/usePromise';
-import { match, Redirect } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import GuideEditor from 'components/GuideEditor';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
-interface MatchParams {
+interface Params {
     id: string;
 };
 
-interface Props {
-    match: match<MatchParams>;
-};
 
-function GuideEdit({ match }: Props) {
-    let index = Number.parseInt(match.params.id);
-    let [guideLoading, guide] = usePromise(() => getGuide(index), [index]);
+function GuideEdit() {
+    let { id: idStr } = useParams<Params>();
+    let id = Number.parseInt(idStr);
+    let [guideLoading, guide] = usePromise(() => getGuide(id), [id]);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     let upload = async (guide: GuideType, setMessage: (message: string) => void) => {
@@ -26,10 +24,10 @@ function GuideEdit({ match }: Props) {
         }
 
         setTimeout(() => {
-            editGuide(index, guide).then((success) => {
+            editGuide(id, guide).then((success) => {
                 if (success) {
                     setMessage('성공적으로 수정했습니다!');
-                    setRedirectTo(`/guide/${index}`);
+                    setRedirectTo(`/guide/${id}`);
                 }
                 else setMessage('수정에 실패했습니다...');
                 return;
@@ -42,7 +40,7 @@ function GuideEdit({ match }: Props) {
     return (
         <>
             <Header/>
-            <GuideEditor initialGuide={guide ?? {}} upload={upload} behavior='edit' />
+            <GuideEditor initialGuide={guide} upload={upload} behavior='edit' />
             <Footer/>
         </>
     )

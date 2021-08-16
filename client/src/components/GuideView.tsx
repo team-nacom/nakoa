@@ -1,5 +1,5 @@
 import { getCateDetail, getCates, getGoryDetail } from 'etc/api/category';
-import { getGuideCategories, getGuideSections, GuideFilterType, GuideType, defaultGuideFilter } from 'etc/api/guide';
+import { GuideFilterType, GuideType, defaultGuideFilter } from 'etc/api/guide';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';

@@ -210,7 +210,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
 }
 
 interface Props {
-    initialGuide: Partial<GuideType>,
+    initialGuide?: Partial<GuideType>,
     upload: (guide: GuideType, 
              setMessage: (message: string) => void) 
         => void,
@@ -218,7 +218,7 @@ interface Props {
 }
 
 
-function GuideEditor({ initialGuide, upload, behavior } : Props) {
+function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
     let [name, setName] = React.useState<string>(initialGuide.name ?? '');

@@ -3,21 +3,16 @@ import Header from 'components/Header';
 import { verifyEmail } from 'etc/api/user';
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { match, Redirect } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 
 
-interface MatchParams {
+interface Params {
     email: string;
     code: string;
 };
 
-interface Props {
-    match: match<MatchParams>;
-};
-
-function SignUpVerify({ match }: Props) {
-    let email = match.params.email;
-    let code = match.params.code;
+function SignUpVerify() {
+    let { email, code } = useParams<Params>();
     let [verified, setVerified] = React.useState<boolean>();
     let intl = useIntl();
 

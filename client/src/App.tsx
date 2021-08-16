@@ -53,6 +53,7 @@ function App() {
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>
+          
 {/*          <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
           <Route path='/challenge/:id/solution' component={ChallengeSolution} />
           <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
@@ -61,9 +62,11 @@ function App() {
           <Route path='/challenge' component={ChallengeList} />
           <Redirect path='/problem' to='/challenge' />
           <Redirect path='/challenges' to='/challenge' />*/}
+
 {/*          <Route path='/quiz/:id' component={QuizView} />
           <Redirect path='/quiz' to='/quiz/1'/>
           <Route path='/quiz/write' component={QuizWrite} />*/}
+
           <Route exact path='/guide/write' component={GuideWrite} />
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
           <Route exact path='/guide/:id(\d+)' component={Guide} />
