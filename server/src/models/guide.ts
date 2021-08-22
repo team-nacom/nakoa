@@ -15,6 +15,7 @@ export interface GuideDocument extends Document {
     priority: number,
 
     createDate: number,
+    updateDate: number,
 
     hasWriteAuthority: (user: UserDocument) => boolean,
 
@@ -33,7 +34,8 @@ const guideSchema = new Schema<GuideDocument>({
     // 0 is least important, 4 is most important
     priority: { type: Number, default: 4, min: 0, max: 4},
 
-    createDate: { type: Number, default: Date.now }
+    createDate: { type: Number, default: Date.now },
+    updateDate: { type: Number, default: Date.now }
 });
 
 guideSchema.methods.hasWriteAuthority = function(user: UserDocument){
