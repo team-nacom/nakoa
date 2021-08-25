@@ -264,14 +264,14 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
             <PageTitle style={{margin: '40px'}}> 
                 <FormattedMessage id={ behavior == 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
-
+{/* 
             <div className='flexbox'>
                 <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
                 <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
                 <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
-
+*/}
             <div className=''>
                 <label>
                     <FormattedMessage id='editor.guidetitle' />

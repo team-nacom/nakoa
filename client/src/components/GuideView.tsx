@@ -63,6 +63,7 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
     else return (
         <div className='guide'>
             <div className='guideBackground' />
+            {/*
             <div className='metadata'> 
                 <select className='metadataItem' value={ guide.cate } onChange={(e) => setRedirectTo(`/guide?cate=${e.target.value}`)}> 
                     { cates?.map((cate) => (
@@ -76,6 +77,7 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     )) } 
                 </select>
             </div>
+            */}
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
             <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
