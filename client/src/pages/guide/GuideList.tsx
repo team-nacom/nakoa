@@ -139,9 +139,13 @@ function GuideList({ location } : Props) {
         {guides.map((guide) => (
             <div className='guideListItem'>
                 <Link to={`/guide/${guide.index}`}>
+                    [제목]
                     <span className='title'> { guide.name } </span>
+                    [내용]
+                    <span className='content'> { guide.content.substring(0,30) } </span>
                 </Link> 
-                    <span className='author'> { guide.authors[0] } </span>
+                [글쓴이]
+                <span className='author'> { guide.authors[0] } </span>
             </div>
         ))}
         <GuideSidebar on='list'>
