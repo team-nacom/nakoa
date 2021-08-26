@@ -12,9 +12,9 @@ export interface GuideDocument extends Document {
     tags: [string],
 
     //TODO: Remove these
-    cate: number,
-    gory: string,
-    priority: number,
+    //cate: number,
+    //gory: string,
+    //priority: number,
 
     hasWriteAuthority: (user: UserDocument) => boolean,
 
@@ -29,10 +29,10 @@ const guideSchema = new Schema<GuideDocument>({
     tags: [String],
 
     isPublic: { type: Boolean, default: false },
-    cate: Number,
-    gory: String,
+    //cate: Number,
+    //gory: String,
     // 0 is least important, 4 is most important
-    priority: { type: Number, default: 4, min: 0, max: 4},
+    //priority: { type: Number, default: 4, min: 0, max: 4},
 
     createDate: { type: Number, default: Date.now }
 });

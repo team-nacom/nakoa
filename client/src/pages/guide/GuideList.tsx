@@ -134,15 +134,29 @@ function GuideList({ location } : Props) {
     let [guidesLoading, guides] = usePromise(() => getGuides())
     if (!guides) return <></>;
 
-    return (<div>
-                {guides.map((guide) => (
-                    <div className='guideListItem'>
-                        <Link to={`/guide/${guide.index}`}>
-                            <span className='title'> { guide.name } </span>
-                        </Link> 
-                            <span className='author'> { guide.authors[0] } </span>
-                    </div>
-                ))}</div>);
+    return (
+    <div>
+        {guides.map((guide) => (
+            <div className='guideListItem'>
+                <Link to={`/guide/${guide.index}`}>
+                    <span className='title'> { guide.name } </span>
+                </Link> 
+                    <span className='author'> { guide.authors[0] } </span>
+            </div>
+        ))}
+        <GuideSidebar on='list'>
+            { isLoggedIn && (
+                <span>
+                    <Link to={'/guide/write' + rawQuery}>
+                        <button className='roundButton material-icons'> 
+                            create
+                        </button>
+                    </Link>
+                </span>
+            )}
+        </GuideSidebar>
+    </div>
+    );
 }
 
 export default GuideList;

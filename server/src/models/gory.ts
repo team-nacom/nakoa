@@ -8,7 +8,7 @@ export interface GoryDocument extends Document {
     name: string
 
     cate: number,
-    guides: [number]
+//    guides: [number]
 
     createDate: number
 }
@@ -18,12 +18,12 @@ const GorySchema = new Schema<GoryDocument>({
     name: String,
 
     cate: Number,
-    guides: [Number],
+//    guides: [Number],
 
     createDate: { type: Number, default: Date.now }
 });
 
-GorySchema.statics.onDeleteGuide = async function (doc: GuideDocument) {
+/*GorySchema.statics.onDeleteGuide = async function (doc: GuideDocument) {
     const index = doc.gory;
     const result = await this.updateOne({index: index}, {$pull: {guides: doc.index}});
 
@@ -33,6 +33,6 @@ GorySchema.statics.onDeleteGuide = async function (doc: GuideDocument) {
         // @ts-ignore
         await Cate.onDeleteGory(gory);
     }
-}
+}*/
 
 export default model<GoryDocument>('Gory', GorySchema, 'gories');
