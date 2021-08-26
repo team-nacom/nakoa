@@ -10,6 +10,7 @@ export interface GuideDocument extends Document {
     isPublic: boolean,
     createDate: number,
     tags: [string],
+    writer: Schema.Types.ObjectId,
 
     //TODO: Remove these
     //cate: number,
@@ -27,6 +28,7 @@ const guideSchema = new Schema<GuideDocument>({
     authors: [String],
     content: String,
     tags: [String],
+    writer: { type: Schema.Types.ObjectId, ref: 'User' },
 
     isPublic: { type: Boolean, default: false },
     //cate: Number,
