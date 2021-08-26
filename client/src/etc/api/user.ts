@@ -4,6 +4,7 @@ import store, { RootReducer } from 'store';
 import { clearUser, setUser } from 'store/user';
 import { authValidateStatus } from '.';
 import config from '../config';
+import { GuideType } from './guide';
 
 const apiAddress = config.apiAddress;
 
@@ -33,6 +34,7 @@ export interface UserData {
     isAuth: boolean;
     email: string;
     nickname: string;
+    guides: GuideType[];
 }
 
 export const setUserInfo = async () => {
@@ -88,4 +90,13 @@ export const logout = async () => {
         success: response.status < 300, 
         message: response.data as string,
     };
+}
+
+export const getMyPage = async() => {
+    let response = await Axios.get(`${apiAddress}/user/mypage`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.data as UserData;
 }

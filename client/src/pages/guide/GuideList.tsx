@@ -132,10 +132,11 @@ function GuideList({ location } : Props) {
     );*/
 
     let [guidesLoading, guides] = usePromise(() => getGuides())
-    if (!guides) return <></>;
+    if (!guides) return <>[Recently Added]</>;
 
     return (
     <div>
+        [Recently Added]
         {guides.map((guide) => (
             <div className='guideListItem'>
                 <Link to={`/guide/${guide.index}`}>
