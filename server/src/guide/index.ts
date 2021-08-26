@@ -1,16 +1,17 @@
 import Router from 'koa-router';
 
-import Guide from '../models/guide';
-import Gory from '../models/gory';
+import Guide, { GuideDocument } from '../models/guide';
+import User from '../models/user';
 import { isAdmin, checkAdminMiddleware, isVerifiedMiddleware } from "../utils";
 import { postOneGuide, updateOneGuide } from "./poster";
 import createHttpError from 'http-errors';
+import user from '../models/user';
 
 const router = new Router();
 
 // Post a guide (manual)
 router.post('/', isVerifiedMiddleware, async (ctx) => {
-  const guide = await postOneGuide(ctx.request.body);
+  const guide = await postOneGuide(ctx.request.body, ctx.state.user);
   ctx.body = {
     index: guide.index,
   };
@@ -40,6 +41,7 @@ router.get('/', async (ctx) => {
   })
   .sort({ createDate: -1 })
   .select('index name content authors tags');
+
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);

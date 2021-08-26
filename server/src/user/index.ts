@@ -26,6 +26,17 @@ async function validateAllTokens(ctx, next, checkNickname = true) {
 
 const validateLoginTokens = (ctx, next) => validateAllTokens(ctx, next, false);
 
+
+// information about current session
+router.get('/mypage', async (ctx) => {
+  if(ctx.isAuthenticated()){
+    await User.findById(ctx.state.user._id).populate('guides').select("nickname guides").lean().catch(err => ctx.throw(500, err)).then(docs => ctx.body = docs);
+  }
+  else{
+    ctx.body = {auth: false}
+  }
+});
+
 // information about current session
 router.get('/', (ctx) => {
   if(ctx.isAuthenticated()){
@@ -111,5 +122,10 @@ router.post('/logout', (ctx) => {
   ctx.logout();
   ctx.body = "Success";
 });
+
+// Get specific guide with given index
+router.get('/:index(\\d+)', async (ctx) => {
+});
+
 
 export default router;

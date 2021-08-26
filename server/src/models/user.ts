@@ -12,7 +12,7 @@ export interface UserDocument extends Document {
     nickname: string,
     verified: boolean,
     verifyHash: string,
-
+    guides: [Schema.Types.ObjectId],
     joinDate: number,
     
     sendEmailVerification: () => Promise<UserDocument>,
@@ -24,6 +24,8 @@ const userSchema = new Schema<UserDocument>({
     nickname: {type: String, unique: true, required: true},
     verified: {type: Boolean, default: false},
     verifyHash: String,
+    
+    guides: [{ type: Schema.Types.ObjectId, ref: 'Guide' }],
 
     joinDate: { type: Number, default: Date.now }
 });
