@@ -1,8 +1,8 @@
 import Footer from 'components/Footer';
 import GuideSidebar from 'components/GuideSidebar';
 import Header from 'components/Header';
-import { CateType, getCateDetail, getCates, getGoryDetail, GoryType } from 'etc/api/category';
-import { GuideType, priorityTags } from 'etc/api/guide';
+//import { CateType, getCateDetail, getCates, getGoryDetail, GoryType } from 'etc/api/category';
+import { getGuides, GuideType, priorityTags } from 'etc/api/guide';
 import { useIsLoggedIn } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -12,7 +12,7 @@ import queryString from 'query-string';
 import { useContext } from 'react';
 
 
-const ListQueryContext = React.createContext<Query>({});
+//const ListQueryContext = React.createContext<Query>({});
 
 const matchSearch = (guide: GuideType, query: string) => {
     return guide.name.includes(query) 
@@ -20,7 +20,7 @@ const matchSearch = (guide: GuideType, query: string) => {
         || !guide.authors.every((author) => !author.includes(query));
 }
 
-interface GoryViewProps {
+/*interface GoryViewProps {
     index: number;
     gory: GoryType;
 };
@@ -83,7 +83,7 @@ function CateView({ cate } : CateViewProps) {
             </div>
         </div>
     );
-}
+}*/
 
 interface Props {
     location: Location;
@@ -95,7 +95,7 @@ function GuideList({ location } : Props) {
     let rawQuery = location.search;
     let parsedQuery = queryString.parse(rawQuery);
 
-    let query: Query = {
+    /*let query: Query = {
         cate: parsedQuery.cate?.toString(),
         gory: parsedQuery.gory?.toString(),
         search: parsedQuery.search?.toString()
@@ -129,7 +129,20 @@ function GuideList({ location } : Props) {
             { cates?.map((cate) => <CateView cate={cate} />) }
             <Footer/>
         </ListQueryContext.Provider>
-    );
+    );*/
+
+    let [guidesLoading, guides] = usePromise(() => getGuides())
+    if (!guides) return <></>;
+
+    return (<div>
+                {guides.map((guide) => (
+                    <div className='guideListItem'>
+                        <Link to={`/guide/${guide.index}`}>
+                            <span className='title'> { guide.name } </span>
+                        </Link> 
+                            <span className='author'> { guide.authors[0] } </span>
+                    </div>
+                ))}</div>);
 }
 
 export default GuideList;
