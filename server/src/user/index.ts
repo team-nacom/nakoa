@@ -30,7 +30,7 @@ const validateLoginTokens = (ctx, next) => validateAllTokens(ctx, next, false);
 // information about current session
 router.get('/mypage', async (ctx) => {
   if(ctx.isAuthenticated()){
-    await User.findById(ctx.state.user._id).populate('guides').select("nickname guides").lean().catch(err => ctx.throw(500, err)).then(docs => ctx.body = docs);
+    await User.findById(ctx.state.user._id).populate({path: 'guides', options: { sort: { 'createDate': -1 } }}).select("nickname guides").lean().catch(err => ctx.throw(500, err)).then(docs => ctx.body = docs);
   }
   else{
     ctx.body = {auth: false}
