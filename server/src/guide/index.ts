@@ -47,30 +47,6 @@ router.get('/', async (ctx) => {
     then(docs => ctx.body = docs);
 });
 
-
-// Get list of guides
-router.get('/bad', async (ctx) => {
-  // TODO: show drafts of their own, and hide if not
-  const guides = await Guide.find();
-
-  console.log(guides.length);
-  async function recover(guide: GuideDocument) {
-    const writer = await User.findOne({nickname: guide.authors[0]});
-    console.log(writer);
-    if(writer != null){
-      if(guide.writer == null){
-        guide.writer = writer?._id;
-      }
-      if(writer.guides == null || !writer.guides.includes(guide._id)){
-        writer.guides.push(guide._id);
-        await writer.save();
-      }
-    }
-  }
-  const promises = guides.map(recover)
-  await Promise.all(promises);
-});
-
 // Get specific guide with given index
 router.get('/:index(\\d+)', async (ctx) => {
   const index = ctx.params.index;
