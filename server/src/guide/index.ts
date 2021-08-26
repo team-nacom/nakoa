@@ -30,10 +30,16 @@ router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
 // Get list of guides
 router.get('/', async (ctx) => {
   // TODO: show drafts of their own, and hide if not
-  const name: string = ctx.state.user.nickname ?? null;
-
+  const name: string = ctx.state.user?.nickname;
+  const page: number = ctx.query.page || 1;
+  const per: number = ctx.query.per || 20;
   const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
-  const query = Guide.find(filter).select('index name cate gory priority');
+  const query = Guide.find(filter, null, {
+    skip: (page - 1) * per,
+    limit: per,
+  })
+  .sort({ createDate: -1 })
+  .select('index name content authors tags');
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);

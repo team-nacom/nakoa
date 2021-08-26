@@ -4,17 +4,17 @@ import { UserDocument } from "./user";
 
 export interface GuideDocument extends Document {
     index: number,
-
     name: string, // change the name to title?
     authors: [string],
     content: string,
-    
     isPublic: boolean,
+    createDate: number,
+    tags: [string],
+
+    //TODO: Remove these
     cate: number,
     gory: string,
     priority: number,
-
-    createDate: number,
 
     hasWriteAuthority: (user: UserDocument) => boolean,
 
@@ -26,6 +26,7 @@ const guideSchema = new Schema<GuideDocument>({
     name: String,
     authors: [String],
     content: String,
+    tags: [String],
 
     isPublic: { type: Boolean, default: false },
     cate: Number,
