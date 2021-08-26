@@ -31,8 +31,8 @@ router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
 router.get('/', async (ctx) => {
   // TODO: show drafts of their own, and hide if not
   const name: string = ctx.state.user?.nickname;
-  const page: number = ctx.query.page || 1;
-  const per: number = ctx.query.per || 20;
+  const page: number = +ctx.query.page || 1;
+  const per: number = +ctx.query.per || 20;
   const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
   const query = Guide.find(filter, null, {
     skip: (page - 1) * per,
