@@ -8,10 +8,7 @@ export interface GuideType {
     index?: number;
     name: string;
     content: string;
-    priority: number;
     isPublic?: boolean;
-    cate: number;
-    gory: string;
     authors: string[];
 }
 
@@ -32,7 +29,7 @@ export const defaultGuideFilter : GuideFilterType = {
 }
 
 export const getGuides = async () => {
-    let response = await Axios.get(`${apiAddress}/guide`, {
+    let response = await Axios.get(`${apiAddress}/guide?per=100`, {
         validateStatus: authValidateStatus, 
         withCredentials: true 
     });
@@ -55,7 +52,7 @@ export const getGuide = async (id: number) => {
     return response.data as GuideType;
 }
 
-export const getGuideCategories = async () => {
+/*export const getGuideCategories = async () => {
     let response = await Axios.get(`${apiAddress}/guide/category`);
 
     return response.data as string[];
@@ -67,7 +64,7 @@ export const getGuideSections = async (categoryName: string) => {
     let response = await Axios.get(`${apiAddress}/guide/category/${categoryName}`);
 
     return response.data as string[];
-}
+}*/
 
 export const postGuide = async (data: GuideType) => {
     if (data.isPublic === undefined) data.isPublic = true;

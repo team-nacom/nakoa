@@ -33,7 +33,7 @@ function GuideWrite({ location } : Props) {
     };
     
     let upload = (guide: GuideType, setMessage: (message: string) => void) => {
-        if (!guide.name || !guide.content || !guide.priority || !guide.cate || !guide.gory || guide.authors.length < 1) {
+        if (!guide.name || !guide.content || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
             return;
         }
@@ -48,8 +48,8 @@ function GuideWrite({ location } : Props) {
     }
 
     let initialGuide: Partial<GuideType> = {
-        cate: query.cate ? Number.parseInt(query.cate) : undefined,
-        gory: query.gory,
+        //cate: query.cate ? Number.parseInt(query.cate) : undefined,
+        //gory: query.gory,
         authors: isAdmin ? undefined : [user.nickname],
     };
 

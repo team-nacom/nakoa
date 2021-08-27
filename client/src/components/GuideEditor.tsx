@@ -3,12 +3,12 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { getGuideCategories, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
+import { /*getGuideCategories, getGuideSections,*/ GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
+//import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
@@ -18,14 +18,14 @@ function isStringRelated(current: string, target: string) {
     return target.includes(current);
 }
 
-interface CateInputProps {
+/*interface CateInputProps {
     cates: CateType[] | undefined;
     cateName: string;
     setCateName: (cateName: string) => void;
     setCateIndex: (cateIndex: number | undefined) => void;
-}
+}*/
 
-function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
+/*function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
     
@@ -110,7 +110,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputPr
             )}
         </div>
     )
-}
+}*/
 
 interface AuthorInputProps {
     isAdmin: boolean;
@@ -171,7 +171,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
     )
 }
 
-interface PriorityInputProps {
+/*interface PriorityInputProps {
     priority: number;
     setPriority: (priority: number) => void;
 }
@@ -207,7 +207,7 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
             )}
         </div>
     )
-}
+}*/
 
 interface Props {
     initialGuide?: Partial<GuideType>,
@@ -222,22 +222,22 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
     let [name, setName] = React.useState<string>(initialGuide.name ?? '');
-    let [cateName, setCateName] = React.useState<string>('');
-    let [goryName, setGoryName] = React.useState<string>('');
+    //let [cateName, setCateName] = React.useState<string>('');
+    //let [goryName, setGoryName] = React.useState<string>('');
     let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
     let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
+    //let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
     let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
 
-    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
-    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
+    //let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
+    //let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
 
-    let [catesLoading, cates] = usePromise(getCates);
-    let [gories, setGories] = React.useState<GoryType[]>();
+    //let [catesLoading, cates] = usePromise(getCates);
+    //let [gories, setGories] = React.useState<GoryType[]>();
 
     React.useEffect(() => {
-        if (initialGuide?.cate) {
+        /*if (initialGuide?.cate) {
             getCateDetail(initialGuide.cate).then(({ name }) => {
                 setCateName(name);
             })
@@ -246,10 +246,10 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
             getGoryDetail(initialGuide.gory).then(({ name }) => {
                 setGoryName(name);
             })
-        }
+        }*/
     }, [initialGuide]);
 
-    React.useEffect(() => {
+    /*React.useEffect(() => {
         if (cateIndex !== undefined) {
             getCateDetail(cateIndex).then(({ gories }) => {
                 setGories(gories);
@@ -257,7 +257,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
         } else {
             setGories(undefined);
         }
-    }, [cateIndex]);
+    }, [cateIndex]);*/
 
     return (<>
         <div className='writeBox guide'>
@@ -291,16 +291,16 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
 
                 <Button className='submit link' onClick={
                     async () => {
-                        if (!cateName || !goryName) {
+                        /*if (!cateName || !goryName) {
                             setMessage('카테고리를 적어주세요.');
                             return;
                         }
                         
                         let cate = cateIndex ?? (await postCate({ name: cateName, gories: [], })).index;
-                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;
+                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, priority, cate, gory, authors: authors.filter((s) => s.length > 0), isPublic },
+                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic },
                             setMessage
                         );
                     }

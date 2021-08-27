@@ -10,11 +10,12 @@ export interface GuideDocument extends Document {
     isPublic: boolean,
     createDate: number,
     tags: [string],
+    writer: Schema.Types.ObjectId,
 
     //TODO: Remove these
-    cate: number,
-    gory: string,
-    priority: number,
+    //cate: number,
+    //gory: string,
+    //priority: number,
 
     hasWriteAuthority: (user: UserDocument) => boolean,
 
@@ -27,12 +28,13 @@ const guideSchema = new Schema<GuideDocument>({
     authors: [String],
     content: String,
     tags: [String],
+    writer: { type: Schema.Types.ObjectId, ref: 'User' },
 
     isPublic: { type: Boolean, default: false },
-    cate: Number,
-    gory: String,
+    //cate: Number,
+    //gory: String,
     // 0 is least important, 4 is most important
-    priority: { type: Number, default: 4, min: 0, max: 4},
+    //priority: { type: Number, default: 4, min: 0, max: 4},
 
     createDate: { type: Number, default: Date.now }
 });

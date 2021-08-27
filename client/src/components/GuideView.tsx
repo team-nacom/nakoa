@@ -54,9 +54,6 @@ interface Params {
 }
 
 function GuideView({ guide, filter = defaultGuideFilter }: Params) {
-    let [catesLoading, cates] = usePromise(() => getCates());
-    let [cateDetailLoading, cate] = usePromise(() => getCateDetail(guide.cate), [guide]);
-    let [goryDetailLoading, gory] = usePromise(() => getGoryDetail(guide.gory), [guide]);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     if (redirectTo) return <Redirect push to={redirectTo}/>
@@ -80,7 +77,6 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
             */}
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
-            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
             <div className={
                 'guideContent'
                 + (filter.Essential ? '' : ' hideEssential')
@@ -93,7 +89,6 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     { guide.content }
                 </MarkdownRenderer>
             </div>
-            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
         </div>
     );
 }

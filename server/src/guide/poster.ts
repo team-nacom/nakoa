@@ -1,4 +1,5 @@
 import Guide, {GuideDocument} from '../models/guide';
+import User from '../models/user';
 import Count from '../models/count';
 import createError from "http-errors";
 import { UserDocument } from '../models/user';
@@ -18,8 +19,9 @@ function isGuideDocument(obj: any): obj is GuideDocument{
   return result;
 }
 
-export async function postOneGuide(guideObj: any) {
+export async function postOneGuide(guideObj: any, user: UserDocument) {
   guideObj.index ??= await Count.getNextCount('guide');
+  guideObj.writer = user._id
 
   if(!isGuideDocument(guideObj)){
     throw createError(400, "Guide is ill-formed");
@@ -31,8 +33,8 @@ export async function postOneGuide(guideObj: any) {
     const guide = new Guide(guideObj);
 
     await guide.save();
+    await User.findByIdAndUpdate(user._id,{ '$push': { 'guides': guide._id } });
     console.log(`Guide upload "${guide.name}" successful`);
-
     return guide;
   }
 }
