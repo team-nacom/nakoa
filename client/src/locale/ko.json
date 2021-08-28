@@ -40,6 +40,7 @@
     "editor.public": "공개",
     "editor.private": "비공개",
     "editor.confirm": "확인",
+    "editor.savedraft": "임시 저장",
 
     "editor.placeholder": "Markdown 및 LaTeX 수식 입력 가능. 물음표 버튼을 누르면 사용법을 볼 수 있습니다.",
     "editor.edit": "편집",

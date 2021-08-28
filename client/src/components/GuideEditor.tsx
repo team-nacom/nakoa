@@ -5,13 +5,16 @@ import MarkdownEditor from 'components/MarkdownEditor';
 
 import { /*getGuideCategories, getGuideSections,*/ GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
+
+import Tags from "@yaireo/tagify/dist/react.tagify";
 
 import { FormattedMessage, useIntl } from 'react-intl';
 //import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
+import { TagData } from '@yaireo/tagify';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
@@ -227,7 +230,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
     let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
     //let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
-    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
+    // let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
 
     //let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
@@ -235,6 +238,8 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
 
     //let [catesLoading, cates] = usePromise(getCates);
     //let [gories, setGories] = React.useState<GoryType[]>();
+
+    let [tags, setTags] = React.useState<string[]>();
 
     React.useEffect(() => {
         /*if (initialGuide?.cate) {
@@ -282,13 +287,32 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
             <MarkdownEditor className='' body={ content } update={ (c) => setContent(c) } />
 
             <div className='editorBottom'>
-                <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
+                <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
+                    {/* TODO whitelist from API */}
+                    <Tags onChange={useCallback((e) => {
+                        let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
+                        console.log(tagStrings);
+                        setTags(tagStrings);
+                    }, [])} defaultValue="welcome, to, nacom"/>
+                </div>
+                {/* <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
                     <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
-                </div>
+                </div> */}
 
+                <Button className='submit link' onClick={
+                    async () => {
+                        upload(
+                            // TODO add tags
+                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic: false },
+                            setMessage
+                        );
+                    }
+                }> 
+                    <FormattedMessage id='editor.savedraft' />
+                </Button>
                 <Button className='submit link' onClick={
                     async () => {
                         /*if (!cateName || !goryName) {
@@ -300,7 +324,8 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                         let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic },
+                            // TODO add tags
+                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic: true },
                             setMessage
                         );
                     }
