@@ -40,7 +40,7 @@ router.get('/', async (ctx) => {
     limit: per,
   })
   .sort({ createDate: -1 })
-  .select('index name content authors tags');
+  .select('index name content authors tags createDate');
 
   await query.lean().
     catch(err => ctx.throw(500, err)).

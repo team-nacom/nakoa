@@ -1,4 +1,4 @@
-import { editGuide, getGuide, GuideType } from 'etc/api/guide';
+import { editGuide, getGuide, GuidePost } from 'etc/api/guide';
 import React from 'react';
 import usePromise from 'etc/usePromise';
 import { Redirect, useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ function GuideEdit() {
     let [guideLoading, guide] = usePromise(() => getGuide(id), [id]);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
-    let upload = async (guide: GuideType, setMessage: (message: string) => void) => {
+    let upload = async (guide: GuidePost, setMessage: (message: string) => void) => {
         if (!guide.name || !guide.content || /*!guide.priority || !guide.cate || !guide.gory ||*/ guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
             return;

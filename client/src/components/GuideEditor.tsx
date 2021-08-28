@@ -3,7 +3,7 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { /*getGuideCategories, getGuideSections,*/ GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
+import { /*getGuideCategories, getGuideSections,*/ GuidePost, GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 
@@ -210,8 +210,8 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
 }*/
 
 interface Props {
-    initialGuide?: Partial<GuideType>,
-    upload: (guide: GuideType, 
+    initialGuide?: Partial<GuidePost>,
+    upload: (guide: GuidePost, 
              setMessage: (message: string) => void) 
         => void,
     behavior: 'add' | 'edit'
@@ -300,7 +300,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                         let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic },
+                            { name, content, authors: authors.filter((s) => s.length > 0), isPublic, tags: [] },
                             setMessage
                         );
                     }

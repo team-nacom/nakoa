@@ -31,6 +31,7 @@ import SignUpPending from 'pages/signup/SignupPending';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import MyPage from 'pages/user/Mypage';
+import GuideList1 from 'pages/guide/list/GuideList1';
 
 const localeMessages = {
   'en': messageEn,
@@ -72,6 +73,7 @@ function App() {
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
           <Route exact path='/guide/:id(\d+)' component={Guide} />
           <Route exact path='/guide' component={GuideList} />
+          <Route exact path='/guide/list1' component={GuideList1} />
           <Route exact path='/mypage' component={MyPage} />
           <Route exact path='/signup/done' component={SignUpDone} />
           <Route exact path='/signup/pending' component={SignUpPending} />

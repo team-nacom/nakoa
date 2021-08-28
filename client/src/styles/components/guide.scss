@@ -3,7 +3,8 @@
 .guideBackground {
     position: fixed;
     z-index: -1;
-    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
+    background: #aaaaaa33;
+//    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
     width: 100vw;
     height: 100vh;
     top: 0;
@@ -201,6 +202,53 @@
 
         div {
             overflow: auto;
+        }
+    }
+}
+
+.guideFeedList {
+    margin: auto;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .guideFeed {
+        margin: 20px;
+        flex: 0 0 250px;
+
+        .guideFeedContent {
+            border-radius: 6px;
+            background: white;
+            border-top: 5px $primary-color solid;
+            box-shadow: 0px 10px 15px #00000026;
+            padding: 15px;
+            min-height: 200px;
+
+            .author {
+                font-size: 14px;
+                line-height: 30px;
+            }
+
+            .title {
+                font-family: 'SeoulHangang';
+                font-size: 20px;
+                line-height: 26px;
+                text-shadow: 0px 1px 5px #ffffff;
+                margin: 8px 0px;
+            }
+
+            .content {
+                background: #ffffff88;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 11px;
+                line-height: 22px;
+            }
+
+            .tags {
+
+            }
         }
     }
 }
