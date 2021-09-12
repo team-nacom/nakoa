@@ -18,16 +18,14 @@ import {
     Context
 } from 'mdast-util-to-markdown';
 
+import { visitParents, Visitor } from 'unist-util-visit-parents'
+import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
+import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
+
 interface Textbox extends Parent{
     type: 'textbox';
     // children: PhrasingContent[];
 }
-
-// type Textbox = Parent; /////////////TODO: ADD TYPE DEFINITION
-
-import { visitParents, Visitor } from 'unist-util-visit-parents'
-import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
-import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
 
 const fenceChar = '@';
 

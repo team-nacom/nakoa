@@ -12,7 +12,6 @@ import Directive from 'remark-directive';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
 
-
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
@@ -26,6 +25,8 @@ import SectionPriorityHandler from './SectionPriorityHandler';
 import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
+
+import NaMark from '../namark'
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
@@ -42,6 +43,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         CodeFrontmatter,
 
         // custom plugins
+        NaMark,
+
         SectionPriorityHandler,
         InternalLinkHandler,
         DirectiveHandler,
@@ -151,6 +154,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
         leafDirective: (p: any) => { return (<></>); },
         containerDirective: (p: any) => {
+            return (
+                <div className='textframe' >
+                    { p.children }
+                </div>
+            );
+        },
+        textbox: (p: any) => {
             return (
                 <div className='textframe' >
                     { p.children }
