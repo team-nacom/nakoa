@@ -273,10 +273,16 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
             <div className='flexbox'>
                 <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
                 <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
-                <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
 */}
+
+            { isAdmin && (
+                <div className='flexbox'>
+                    <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />                
+                </div>
+            )}
+
             <div className=''>
                 <label>
                     <FormattedMessage id='editor.guidetitle' />

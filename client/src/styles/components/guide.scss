@@ -3,7 +3,7 @@
 .guideBackground {
     position: fixed;
     z-index: -1;
-    background: #aaaaaa33;
+    background: $primary-color-light;
 //    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
     width: 100vw;
     height: 100vh;
@@ -14,7 +14,6 @@
 .guide {
     div.metadata {
         .metadataItem {
-            font-family: 'Montserrat', 'SeoulNamsan';
             font-size: 14px;
             font-weight: bold;
             text-align: center;
@@ -39,25 +38,25 @@
     }
 
     h2.subtitle {
-        font-family: 'Montserrat', 'SeoulNamsan';
         text-align: center;
         font-size: 21px;
         line-height: 30px;
-        color: white;
+//        color: white;
+        color: #444444;
         margin-top: 20px;
         margin-bottom: 6px;
-        text-shadow: 0px 5px 5px #0000004D;
+        text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 
     h1.title {
-        font-family: 'SeoulHangang';
         text-align: center;
         font-size: 40px;
         line-height: 55px;
-        color: white;
+//        color: white;
+        color: #444444;
         margin-bottom: 20px;
         margin-top: 6px;
-        text-shadow: 0px 5px 5px #0000004D;
+        text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 
     .guideNavigateBar {
@@ -208,46 +207,62 @@
 
 .guideFeedList {
     margin: auto;
-    max-width: 1200px;
+    max-width: 1000px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: left;
 
     .guideFeed {
-        margin: 20px;
-        flex: 0 0 250px;
+        margin: 25px;
+        flex: 0 0 283px;
+
+        @media (max-width: $max-mobile-width) {
+            flex: 1 0 51%;
+        }
 
         .guideFeedContent {
             border-radius: 6px;
             background: white;
-            border-top: 5px $primary-color solid;
+            border-top: 10px $primary-color solid;
             box-shadow: 0px 10px 15px #00000026;
-            padding: 15px;
-            min-height: 200px;
+            padding-top: 5px;
+            min-height: 240px;
+
+
+            background-image: linear-gradient(120deg, #f9f9f9 0%, #eeeeee 100%);
+
+
 
             .author {
                 font-size: 14px;
-                line-height: 30px;
+                line-height: 20px;
+                margin: 5px 15px;
+                bottom: 0;
             }
 
             .title {
-                font-family: 'SeoulHangang';
                 font-size: 20px;
                 line-height: 26px;
                 text-shadow: 0px 1px 5px #ffffff;
-                margin: 8px 0px;
+                margin: 15px 15px;
+                max-height: 26px;
+                overflow: hidden;
             }
 
             .content {
-                background: #ffffff88;
+//                background: #ffffff88;
                 padding: 4px 8px;
                 border-radius: 4px;
                 font-size: 11px;
                 line-height: 22px;
+                height: 66px;
+                overflow: hidden;
             }
-
-            .tags {
-
+            .metadata {
+                font-size: 12px;
+                line-height: 20px;
+                margin: 10px 15px;
+                bottom: 0;
             }
         }
     }
