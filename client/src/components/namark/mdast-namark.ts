@@ -32,8 +32,9 @@ const fenceChar = '@';
 const enterTextbox : FromMarkdownHandle = function(token){
     this.enter({
         type: 'textbox',
-        name: '',
-        attributes: {},
+        data: {
+            name: ''
+        },
         children: []
     } as any, token);
 }

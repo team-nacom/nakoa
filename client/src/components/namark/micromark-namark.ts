@@ -3,7 +3,8 @@
 
 import assert from 'assert';
 import { factorySpace } from 'micromark-factory-space';
-import { markdownLineEnding, asciiAlpha, asciiAlphanumeric } from 'micromark-util-character';
+import { factoryWhitespace } from 'micromark-factory-whitespace';
+import { markdownLineEnding, markdownLineEndingOrSpace, asciiAlpha, asciiAlphanumeric } from 'micromark-util-character';
 
 import { Construct, Tokenizer, State, Token, Extension } from 'micromark-util-types'
 import { codes } from 'micromark-util-symbol/codes'
@@ -21,6 +22,11 @@ const tokenizeName : Tokenizer = function(effects, ok, nok){
     const self = this;
 
     const start : State = (code) => {
+        if(markdownLineEndingOrSpace(code)){
+            // effects.enter('textboxName');
+            // effects.exit('textboxName');
+            return ok(code);
+        }
         if(asciiAlpha(code)){
             effects.enter('textboxName');
             effects.consume(code);
@@ -40,8 +46,8 @@ const tokenizeName : Tokenizer = function(effects, ok, nok){
         }
 
         effects.exit('textboxName');
-        return self.previous === codes.dash || self.previous === codes.underscore ? nok(code) : ok(code);
-        // return ok(code);
+        // return self.previous === codes.dash || self.previous === codes.underscore ? nok(code) : ok(code);
+        return ok(code);
     }
 
     return start;
@@ -164,6 +170,8 @@ const tokenizeTextbox : Tokenizer = function(effects, ok, nok){
             ? tail[2].sliceSerialize(tail[1], true).length
             : 0
     // what's this?
+
+    self.parser.lazy = {};
 
     let sizeOpen = 0;
     let previous : Token;
