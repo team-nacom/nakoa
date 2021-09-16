@@ -18,7 +18,7 @@ function MyPage({ location } : Props) {
 
     let [userLoading, user] = usePromise(() => getMyPage())
     if (user == null) return <></>;
-
+/*
     return (
     <div>
         <p>[닉네임]{user.nickname}</p>
@@ -35,7 +35,14 @@ function MyPage({ location } : Props) {
             </div>
         ))}
     </div>
-    );
+    );*/
+
+    return (
+        <>
+            <Header />
+            
+        </>
+    )
 }
 
 export default MyPage;

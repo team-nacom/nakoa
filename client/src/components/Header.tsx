@@ -69,13 +69,15 @@ function Header() {
                         </Link>
                     </div>
                     { user.loggedIn && (
-                        <span className='navitem menu inactive'>
-                            <div>
-                                <FormattedMessage 
-                                    id='header.hello'
-                                    values={{name: user.nickname}}
-                                />
-                            </div>
+                        <span className='navitem menu'>
+                            <Link to={`/user`}>
+                                <div>
+                                    <FormattedMessage 
+                                        id='header.hello'
+                                        values={{name: user.nickname}}
+                                    />
+                                </div>
+                            </Link>
                         </span>
                     )}
                     <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>

@@ -1,5 +1,43 @@
-import GuideList1 from "./list/GuideList1";
+import Footer from "components/Footer";
+import GuideSidebar from "components/GuideSidebar";
+import Header from "components/Header";
+import PageTitle from "components/PageTitle";
+import { getGuides } from "etc/api/guide";
+import { useIsLoggedIn } from "etc/api/user";
+import usePromise from "etc/usePromise";
+import Loading from "pages/Loading";
+import { Link } from "react-router-dom";
+import GuideGallary from "../../components/GuideGallary";
 
-const GuideList = GuideList1;
+
+function GuideList() {
+    let isLoggedIn = useIsLoggedIn();
+    
+    let [guidesLoading, guides] = usePromise(getGuides);
+    
+    if (guidesLoading) return <Loading/>;
+    else return (
+        <>
+            <Header/>
+            <div className='guideBackground' /> 
+            <GuideSidebar on='list'>
+                { isLoggedIn && (
+                    <span>
+                        <Link to={'/guide/write'}>
+                            <button className='roundButton material-icons'> 
+                                create
+                            </button>
+                        </Link>
+                    </span>
+                )}
+            </GuideSidebar>
+            <PageTitle>
+                모든 글 보기
+            </PageTitle>
+            <GuideGallary guides={guides || []} />
+            <Footer/>
+        </>
+    );
+}
 
 export default GuideList;
