@@ -60,23 +60,21 @@ const exitTextboxLabel : FromMarkdownHandle = function(token){
     this.exit(token);
 }
 
-const exit : FromMarkdownHandle = function(token){
+const exitTextbox : FromMarkdownHandle = function(token){
     this.exit(token);
 }
 
 const handleTextbox : ToMarkdownHandle = function(node, _, context){
     const prefix = fence(node);
-    const exit = context.enter(node.type);
+    const exit = context.enter('textbox');
     let value =
         prefix +
         (node.data.name || '') +
         label(node, context);
-    
-    if (node.type === 'textbox'){
-        const subvalue = content(node, context);
-        if (subvalue) value += '\n' + subvalue;
-        value += '\n' + prefix;
-    }
+
+    const subvalue = content(node, context);
+    if (subvalue) value += '\n' + subvalue;
+    value += '\n' + prefix;
 
     exit();
     return value;
@@ -137,7 +135,7 @@ export const textboxFromMarkdown : FromMarkdownExtension = {
         textboxLabel: enterTextboxLabel
     },
     exit: {
-        textbox: exit,
+        textbox: exitTextbox,
         textboxLabel: exitTextboxLabel,
         textboxName: exitName
     }

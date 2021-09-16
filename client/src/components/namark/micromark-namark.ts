@@ -93,15 +93,6 @@ const tokenizeLabel : Tokenizer = function(effects, ok, nok){
         return label(code);
     }
 
-    const atClosingBrace : State = (code) => {
-        effects.exit('textboxLabelString');
-        effects.enter('textboxLabelMarker');
-        effects.consume(code);
-        effects.exit('textboxLabelMarker');
-        effects.exit('textboxLabel');
-        return ok;
-    }
-
     const label : State = (code) => {
         if(
             code === codes.eof ||
@@ -119,11 +110,21 @@ const tokenizeLabel : Tokenizer = function(effects, ok, nok){
             return nok(code);
         }
         if (code === codes.rightSquareBracket && !balance--){
+            effects.exit(types.chunkText);
             return atClosingBrace(code);
         }
 
         effects.consume(code);
         return code === codes.backslash ? labelEscape : label;
+    }
+
+    const atClosingBrace : State = (code) => {
+        effects.exit('textboxLabelString');
+        effects.enter('textboxLabelMarker');
+        effects.consume(code);
+        effects.exit('textboxLabelMarker');
+        effects.exit('textboxLabel');
+        return ok;
     }
 
     const labelEscape : State = (code) => {
