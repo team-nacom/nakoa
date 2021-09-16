@@ -301,7 +301,7 @@ const tokenizeTextbox : Tokenizer = function(effects, ok, nok){
         return ok(code);
     }
 
-    const tokenizeClosingFence : Tokenizer = (effects, ok, nok) => {
+    const tokenizeClosingFence : Tokenizer = function(effects, ok, nok){
         let size = 0;
 
         const closingPrefixAfter : State = (code) => {
@@ -317,7 +317,7 @@ const tokenizeTextbox : Tokenizer = function(effects, ok, nok){
                 return closingSequence;
             }
 
-            if(size < sizeOpen) return nok(code);
+            if(size !== sizeOpen) return nok(code);
             effects.exit('textboxSequence');
             return factorySpace(effects, closingSequenceEnd, types.whitespace)(code);
         }
