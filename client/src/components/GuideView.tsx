@@ -77,6 +77,9 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
             */}
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
+            {(guide.tags != null && guide.tags.length > 0) && 
+                <h3 className='tags'> { '#' + guide.tags.join(' #')} </h3>
+            }
             <div className={
                 'guideContent'
                 + (filter.Essential ? '' : ' hideEssential')
@@ -88,6 +91,8 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                 <MarkdownRenderer>
                     { guide.content }
                 </MarkdownRenderer>
+                <hr/>
+                <div>{(guide.tags != null && guide.tags.length > 0) &&  '#' + guide.tags.join(' #')}</div>
             </div>
         </div>
     );

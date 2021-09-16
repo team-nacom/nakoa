@@ -54,8 +54,19 @@
         line-height: 55px;
 //        color: white;
         color: #444444;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         margin-top: 6px;
+        text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
+    }
+
+    h3.tags {
+        text-align: center;
+        font-size: 18px;
+        line-height: 24px;
+//        color: white;
+        color: #444444;
+        margin-top: 0px;
+        margin-bottom: 30px;
         text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 
