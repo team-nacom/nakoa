@@ -239,7 +239,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     //let [catesLoading, cates] = usePromise(getCates);
     //let [gories, setGories] = React.useState<GoryType[]>();
 
-    let [tags, setTags] = React.useState<string[]>();
+    let [tags, setTags] = React.useState<string[]>(initialGuide.tags ?? []);
 
     React.useEffect(() => {
         /*if (initialGuide?.cate) {
@@ -312,7 +312,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                     async () => {
                         upload(
                             // TODO add tags
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: [] },
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags },
                             setMessage
                         );
                     }
@@ -330,7 +330,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                         let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: [] },
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags },
                             setMessage
                         );
                     }
