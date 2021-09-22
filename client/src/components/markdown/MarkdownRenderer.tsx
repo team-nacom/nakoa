@@ -31,7 +31,8 @@ import NaMark from '../namark'
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 interface RendererOptionProps{
-    isManual?: boolean
+    isManual?: boolean,
+    openDetails?: boolean
 }
 
 function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
@@ -145,7 +146,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             }
 
             return (
-                <details>
+                <details open={ props.openDetails }>
                     <summary>{ label }</summary>
                     <div>
                         { children }
