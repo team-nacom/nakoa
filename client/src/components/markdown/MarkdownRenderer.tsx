@@ -110,13 +110,19 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
 
         //handled directives
-
+        textbox: (p: any) => {
+            return (
+                <div className='textframe' >
+                    { p.children }
+                </div>
+            );
+        },
         exercise: (p: any) => {
             var label : any = '';
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
@@ -133,7 +139,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
@@ -154,13 +160,6 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
         leafDirective: (p: any) => { return (<></>); },
         containerDirective: (p: any) => {
-            return (
-                <div className='textframe' >
-                    { p.children }
-                </div>
-            );
-        },
-        textbox: (p: any) => {
             return (
                 <div className='textframe' >
                     { p.children }

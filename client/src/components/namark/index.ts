@@ -3,7 +3,7 @@ import { Plugin } from 'unified';
 import { Root } from 'mdast';
 
 import { textbox } from './micromark-namark';
-import { textboxFromMarkdown, textboxToMarkdown } from './mdast-namark'
+import { textboxFromMarkdown, textboxToMarkdown, NamedTextboxes } from './mdast-namark'
 
 const naMark : Plugin = function(){
     var self = this;
@@ -20,4 +20,5 @@ const naMark : Plugin = function(){
     }
 }
 
+export type { NamedTextboxes };
 export default naMark;

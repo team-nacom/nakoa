@@ -27,6 +27,12 @@ interface Textbox extends Parent{
     // children: PhrasingContent[];
 }
 
+const namedTextboxes = [
+    'exercise',
+    'expand'
+] as const;
+export type NamedTextboxes = typeof namedTextboxes[number];
+
 const fenceChar = '@';
 
 const enterTextbox : FromMarkdownHandle = function(token){
@@ -50,10 +56,17 @@ const enterTextboxLabel : FromMarkdownHandle = function(token){
 }
 
 const exitName : FromMarkdownHandle = function (token){
-    const node = this.stack[this.stack.length - 1];
-    node.data = {
-        name: this.sliceSerialize(token)
-    };
+    const node = this.stack[this.stack.length - 1] as any;
+
+    const name = this.sliceSerialize(token);
+    if(namedTextboxes.includes(name as any)){
+        node.type = name;
+    }
+    else{
+        node.data = {
+            name: name
+        };
+    }
 }
 
 const exitTextboxLabel : FromMarkdownHandle = function(token){
