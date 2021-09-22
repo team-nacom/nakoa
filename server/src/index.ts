@@ -69,4 +69,10 @@ app.use(passport.session());
 app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(port);
+if(isProduction){
+  app.listen(port);
+}
+else{
+  app.listen(port, '0.0.0.0');
+}
+
