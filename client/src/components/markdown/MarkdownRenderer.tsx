@@ -32,6 +32,7 @@ type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer 
 
 interface RendererOptionProps{
     isManual?: boolean,
+    noTOC?: boolean,
     openDetails?: boolean
 }
 
@@ -48,8 +49,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
 
         SectionPriorityHandler,
         InternalLinkHandler,
-        DirectiveHandler,
-        SectionEnumerator,
+        DirectiveHandler, //legacy
+        [SectionEnumerator, {noTOC: props.noTOC}],
         FootnoteEnumerator,
     ]
 
