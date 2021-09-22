@@ -2,8 +2,8 @@
 import { Plugin } from 'unified';
 import { Root } from 'mdast';
 
-import { textbox } from './micromark-namark';
-import { textboxFromMarkdown, textboxToMarkdown, NamedTextboxes } from './mdast-namark'
+import { textbox } from './micromark-textbox';
+import { textboxFromMarkdown, textboxToMarkdown, NamedTextboxes } from './mdast-textbox'
 
 const naMark : Plugin = function(){
     var self = this;
