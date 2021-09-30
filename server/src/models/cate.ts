@@ -21,6 +21,7 @@ const cateSchema = new Schema<CateDocument>({
 
 cateSchema.statics.onDeleteGory = async function (gory: GoryDocument) {
     const index = gory.cate;
+    //@ts-ignore
     const result = await this.updateOne({index: index}, {$pull: {gories: gory.index}});
 
     const cate = await this.findOne({index});

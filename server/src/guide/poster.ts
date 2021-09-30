@@ -33,6 +33,7 @@ export async function postOneGuide(guideObj: any, user: UserDocument) {
     const guide = new Guide(guideObj);
 
     await guide.save();
+    //@ts-ignore
     await User.findByIdAndUpdate(user._id,{ '$push': { 'guides': guide._id } });
     console.log(`Guide upload "${guide.name}" successful`);
     return guide;

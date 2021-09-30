@@ -32,8 +32,8 @@ router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
 router.get('/', async (ctx) => {
   // TODO: show drafts of their own, and hide if not
   const name: string = ctx.state.user?.nickname;
-  const page: number = +ctx.query.page || 1;
-  const per: number = +ctx.query.per || 20;
+  const page: number = +ctx.query.page! || 1;
+  const per: number = +ctx.query.per! || 20;
   const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
   const query = Guide.find(filter, null, {
     skip: (page - 1) * per,
@@ -68,25 +68,25 @@ router.get('/:index(\\d+)', async (ctx) => {
 // Delete a post with given index
 // for now, only admin can erase
 router.delete('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
-  const index = ctx.params.index;
+  const index = +ctx.params.index!;
   const doc = await Guide.findOne({ index: index });
-  if(doc != null){
-    await Guide.deleteOne({ index: index });
-    //@ts-ignore
-    await Gory.onDeleteGuide(doc);
-  }
+  // if(doc != null){
+  //   await Guide.deleteOne({ index: index });
+  //   //@ts-ignore
+  //   await Gory.onDeleteGuide(doc);
+  // }
   ctx.body = "Success";
 })
 
-// Get list of all categories
-router.get('/category', async (ctx) => {
-  ctx.body = await Guide.distinct('cate');
-});
+// // Get list of all categories
+// router.get('/category', async (ctx) => {
+//   ctx.body = await Guide.distinct('cate');
+// });
 
-// Get list of all sections in given category
-router.get('/category/:name', async (ctx) => {
-  ctx.body = await Guide.distinct('gory', { cate: ctx.params.name });
-});
+// // Get list of all sections in given category
+// router.get('/category/:name', async (ctx) => {
+//   ctx.body = await Guide.distinct('gory', { cate: ctx.params.name });
+// });
 
 
 export default router;
