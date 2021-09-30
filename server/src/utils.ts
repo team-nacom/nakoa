@@ -38,7 +38,9 @@ export async function handleErrorMiddleware(ctx :any, next :any) {
   try {
     await next();
   } catch (err) {
+    //@ts-ignore
     ctx.status = err.status || 500;
+    //@ts-ignore
     ctx.body = err.message;
     ctx.app.emit('error', err, ctx);
   }

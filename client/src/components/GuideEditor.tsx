@@ -240,7 +240,6 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     //let [gories, setGories] = React.useState<GoryType[]>();
 
     let [tags, setTags] = React.useState<string[]>(initialGuide.tags ?? []);
-
     React.useEffect(() => {
         /*if (initialGuide?.cate) {
             getCateDetail(initialGuide.cate).then(({ name }) => {
@@ -295,11 +294,10 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
             <div className='editorBottom'>
                 <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
                     {/* TODO whitelist from API */}
-                    <Tags onChange={useCallback((e) => {
+                    <Tags value={tags} onChange={useCallback((e) => {
                         let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
-                        console.log(tagStrings);
                         setTags(tagStrings);
-                    }, [])} defaultValue="welcome, to, nacom"/>
+                    }, [])}/>
                 </div>
                 {/* <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 

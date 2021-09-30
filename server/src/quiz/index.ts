@@ -51,7 +51,7 @@ router.get('/', async (ctx) => {
 
 // Get specific quiz with given index
 router.get('/:index', async (ctx) => {
-  const index: number = ctx.params.index!;
+  const index: number = +ctx.params.index!;
 
   const doc = await Quiz.findOne({ index });
 

@@ -30,6 +30,7 @@ const userSchema = new Schema<UserDocument>({
     joinDate: { type: Number, default: Date.now }
 });
 
+//@ts-ignore
 userSchema.plugin(passportLocalMongoose, givenOptions);
 
 function getHash(secret: string): string {

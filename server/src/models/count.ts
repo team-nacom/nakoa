@@ -21,6 +21,7 @@ const countSchema = new Schema<CountDocument>({
 countSchema.statics.getNextCount = function(name: string): Promise<Number>{
     // return a Promise which increments this.next and returns it
     // findOneAndUpdate returns a document before updating
+    //@ts-ignore
     return this.findOneAndUpdate({ name: name }, { $inc: { next: 1 }}).exec()
         .then((doc: CountDocument) => { if(doc==null) throw new Error("Such counter does not exist"); return doc; })
         .then((doc: CountDocument) => doc.next);

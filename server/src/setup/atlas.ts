@@ -11,7 +11,7 @@ mongoose.connect(connectionString, {
   useUnifiedTopology: true, // new connection management engine,
   useFindAndModify: false,  // refer to https://mongoosejs.com/docs/deprecations.html#findandmodify 
   useCreateIndex: true,     // refer to https://mongoosejs.com/docs/deprecations.html#ensureindex
-}).then(res => {
+}).then(() => {
   console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch(err => {
   console.error(`Failed to connect.`);
