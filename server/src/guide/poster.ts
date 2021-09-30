@@ -40,14 +40,13 @@ export async function postOneGuide(guideObj: any, user: UserDocument) {
 }
 
 export async function updateOneGuide(guideObj: any, index: number, user: UserDocument) {
-  if(index !== guideObj.index) throw createError(400, "Index does not match with URI");
+  if("index" in guideObj && index !== guideObj.index)
+    throw createError(400, "Index does not match with URI");
+  guideObj.index = index;
   const guide = await Guide.findOne({ index: guideObj.index }).exec();
 
   // TODO check if extra fields exist
-  if(! ("index" in guideObj)){
-    throw createError(400, "Guide is ill-formed");
-  }
-  else if(guide === null) {
+  if(guide === null) {
     throw createError(401, `Guide with index ${guideObj.index} doesn't exist`);
   } else if(!guide.hasWriteAuthority(user)) {
     throw createError(401, `User ${user.email} is unauthorized to update guide ${guide.index}`);
