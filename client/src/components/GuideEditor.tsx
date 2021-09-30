@@ -312,7 +312,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                     async () => {
                         upload(
                             // TODO add tags
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags },
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: false },
                             setMessage
                         );
                     }
@@ -330,7 +330,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                         let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags },
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: true },
                             setMessage
                         );
                     }
