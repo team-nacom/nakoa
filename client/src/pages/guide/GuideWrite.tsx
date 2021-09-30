@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { GuideType, postGuide } from 'etc/api/guide';
+import { GuidePost, postGuide } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router';
@@ -25,15 +25,15 @@ function GuideWrite({ location } : Props) {
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let isAdmin = useIsAdmin();
 
-    let rawQuery = location.search;
-    let parsedQuery = queryString.parse(rawQuery);
-    let query: Query = {
-        cate: parsedQuery.cate?.toString(),
-        gory: parsedQuery.gory?.toString(),
-    };
+//    let rawQuery = location.search;
+//    let parsedQuery = queryString.parse(rawQuery);
+//    let query: Query = {
+//        cate: parsedQuery.cate?.toString(),
+//        gory: parsedQuery.gory?.toString(),
+//    };
     
-    let upload = (guide: GuideType, setMessage: (message: string) => void) => {
-        if (!guide.name || !guide.content || !guide.priority || !guide.cate || !guide.gory || guide.authors.length < 1) {
+    let upload = (guide: GuidePost, setMessage: (message: string) => void) => {
+        if (!guide.name || !guide.content || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
             return;
         }
@@ -47,9 +47,9 @@ function GuideWrite({ location } : Props) {
         })
     }
 
-    let initialGuide: Partial<GuideType> = {
-        cate: query.cate ? Number.parseInt(query.cate) : undefined,
-        gory: query.gory,
+    let initialGuide: Partial<GuidePost> = {
+        //cate: query.cate ? Number.parseInt(query.cate) : undefined,
+        //gory: query.gory,
         authors: isAdmin ? undefined : [user.nickname],
     };
 

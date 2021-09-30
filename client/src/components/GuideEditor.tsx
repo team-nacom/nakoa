@@ -3,30 +3,32 @@ import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
 import MarkdownEditor from 'components/MarkdownEditor';
 
-import { getGuideCategories, getGuideSections, GuideType, priorityTags } from 'etc/api/guide';
+import { /*getGuideCategories, getGuideSections,*/ GuidePost, GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
+
+import Tags from "@yaireo/tagify/dist/react.tagify";
 
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
+//import { CateType, getCateDetail, getCategoryDetail, getCates, getGoryDetail, GoryType, postCate, postGory } from 'etc/api/category';
 import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
+import { TagData } from '@yaireo/tagify';
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
     return target.includes(current);
 }
 
-interface CateInputProps {
+/*interface CateInputProps {
     cates: CateType[] | undefined;
     cateName: string;
     setCateName: (cateName: string) => void;
     setCateIndex: (cateIndex: number | undefined) => void;
-    readonly?: boolean;
-}
+}*/
 
-function CateInput({ cates, cateName, setCateName, setCateIndex, readonly = false }: CateInputProps) {
+/*function CateInput({ cates, cateName, setCateName, setCateIndex }: CateInputProps) {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
     
@@ -38,7 +40,6 @@ function CateInput({ cates, cateName, setCateName, setCateIndex, readonly = fals
             <div>
                 <input 
                     value={cateName} 
-                    readOnly={readonly}
                     onChange={(e) => {
                         let cateName = e.target.value;
                         setCateName(cateName);
@@ -51,7 +52,7 @@ function CateInput({ cates, cateName, setCateName, setCateIndex, readonly = fals
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { !readonly && opacity > 0 && cates && cates.length > 0 && (
+            { opacity > 0 && cates && cates.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -72,10 +73,9 @@ interface GoryInputProps {
     goryName: string;
     setGoryName: (goryName: string) => void;
     setGoryIndex: (goryIndex: string | undefined) => void;
-    readonly?: boolean;
 }
 
-function GoryInput({ gories, goryName, setGoryName, setGoryIndex, readonly = false } : GoryInputProps) {
+function GoryInput({ gories, goryName, setGoryName, setGoryIndex } : GoryInputProps) {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
     let intl = useIntl();
 
@@ -87,7 +87,6 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex, readonly = fal
             <div>
                 <input 
                     value={goryName} 
-                    readOnly={readonly}
                     onChange={(e) => {
                         let goryName = e.target.value;
                         setGoryName(goryName);
@@ -100,7 +99,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex, readonly = fal
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { !readonly && opacity > 0 && gories && gories.length > 0 && (
+            { opacity > 0 && gories && gories.length > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -114,7 +113,7 @@ function GoryInput({ gories, goryName, setGoryName, setGoryIndex, readonly = fal
             )}
         </div>
     )
-}
+}*/
 
 interface AuthorInputProps {
     isAdmin: boolean;
@@ -140,7 +139,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                 />
             </div>
-            { editable && opacity > 0 && (
+            { opacity > 0 && (
                 <div 
                     className='candidateContainer' 
                     style={{ opacity }}
@@ -175,7 +174,7 @@ function AuthorsInput({ isAdmin, authors, setAuthors } : AuthorInputProps) {
     )
 }
 
-interface PriorityInputProps {
+/*interface PriorityInputProps {
     priority: number;
     setPriority: (priority: number) => void;
 }
@@ -211,37 +210,39 @@ function PriorityInput({ priority, setPriority }: PriorityInputProps) {
             )}
         </div>
     )
-}
+}*/
 
 interface Props {
-    initialGuide: Partial<GuideType>,
-    upload: (guide: GuideType, 
+    initialGuide?: Partial<GuidePost>,
+    upload: (guide: GuidePost, 
              setMessage: (message: string) => void) 
         => void,
     behavior: 'add' | 'edit'
 }
 
 
-function GuideEditor({ initialGuide, upload, behavior } : Props) {
+function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     let isAdmin = useIsAdmin();
 
     let [name, setName] = React.useState<string>(initialGuide.name ?? '');
-    let [cateName, setCateName] = React.useState<string>('');
-    let [goryName, setGoryName] = React.useState<string>('');
+    //let [cateName, setCateName] = React.useState<string>('');
+    //let [goryName, setGoryName] = React.useState<string>('');
     let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
     let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
-    let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
-    let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
+    //let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
+    // let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
 
-    let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
-    let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
+    //let [cateIndex, setCateIndex] = React.useState<number | undefined>(initialGuide.cate);
+    //let [goryIndex, setGoryIndex] = React.useState<string | undefined>(initialGuide.gory);
 
-    let [catesLoading, cates] = usePromise(getCates);
-    let [gories, setGories] = React.useState<GoryType[]>();
+    //let [catesLoading, cates] = usePromise(getCates);
+    //let [gories, setGories] = React.useState<GoryType[]>();
+
+    let [tags, setTags] = React.useState<string[]>(initialGuide.tags ?? []);
 
     React.useEffect(() => {
-        if (initialGuide?.cate) {
+        /*if (initialGuide?.cate) {
             getCateDetail(initialGuide.cate).then(({ name }) => {
                 setCateName(name);
             })
@@ -250,10 +251,10 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
             getGoryDetail(initialGuide.gory).then(({ name }) => {
                 setGoryName(name);
             })
-        }
+        }*/
     }, [initialGuide]);
 
-    React.useEffect(() => {
+    /*React.useEffect(() => {
         if (cateIndex !== undefined) {
             getCateDetail(cateIndex).then(({ gories }) => {
                 setGories(gories);
@@ -261,20 +262,26 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
         } else {
             setGories(undefined);
         }
-    }, [cateIndex]);
+    }, [cateIndex]);*/
 
     return (<>
         <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
                 <FormattedMessage id={ behavior == 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
-
+{/* 
             <div className='flexbox'>
-                <CateInput cateName={cateName} setCateName={setCateName} readonly={behavior !== 'add' && !isAdmin} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
-                <GoryInput goryName={goryName} setGoryName={setGoryName} readonly={behavior !== 'add' && !isAdmin} gories={gories} setGoryIndex={setGoryIndex} />
-                <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />
+                <CateInput cateName={cateName} setCateName={setCateName} cates={cates} setCateIndex={(x) => {setCateIndex(x); setGoryName(''); setGoryIndex(undefined); }} />
+                <GoryInput goryName={goryName} setGoryName={setGoryName} gories={gories} setGoryIndex={setGoryIndex} />
                 <PriorityInput priority={priority} setPriority={setPriority} />
             </div>
+*/}
+
+            { isAdmin && (
+                <div className='flexbox'>
+                    <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />                
+                </div>
+            )}
 
             <div className=''>
                 <label>
@@ -286,25 +293,44 @@ function GuideEditor({ initialGuide, upload, behavior } : Props) {
             <MarkdownEditor className='' body={ content } update={ (c) => setContent(c) } />
 
             <div className='editorBottom'>
-                {/*<div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
+                <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
+                    {/* TODO whitelist from API */}
+                    <Tags onChange={useCallback((e) => {
+                        let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
+                        console.log(tagStrings);
+                        setTags(tagStrings);
+                    }, [])} defaultValue="welcome, to, nacom"/>
+                </div>
+                {/* <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
                         { isPublic ? 'check_box' : 'check_box_outline_blank'} 
                     </span>
                     <FormattedMessage id={ isPublic ? 'editor.public' : 'editor.private' } />
-                </div>*/}
+                </div> */}
 
                 <Button className='submit link' onClick={
                     async () => {
-                        if (!cateName || !goryName) {
+                        upload(
+                            // TODO add tags
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: false },
+                            setMessage
+                        );
+                    }
+                }> 
+                    <FormattedMessage id='editor.savedraft' />
+                </Button>
+                <Button className='submit link' onClick={
+                    async () => {
+                        /*if (!cateName || !goryName) {
                             setMessage('카테고리를 적어주세요.');
                             return;
                         }
                         
                         let cate = cateIndex ?? (await postCate({ name: cateName, gories: [], })).index;
-                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;
+                        let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, priority, cate, gory, authors: authors.filter((s) => s.length > 0), isPublic },
+                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: true },
                             setMessage
                         );
                     }

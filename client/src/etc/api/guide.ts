@@ -5,14 +5,22 @@ import config from '../config';
 const apiAddress = config.apiAddress;
 
 export interface GuideType {
-    index?: number;
+    index: number;
     name: string;
+    authors: string[],
     content: string;
-    priority: number;
+    tags: string[];
+    createDate: number;
     isPublic?: boolean;
-    cate: number;
-    gory: string;
+//    writer: number;
+}
+
+export interface GuidePost {
+    name: string;
     authors: string[];
+    content: string;
+    tags: string[];
+    isPublic?: boolean;
 }
 
 export const priorityTags = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'] as const;
@@ -32,7 +40,7 @@ export const defaultGuideFilter : GuideFilterType = {
 }
 
 export const getGuides = async () => {
-    let response = await Axios.get(`${apiAddress}/guide`, {
+    let response = await Axios.get(`${apiAddress}/guide?per=50`, {
         validateStatus: authValidateStatus, 
         withCredentials: true 
     });
@@ -55,7 +63,7 @@ export const getGuide = async (id: number) => {
     return response.data as GuideType;
 }
 
-export const getGuideCategories = async () => {
+/*export const getGuideCategories = async () => {
     let response = await Axios.get(`${apiAddress}/guide/category`);
 
     return response.data as string[];
@@ -67,11 +75,9 @@ export const getGuideSections = async (categoryName: string) => {
     let response = await Axios.get(`${apiAddress}/guide/category/${categoryName}`);
 
     return response.data as string[];
-}
+}*/
 
-export const postGuide = async (data: GuideType) => {
-    if (data.isPublic === undefined) data.isPublic = true;
-    
+export const postGuide = async (data: GuidePost) => {   
     let response = await Axios.post(`${apiAddress}/guide`, data, {
         validateStatus: authValidateStatus, 
         withCredentials: true 
@@ -83,10 +89,7 @@ export const postGuide = async (data: GuideType) => {
     };
 }
 
-export const editGuide = async (index: number, data: GuideType) => {    
-    data.index = index;
-    delete data.isPublic;
-    
+export const editGuide = async (index: number, data: GuidePost) => {
     let response = await Axios.put(`${apiAddress}/guide/${index}`, data, {
         validateStatus: authValidateStatus, 
         withCredentials: true 

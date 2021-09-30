@@ -1,11 +1,11 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getGuide, getGuideCategories, GuideFilterType, defaultGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
+import { getGuide, GuideFilterType, defaultGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
-import { Link, match, Redirect } from 'react-router-dom';
+import { Link, Redirect, useParams } from 'react-router-dom';
 import Loading from '../Loading';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
@@ -13,16 +13,13 @@ import GuideSidebar from 'components/GuideSidebar';
 import { priorityTags } from 'etc/api/guide';
 import Button from 'components/Button';
 
-interface MatchParams {
+interface Params {
     id: string;
 };
 
-interface Props {
-    match: match<MatchParams>;
-};
-
-function Guide({ match } : Props) {
-    let id = Number.parseInt(match.params.id);
+function Guide() {
+    let { id: idStr } = useParams<Params>();
+    let id = React.useMemo(() => Number.parseInt(idStr), [idStr]);
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
     

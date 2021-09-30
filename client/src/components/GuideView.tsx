@@ -1,5 +1,5 @@
 import { getCateDetail, getCates, getGoryDetail } from 'etc/api/category';
-import { getGuideCategories, getGuideSections, GuideFilterType, GuideType, defaultGuideFilter } from 'etc/api/guide';
+import { GuideFilterType, GuideType, defaultGuideFilter } from 'etc/api/guide';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
@@ -54,15 +54,13 @@ interface Params {
 }
 
 function GuideView({ guide, filter = defaultGuideFilter }: Params) {
-    let [catesLoading, cates] = usePromise(() => getCates());
-    let [cateDetailLoading, cate] = usePromise(() => getCateDetail(guide.cate), [guide]);
-    let [goryDetailLoading, gory] = usePromise(() => getGoryDetail(guide.gory), [guide]);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     if (redirectTo) return <Redirect push to={redirectTo}/>
     else return (
         <div className='guide'>
             <div className='guideBackground' />
+            {/*
             <div className='metadata'> 
                 <select className='metadataItem' value={ guide.cate } onChange={(e) => setRedirectTo(`/guide?cate=${e.target.value}`)}> 
                     { cates?.map((cate) => (
@@ -76,9 +74,12 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     )) } 
                 </select>
             </div>
+            */}
             <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
             <h1 className='title'> { guide.name } </h1>
-            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
+            {(guide.tags != null && guide.tags.length > 0) && 
+                <h3 className='tags'> { '#' + guide.tags.join(' #')} </h3>
+            }
             <div className={
                 'guideContent'
                 + (filter.Essential ? '' : ' hideEssential')
@@ -90,8 +91,9 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                 <MarkdownRenderer>
                     { guide.content }
                 </MarkdownRenderer>
+                <hr/>
+                <div>{(guide.tags != null && guide.tags.length > 0) &&  '#' + guide.tags.join(' #')}</div>
             </div>
-            <GuideNavigateBar guideIndex={guide.index!} guides={gory?.guides} />
         </div>
     );
 }

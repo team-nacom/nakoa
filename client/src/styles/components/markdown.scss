@@ -76,9 +76,10 @@ $code-color: #f0f0f0;
     }
 
     p {
-        font-size: 15px;
-        line-height: 30px;
+        font-size: 14px;
+        line-height: 28px;
         font-weight: 300;
+        margin: 12px 0px;
 
         overflow: hidden;
     }
@@ -99,7 +100,8 @@ $code-color: #f0f0f0;
     }
 
     li {
-        margin: 8px 0px;
+        margin: 10px 0px;
+        font-size: 14px;
     }
 
     sub {
@@ -169,16 +171,17 @@ $code-color: #f0f0f0;
     .subsection {
         margin-top: 35px;
         margin-bottom: 15px;
-        padding-left: 20px;
+        padding-left: 16px;
         padding-top: 8px;
         padding-bottom: 5px;
-        border-left: 1px $primary-color solid;
+        border-left: 2px $primary-color solid;
     }
 
     .subsubsection {
+        margin-left: 10px;
         margin-top: 12px;
         margin-bottom: 12px;
-        padding-left: 20px;
+        padding-left: 12px;
         padding-top: 7px;
         padding-bottom: 5px;
         border-left: 1px $primary-color solid;
@@ -285,7 +288,7 @@ $code-color: #f0f0f0;
 }
 
 .toc {
-    @include labeled-box(#A8CB61,#F9FFEF,#A8CB61,white);
+    @include labeled-box($primary-color, #f6f6f6, #303030, white);
 
     white-space: pre-line;
     word-break: break-all;
@@ -303,22 +306,21 @@ $code-color: #f0f0f0;
     }
 
     .sectionNum, .subsectionNum, .subsubsectionNum {
-        font-family: 'SeoulHangang';
         float: left;
         margin-right: 10px;
         font-weight: bold;
+        color: $primary-color;
     }
 
 
     .section, .subsection, .subsubsection {
-        font-family: 'SeoulHangang';
         border: none;
         //margin: 0px;
         //margin-bottom: 10px;
     }
     h1, h2, h3, h4, .sectionNum, .subsectionNum, .subsubsectionNum {
         font-size: 15px;
-        line-height: 24px;
+        line-height: 26px;
         font-weight: 300;
         margin-top: 0px;
         margin-bottom: 0px;

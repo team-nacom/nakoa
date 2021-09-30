@@ -1,16 +1,17 @@
 import Router from 'koa-router';
 
-import Guide from '../models/guide';
-import Gory from '../models/gory';
+import Guide, { GuideDocument } from '../models/guide';
+import User from '../models/user';
 import { isAdmin, checkAdminMiddleware, isVerifiedMiddleware } from "../utils";
 import { postOneGuide, updateOneGuide } from "./poster";
 import createHttpError from 'http-errors';
+import user from '../models/user';
 
 const router = new Router();
 
 // Post a guide (manual)
 router.post('/', isVerifiedMiddleware, async (ctx) => {
-  const guide = await postOneGuide(ctx.request.body);
+  const guide = await postOneGuide(ctx.request.body, ctx.state.user);
   ctx.body = {
     index: guide.index,
   };
@@ -30,10 +31,17 @@ router.put('/:index(\\d+)', isVerifiedMiddleware, async (ctx) => {
 // Get list of guides
 router.get('/', async (ctx) => {
   // TODO: show drafts of their own, and hide if not
-  const name: string = ctx.state.user.nickname ?? null;
-
+  const name: string = ctx.state.user?.nickname;
+  const page: number = +ctx.query.page || 1;
+  const per: number = +ctx.query.per || 20;
   const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
-  const query = Guide.find(filter).select('index name cate gory priority');
+  const query = Guide.find(filter, null, {
+    skip: (page - 1) * per,
+    limit: per,
+  })
+  .sort({ createDate: -1 })
+  .select('index name content authors tags createDate');
+
   await query.lean().
     catch(err => ctx.throw(500, err)).
     then(docs => ctx.body = docs);

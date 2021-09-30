@@ -40,6 +40,7 @@
     "editor.public": "public",
     "editor.private": "private",
     "editor.confirm": "Confirm",
+    "editor.savedraft": "Save Draft",
 
     "editor.placeholder": "Provides Markdown & LaTeX syntaces. Click the question mark button to see the editor manual(KR).",
     "editor.edit": "Edit",

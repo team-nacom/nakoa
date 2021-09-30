@@ -23,6 +23,7 @@ import 'highlight.js/styles/github.css';
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { TocRendererFactory, TocHeadingRendererFactory, SectionRendererFactory, SectionHeadingRendererFactory } from './SectionEnumerator';
 import SectionPriorityHandler from './SectionPriorityHandler';
+import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
@@ -42,6 +43,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
 
         // custom plugins
         SectionPriorityHandler,
+        InternalLinkHandler,
         DirectiveHandler,
         SectionEnumerator,
         FootnoteEnumerator,
@@ -95,7 +97,17 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
         // inlineCode: ???
 
+        intLink: (p: any) =>{
+            return(
+                <a href={ '/'+ p.for + '/' + p.target }>
+                    { '🔗' }
+                    { p.children }
+                </a>
+            );
+        },
+
         //handled directives
+
         exercise: (p: any) => {
             var label : any = '';
             var children = p.children;
