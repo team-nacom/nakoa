@@ -73,7 +73,10 @@ function wrapSection(nodes: Node[], depth: Number){
     return nodes;
 }
 
-const SectionEnumerator : Plugin = () => {
+interface SectionEnumeratorOptions {
+    noTOC?: boolean
+}
+const SectionEnumerator : Plugin = (settings) => {
     const sectionEnumerator : Transformer = (tree, file) => {
         let sectionNum = 0, subsectionNum = 0, subsubsectionNum = 0;
         
@@ -128,7 +131,9 @@ const SectionEnumerator : Plugin = () => {
             newChildren = wrapSection(newChildren, 3);
         }
 
-        root.children = [{ type: 'toc', children: tocList } as Node].concat(newChildren);
+        if(!(settings?.noTOC)){
+            root.children = [{ type: 'toc', children: tocList } as Node].concat(newChildren);
+        }
 
         // console.log(root);
     }
