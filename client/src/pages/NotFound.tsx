@@ -3,19 +3,15 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
-// import { ParentBubble, TextBubble } from 'components/nabubble/NaBubble';
+// import { EditorBubble, useNaBubbleState } from 'components/nabubble'
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
 
-    // let [namu, setNamu] = React.useState(new ParentBubble([
-    //     new TextBubble('AAAAAA'),
-    //     new TextBubble('BBB'),
-    // ]))
-
+    // let [ bubble ] = useNaBubbleState('bubble');
     // React.useEffect(()=>{
     //     const intv = setInterval(()=>{
-    //         console.log(namu.serialize(3))
+    //         console.log(bubble)
     //     },5000);
 
     //     return () => clearInterval(intv);
@@ -34,13 +30,7 @@ function NotFound() {
             </MarkdownRenderer>
 
             {/* for testing: */}
-            {/* <React.Fragment>
-                { namu.render() }
-            </React.Fragment> */}
-
-            <textarea>
-                XXXX
-            </textarea>
+            {/* <EditorBubble bubbleId = { bubble.rootId }/> */}
             
             <Footer/>
         </>
