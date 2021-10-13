@@ -67,7 +67,7 @@ function EditorTextBubble(props: BubbleComponentProps){
             dispatch({ type: 'update', id: bid, value : str.slice(0, lineStart - 1) });
             dispatch({ type: 'add', parentId: pbid, idx: idx + 1, bubble: {
                 type : 'text',
-                value : str.slice(curStart)
+                value : str.slice(curStart+1)
             } });
         }
     }
