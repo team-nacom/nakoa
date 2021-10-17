@@ -221,7 +221,7 @@
     max-width: 1350px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: center;
 
     .guideFeed {
         margin: 25px;
@@ -256,6 +256,8 @@
                 line-height: 20px;
                 margin: 15px 15px;
                 bottom: 0;
+                max-height: 15px;
+                overflow: hidden;
             }
 
             .title {

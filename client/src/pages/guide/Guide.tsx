@@ -18,8 +18,8 @@ interface Params {
 };
 
 function Guide() {
-    let { id: idStr } = useParams<Params>();
-    let id = React.useMemo(() => Number.parseInt(idStr), [idStr]);
+    let params = useParams<Params>();
+    let id = React.useMemo(() => Number.parseInt(params.id), [params]);
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
     
