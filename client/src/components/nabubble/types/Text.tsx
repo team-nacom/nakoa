@@ -1,11 +1,8 @@
-import * as React from 'react';
+import React, { useRef, MutableRefObject } from 'react';
+import { BubbleComponentProps, EditorBubbleComponentProps } from '../ComponentProps';
 import { useGlobalState, dispatch } from '../StateReducer';
 
 import TextareaAutosize from 'react-textarea-autosize';
-
-interface BubbleComponentProps extends React.HTMLAttributes<HTMLElement>{
-    bubbleId : string
-}
 
 //bubble type : 'text'
 
@@ -24,7 +21,7 @@ function RenderedTextBubble(props: BubbleComponentProps){
     </div>);
 }
 
-function EditorTextBubble(props: BubbleComponentProps){
+function EditorTextBubble(props: EditorBubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
     var bid = props.bubbleId;
 
@@ -62,8 +59,13 @@ function EditorTextBubble(props: BubbleComponentProps){
                     str[curStart] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
                 ) });
 
-                document.getElementById('NaBubble' + bid)?.focus();
-                // e.currentTarget.focus();
+                // props.refs.current[bid]?.focus();
+                setTimeout(()=>{
+                    const newElem = props.refs.current[bid] as HTMLTextAreaElement;
+                    newElem.focus();
+                    newElem.selectionStart = 0;
+                    newElem.selectionEnd = 0;
+                }, 1); //is this legit??
             }
             else{ //trigger 2 : @@@ + enter
                 if(str[curStart] !== '\n') return;
@@ -74,16 +76,8 @@ function EditorTextBubble(props: BubbleComponentProps){
                 var result = str.slice(lineStart,curStart-1).match(/^(@{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
                 if(!result) return;
 
-                // create a new bubble based on type.
-                // for now we only support on text bubbles.
-                // result[2] : type
-                // result[3] : label
-                
-                // dispatch({ type: 'update', id: bid, value : str.slice(0, lineStart - 1) });
-                // dispatch({ type: 'add', parentId: pbid, idx: idx + 1, bubble: {
-                //     type : 'text',
-                //     value : str.slice(curStart+1)
-                // } });
+                // create a new bubble based on type. for now we only support on text bubbles.
+                // [_, _, type, label] = result
 
                 dispatch({ type: 'add', parentId: pbid, idx: idx, bubble: {
                     type : 'text',
@@ -91,8 +85,13 @@ function EditorTextBubble(props: BubbleComponentProps){
                 } });
                 dispatch({ type: 'update', id: bid, value : str.slice(curStart + 1) });
 
-                document.getElementById('NaBubble' + bid)?.focus();
-                // e.currentTarget.focus();
+                // props.refs.current[bid]?.focus();
+                setTimeout(()=>{
+                    const newElem = props.refs.current[bid] as HTMLTextAreaElement;
+                    newElem.focus();
+                    newElem.selectionStart = 0;
+                    newElem.selectionEnd = 0;
+                }, 1);
             }
         }
 
@@ -109,17 +108,18 @@ function EditorTextBubble(props: BubbleComponentProps){
             const targetbid = siblingId[idx-1];
             if(bubble.record[targetbid].type !== 'text') return; //can only merge with text node for now.
 
-            dispatch({ type: 'update', id: bid, value : bubble.record[targetbid].value + '\n' + str });
+            const targetStr = bubble.record[targetbid].value + '';
+
+            dispatch({ type: 'update', id: bid, value : targetStr + '\n' + str });
             dispatch({ type: 'delete', id: targetbid });
 
-            // dispatch({ type: 'delete', id: bid });
-            // dispatch({ type: 'update', id: targetbid, value : bubble.record[targetbid].value + '\n' + str });
-
-            console.log(bid);
-            console.log(document.getElementById('NaBubble' + bid));
-
-            document.getElementById('NaBubble' + bid)?.focus();
-            // e.currentTarget.focus();
+            // props.refs.current[bid]?.focus();
+            setTimeout(()=>{
+                const newElem = props.refs.current[bid] as HTMLTextAreaElement;
+                newElem.focus();
+                newElem.selectionStart = targetStr.length;
+                newElem.selectionEnd = targetStr.length;
+            }, 1);
         }
         if(e.key === 'Delete'){
             const str : string = e.currentTarget.value;
@@ -136,21 +136,24 @@ function EditorTextBubble(props: BubbleComponentProps){
             dispatch({ type: 'update', id: bid, value : str + '\n' + bubble.record[targetbid].value });
             dispatch({ type: 'delete', id: targetbid });
 
-            document.getElementById('NaBubble' + bid)?.focus();
-            // e.currentTarget.focus();
+            // props.refs.current[bid]?.focus();
+            setTimeout(()=>{
+                const newElem = props.refs.current[bid] as HTMLTextAreaElement;
+                newElem.focus();
+                newElem.selectionStart = str.length;
+                newElem.selectionEnd = str.length;
+            }, 1);
         }
     }
 
     return (<>
         <label htmlFor={ 'NaBubble' + bid } style={ {display:'none'} } />
         <TextareaAutosize
-            id={ 'NaBubble' + bid }
+            ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
             style={ {display:'block', width:'100%', margin:'10px 0'} }
-            onChange={ handleChange } // TODO : ensure onChange is called before onKeyUp?
+            onChange={ handleChange } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDown }
-            // defaultValue={ bubble.contents }
-            // value={ contents }
             value={ contents }
         />
     </>);

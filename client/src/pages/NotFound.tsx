@@ -30,7 +30,7 @@ function NotFound() {
             </MarkdownRenderer>
 
             {/* for testing: */}
-            <EditorBubble bubbleId = { bubble.rootId }/>
+            <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } />
             
             <Footer/>
         </>

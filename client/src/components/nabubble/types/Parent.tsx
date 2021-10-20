@@ -1,10 +1,8 @@
-import * as React from 'react';
+import React, { useRef, MutableRefObject } from 'react';
+import { BubbleComponentProps, EditorBubbleComponentProps } from '../ComponentProps';
 import { useGlobalState, dispatch } from '../StateReducer';
-import { RenderedTextBubble, EditorTextBubble } from './Text';
 
-interface BubbleComponentProps extends React.HTMLAttributes<HTMLElement>{
-    bubbleId : string
-}
+import { RenderedTextBubble, EditorTextBubble } from './Text';
 
 //bubble type : 'parent'
 
@@ -19,13 +17,17 @@ function RenderedParentBubble(props : BubbleComponentProps){
     </div>)
 }
 
-function EditorParentBubble(props : BubbleComponentProps){
+function EditorParentBubble(props : EditorBubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
-    const childrenId = bubble.record[props.bubbleId].childrenId || [];
+    const bid = props.bubbleId
+    const childrenId = bubble.record[bid].childrenId || [];
 
-    return (<div style = {{ border: '1px solid gray', padding: '0 10px' }}>
+    return (<div
+        ref = { (el) => { props.refs.current[bid] = el } }
+        style = {{ border: '1px solid gray', padding: '0 10px' }}
+    >
         { childrenId.map((childId)=>(
-            <EditorBubble bubbleId = { childId }/>
+            <EditorBubble bubbleId = { childId } refs = { props.refs }/>
         )) }
     </div>)
 }
@@ -35,24 +37,22 @@ function RenderedBubble(props : BubbleComponentProps){
 
     switch(bubble.record[props.bubbleId].type){
         case 'parent':
-            return (<RenderedParentBubble bubbleId = { props.bubbleId } />);
+            return (<RenderedParentBubble {...props} />);
         case 'text':
-            return (<RenderedTextBubble bubbleId = { props.bubbleId } />)
-        //     break;
+            return (<RenderedTextBubble {...props} />);
         default:
             return (<></>);
     }
 }
 
-function EditorBubble(props : BubbleComponentProps){
+function EditorBubble(props : EditorBubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
 
     switch(bubble.record[props.bubbleId].type){
         case 'parent':
-            return (<EditorParentBubble bubbleId = { props.bubbleId } />);
+            return (<EditorParentBubble {...props} />);
         case 'text':
-            return (<EditorTextBubble bubbleId = { props.bubbleId } />);
-        //     break;
+            return (<EditorTextBubble {...props} />);
         default:
             return (<></>);
     }
