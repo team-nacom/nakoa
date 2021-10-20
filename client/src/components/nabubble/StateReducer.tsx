@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { createStore } from 'react-hooks-global-state';
+import { idText } from 'typescript';
 // import { Bubble, ParentBubble } from './BubbleComponent';
 // import { TextBubble } from './Text';
 // import { BubbleEditor } from './BubbleView';
@@ -26,7 +27,12 @@ interface BubbleAddAction {
     bubble : Bubble;
 }
 
-type BubbleAction = BubbleUpdateAction | BubbleAddAction;
+interface BubbleDeleteAction{
+    type : 'delete';
+    id : string;
+}
+
+type BubbleAction = BubbleUpdateAction | BubbleAddAction | BubbleDeleteAction;
 
 const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
     var newState : BubbleState = {
@@ -58,7 +64,6 @@ const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
                 childrenId = [...childrenId]; //copy
             }
             
-
             var newBubblePrefix = '_A' + String(state.counter);
             var newBubbleRootId = '_A' + String(state.counter) + '_';
             newState.counter++;
@@ -79,6 +84,22 @@ const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
                 ...newState.bubble.record,
                 ...fb.record
             };
+
+            // console.log(newState.bubble.record);
+
+            return newState;
+        case 'delete':
+            var parentId = newState.bubble.record[action.id].parentId;
+            if(typeof parentId !== 'undefined'){
+                var childrenId = newState.bubble.record[parentId].childrenId;
+                if(typeof childrenId !== 'undefined'){
+                    // remove the id from children list.
+                    newState.bubble.record[parentId].childrenId = childrenId.filter( (id) => ( id !== action.id ) );
+                }
+            }
+            //deposit the node.
+            var { [action.id] : _, ...newRecord } = newState.bubble.record;
+            newState.bubble.record = newRecord;
 
             return newState;
     }
