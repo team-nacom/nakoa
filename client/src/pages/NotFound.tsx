@@ -8,7 +8,7 @@ import { EditorBubble, useNaBubbleState } from 'components/nabubble'
 function NotFound() {
     let [message, setMessage] = React.useState('');
 
-    let [ bubble ] = useNaBubbleState('bubble');
+    // let [ bubble ] = useNaBubbleState('bubble');
     // React.useEffect(()=>{
     //     const intv = setInterval(()=>{
     //         console.log(bubble)
@@ -30,7 +30,7 @@ function NotFound() {
             </MarkdownRenderer>
 
             {/* for testing: */}
-            <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } />
+            {/* <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } /> */}
             
             <Footer/>
         </>
