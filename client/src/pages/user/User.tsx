@@ -18,8 +18,6 @@ function User() {
 
     let [userLoading, user] = usePromise(() => getUserProfile(nickname));
 
-    console.log(user);
-
     if (userLoading) return <Loading />;
     else if (!user) return (
         <>
@@ -34,9 +32,11 @@ function User() {
         <>
             <Header />
             <div className='guideBackground' />
-            <PageTitle>
-                { `${user.nickname}님이 작성한 글`}
-            </PageTitle>
+            <div className='userTop'>
+                <div className='nickname'>
+                    { user.nickname }
+                </div>
+            </div>
             <GuideGallary guides={user.guides} />
         </>
     )

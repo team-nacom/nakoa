@@ -17,9 +17,11 @@ function NotFound() {
     return (
         <>
             <Header/>
-            <MarkdownRenderer isManual={true}>
-                { message }
-            </MarkdownRenderer>
+            <div id='content'>
+                <MarkdownRenderer isManual={true}>
+                    { message }
+                </MarkdownRenderer>
+            </div>
             <Footer/>
         </>
     );

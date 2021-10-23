@@ -16,7 +16,9 @@ function SignUpDone({ location }: Props) {
     else return (
         <>
             <Header />
-            { intl.formatMessage({ id: verified ? 'signup.success' : 'signup.failure' }) }
+            <div id='content'>
+                { intl.formatMessage({ id: verified ? 'signup.success' : 'signup.failure' }) }
+            </div>
             <Footer />
         </>
     );

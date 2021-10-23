@@ -91,11 +91,13 @@ function Guide() {
 
             </GuideSidebar>
 
-            { guide ? (
-                <GuideView guide={guide} filter={filter} />
-            ) : (
-                <p> 존재하지 않는 가이드입니다. </p>
-            )}
+            <div id='content'>
+                { guide ? (
+                    <GuideView guide={guide} filter={filter} />
+                ) : (
+                    <p> 존재하지 않는 가이드입니다. </p>
+                )}
+            </div>
             <Footer />
         </>
     );

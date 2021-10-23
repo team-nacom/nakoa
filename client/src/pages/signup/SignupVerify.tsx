@@ -29,7 +29,9 @@ function SignUpVerify() {
     return (
         <>
             <Header />
-            { intl.formatMessage({ id: 'signup.verifyingemail' }) }
+            <div id='content'>
+               { intl.formatMessage({ id: 'signup.verifyingemail' }) }
+            </div>
             <Footer />
         </>
     );

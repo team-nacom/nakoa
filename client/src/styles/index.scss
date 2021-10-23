@@ -81,6 +81,9 @@ html {
     font-weight: 300;  
 
     min-height: 100%;
+}
+
+#content {
     margin-left: calc(10% - 20px);
     margin-right: calc(10% - 20px);
 }
@@ -129,7 +132,7 @@ label {
 @import './components/guide.scss';
 @import './components/challenge.scss';
 @import './components/markdown.scss';
-@import './components/mypage.scss';
+@import './components/user.scss';
 @import './components/popup.scss';
 @import './components/quiz.scss';
 @import './components/signin.scss';
