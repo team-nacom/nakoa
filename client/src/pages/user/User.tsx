@@ -64,9 +64,11 @@ function User() {
         <>
             <Header />
             <div className='guideBackground' />
-            <PageTitle>
-                없는 사용자입니다.
-            </PageTitle>
+            <div id='content'>
+                <PageTitle>
+                    없는 사용자입니다.
+                </PageTitle>
+            </div>
         </>
     );
     else return (
