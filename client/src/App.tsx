@@ -70,6 +70,7 @@ function App() {
           <Redirect path='/quiz' to='/quiz/1'/>
           <Route path='/quiz/write' component={QuizWrite} />*/}
 
+          <Route exact path='/user/:nickname/:menu' component={User} />
           <Route exact path='/user/:nickname' component={User} />
           <Route exact path='/user' component={MyPage} />
           <Route exact path='/guide/write' component={GuideWrite} />

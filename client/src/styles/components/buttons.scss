@@ -1,5 +1,7 @@
 
 @mixin standardButton {
+    background-color: $main-background;
+    margin: 8px;
     padding: 10px 30px;
     border: 2px solid $primary-color;
     background: white;
@@ -54,10 +56,19 @@
     }
 }
 
+@mixin underlineButton {
+    padding: 15px 30px;
+    background: white;
+    font-size: 14px;
+    border-bottom: 2px solid #00000000;
+
+    &:hover {
+        color: $primary-color;
+        border-bottom: 2px solid $primary-color;
+    }
+}
+
 button {
-    background-color: $main-background;
-    padding: 16px;
-    margin: 8px;
     border: none;
     font-family: Montserrat;
     width: fit-content;
