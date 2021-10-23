@@ -92,7 +92,6 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     { guide.content }
                 </MarkdownRenderer>
                 <hr/>
-                <div>{(guide.tags != null && guide.tags.length > 0) &&  '#' + guide.tags.join(' #')}</div>
             </div>
         </div>
     );

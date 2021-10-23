@@ -3,8 +3,15 @@
 .userTop {
     height: 100px;
     background: white;
+    display: flex;
+
+    img.profileImage {
+        height: 64px;
+        width: 64px;
+    }
 
     .nickname {
+        margin: 38px;
         font-size: 24px;
     }
 }

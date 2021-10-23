@@ -38,24 +38,24 @@
     }
 
     h2.subtitle {
-        text-align: center;
         font-size: 21px;
         line-height: 30px;
 //        color: white;
         color: #444444;
         margin-top: 20px;
         margin-bottom: 6px;
+        margin-left: 25px;
         text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 
     h1.title {
-        text-align: center;
         font-size: 40px;
         line-height: 55px;
 //        color: white;
         color: #444444;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         margin-top: 6px;
+        margin-left: 18px;
         text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 

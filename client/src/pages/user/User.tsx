@@ -37,7 +37,9 @@ function User() {
                     { user.nickname }
                 </div>
             </div>
-            <GuideGallary guides={user.guides} />
+            <div id='content'>
+                <GuideGallary guides={user.guides} />
+            </div>
         </>
     )
 }
