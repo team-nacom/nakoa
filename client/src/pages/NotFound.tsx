@@ -24,10 +24,10 @@ function NotFound() {
 
             {/* for testing: */}
             {/* <div>
-                <div style = { { display: 'inline-block', width: '48%' } }>
+                <div style = { { display: 'inline-block', verticalAlign: 'top', width: '48%' } }>
                     <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } />
                 </div>
-                <div style = { { display: 'inline-block', width: '48%' } }>
+                <div style = { { display: 'inline-block', verticalAlign: 'top', width: '48%' } }>
                     <RenderedBubble bubbleId = { bubble.rootId } />
                 </div>
             </div> */}

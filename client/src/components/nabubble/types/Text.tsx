@@ -162,6 +162,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
             onChange={ handleChange } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDown }
             value={ contents }
+            spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     </>);
 }
