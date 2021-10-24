@@ -1,8 +1,11 @@
 import React, { useRef, MutableRefObject } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../ComponentProps';
 import { useGlobalState, dispatch } from '../StateReducer';
 
-import TextareaAutosize from 'react-textarea-autosize';
+import MarkdownRenderer from '../../markdown/MarkdownRenderer';
+const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 //bubble type : 'text'
 
@@ -16,17 +19,21 @@ function RenderedTextBubble(props: BubbleComponentProps){
 
     if(typeof contents !== 'string') return (<></>);
 
-    return (<div>
-        { contents }
-    </div>);
+    return (
+        <div style={ { margin: '5px', border: '1px solid gray'} }>
+            <MemoizedRenderer noTOC openDetails>
+                { contents }
+            </MemoizedRenderer>
+        </div>
+    );
 }
 
 function EditorTextBubble(props: EditorBubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
     var bid = props.bubbleId;
 
-    var v = bubble.record[bid].value;
-    var contents = (typeof v !== 'string' ? '' : v);
+    // var v = bubble.record[bid].value;
+    var contents = makeString(bubble.record[bid].value);
 
     const handleChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         var str : string = e.target.value;

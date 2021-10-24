@@ -2,16 +2,13 @@
 
 import React from 'react';
 import { createStore } from 'react-hooks-global-state';
-import { idText } from 'typescript';
-// import { Bubble, ParentBubble } from './BubbleComponent';
-// import { TextBubble } from './Text';
-// import { BubbleEditor } from './BubbleView';
 
 import { Bubble, FlatBubble, prefixFlatBubble, flatten } from './BubbleData';
 
 interface BubbleState {
     counter : number;
     bubble : FlatBubble;
+    bubblePreview? : FlatBubble;
 }
 
 interface BubbleUpdateAction { //for now, change value only. TODO: change type or children.
@@ -45,9 +42,6 @@ const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
     switch (action.type){
         case 'update': //BubbleUpdateAction
             newState.bubble.record[action.id].value = action.value;
-
-            // console.log(newState.bubble.record);
-
             return newState;
         case 'add': //BubbleAddAction
             var childrenId = newState.bubble.record[action.parentId].childrenId;
@@ -85,8 +79,6 @@ const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
                 ...fb.record
             };
 
-            // console.log(newState.bubble.record);
-
             return newState;
         case 'delete':
             var parentId = newState.bubble.record[action.id].parentId;
@@ -108,29 +100,30 @@ const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
 const defaultState : BubbleState = {
     counter : 0,
     bubble : flatten({
-        type : 'parent',
-        children : [
-            { type: 'text', value: 'WWWWWW' },
-            {
-                type: 'parent',
-                children : [
-                    { type: 'text', value: 'ABCDE' },
-                    { type: 'text', value: 'FGIJKL' }
-                ]
-            },
-            { type: 'text', value: 'PPPPPP' }
-        ]
+        type: 'parent',
+        children : [ {type: 'text', value: ''} ]
     })
-}
+};
 
-// real defaultState should be:
+// for testing:
 //
 // const defaultState : BubbleState = {
 //     counter : 0,
 //     bubble : flatten({
-//         type: 'parent',
-//         children : [ {type: 'text', value: ''} ]
+//         type : 'parent',
+//         children : [
+//             { type: 'text', value: 'WWWWWW' },
+//             {
+//                 type: 'parent',
+//                 children : [
+//                     { type: 'text', value: 'ABCDE' },
+//                     { type: 'text', value: 'FGIJKL' }
+//                 ]
+//             },
+//             { type: 'text', value: 'PPPPPP' }
+//         ]
 //     })
-// };
+// }
+
 
 export const { useGlobalState, getState, dispatch } = createStore(reducer, defaultState);

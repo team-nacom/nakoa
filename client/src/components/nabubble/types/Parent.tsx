@@ -10,7 +10,7 @@ function RenderedParentBubble(props : BubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
     const childrenId = bubble.record[props.bubbleId].childrenId || [];
 
-    return (<div>
+    return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(
             <RenderedBubble bubbleId = { childId }/>
         )) }
@@ -36,12 +36,9 @@ function RenderedBubble(props : BubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
 
     switch(bubble.record[props.bubbleId].type){
-        case 'parent':
-            return (<RenderedParentBubble {...props} />);
-        case 'text':
-            return (<RenderedTextBubble {...props} />);
-        default:
-            return (<></>);
+        case 'parent': return (<RenderedParentBubble {...props} />);
+        case 'text': return (<RenderedTextBubble {...props} />);
+        default: return (<></>);
     }
 }
 
@@ -49,12 +46,9 @@ function EditorBubble(props : EditorBubbleComponentProps){
     const [ bubble ] = useGlobalState('bubble');
 
     switch(bubble.record[props.bubbleId].type){
-        case 'parent':
-            return (<EditorParentBubble {...props} />);
-        case 'text':
-            return (<EditorTextBubble {...props} />);
-        default:
-            return (<></>);
+        case 'parent': return (<EditorParentBubble {...props} />);
+        case 'text': return (<EditorTextBubble {...props} />);
+        default: return (<></>);
     }
 }
 
