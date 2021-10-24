@@ -16,7 +16,9 @@ function SignUpPending({ location }: Props) {
     return (
         <>
             <Header />
-            { intl.formatMessage({ id: 'signup.pleaseverifyemail' }, { nickname, email }) }
+            <div id='content'>
+                { intl.formatMessage({ id: 'signup.pleaseverifyemail' }, { nickname, email }) }
+            </div>
             <Footer />
         </>
     );

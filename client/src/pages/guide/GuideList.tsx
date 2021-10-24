@@ -31,10 +31,12 @@ function GuideList() {
                     </span>
                 )}
             </GuideSidebar>
-            <PageTitle>
-                모든 글 보기
-            </PageTitle>
-            <GuideGallary guides={guides || []} />
+            <div id='content'>
+                <PageTitle>
+                    모든 글 보기
+                </PageTitle>
+                <GuideGallary guides={guides || []} />
+            </div>
             <Footer/>
         </>
     );

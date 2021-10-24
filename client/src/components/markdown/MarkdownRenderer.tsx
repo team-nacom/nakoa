@@ -12,7 +12,6 @@ import Directive from 'remark-directive';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
 
-
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
@@ -27,10 +26,14 @@ import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
+import NaMark from '../namark'
+
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 interface RendererOptionProps{
-    isManual?: boolean
+    isManual?: boolean,
+    noTOC?: boolean,
+    openDetails?: boolean
 }
 
 function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
@@ -42,10 +45,12 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         CodeFrontmatter,
 
         // custom plugins
+        NaMark,
+
         SectionPriorityHandler,
         InternalLinkHandler,
-        DirectiveHandler,
-        SectionEnumerator,
+        DirectiveHandler, //legacy
+        [SectionEnumerator, {noTOC: props.noTOC}],
         FootnoteEnumerator,
     ]
 
@@ -107,13 +112,19 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
 
         //handled directives
-
+        textbox: (p: any) => {
+            return (
+                <div className='textframe' >
+                    { p.children }
+                </div>
+            );
+        },
         exercise: (p: any) => {
             var label : any = '';
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
@@ -130,13 +141,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
 
             return (
-                <details>
+                <details open={ props.openDetails }>
                     <summary>{ label }</summary>
                     <div>
                         { children }

@@ -163,42 +163,47 @@ function SignUp() {
     return (
         <>
             <Header/>
-            <PageTitle> { intl.formatMessage({ id: "signup.title" }) } </PageTitle>
-            {
-                intl.formatMessage({ id: "signup.description" })
-                    .split('\n')
-                    .map((str) => <p> {str} </p>)
-            }
+            <div id='content'>
+                <PageTitle> 
+                    { intl.formatMessage({ id: "signup.title" }) } 
+                </PageTitle>
 
-            <form>
-                <div className='signupBox'>
-                    { entries.map((({ name, body, message, validate }) => (
-                        <>
-                            <div className='signupLabel'> { name } </div>
-                            { body }
-                            { message && <p> { message } </p> }
-                        </>
-                    )))}
-                </div>
+                {
+                    intl.formatMessage({ id: "signup.description" })
+                        .split('\n')
+                        .map((str) => <p> {str} </p>)
+                }
 
-                <Button type='submit' className='button' onClick={async (e) => {
-                    e.preventDefault();
-                    if (!await validateAll()) return false;
-                    
-                    const encryptedPassword = await encryptPassword(email, password);
-                    let { success, message } = await register({ email, password: encryptedPassword, nickname });
+                <form>
+                    <div className='signupBox'>
+                        { entries.map((({ name, body, message, validate }) => (
+                            <>
+                                <div className='signupLabel'> { name } </div>
+                                { body }
+                                { message && <p> { message } </p> }
+                            </>
+                        )))}
+                    </div>
 
-                    if (success) setRedirectToPending(true);
-                    else setMessage( intl.formatMessage({ id: 'signup.problem' }) + message);
-                }}> 
-                    { intl.formatMessage({ id: 'signup.signup' }) } 
-                </Button>
-                { message && <p style={{marginBottom: '8px'}}> { message } </p> }
-                { entries.map(({ name, message } ) => {
-                    if (message) return <p style={{marginBottom: '8px'}}> { `${name}: ${message}` } </p>   
-                    else return undefined;
-                }) }
-            </form>
+                    <Button type='submit' className='button' onClick={async (e) => {
+                        e.preventDefault();
+                        if (!await validateAll()) return false;
+                        
+                        const encryptedPassword = await encryptPassword(email, password);
+                        let { success, message } = await register({ email, password: encryptedPassword, nickname });
+
+                        if (success) setRedirectToPending(true);
+                        else setMessage( intl.formatMessage({ id: 'signup.problem' }) + message);
+                    }}> 
+                        { intl.formatMessage({ id: 'signup.signup' }) } 
+                    </Button>
+                    { message && <p style={{marginBottom: '8px'}}> { message } </p> }
+                    { entries.map(({ name, message } ) => {
+                        if (message) return <p style={{marginBottom: '8px'}}> { `${name}: ${message}` } </p>   
+                        else return undefined;
+                    }) }
+                </form>
+            </div>
             <Footer/>
         </>
     )

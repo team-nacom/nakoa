@@ -1,0 +1,27 @@
+@import './buttons.scss';
+@import '../consts.scss';
+
+.userTop {
+    height: 100px;
+    display: flex;
+    background: rgba($primary-color, 0.75);
+    color: white;
+
+    img.profileImage {
+        height: 64px;
+        width: 64px;
+    }
+
+    .nickname {
+        margin: 38px;
+        font-size: 24px;
+    }
+}
+
+.userTabs {
+    background: white;
+    
+    button {
+        @include underlineButton;
+    }
+}

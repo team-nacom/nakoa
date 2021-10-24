@@ -58,7 +58,7 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
 
     if (redirectTo) return <Redirect push to={redirectTo}/>
     else return (
-        <div className='guide'>
+        <div id='content' className='guide'>
             <div className='guideBackground' />
             {/*
             <div className='metadata'> 
@@ -92,7 +92,6 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     { guide.content }
                 </MarkdownRenderer>
                 <hr/>
-                <div>{(guide.tags != null && guide.tags.length > 0) &&  '#' + guide.tags.join(' #')}</div>
             </div>
         </div>
     );

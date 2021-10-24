@@ -32,9 +32,6 @@ function GuideGallary({ guides }: Props) {
     
     return (
         <>
-            <div>
-                { `총 ${guides?.length || 0}개` }
-            </div>
             <div className='guideFeedList'>
                 { guides?.map((guide) => <GuideView guide={guide} />) }
             </div>
