@@ -2,8 +2,6 @@ import React from 'react';
 
 import { fileUpload, imgUpload } from 'etc/FileUpload'
 
-import { FormattedMessage, useIntl } from 'react-intl';
-
 function insertText(text : string, elem? : HTMLTextAreaElement){
     const isSuccess = document.execCommand('insertText', false, text);
 
@@ -49,29 +47,23 @@ async function pasteHandler(e : React.ClipboardEvent<HTMLTextAreaElement>){
     e.stopPropagation();
 }
 
-async function imgUploadHelper(file: File, elem?: HTMLTextAreaElement){
-    const intl = useIntl();
-
+async function imgUploadHelper(file: File, elem?: HTMLTextAreaElement, errorHandler?: (e: unknown) => any ){
     try{
         const imgUrl = await imgUpload(file);
         insertText(`\n![](${ imgUrl })\n`, elem);
     } catch (error){
-        // img uploading error handler
-        alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
+        if(errorHandler) errorHandler(error);
     }
 
     return;
 }
 
-async function fileUploadHelper(file: File, elem?: HTMLTextAreaElement){
-    const intl = useIntl();
-
+async function fileUploadHelper(file: File, elem?: HTMLTextAreaElement, errorHandler?: (e: unknown) => any ){
     try{
         const fileUrl = await fileUpload(file);
         insertText(`[💾 ${ file.name }](${ fileUrl })`, elem);
     } catch (error){
-        // file uploading error handler
-        alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
+        if(errorHandler) errorHandler(error);
     }
 
     return;

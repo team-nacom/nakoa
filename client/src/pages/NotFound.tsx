@@ -3,7 +3,9 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
-import { EditorBubble, RenderedBubble, useNaBubbleState } from 'components/nabubble'
+import { EditorRootBubble, RenderedRootBubble, useNaBubbleState, dispatchNaBubbleState as dispatch } from 'components/nabubble';
+
+import BubbleEditor from 'components/editor/BubbleEditor'
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
@@ -23,14 +25,7 @@ function NotFound() {
             </MarkdownRenderer>
 
             {/* for testing: */}
-            {/* <div>
-                <div style = { { display: 'inline-block', verticalAlign: 'top', width: '48%' } }>
-                    <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } />
-                </div>
-                <div style = { { display: 'inline-block', verticalAlign: 'top', width: '48%' } }>
-                    <RenderedBubble bubbleId = { bubble.rootId } bubbleObj = { bubble } />
-                </div>
-            </div> */}
+            <BubbleEditor />
         
             <Footer/>
         </>

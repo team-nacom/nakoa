@@ -5,10 +5,10 @@ import { createGlobalState, createStore } from 'react-hooks-global-state';
 
 import { useNaBubbleState, getNaBubbleState, dispatchNaBubbleState } from 'components/nabubble/actionReducer';
 
-const { useGlobalState: usePlainEditorState } = createGlobalState({
+const { useGlobalState: useTextEditorState } = createGlobalState({
     text: '',
     previewText: ''
 })
 
 export { useNaBubbleState, getNaBubbleState, dispatchNaBubbleState };
-export { usePlainEditorState };
+export { useTextEditorState };

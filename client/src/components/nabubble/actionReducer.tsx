@@ -9,19 +9,36 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
         bubble : {
             rootId : state.bubble.rootId,
             record : {...state.bubble.record}
-        }, //shallow copy (childrenId are not copied)
+        }, //shallow copy (childrenId are not copied yet)
         previewBubble : state.previewBubble
     };
+    // console.log(newState.previewBubble.record);
     switch (action.type){
         //BubbleSubAction : involving previewBubble
-        //previewBubble shares ref of bubble until bubble has been modified
+        //previewBubble shares ref of bubble until a bubble has been modified
         case 'init':
             newState.previewBubble = newState.bubble = flatten(action.bubble);
             return newState;
         case 'preview':
             newState.previewBubble = newState.bubble;
             return newState;
+        case 'previewFreeze':
+            newState.previewBubble = newState.bubble;
 
+            // newState.previewBubble = {
+            //     rootId : state.previewBubble.rootId,
+            //     record : {...state.previewBubble.record}
+            // };
+            // for(let key in newState.previewBubble.record){
+            //     //deep copy
+            //     const fb = newState.previewBubble.record[key];
+            //     newState.previewBubble.record[key] = {...fb};
+            //     if(typeof fb.childrenId !== 'undefined'){
+            //         newState.previewBubble.record[key].childrenId = [...fb.childrenId];
+            //     }
+            // }
+            // newState.previewBubble.record = {...newState.previewBubble.record};
+            return newState;
         //BubbleAction
         case 'update': //BubbleUpdateAction
             newState.bubble.record[action.id].value = action.value;

@@ -2,7 +2,7 @@ import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
-import { dispatchNaBubbleState as dispatch } from '../actionReducer';
+import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
@@ -14,7 +14,23 @@ function makeString(v : unknown) : string{
 }
 
 function RenderedTextBubble(props: BubbleComponentProps){
-    const contents = props.bubbleObj.record[props.bubbleId].value;
+    const [ bubble ] = useNaBubbleState('bubble');
+    const contents = bubble.record[props.bubbleId].value;
+
+    if(typeof contents !== 'string') return (<></>);
+
+    return (
+        <div style={ { margin: '5px', border: '1px solid gray'} }>
+            <MemoizedRenderer noTOC>
+                { contents }
+            </MemoizedRenderer>
+        </div>
+    );
+}
+
+function PreviewTextBubble(props: BubbleComponentProps){
+    const [ bubble ] = useNaBubbleState('previewBubble');
+    const contents = bubble?.record[props.bubbleId].value;
 
     if(typeof contents !== 'string') return (<></>);
 
@@ -28,7 +44,8 @@ function RenderedTextBubble(props: BubbleComponentProps){
 }
 
 function EditorTextBubble(props: EditorBubbleComponentProps){
-    const record = props.bubbleObj.record;
+    const [ bubble ] = useNaBubbleState('bubble');
+    const record = bubble.record;
     var bid = props.bubbleId;
 
     // var v = bubble.record[bid].value;
@@ -71,7 +88,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
                     newElem.focus();
                     newElem.selectionStart = 0;
                     newElem.selectionEnd = 0;
-                }, 1); //is this legit??
+                }, 10); //is this legit??
             }
             else{ //trigger 2 : @@@ + enter
                 if(str[curStart] !== '\n') return;
@@ -97,7 +114,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
                     newElem.focus();
                     newElem.selectionStart = 0;
                     newElem.selectionEnd = 0;
-                }, 1);
+                }, 10);
             }
         }
 
@@ -125,7 +142,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
                 newElem.focus();
                 newElem.selectionStart = targetStr.length;
                 newElem.selectionEnd = targetStr.length;
-            }, 1);
+            }, 10);
         }
         if(e.key === 'Delete'){
             const str : string = e.currentTarget.value;
@@ -148,7 +165,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
                 newElem.focus();
                 newElem.selectionStart = str.length;
                 newElem.selectionEnd = str.length;
-            }, 1);
+            }, 10);
         }
     }
 
@@ -160,10 +177,11 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
             style={ {display:'block', width:'100%', margin:'10px 0'} }
             onChange={ handleChange } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDown }
+            onPaste={ props.onPaste } // pasteHandler
             value={ contents }
             spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     </>);
 }
 
-export { RenderedTextBubble, EditorTextBubble };
+export { RenderedTextBubble, PreviewTextBubble, EditorTextBubble };

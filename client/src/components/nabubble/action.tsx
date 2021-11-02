@@ -8,7 +8,7 @@ import { Bubble, FlatBubble } from 'components/nabubble/data';
 interface BubbleState {
     counter : number;
     bubble : FlatBubble;
-    previewBubble? : FlatBubble;
+    previewBubble : FlatBubble;
 }
 
 interface BubbleInitialize { //initialize bubble and previewBubble
@@ -18,6 +18,10 @@ interface BubbleInitialize { //initialize bubble and previewBubble
 
 interface BubblePreview {
     type: 'preview';
+}
+
+interface BubblePreviewFreeze {
+    type: 'previewFreeze';
 }
 
 // Bubble Manipulation.
@@ -40,7 +44,7 @@ interface BubbleDeleteAction{
     id : string;
 }
 
-type BubbleSubAction = BubbleInitialize | BubblePreview;
+type BubbleSubAction = BubbleInitialize | BubblePreview | BubblePreviewFreeze;
 type BubbleAction = BubbleUpdateAction | BubbleAddAction | BubbleDeleteAction;
 
 export type { BubbleState, BubbleSubAction, BubbleAction };

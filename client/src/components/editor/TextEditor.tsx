@@ -8,14 +8,13 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
 
 import Manual from './MarkdownManual';
+import { useTextEditorState } from './globals';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers';
 
 const usePrevious = <T extends unknown>(value: T): T | undefined => {
     const ref = useRef<T>();
-    useEffect(() => {
-      ref.current = value;
-    });
+    useEffect(() => { ref.current = value; });
     return ref.current;
 };
 
@@ -84,9 +83,11 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     update?: (c : string) => void //can we do this w/o callback?
 }
 
-function MarkdownEditor({ body, update, ...other } : EditorProps) {
-    const [value,setValue] = useState(body || '');
-    const [previewValue,setPreviewValue] = useState(body || '');
+function TextEditor({ body, ...other } : EditorProps) {
+    const [text,setText] = useTextEditorState('text'); //should be initialized in the top component.
+    const [previewText,setPreviewText] = useTextEditorState('previewText');
+    //should be initialized in the top component.
+
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
     const [manualVisible,setManualVisible] = useState(false);
     const [autoRender,setAutoRender] = useState(true);
@@ -95,7 +96,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
 
     const intl = useIntl();
 
-    const preview = () => { setPreviewValue(value) }
+    const preview = () => { setPreviewText(text) }
 
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
     const prevCollapse = usePrevious(collapse);
@@ -105,22 +106,19 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         }
     }, [collapse])
 
-    const valueUpdate = (v : string) => {
-        setValue(v);
-        if(update){
-            update(v);
-        }
-    }
-
     const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
         //can we prevent double rendering??
-        valueUpdate(e.target.value);
+        setText(e.target.value);
         if(!collapse && autoRender){
-            setPreviewValue(e.target.value);
+            setPreviewText(e.target.value);
         }
+    }
+
+    const uploadErrorHandler = (e: unknown) => {
+        alert( intl.formatMessage({id: 'editor.uploadFailed'}));
     }
 
     //resizing
@@ -192,13 +190,13 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                         className={ `${other.className || ''} editorArea` } 
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
-                        value = { value }
+                        value = { text }
                     />
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
                         <MemoizedRenderer openDetails>
-                            { previewValue }
+                            { previewText }
                         </MemoizedRenderer>
                     </PreviewArea>
                 </Panel>
@@ -216,12 +214,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             
 
             <div className='dropzone'>
-                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current || undefined) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
-                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
+                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
+                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
             </div>
         </div>
         <Manual visible={manualVisible} setVisible={setManualVisible} />
     </>);
 }
 
-export default MarkdownEditor;
+export default TextEditor;

@@ -1,48 +1,100 @@
 import React, { useRef, MutableRefObject } from 'react';
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
 
-import { RenderedTextBubble, EditorTextBubble } from './Text';
+import { RenderedTextBubble, PreviewTextBubble, EditorTextBubble } from './Text';
+
+import { useNaBubbleState } from '../actionReducer';
 
 //bubble type : 'parent'
 
 function RenderedParentBubble(props : BubbleComponentProps){
-    const childrenId = props.bubbleObj.record[props.bubbleId].childrenId || [];
+    const { bubbleId, ...others } = props;
+
+    const [ bubble ] = useNaBubbleState('bubble');
+    const childrenId = bubble.record[bubbleId].childrenId || [];
 
     return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(
-            <RenderedBubble bubbleObj = { props.bubbleObj } bubbleId = { childId } />
+            <RenderedBubble {...others} bubbleId = { childId } />
         )) }
-    </div>)
+    </div>);
+}
+
+function PreviewParentBubble(props : BubbleComponentProps){
+    const { bubbleId, ...others } = props;
+
+    const [ bubble ] = useNaBubbleState('previewBubble');
+    const childrenId = bubble.record[bubbleId].childrenId || [];
+
+    return (<div style = { { padding:'5px', border:'1px solid black' } }>
+        { childrenId.map((childId)=>(
+            <PreviewBubble {...others} bubbleId = { childId } />
+        )) }
+    </div>);
 }
 
 function EditorParentBubble(props : EditorBubbleComponentProps){
-    const bid = props.bubbleId
-    const childrenId = props.bubbleObj.record[bid].childrenId || [];
+    const { bubbleId, refs, ...others } = props;
+
+    const [ bubble ] = useNaBubbleState('bubble');
+    const childrenId = bubble.record[bubbleId].childrenId || [];
 
     return (<div
-        ref = { (el) => { props.refs.current[bid] = el } }
+        ref = { (el) => { refs.current[bubbleId] = el } }
         style = {{ border: '1px solid gray', padding: '0 10px' }}
     >
         { childrenId.map((childId)=>(
-            <EditorBubble bubbleObj = { props.bubbleObj } bubbleId = { childId } refs = { props.refs } dispatch = { props.dispatch }/>
+            <EditorBubble {...others} bubbleId = { childId } refs = { refs }/>
         )) }
-    </div>)
+    </div>);
+}
+
+function RenderedRootBubble(props : React.HTMLAttributes<HTMLElement>){
+    const [ bubble ] = useNaBubbleState('bubble');
+    return (<RenderedParentBubble {...props} bubbleId = { bubble.rootId } />);
+}
+
+function PreviewRootBubble(props : React.HTMLAttributes<HTMLElement>){
+    const [ bubble ] = useNaBubbleState('previewBubble');
+    if(!bubble) return (<></>);
+    return (<PreviewParentBubble {...props} bubbleId = { bubble.rootId } />);
+}
+
+function EditorRootBubble(props : React.HTMLAttributes<HTMLElement>){
+    const [ bubble ] = useNaBubbleState('bubble');
+    return (<EditorParentBubble {...props} bubbleId = { bubble.rootId } refs = { useRef({}) } />);
 }
 
 function RenderedBubble(props : BubbleComponentProps){
-    switch(props.bubbleObj.record[props.bubbleId].type){
+    const [ bubble ] = useNaBubbleState('bubble');
+    switch(bubble.record[props.bubbleId].type){
         case 'parent': return (<RenderedParentBubble {...props} />);
         case 'text': return (<RenderedTextBubble {...props} />);
         default: return (<></>);
     }
 }
 
+function PreviewBubble(props : BubbleComponentProps){
+    const [ bubble ] = useNaBubbleState('previewBubble');
+    // console.log(bubble.record, props.bubbleId);
+    switch(bubble.record[props.bubbleId].type){
+        case 'parent': return (<PreviewParentBubble {...props} />);
+        case 'text': return (<PreviewTextBubble {...props} />);
+        default: return (<></>);
+    }
+}
+
 function EditorBubble(props : EditorBubbleComponentProps){
-    switch(props.bubbleObj.record[props.bubbleId].type){
+    const [ bubble ] = useNaBubbleState('bubble');
+    switch(bubble.record[props.bubbleId].type){
         case 'parent': return (<EditorParentBubble {...props} />);
         case 'text': return (<EditorTextBubble {...props} />);
         default: return (<></>);
     }
 }
 
-export { RenderedBubble, EditorBubble, RenderedParentBubble, EditorParentBubble };
+export {
+    RenderedRootBubble, EditorRootBubble, PreviewRootBubble,
+    // RenderedBubble, EditorBubble, PreviewBubble
+    RenderedParentBubble, EditorParentBubble, PreviewParentBubble
+};

@@ -1,42 +1,23 @@
-// Common features on MarkdownEditor and BubbleEditor
-
 import React, { useState, useRef, useEffect, Component } from 'react';
-import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
-
 import { useMediaQuery } from 'react-responsive';
-
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-// import { readBuilderProgram } from 'typescript';
-import MarkdownManual from 'components/editor/MarkdownManual';
-
-import { fileUpload, imgUpload } from 'etc/FileUpload'
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+// import { readBuilderProgram } from 'typescript';
+
+import Manual from './MarkdownManual';
+import { useTextEditorState, useNaBubbleState, dispatchNaBubbleState as dispatch } from './globals';
+import { EditorRootBubble, PreviewRootBubble, RenderedRootBubble } from 'components/nabubble';
+
+import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers';
+
 const usePrevious = <T extends unknown>(value: T): T | undefined => {
     const ref = useRef<T>();
-    useEffect(() => {
-      ref.current = value;
-    });
+    useEffect(() => { ref.current = value; });
     return ref.current;
 };
-
-function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
-    let intl = useIntl();
-
-    return(
-        <textarea {...props} placeholder={ intl.formatMessage({id: 'editor.placeholder'}) } />
-        // className={ (props.className || '') + ' editorArea' }
-    )
-}
-
-const MemoizedRenderer = React.memo(MarkdownRenderer);
-function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
-    return(
-        <div {...props} />
-    )
-}
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
@@ -84,113 +65,37 @@ interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     update?: (c : string) => void //can we do this w/o callback?
 }
 
-function MarkdownEditor({ body, update, ...other } : EditorProps) {
-    const [value,setValue] = useState(body || '');
-    const [previewValue,setPreviewValue] = useState(body || '');
+function BubbleEditor({ body, ...other } : EditorProps) {
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
     const [manualVisible,setManualVisible] = useState(false);
     const [autoRender,setAutoRender] = useState(true);
 
     const intl = useIntl();
 
-    const preview = () => { setPreviewValue(value) }
+    const preview = () => { dispatch({ type: 'preview' }); console.log('fire!!') }
 
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
     const prevCollapse = usePrevious(collapse);
     useEffect(()=>{
-        if(prevCollapse && !collapse){
-            preview();
-        }
+        if(prevCollapse && !collapse) preview();
     }, [collapse])
 
+    // const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
 
-    const insertText = (text : string) => {
-        const isSuccess = document.execCommand('insertText', false, text);
+    //     //can we prevent double rendering??
+    //     setText(e.target.value);
+    //     if(!collapse && autoRender){
+    //         setPreviewText(e.target.value);
+    //     }
+    // }
 
-        if(!isSuccess){
-            const mdArea = document.getElementsByTagName('textarea')[0] as HTMLTextAreaElement;
-
-            if(!mdArea) return;
-
-            // source: https://kubyshkin.name/posts/insert-text-into-textarea-at-cursor-position/
-            const st = mdArea.selectionStart;
-            const ed = mdArea.selectionEnd;
-
-            mdArea.setRangeText(text, st, ed);
-            mdArea.selectionStart = mdArea.selectionEnd = st + text.length;
-
-            // notify to event listeners
-            const e = document.createEvent('UIEvent');
-            e.initEvent('input',true,false);
-            mdArea.dispatchEvent(e);
-        }
+    const uploadErrorHandler = (e: unknown) => {
+        alert( intl.formatMessage({id: 'editor.uploadFailed'}));
     }
 
-    const valueUpdate = (v : string) => {
-        setValue(v);
-        if(update){
-            update(v);
-        }
-    }
-
-    const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        //can we prevent double rendering??
-        valueUpdate(e.target.value);
-        if(!collapse && autoRender){
-            setPreviewValue(e.target.value);
-        }
-    }
-
-    const pasteHandler = async (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
-    handler : {
-        let text = e.clipboardData.getData('text/plain');
-        if(text){
-            insertText(text);
-            break handler;
-        }
-
-        // images
-        for(const item of e.clipboardData.items){
-            if(item.type.indexOf('image') === 0){ //image detected
-                const blob = item.getAsFile();
-                if(blob == null) continue;
-
-                imgUploadHandler(blob);
-                break handler;
-            }
-        }
-    }
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    const imgUploadHandler = async (file: File) => {
-        try{
-            const imgUrl = await imgUpload(file);
-            insertText(`\n![](${ imgUrl })\n`);
-        } catch (error){
-            // img uploading error handler
-            alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
-        }
-
-        return;
-    }
-
-    const fileUploadHandler = async (file: File) => {
-        try{
-            const fileUrl = await fileUpload(file);
-            insertText(`[💾 ${ file.name }](${ fileUrl })`);
-        } catch (error){
-            // file uploading error handler
-            alert( intl.formatMessage({id: 'editor.uploadFailed'}) );
-        }
-
-        return;
-    }
-
+    //resizing
     const [height,setHeight] = useState(400);
     const [y,setY] = useState(0);
     const [drag,setDrag] = useState(false);
@@ -244,7 +149,9 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 </PanelMenu>
                 <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
-                        setAutoRender(!autoRender);preview()
+                        setAutoRender(!autoRender);
+                        if(!autoRender) dispatch({ type: 'previewFreeze' });
+                        else preview();
                     } } >
                         <span className="material-icons">{autoRender ? "sync" : "sync_disabled"}</span>
                     </button>
@@ -253,20 +160,19 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             </div>
             <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
-                    <EditorArea
-                        {...other}
-                        className={ `${other.className || ''} editorArea` } 
-                        onChange={ innerUpdate }
-                        onPaste={ pasteHandler }
-                        value = { value }
-                    />
+                    <div className='editorArea'>
+                        <EditorRootBubble
+                            {...other}
+                            // onChange={ innerUpdate }
+                            onPaste={ pasteHandler }
+                        />
+                    </div>
                 </Panel>
                 <Panel className='panel2'>
-                    <PreviewArea className='previewArea'>
-                        <MemoizedRenderer openDetails>
-                            { previewValue }
-                        </MemoizedRenderer>
-                    </PreviewArea>
+                    <div className='previewArea'>
+                        {/* <PreviewRootBubble /> */}
+                        <RenderedRootBubble />
+                    </div>
                 </Panel>
                 <div
                     className='resizer'
@@ -282,12 +188,13 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             
 
             <div className='dropzone'>
-                <FileDropzone handleDrop={ (files) => imgUploadHandler(files[0]) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
-                <FileDropzone handleDrop={ (files) => fileUploadHandler(files[0]) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
+                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], document.activeElement as HTMLTextAreaElement || document.getElementsByTagName('textarea')[0] || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
+                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], document.activeElement as HTMLTextAreaElement || document.getElementsByTagName('textarea')[0] || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
             </div>
+            { /* can we memoize last active element?? */ }
         </div>
-        <MarkdownManual visible={manualVisible} setVisible={setManualVisible} />
+        <Manual visible={manualVisible} setVisible={setManualVisible} />
     </>);
 }
 
-export default MarkdownEditor;
+export default BubbleEditor;
