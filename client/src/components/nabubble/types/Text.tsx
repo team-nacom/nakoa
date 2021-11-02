@@ -2,7 +2,7 @@ import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
-import { useNaBubbleState, dispatch } from '../actionReducer';
+import { dispatchNaBubbleState as dispatch } from '../actionReducer';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);

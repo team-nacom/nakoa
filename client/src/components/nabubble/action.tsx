@@ -8,8 +8,19 @@ import { Bubble, FlatBubble } from 'components/nabubble/data';
 interface BubbleState {
     counter : number;
     bubble : FlatBubble;
-    bubblePreview? : FlatBubble;
+    previewBubble? : FlatBubble;
 }
+
+interface BubbleInitialize { //initialize bubble and previewBubble
+    type: 'init';
+    bubble : Bubble;
+}
+
+interface BubblePreview {
+    type: 'preview';
+}
+
+// Bubble Manipulation.
 
 interface BubbleUpdateAction { //for now, change value only. TODO: change type or children.
     type : 'update';
@@ -29,6 +40,7 @@ interface BubbleDeleteAction{
     id : string;
 }
 
+type BubbleSubAction = BubbleInitialize | BubblePreview;
 type BubbleAction = BubbleUpdateAction | BubbleAddAction | BubbleDeleteAction;
 
-export type { BubbleState, BubbleAction };
+export type { BubbleState, BubbleSubAction, BubbleAction };

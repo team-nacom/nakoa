@@ -1,17 +1,28 @@
 import { createStore } from 'react-hooks-global-state';
 
 import { Bubble, FlatBubble, prefixFlatBubble, flatten } from './data';
-import { BubbleState, BubbleAction } from './action';
+import { BubbleState, BubbleAction, BubbleSubAction } from './action';
 
-const reducer : React.Reducer<BubbleState,BubbleAction> = (state, action) => {
+const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (state, action) => {
     var newState : BubbleState = {
         counter : state.counter,
         bubble : {
             rootId : state.bubble.rootId,
             record : {...state.bubble.record}
-        } //shallow copy (childrenId are not copied)
+        }, //shallow copy (childrenId are not copied)
+        previewBubble : state.previewBubble
     };
     switch (action.type){
+        //BubbleSubAction : involving previewBubble
+        //previewBubble shares ref of bubble until bubble has been modified
+        case 'init':
+            newState.previewBubble = newState.bubble = flatten(action.bubble);
+            return newState;
+        case 'preview':
+            newState.previewBubble = newState.bubble;
+            return newState;
+
+        //BubbleAction
         case 'update': //BubbleUpdateAction
             newState.bubble.record[action.id].value = action.value;
             return newState;
@@ -74,8 +85,12 @@ const defaultState : BubbleState = {
     bubble : flatten({
         type: 'parent',
         children : [ {type: 'text', value: ''} ]
+    }),
+    previewBubble : flatten({
+        type: 'parent',
+        children : [ {type: 'text', value: ''} ]
     })
 };
 
-export const { useGlobalState : useNaBubbleState, getState, dispatch } = createStore(reducer, defaultState);
+export const { useGlobalState : useNaBubbleState, getState: getNaBubbleState, dispatch: dispatchNaBubbleState } = createStore(reducer, defaultState);
 
