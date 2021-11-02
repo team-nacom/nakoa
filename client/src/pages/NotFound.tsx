@@ -28,7 +28,7 @@ function NotFound() {
                     <EditorBubble bubbleId = { bubble.rootId } refs = { React.useRef({}) } />
                 </div>
                 <div style = { { display: 'inline-block', verticalAlign: 'top', width: '48%' } }>
-                    <RenderedBubble bubbleId = { bubble.rootId } />
+                    <RenderedBubble bubbleId = { bubble.rootId } bubbleObj = { bubble } />
                 </div>
             </div> */}
         

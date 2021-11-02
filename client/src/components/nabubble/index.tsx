@@ -1,5 +1,5 @@
 import { RenderedBubble, EditorBubble } from './types/Parent';
-import { useGlobalState as useNaBubbleState } from './StateReducer';
-import * as NaBubble from './BubbleData';
+import { useGlobalState as useNaBubbleState } from './actionReducer';
+import * as NaBubble from './data';
 
 export { RenderedBubble, EditorBubble, useNaBubbleState, NaBubble };

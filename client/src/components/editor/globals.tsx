@@ -3,7 +3,7 @@
 import React from 'react';
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, FlatBubble, prefixFlatBubble, flatten } from './BubbleData';
+import { Bubble, FlatBubble, prefixFlatBubble, flatten } from 'components/nabubble/data';
 
 interface BubbleState {
     counter : number;

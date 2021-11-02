@@ -1,7 +1,9 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
-import MarkdownEditor from 'components/MarkdownEditor';
+import MarkdownEditor from 'components/editor/MarkdownEditor';
+
+import { EditorBubble, RenderedBubble, useNaBubbleState } from 'components/nabubble'
 
 import { /*getGuideCategories, getGuideSections,*/ GuidePost, GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';

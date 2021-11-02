@@ -1,10 +1,10 @@
 import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { BubbleComponentProps, EditorBubbleComponentProps } from '../ComponentProps';
-import { useGlobalState, dispatch } from '../StateReducer';
+import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
+import { useNaBubbleState, dispatch } from '../actionReducer';
 
-import MarkdownRenderer from '../../markdown/MarkdownRenderer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 //bubble type : 'text'
@@ -14,8 +14,7 @@ function makeString(v : unknown) : string{
 }
 
 function RenderedTextBubble(props: BubbleComponentProps){
-    const [ bubble ] = useGlobalState('bubble');
-    const contents = bubble.record[props.bubbleId].value;
+    const contents = props.bubbleObj.record[props.bubbleId].value;
 
     if(typeof contents !== 'string') return (<></>);
 
@@ -29,11 +28,11 @@ function RenderedTextBubble(props: BubbleComponentProps){
 }
 
 function EditorTextBubble(props: EditorBubbleComponentProps){
-    const [ bubble ] = useGlobalState('bubble');
+    const record = props.bubbleObj.record;
     var bid = props.bubbleId;
 
     // var v = bubble.record[bid].value;
-    var contents = makeString(bubble.record[bid].value);
+    var contents = makeString(record[bid].value);
 
     const handleChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         var str : string = e.target.value;
@@ -42,10 +41,10 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
 
     const handleKeyDown = (e : React.KeyboardEvent<HTMLTextAreaElement>) => {
         //get sibling index.
-        var pbid = bubble.record[bid].parentId;
+        var pbid = record[bid].parentId;
         if(typeof pbid === 'undefined') return;
 
-        var siblingId = bubble.record[pbid].childrenId || [];
+        var siblingId = record[pbid].childrenId || [];
         var idx = siblingId.indexOf(bid);
         if(idx === -1) idx = siblingId.length;
 
@@ -113,9 +112,9 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
             if(idx === 0) return;
 
             const targetbid = siblingId[idx-1];
-            if(bubble.record[targetbid].type !== 'text') return; //can only merge with text node for now.
+            if(record[targetbid].type !== 'text') return; //can only merge with text node for now.
 
-            const targetStr = bubble.record[targetbid].value + '';
+            const targetStr = record[targetbid].value + '';
 
             dispatch({ type: 'update', id: bid, value : targetStr + '\n' + str });
             dispatch({ type: 'delete', id: targetbid });
@@ -138,9 +137,9 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
             if(idx === siblingId.length - 1) return;
 
             const targetbid = siblingId[idx+1];
-            if(bubble.record[targetbid].type !== 'text') return; //can only merge with text node for now.
+            if(record[targetbid].type !== 'text') return; //can only merge with text node for now.
 
-            dispatch({ type: 'update', id: bid, value : str + '\n' + bubble.record[targetbid].value });
+            dispatch({ type: 'update', id: bid, value : str + '\n' + record[targetbid].value });
             dispatch({ type: 'delete', id: targetbid });
 
             // props.refs.current[bid]?.focus();
