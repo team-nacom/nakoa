@@ -11,12 +11,13 @@ import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
 import './setup/passport'; // set up passportJS
 
-import challRouter from './chall';
+// import challRouter from './chall';
 import quizRouter from './quiz';
 import userRouter from './user';
 import guideRouter from './guide';
 import fileRouter from './file';
-import categoryRouter from './category';
+// import categoryRouter from './category';
+import bubbleRouter from './bubble';
 
 import { handleErrorMiddleware } from "./utils";
 
@@ -30,8 +31,8 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
-// Challenges
-router.use('/chall', challRouter.routes());
+// Challenges (obsolete)
+// router.use('/chall', challRouter.routes());
 // Quizzes
 router.use('/quiz', quizRouter.routes());
 // Users
@@ -40,8 +41,10 @@ router.use('/user', userRouter.routes());
 router.use('/guide', guideRouter.routes());
 // Files
 router.use('/file', fileRouter.routes());
-// Categories
-router.use('/category', categoryRouter.routes());
+// Categories (obsolete)
+// router.use('/category', categoryRouter.routes());
+// Bubble (for demo)
+router.use('/bubble', bubbleRouter.routes());
 
 // local / production config
 const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === "production");
