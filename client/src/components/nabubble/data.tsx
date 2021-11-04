@@ -1,13 +1,15 @@
 
+import { bubbleType } from './types/declaration'
+
 interface Bubble {
-    type : string;
+    type : bubbleType;
     value? : unknown;
     children? : Bubble[];
 }
 
 interface FlatBubbleEntity {
     id : string; //possibly unnecessary??
-    type : string;
+    type : bubbleType;
     value? : unknown;
     parentId? : string; //for manipulation.
     childrenId? : string[];
@@ -88,8 +90,8 @@ function inflate(fb : FlatBubble) : Bubble{
     }
     catch (e){
         return {
-            type: 'error', //ERROR HANDLER SOMEWHERE?
-            value: 'Invalid FlatBubble'
+            type: 'text', //ERROR HANDLER SOMEWHERE?
+            value: '[Error : Invalid FlatBubble]'
         };
     }
 }

@@ -1,11 +1,10 @@
 import React, { useRef, MutableRefObject } from 'react';
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
 
+import { bubbleType, bubbleMap } from './declaration';
 import { RenderedTextBubble, PreviewTextBubble, EditorTextBubble } from './Text';
 
 import { useNaBubbleState } from '../actionReducer';
-
-//bubble type : 'parent'
 
 function RenderedParentBubble(props : BubbleComponentProps){
     const { bubbleId, ...others } = props;
@@ -65,34 +64,36 @@ function EditorRootBubble(props : React.HTMLAttributes<HTMLElement>){
     return (<EditorParentBubble {...props} bubbleId = { bubble.rootId } bubbleType = 'parent' refs = { useRef({}) } />);
 }
 
+//////// general renderers. register renderers when adding a new bubble.
+
 function RenderedBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
-    // switch(bubble.record[props.bubbleId].type){
-    switch(props.bubbleType){
-        case 'parent': return (<RenderedParentBubble {...props} />);
-        case 'text': return (<RenderedTextBubble {...props} />);
-        default: return (<></>);
+    const map : bubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+        parent : RenderedParentBubble,
+        text : RenderedTextBubble,
     }
+    const RenderedTypedBubble = map[props.bubbleType];
+    return <RenderedTypedBubble {...props} />
 }
 
 function PreviewBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('preivewBubble');
-    // switch(bubble.record[props.bubbleId].type){
-    switch(props.bubbleType){
-        case 'parent': return (<PreviewParentBubble {...props} />);
-        case 'text': return (<PreviewTextBubble {...props} />);
-        default: return (<></>);
+    const map : bubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+        parent : PreviewParentBubble,
+        text : PreviewTextBubble,
     }
+    const PreviewTypedBubble = map[props.bubbleType];
+    return <PreviewTypedBubble {...props} />
 }
 
 function EditorBubble(props : EditorBubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
-    // switch(bubble.record[props.bubbleId].type){
-    switch(props.bubbleType){
-        case 'parent': return (<EditorParentBubble {...props} />);
-        case 'text': return (<EditorTextBubble {...props} />);
-        default: return (<></>);
+    const map : bubbleMap<(props : EditorBubbleComponentProps) => JSX.Element> = {
+        parent : EditorParentBubble,
+        text : EditorTextBubble,
     }
+    const EditorTypedBubble = map[props.bubbleType];
+    return <EditorTypedBubble {...props} />
 }
 
 export {

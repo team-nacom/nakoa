@@ -195,7 +195,7 @@ function TextEditor({ body, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
-                        <MemoizedRenderer openDetails>
+                        <MemoizedRenderer usePriority useTOC openDetails>
                             { previewText }
                         </MemoizedRenderer>
                     </PreviewArea>

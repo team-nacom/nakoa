@@ -27,7 +27,7 @@ function MarkdownManual({visible, setVisible} : PopupProps) {
                 <div className='manualHeader'>
                     <FormattedMessage id='editor.manual' />
                 </div>
-                <MarkdownRenderer isManual={ true }>
+                <MarkdownRenderer isManual usePriority useTOC>
                     { manual }
                 </MarkdownRenderer>
             </div>

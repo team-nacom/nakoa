@@ -265,7 +265,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
-                        <MemoizedRenderer openDetails>
+                        <MemoizedRenderer usePriority useTOC openDetails>
                             { previewValue }
                         </MemoizedRenderer>
                     </PreviewArea>

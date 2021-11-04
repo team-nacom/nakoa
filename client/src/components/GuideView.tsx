@@ -88,7 +88,7 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                 + (filter.Optional ? '' : ' hideOptional')
                 + (filter.Draft ? '' : ' showDraft')
             }>
-                <MarkdownRenderer>
+                <MarkdownRenderer usePriority useTOC>
                     { guide.content }
                 </MarkdownRenderer>
                 <hr/>

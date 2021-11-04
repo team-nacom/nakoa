@@ -16,7 +16,7 @@ function About() {
         <>
             <Header/>
 
-            <MarkdownRenderer isManual={true}>
+            <MarkdownRenderer isManual usePriority useTOC>
                 { message }
             </MarkdownRenderer>
             
