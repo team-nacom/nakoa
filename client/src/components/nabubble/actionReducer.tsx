@@ -41,6 +41,9 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             return newState;
         //BubbleAction
         case 'update': //BubbleUpdateAction
+            if(typeof action.label !== 'undefined'){
+                newState.bubble.record[action.id].label = action.label;    
+            }
             newState.bubble.record[action.id].value = action.value;
             return newState;
         case 'add': //BubbleAddAction

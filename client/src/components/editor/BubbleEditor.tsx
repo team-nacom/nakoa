@@ -72,7 +72,7 @@ function BubbleEditor({ body, ...other } : EditorProps) {
 
     const intl = useIntl();
 
-    const preview = () => { dispatch({ type: 'preview' }); console.log('fire!!') }
+    const preview = () => { dispatch({ type: 'preview' }) }
 
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
     const prevCollapse = usePrevious(collapse);

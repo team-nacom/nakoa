@@ -97,7 +97,7 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
     
             const targetStr = record[targetbid].value + '';
     
-            dispatch({ type: 'update', id: bid, value : targetStr + '\n' + str });
+            dispatch({ type: 'update', id: bid, value : targetStr + (str ? '\n' + str : '') });
             dispatch({ type: 'delete', id: targetbid });
             focusElem(refs,bid,targetStr.length);
         }
@@ -113,7 +113,8 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             const targetbid = siblingId[idx+1];
             if(record[targetbid].type !== 'text') return; //can only merge with text node for now.
     
-            dispatch({ type: 'update', id: bid, value : str + '\n' + record[targetbid].value });
+            
+            dispatch({ type: 'update', id: bid, value : (str ? str + '\n' : '') + record[targetbid].value });
             dispatch({ type: 'delete', id: targetbid });
             focusElem(refs,bid,str.length);
         }

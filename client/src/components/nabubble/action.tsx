@@ -29,6 +29,7 @@ interface BubblePreviewFreeze {
 interface BubbleUpdateAction { //for now, change value only. TODO: change type or children.
     type : 'update';
     id : string;
+    label? : string;
     value : unknown;
 }
 
