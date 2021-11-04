@@ -5,6 +5,8 @@ import { BubbleSubAction, BubbleAction } from './action';
 interface BubbleComponentProps extends React.HTMLAttributes<HTMLElement>{
     bubbleId : string;
     // preview? : boolean;
+
+    bubbleType : string;
 }
 
 interface EditorBubbleComponentProps extends BubbleComponentProps{
