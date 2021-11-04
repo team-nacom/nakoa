@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatBubble } from '../data';
 import { BubbleAction, BubbleSubAction } from '../action';
+import { BubbleType, bubbleBehavior } from '../types/declaration';
 
 type dispatchType = (action : BubbleAction | BubbleSubAction) => BubbleAction | BubbleSubAction;
 
@@ -47,29 +48,37 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
                     type : 'text',
                     value : str[curStart - 1] === '\n' ? str.slice(0,curStart-1) : str.slice(0, curStart)
                 } });
-                dispatch({ type: 'update', id: bid, value : (
-                    str[curStart] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
-                ) });
+                dispatch({ type: 'update', id: bid,
+                    value : str[curStart] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
+                });
                 focusElem(refs,bid,0);
             }
             else{ //trigger 2 : @@@ + enter
-                if(str[curStart] !== '\n') return;
+                if(str[curStart] !== '\n' && curStart !== str.length) return;
     
-                var lineStart : number = str.lastIndexOf('\n',curStart-2) + 1; //previous line.
+                const lineStart : number = str.lastIndexOf('\n',curStart-1) + 1; //previous line.
                 //if '\n' not found, lineStart === 0.
     
-                var result = str.slice(lineStart,curStart-1).match(/^(@{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
+                var result = str.slice(lineStart,curStart).match(/^(@{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
                 if(!result) return;
-    
-                // create a new bubble based on type. for now we only support on text bubbles.
-                // [_, _, type, label] = result
-    
-                dispatch({ type: 'add', parentId: pbid, idx: idx, bubble: {
-                    type : 'text',
-                    value : str.slice(0, lineStart - 1)
+
+                // create a new bubble based on type. for now we only support on text-behavior bubbles.
+                var [_, _, _type, label] = result;
+                var type = _type as BubbleType;
+                if(bubbleBehavior[type] !== 'text' ){
+                    type = 'text';
+                }
+                
+                dispatch({ type: 'update', id: bid, value : str.slice(0, lineStart ? lineStart - 1 : 0) });
+                dispatch({ type: 'add', parentId: pbid, idx: idx+1, bubble: {
+                    type : type,
+                //     value : ''
+                // } });
+                // dispatch({ type: 'add', parentId: pbid, idx: idx+2, bubble: {
+                //     type : 'text',
+                    value : str.slice(curStart)
                 } });
-                dispatch({ type: 'update', id: bid, value : str.slice(curStart + 1) });
-                focusElem(refs,bid,0);
+                focusElem(refs,bid,lineStart - 1);
             }
         }
     

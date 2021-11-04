@@ -88,6 +88,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         math: (p: any) => <TeX block math = { p.value as string } />,
         inlineMath: (p: any) => <TeX math = { p.value as string } />,
         code: (p: any) => { // ({language, value}) => {
+            // if(!p.language){
+            //     return (
+            //         <pre>
+            //             <code>{ p.value }</code>
+            //         </pre>
+            //     );
+            // }
             return ( 
                 <Highlight className = { p.language } >
                     { p.value }

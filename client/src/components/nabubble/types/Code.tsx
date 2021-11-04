@@ -6,45 +6,52 @@ import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionRe
 
 import { handleChangeFactory, handleKeyDownFactory } from '../editor-specific/handlers';
 
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
+import Highlight from 'react-highlight';
+import 'highlight.js/styles/github.css';
+// import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
 
-//type : 'text'
+//type : 'code'
 //value : contents
 
 function makeString(v : unknown) : string{
     return typeof v !== 'string' ? '' : v;
 }
 
-function RenderedTextBubble(props: BubbleComponentProps){
+function RenderedCodeBubble(props: BubbleComponentProps){
     const [ bubble ] = useNaBubbleState('bubble');
     const contents = bubble.record[props.bubbleId].value;
 
     if(typeof contents !== 'string') return (<></>);
+    // return ( 
+    //     <Highlight className = { '' } >
+    //         { contents }
+    //     </Highlight>
+    // ); 
     return (
-        <div style={ { margin: '5px', border: '1px solid gray'} }>
-            <MemoizedRenderer>
-                { contents }
-            </MemoizedRenderer>
-        </div>
+        <pre>
+            <code>{ contents }</code>
+        </pre>
     );
 }
 
-function PreviewTextBubble(props: BubbleComponentProps){
+function PreviewCodeBubble(props: BubbleComponentProps){
     const [ bubble ] = useNaBubbleState('previewBubble');
     const contents = bubble?.record[props.bubbleId].value;
 
     if(typeof contents !== 'string') return (<></>);
+    // return ( 
+    //     <Highlight className = { '' } >
+    //         { contents }
+    //     </Highlight>
+    // ); 
     return (
-        <div style={ { margin: '5px', border: '1px solid gray'} }>
-            <MemoizedRenderer openDetails>
-                { contents }
-            </MemoizedRenderer>
-        </div>
+        <pre>
+            <code>{ contents }</code>
+        </pre>
     );
 }
 
-function EditorTextBubble(props: EditorBubbleComponentProps){
+function EditorCodeBubble(props: EditorBubbleComponentProps){
     const [ bubble ] = useNaBubbleState('bubble');
 
     const bid = props.bubbleId;
@@ -57,11 +64,11 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
             style={ {display:'block', width:'100%', margin:'10px 0'} }
             onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
-            onPaste={ props.onPaste } // pasteHandler
+            // onPaste={ props.onPaste } // pasteHandler
             value={ contents }
             spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     </>);
 }
 
-export { RenderedTextBubble, PreviewTextBubble, EditorTextBubble };
+export { RenderedCodeBubble, PreviewCodeBubble, EditorCodeBubble };

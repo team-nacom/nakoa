@@ -1,10 +1,16 @@
 import React, { useRef, MutableRefObject } from 'react';
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
 
-import { bubbleType, bubbleMap } from './declaration';
+import { BubbleType, BubbleMap } from './declaration';
 import { RenderedTextBubble, PreviewTextBubble, EditorTextBubble } from './Text';
+import { RenderedMathBubble, PreviewMathBubble, EditorMathBubble } from './Math';
+import { RenderedCodeBubble, PreviewCodeBubble, EditorCodeBubble } from './Code';
 
 import { useNaBubbleState } from '../actionReducer';
+
+//type: 'parent'
+//value: title
+//has children
 
 function RenderedParentBubble(props : BubbleComponentProps){
     const { bubbleId, ...others } = props;
@@ -68,9 +74,11 @@ function EditorRootBubble(props : React.HTMLAttributes<HTMLElement>){
 
 function RenderedBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
-    const map : bubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+    const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
         parent : RenderedParentBubble,
         text : RenderedTextBubble,
+        math : RenderedMathBubble,
+        code : RenderedCodeBubble,
     }
     const RenderedTypedBubble = map[props.bubbleType];
     return <RenderedTypedBubble {...props} />
@@ -78,9 +86,11 @@ function RenderedBubble(props : BubbleComponentProps){
 
 function PreviewBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('preivewBubble');
-    const map : bubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+    const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
         parent : PreviewParentBubble,
         text : PreviewTextBubble,
+        math : PreviewMathBubble,
+        code : PreviewCodeBubble,
     }
     const PreviewTypedBubble = map[props.bubbleType];
     return <PreviewTypedBubble {...props} />
@@ -88,9 +98,11 @@ function PreviewBubble(props : BubbleComponentProps){
 
 function EditorBubble(props : EditorBubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
-    const map : bubbleMap<(props : EditorBubbleComponentProps) => JSX.Element> = {
+    const map : BubbleMap<(props : EditorBubbleComponentProps) => JSX.Element> = {
         parent : EditorParentBubble,
         text : EditorTextBubble,
+        math : EditorMathBubble,
+        code : EditorCodeBubble,
     }
     const EditorTypedBubble = map[props.bubbleType];
     return <EditorTypedBubble {...props} />

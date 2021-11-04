@@ -1,8 +1,19 @@
-interface bubbleMap<T>{
+interface BubbleMap<T>{
     parent: T;
     text: T;
+    math: T;
+    code: T;
 }
 
-type bubbleType = keyof bubbleMap<string>;
+type BubbleType = keyof BubbleMap<string>;
 
-export type { bubbleType, bubbleMap };
+type BubbleBehaviorList = 'parent' | 'text';
+const bubbleBehavior : BubbleMap<BubbleBehaviorList> = {
+    parent: 'parent',
+    text: 'text',
+    math: 'text',
+    code: 'text',
+}
+
+export type { BubbleType, BubbleMap };
+export { bubbleBehavior };

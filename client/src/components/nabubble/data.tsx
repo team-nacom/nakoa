@@ -1,15 +1,15 @@
 
-import { bubbleType } from './types/declaration'
+import { BubbleType } from './types/declaration'
 
 interface Bubble {
-    type : bubbleType;
+    type : BubbleType;
     value? : unknown;
     children? : Bubble[];
 }
 
 interface FlatBubbleEntity {
     id : string; //possibly unnecessary??
-    type : bubbleType;
+    type : BubbleType;
     value? : unknown;
     parentId? : string; //for manipulation.
     childrenId? : string[];
