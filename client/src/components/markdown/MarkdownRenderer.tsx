@@ -26,7 +26,7 @@ import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
-import NaMark from '../namark'
+import NaMarkTextbox from './textbox'
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
@@ -45,7 +45,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         CodeFrontmatter,
 
         // custom plugins
-        NaMark,
+        NaMarkTextbox,
 
         SectionPriorityHandler,
         InternalLinkHandler,
