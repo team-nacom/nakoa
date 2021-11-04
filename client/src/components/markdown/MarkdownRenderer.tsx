@@ -59,9 +59,9 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
         root: (p: any) => (
             <>
-                { p.children[0] }
+                { props.useTOC ? p.children[0] : '' }
                 <div className='markdown'>
-                    { p.children.slice(1) }
+                    { props.useTOC ? p.children.slice(1) : p.children }
                 </div>
             </>
         ),
@@ -88,13 +88,6 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         math: (p: any) => <TeX block math = { p.value as string } />,
         inlineMath: (p: any) => <TeX math = { p.value as string } />,
         code: (p: any) => { // ({language, value}) => {
-            if(!p.language){
-                return (
-                    <pre>
-                        <code>{ p.value }</code>
-                    </pre>
-                );
-            }
             return ( 
                 <Highlight className = { p.language } >
                     { p.value }
