@@ -50,8 +50,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         // DirectiveHandler, //legacy
 
         InternalLinkHandler,
-        ...( props.usePriority ? [] : [SectionPriorityHandler] ),
-        ...( props.useTOC ? [] : [SectionEnumerator] ),
+        ...( props.usePriority ? [SectionPriorityHandler] : [] ),
+        ...( props.useTOC ? [SectionEnumerator] : [] ),
         FootnoteEnumerator,
     ]
 
