@@ -7,6 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Manual from './MarkdownManual';
 import { useTextEditorState, useNaBubbleState, dispatchNaBubbleState as dispatch } from './globals';
 import { EditorRootBubble, PreviewRootBubble, RenderedRootBubble } from 'components/nabubble';
+import { Bubble } from 'components/nabubble/data';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers';
 
@@ -57,9 +58,8 @@ function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
     )
   }
 
-interface EditorProps extends React.HTMLAttributes<HTMLTextAreaElement>{
-    body?: string;
-    update?: (c : string) => void //can we do this w/o callback?
+interface EditorProps extends React.HTMLAttributes<HTMLElement>{
+    body?: Bubble;
 }
 
 function BubbleEditor({ body, ...other } : EditorProps) {
@@ -70,6 +70,7 @@ function BubbleEditor({ body, ...other } : EditorProps) {
     const intl = useIntl();
 
     const preview = () => { dispatch({ type: 'preview' }) }
+    const previewFreeze = () => { dispatch({ type: 'previewFreeze' }) }
 
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
     const prevCollapse = usePrevious(collapse);
@@ -136,6 +137,17 @@ function BubbleEditor({ body, ...other } : EditorProps) {
     },[drag]);
     // });
 
+    //initialize
+    useEffect(()=>{
+        dispatch({
+            type: 'init',
+            bubble: body || {
+                type: 'parent',
+                children : [ {type: 'text', value: ''} ]
+            }
+        })
+    },[]);
+
     return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
@@ -144,10 +156,10 @@ function BubbleEditor({ body, ...other } : EditorProps) {
                         <span className="material-icons">help_outline</span>
                     </button>
                 </PanelMenu>
-                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2); /* preview() */} }> 
+                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2); previewFreeze() } }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         e.stopPropagation();
-                        if(autoRender) dispatch({ type: 'previewFreeze' });
+                        if(autoRender) previewFreeze();
                         else preview();
                         setAutoRender(!autoRender);
                     } } >

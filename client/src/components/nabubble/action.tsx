@@ -9,6 +9,7 @@ interface BubbleState {
     counter : number;
     bubble : FlatBubble;
     previewBubble : FlatBubble;
+    autoRender? : boolean;
 }
 
 interface BubbleInitialize { //initialize bubble and previewBubble

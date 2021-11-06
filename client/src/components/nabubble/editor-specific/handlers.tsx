@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatBubble, findSibling } from '../data';
+import { FlatBubble } from '../data';
 import { BubbleAction, BubbleSubAction } from '../action';
 import { BubbleType, bubbleBehavior } from '../types/declaration';
 

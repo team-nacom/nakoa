@@ -1,6 +1,6 @@
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, FlatBubble, prefixFlatBubble, flatten, inflate } from './data';
+import { Bubble, FlatBubble, prefixFlatBubble, flatten, inflate, deepCopyFlat } from './data';
 import { BubbleState, BubbleAction, BubbleSubAction } from './action';
 
 const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (state, action) => {
@@ -10,10 +10,9 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             rootId : state.bubble.rootId,
             record : {...state.bubble.record}
         }, //shallow copy (childrenId are not copied yet)
-        previewBubble : state.previewBubble
+        previewBubble : state.previewBubble,
+        autoRender : state.autoRender
     };
-    // console.log(newState.previewBubble.record);
-    console.log(action.type);
     switch (action.type){
         //BubbleSubAction : involving previewBubble
         //previewBubble shares ref of bubble until a bubble has been modified
@@ -21,10 +20,13 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             newState.previewBubble = newState.bubble = flatten(action.bubble);
             return newState;
         case 'preview':
+            newState.autoRender = true;
             newState.previewBubble = newState.bubble;
             return newState;
         case 'previewFreeze':
-            newState.previewBubble = flatten(inflate(newState.bubble));
+            newState.autoRender = false;
+            // newState.previewBubble = deepCopyFlat(state.previewBubble);
+            newState.previewBubble = flatten(inflate(state.previewBubble));
             return newState;
         //BubbleAction
         case 'update': //BubbleUpdateAction
@@ -32,10 +34,6 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
                 newState.bubble.record[action.id].label = action.label;    
             }
             newState.bubble.record[action.id].value = action.value;
-
-            console.log(inflate(newState.bubble));
-            console.log(inflate(newState.previewBubble));
-
             return newState;
         case 'add': //BubbleAddAction
             var childrenId = newState.bubble.record[action.parentId].childrenId;
@@ -73,6 +71,9 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
                 ...fb.record
             };
 
+            if(newState.autoRender){
+                newState.previewBubble = newState.bubble
+            }
             return newState;
         case 'delete':
             var parentId = newState.bubble.record[action.id].parentId;
@@ -87,12 +88,16 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             var { [action.id] : _, ...newRecord } = newState.bubble.record;
             newState.bubble.record = newRecord;
 
+            if(newState.autoRender){
+                newState.previewBubble = newState.bubble
+            }
             return newState;
     }
 };
 
 const defaultState : BubbleState = {
     counter : 0,
+    autoRender : true,
     bubble : flatten({
         type: 'parent',
         children : [ {type: 'text', value: ''} ]

@@ -2,6 +2,8 @@ import React, { useRef, MutableRefObject } from 'react';
 import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
 
 import { BubbleType, BubbleMap } from './declaration';
+
+// WE NEED POLYMORPHISM!!!!!!!!
 import { RenderedTextBubble, PreviewTextBubble, EditorTextBubble } from './Text';
 import { RenderedMathBubble, PreviewMathBubble, EditorMathBubble } from './Math';
 import { RenderedCodeBubble, PreviewCodeBubble, EditorCodeBubble } from './Code';
@@ -30,6 +32,9 @@ function PreviewParentBubble(props : BubbleComponentProps){
 
     const [ bubble ] = useNaBubbleState('previewBubble');
     const childrenId = bubble.record[bubbleId].childrenId || [];
+
+    console.log(childrenId);
+    console.log(bubble.record);
 
     return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(

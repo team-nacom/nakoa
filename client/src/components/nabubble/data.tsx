@@ -98,6 +98,23 @@ function inflate(fb : FlatBubble) : Bubble{
     }
 }
 
+function deepCopyFlat(fb: FlatBubble) : FlatBubble{
+    const newFb = {
+        rootId : fb.rootId,
+        record : {...fb.record}
+    };
+    for(let key in fb.record){
+        const fbEntity = fb.record[key];
+        newFb.record[key] = {...fbEntity};
+        if(typeof fbEntity.childrenId !== 'undefined'){
+            newFb.record[key].childrenId = [...fbEntity.childrenId];
+        }
+    }
+
+    return newFb;
+}
+
+
 function getCounter(fb: FlatBubble) : number{
     return Math.max.apply(
         null,
@@ -121,7 +138,7 @@ function findSibling(fb: FlatBubble, id: string, delta: number) : string{
 
 export type { Bubble, FlatBubble };
 export {
-    flatten, inflate,
+    flatten, inflate, deepCopyFlat,
     prefixFlatBubble, getCounter,
     findSibling
 };
