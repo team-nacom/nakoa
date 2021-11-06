@@ -4,9 +4,6 @@ import { useMediaQuery } from 'react-responsive';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-// import { readBuilderProgram } from 'typescript';
-
 import Manual from './MarkdownManual';
 import { useTextEditorState, useNaBubbleState, dispatchNaBubbleState as dispatch } from './globals';
 import { EditorRootBubble, PreviewRootBubble, RenderedRootBubble } from 'components/nabubble';
@@ -147,11 +144,12 @@ function BubbleEditor({ body, ...other } : EditorProps) {
                         <span className="material-icons">help_outline</span>
                     </button>
                 </PanelMenu>
-                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2);preview()} }> 
+                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2); /* preview() */} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
-                        setAutoRender(!autoRender);
-                        if(!autoRender) dispatch({ type: 'previewFreeze' });
+                        e.stopPropagation();
+                        if(autoRender) dispatch({ type: 'previewFreeze' });
                         else preview();
+                        setAutoRender(!autoRender);
                     } } >
                         <span className="material-icons">{autoRender ? "sync" : "sync_disabled"}</span>
                     </button>
@@ -170,8 +168,8 @@ function BubbleEditor({ body, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <div className='previewArea'>
-                        {/* <PreviewRootBubble /> */}
-                        <RenderedRootBubble />
+                        <PreviewRootBubble />
+                        {/* <RenderedRootBubble /> */}
                     </div>
                 </Panel>
                 <div
@@ -191,7 +189,6 @@ function BubbleEditor({ body, ...other } : EditorProps) {
                 <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], document.activeElement as HTMLTextAreaElement || document.getElementsByTagName('textarea')[0] || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
                 <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], document.activeElement as HTMLTextAreaElement || document.getElementsByTagName('textarea')[0] || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
             </div>
-            { /* can we memoize last active element?? */ }
         </div>
         <Manual visible={manualVisible} setVisible={setManualVisible} />
     </>);

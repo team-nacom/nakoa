@@ -1,6 +1,6 @@
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, FlatBubble, prefixFlatBubble, flatten } from './data';
+import { Bubble, FlatBubble, prefixFlatBubble, flatten, inflate } from './data';
 import { BubbleState, BubbleAction, BubbleSubAction } from './action';
 
 const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (state, action) => {
@@ -13,6 +13,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
         previewBubble : state.previewBubble
     };
     // console.log(newState.previewBubble.record);
+    console.log(action.type);
     switch (action.type){
         //BubbleSubAction : involving previewBubble
         //previewBubble shares ref of bubble until a bubble has been modified
@@ -23,21 +24,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             newState.previewBubble = newState.bubble;
             return newState;
         case 'previewFreeze':
-            newState.previewBubble = newState.bubble;
-
-            // newState.previewBubble = {
-            //     rootId : state.previewBubble.rootId,
-            //     record : {...state.previewBubble.record}
-            // };
-            // for(let key in newState.previewBubble.record){
-            //     //deep copy
-            //     const fb = newState.previewBubble.record[key];
-            //     newState.previewBubble.record[key] = {...fb};
-            //     if(typeof fb.childrenId !== 'undefined'){
-            //         newState.previewBubble.record[key].childrenId = [...fb.childrenId];
-            //     }
-            // }
-            // newState.previewBubble.record = {...newState.previewBubble.record};
+            newState.previewBubble = flatten(inflate(newState.bubble));
             return newState;
         //BubbleAction
         case 'update': //BubbleUpdateAction
@@ -45,6 +32,10 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
                 newState.bubble.record[action.id].label = action.label;    
             }
             newState.bubble.record[action.id].value = action.value;
+
+            console.log(inflate(newState.bubble));
+            console.log(inflate(newState.previewBubble));
+
             return newState;
         case 'add': //BubbleAddAction
             var childrenId = newState.bubble.record[action.parentId].childrenId;
