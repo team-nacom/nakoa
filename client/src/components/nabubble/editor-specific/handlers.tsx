@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatBubble } from '../data';
+import { FlatBubble, findSibling } from '../data';
 import { BubbleAction, BubbleSubAction } from '../action';
 import { BubbleType, bubbleBehavior } from '../types/declaration';
 
@@ -44,14 +44,17 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             const curStart : number = e.currentTarget.selectionStart;
             const curEnd : number = e.currentTarget.selectionEnd;
             if(e.ctrlKey){ //trigger 1 : ctrl + enter. text bubbles only
-                dispatch({ type: 'add', parentId: pbid, idx: idx, bubble: {
-                    type : 'text',
-                    value : str[curStart - 1] === '\n' ? str.slice(0,curStart-1) : str.slice(0, curStart)
-                } });
                 dispatch({ type: 'update', id: bid,
-                    value : str[curStart] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
+                    value : str[curStart] === '\n' ? str.slice(0,curStart-1) : str.slice(0, curStart)
                 });
-                focusElem(refs,bid,0);
+                dispatch({ type: 'add', parentId: pbid, idx: idx + 1, bubble: {
+                    type : 'text',
+                    value : str[curStart - 1] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
+                } });
+
+                // will be autofocused on newly created element
+                // focusElem(refs,idx,0);
+                // focusElem(refs,siblingId[idx + 1],0);
             }
             else{ //trigger 2 : @@@ + enter
                 if(str[curStart] !== '\n' && curStart !== str.length) return;
@@ -78,7 +81,10 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
                 //     type : 'text',
                     value : str.slice(curStart)
                 } });
-                focusElem(refs,bid,lineStart - 1);
+
+                // will be autofocused on newly created element
+                // focusElem(refs,idx,0);
+                // focusElem(refs,siblingId[idx + 1],0);
             }
         }
     
@@ -93,13 +99,14 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             if(idx === 0) return;
     
             const targetbid = siblingId[idx-1];
-            if(record[targetbid].type !== 'text') return; //can only merge with text node for now.
+            if( bubbleBehavior[ record[targetbid].type ] !== 'text') return; //can only merge with text node for now.
     
             const targetStr = record[targetbid].value + '';
-    
-            dispatch({ type: 'update', id: bid, value : targetStr + (str ? '\n' + str : '') });
-            dispatch({ type: 'delete', id: targetbid });
-            focusElem(refs,bid,targetStr.length);
+            
+            //first bubble remains.
+            dispatch({ type: 'update', id: targetbid, value : targetStr + (str ? '\n' + str : '') });
+            dispatch({ type: 'delete', id: bid });
+            focusElem(refs,targetbid,targetStr.length);
         }
         if(e.key === 'Delete'){
             const str : string = e.currentTarget.value;
@@ -111,9 +118,9 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             if(idx === siblingId.length - 1) return;
     
             const targetbid = siblingId[idx+1];
-            if(record[targetbid].type !== 'text') return; //can only merge with text node for now.
-    
+            if( bubbleBehavior[ record[targetbid].type ] !== 'text') return; //can only merge with text node for now.
             
+            //first bubble remains.
             dispatch({ type: 'update', id: bid, value : (str ? str + '\n' : '') + record[targetbid].value });
             dispatch({ type: 'delete', id: targetbid });
             focusElem(refs,bid,str.length);

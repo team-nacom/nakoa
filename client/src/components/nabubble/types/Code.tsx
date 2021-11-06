@@ -58,7 +58,7 @@ function EditorCodeBubble(props: EditorBubbleComponentProps){
     const contents = makeString(bubble.record[bid].value);
 
     return (<>
-        <TextareaAutosize
+        <TextareaAutosize autoFocus
             ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
             style={ {display:'block', width:'100%', margin:'10px 0'} }

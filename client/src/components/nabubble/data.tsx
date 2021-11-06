@@ -107,9 +107,21 @@ function getCounter(fb: FlatBubble) : number{
     );
 }
 
+function findSibling(fb: FlatBubble, id: string, delta: number) : string{
+    const pid = fb.record[id].parentId;
+    if( typeof pid === 'undefined' ) return id;
+
+    const siblingId = fb.record[pid].childrenId || [];
+    const n = siblingId.indexOf(id);
+    if( n === -1) return id; //something went wrong here, but no handling
+
+    return siblingId[n + delta];
+}
+
 
 export type { Bubble, FlatBubble };
 export {
     flatten, inflate,
-    prefixFlatBubble, getCounter
+    prefixFlatBubble, getCounter,
+    findSibling
 };

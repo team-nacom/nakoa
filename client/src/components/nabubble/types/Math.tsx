@@ -22,7 +22,7 @@ function RenderedMathBubble(props: BubbleComponentProps){
 
     if(typeof contents !== 'string') return (<></>);
     return (
-        <div style={ { margin: '5px', border: '1px solid gray'} }>
+        <div style={ { margin: '5px', border: '1px solid green'} }>
             <TeX block math = { contents } />
         </div>
     );
@@ -34,7 +34,7 @@ function PreviewMathBubble(props: BubbleComponentProps){
 
     if(typeof contents !== 'string') return (<></>);
     return (
-        <div style={ { margin: '5px', border: '1px solid gray'} }>
+        <div style={ { margin: '5px', border: '1px solid green'} }>
             <TeX block math = { contents } />
         </div>
     );
@@ -47,7 +47,7 @@ function EditorMathBubble(props: EditorBubbleComponentProps){
     const contents = makeString(bubble.record[bid].value);
 
     return (<>
-        <TextareaAutosize
+        <TextareaAutosize autoFocus
             ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
             style={ {display:'block', width:'100%', margin:'10px 0'} }
