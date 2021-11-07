@@ -24,7 +24,7 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
     return ref.current;
 };
 
-function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
+const EditorArea = React.forwardRef<HTMLTextAreaElement, JSX.IntrinsicElements['textarea']>((props, ref) => {
     let intl = useIntl();
 
     return(
