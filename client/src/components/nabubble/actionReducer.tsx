@@ -28,13 +28,14 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             // newState.previewBubble = deepCopyFlat(state.previewBubble);
             newState.previewBubble = flatten(inflate(state.previewBubble));
             return newState;
+        
         //BubbleAction
         case 'update': //BubbleUpdateAction
             if(typeof action.label !== 'undefined'){
                 newState.bubble.record[action.id].label = action.label;    
             }
             newState.bubble.record[action.id].value = action.value;
-            return newState;
+            break;
         case 'add': //BubbleAddAction
             var childrenId = newState.bubble.record[action.parentId].childrenId;
             if(typeof childrenId === 'undefined'){ //convert this node into parent.
@@ -70,11 +71,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
                 ...newState.bubble.record,
                 ...fb.record
             };
-
-            if(newState.autoRender){
-                newState.previewBubble = newState.bubble
-            }
-            return newState;
+            break;
         case 'delete':
             var parentId = newState.bubble.record[action.id].parentId;
             if(typeof parentId !== 'undefined'){
@@ -87,12 +84,12 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             //deposit the node.
             var { [action.id] : _, ...newRecord } = newState.bubble.record;
             newState.bubble.record = newRecord;
-
-            if(newState.autoRender){
-                newState.previewBubble = newState.bubble
-            }
-            return newState;
+            break;
     }
+    if(newState.autoRender){
+        newState.previewBubble = newState.bubble
+    }
+    return newState;
 };
 
 const defaultState : BubbleState = {

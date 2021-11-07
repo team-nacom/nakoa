@@ -19,7 +19,7 @@ function BubbleList() {
             <div className='guideBackground' /> 
             <GuideSidebar on='list'>
                 <span>
-                    <Link to={'/guide/write'}>
+                    <Link to={'/bubble/write'}>
                         <button className='roundButton material-icons'> 
                             create
                         </button>
