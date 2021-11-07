@@ -19,7 +19,7 @@
 }
 
 .codeBubble {
-    @include bubble(rgba(gray, 0.12));
+    @include bubble(rgba(gray, 0.16));
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 13.33px;
@@ -48,5 +48,5 @@
 }
 
 .editorCodeBubble {
-    @include editorBubble(rgba(gray, 0.12));
+    @include editorBubble(rgba(gray, 0.16));
 }
