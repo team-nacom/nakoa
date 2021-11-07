@@ -12,39 +12,34 @@ import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
 import { TagData } from '@yaireo/tagify';
 
+import { Bubble, FlatBubble, inflate, flatten } from 'components/nabubble/data';
 
-import { useNaBubbleState, useTextEditorState } from 'components/editor/globals'; //states defined globally.
+import { useNaBubbleState, dispatchNaBubbleState as dispatch } from 'components/editor/globals'; //states defined globally.
 import BubbleEditor from './editor/BubbleEditor';
-import { FlatBubble } from './nabubble/data';
 
 interface Props {
-    initialBubble?: Partial<BubblePost>,
+    initialPost?: Partial<BubblePost>,
     upload: (guide: BubblePost, 
              setMessage: (message: string) => void) 
         => void,
 }
 
 
-function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
-    const bubbleRef = useRef<FlatBubble>();
+function DemoBubbleEditor({ initialPost = {}, upload } : Props) {
     const [ bubble ] = useNaBubbleState('bubble');
-    bubbleRef.current = bubble;
 
-    let [name, setName] = React.useState<string>(initialBubble.name ?? '');
-
-    let [text, setText] = useTextEditorState('text');
-    let [previewText, setPreviewText] = useTextEditorState('previewText');
-    useEffect(()=>{
-        setText(initialBubble.content ?? '');
-        setPreviewText(initialBubble.content ?? '');
-    },[]); //initialize these only once!
+    let [name, setName] = React.useState<string>(initialPost.name ?? '');
 
     let [message, setMessage] = React.useState<string>();
 
-    let [tags, setTags] = React.useState<string[]>(initialBubble.tags ?? []);
+    let [tags, setTags] = React.useState<string[]>(initialPost.tags ?? []);
 
     React.useEffect(() => {
-    }, [initialBubble]);
+    }, [initialPost]);
+
+    // var initBubble : Bubble = JSON.parse(initialPost.content ?? '');
+    // initBubble = inflate(flatten(initBubble));
+    var initBubble : Bubble | undefined = initialPost.content ? inflate(JSON.parse(initialPost.content) as FlatBubble) : undefined;
 
     return (<>
         <div className='writeBox guide'>
@@ -59,7 +54,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
-            <BubbleEditor/>
+            <BubbleEditor body={ initBubble } />
 
             <div className='editorBottom'>
                 <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
@@ -73,7 +68,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
                 <Button className='submit link' onClick={
                     async () => {
                         upload(
-                            { name, content: JSON.stringify(bubbleRef.current), tags: tags },
+                            { name, content: JSON.stringify(bubble), tags: tags },
                             setMessage
                         );
                     }

@@ -33,9 +33,6 @@ function PreviewParentBubble(props : BubbleComponentProps){
     const [ bubble ] = useNaBubbleState('previewBubble');
     const childrenId = bubble.record[bubbleId].childrenId || [];
 
-    console.log(childrenId);
-    console.log(bubble.record);
-
     return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(
             <PreviewBubble {...others} bubbleId = { childId } bubbleType = { bubble.record[childId].type } />

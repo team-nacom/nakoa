@@ -12,7 +12,7 @@ import DemoBubbleEditor from 'components/DemoBubbleEditor';
 import Loading from 'pages/Loading';
 import { RenderedRootBubble } from 'components/nabubble';
 import { useTextEditorState, useNaBubbleState, dispatchNaBubbleState as dispatch } from '../../components/editor/globals';
-import { Bubble as BubbleData } from 'components/nabubble/data';
+import { Bubble as BubbleData, FlatBubble, inflate } from 'components/nabubble/data';
 
 
 interface Params {
@@ -23,18 +23,24 @@ interface Params {
 function Bubble() {
     let { id: index } = useParams<Params>();
     let [bubbleLoading, bubbleObj] = usePromise(() => getBubble(index));
-    
-    let bubble = (bubbleObj ? JSON.parse(bubbleObj!.content) : {}) as BubbleData ;
 
-    useEffect(()=>{
-        dispatch({
-            type: 'init',
-            bubble: bubble
-        })
-    },[]);
-    
+    let flatbubble : FlatBubble = (bubbleObj ? JSON.parse(bubbleObj.content) : {}) as FlatBubble ;
+    let bubble = inflate(flatbubble);
+
+    // useEffect(()=>{
+    //     dispatch({
+    //         type: 'init',
+    //         bubble: bubble
+    //     })
+    // },[]);
 
     if (bubbleLoading) return <Loading/>;
+
+    dispatch({
+        type: 'init',
+        bubble: bubble
+    });
+
     return (
         <>
             <Header/>
