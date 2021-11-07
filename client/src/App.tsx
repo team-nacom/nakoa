@@ -35,6 +35,7 @@ import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
 import Bubble from 'pages/bubble/Bubble';
+import User from 'pages/user/User';
 
 const localeMessages = {
   'en': messageEn,
@@ -72,6 +73,8 @@ function App() {
           <Redirect path='/quiz' to='/quiz/1'/>
           <Route path='/quiz/write' component={QuizWrite} />*/}
 
+          <Route exact path='/user/:nickname/:menu' component={User} />
+          <Route exact path='/user/:nickname' component={User} />
           <Route exact path='/user' component={MyPage} />
           <Route exact path='/guide/write' component={GuideWrite} />
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />

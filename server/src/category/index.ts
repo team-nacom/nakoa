@@ -25,6 +25,7 @@ router.post('/cate', isVerifiedMiddleware, async (ctx) => {
       index: cate.index
     };
   } catch(e) {
+    //@ts-ignore
     ctx.throw(500, e);
   }
 });
@@ -38,6 +39,7 @@ router.post('/gory', isVerifiedMiddleware, async (ctx) => {
   const gory = new Gory(goryObj);
 
   try {
+    //@ts-ignore
     await Cate.updateOne({index: gory.cate}, {$push: {gories: gory.index}}).exec();
   } catch (e) {
     console.log("Error while updating cate for adding gory: " + goryObj.index);
@@ -90,8 +92,9 @@ router.get('/gory/:gindex', async (ctx) => {
     // TODO get cateName?
     const docs = await getGuides(isAdmin(ctx), gindex);
 
-    ctx.body = { goryName: goryName, guides: docs };
+    ctx.body = { name: goryName, guides: docs };
   } catch(e) {
+    //@ts-ignore
     ctx.throw(500, e);
   }
 });
@@ -109,6 +112,7 @@ router.get('/:cindex(\\d+)/:gindex', async (ctx) => {
     
     ctx.body = { cateName: cateName, goryName: goryName, guides: docs };
   } catch(e) {
+    //@ts-ignore
     ctx.throw(500, e);
   }
 });

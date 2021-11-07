@@ -12,21 +12,22 @@ function NotFound() {
 
     let [ bubble ] = useNaBubbleState('bubble');
 
-    fetch(process.env.PUBLIC_URL + '/404.md')
-        .then(response => response.text())
-        .then(text => setMessage(text));
+    React.useEffect(() => {
+        fetch('./404.md')
+            .then(response => response.text())
+            .then(text => setMessage(text));
+    }, [])
 
     return (
         <>
             <Header/>
-
-            <MarkdownRenderer isManual usePriority useTOC>
-                { message }
-            </MarkdownRenderer>
-
+            <div id='content'>
+                <MarkdownRenderer isManual={true}>
+                    { message }
+                </MarkdownRenderer>
+            </div>
             {/* for testing: */}
             <BubbleEditor />
-        
             <Footer/>
         </>
     );

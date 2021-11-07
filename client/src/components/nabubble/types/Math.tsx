@@ -22,7 +22,7 @@ function RenderedMathBubble(props: BubbleComponentProps){
 
     if(typeof contents !== 'string') return (<></>);
     return (
-        <div style={ { margin: '5px', border: '1px solid green'} }>
+        <div className='mathBubble renderedMathBubble' >
             <TeX block math = { contents } />
         </div>
     );
@@ -34,7 +34,7 @@ function PreviewMathBubble(props: BubbleComponentProps){
 
     if(typeof contents !== 'string') return (<></>);
     return (
-        <div style={ { margin: '5px', border: '1px solid green'} }>
+        <div className='mathBubble previewMathBubble' >
             <TeX block math = { contents } />
         </div>
     );
@@ -50,7 +50,7 @@ function EditorMathBubble(props: EditorBubbleComponentProps){
         <TextareaAutosize autoFocus
             ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
-            style={ {display:'block', width:'100%', margin:'10px 0'} }
+            className='editorMathBubble editorBubble'
             onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
             // onPaste={ props.onPaste } // pasteHandler
