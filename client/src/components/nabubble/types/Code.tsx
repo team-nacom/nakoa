@@ -61,7 +61,7 @@ function EditorCodeBubble(props: EditorBubbleComponentProps){
         <TextareaAutosize autoFocus
             ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
-            style={ {display:'block', width:'100%', margin:'10px 0'} }
+            className='editorCodeBubble editorBubble'
             onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
             onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
             // onPaste={ props.onPaste } // pasteHandler

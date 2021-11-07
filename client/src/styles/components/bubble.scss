@@ -1,0 +1,45 @@
+@import '../consts.scss';
+
+@mixin bubble($color) {
+    margin: 5px;
+    padding: 1px 10px;
+    box-sizing: border-box;
+    min-height: 54px;
+    max-height: 250px;
+    overflow: scroll;
+    background: $color;
+}
+
+.textBubble {
+    @include bubble(rgba(gray, 0.1));
+}
+
+.mathBubble {
+    @include bubble(rgba($main-color, 0.1));
+}
+
+@mixin editorBubble($color) {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    background: $color;
+    border: none;
+    min-height: 54px;
+    max-height: 250px;
+    line-height: 20px;
+}
+
+.editorTextBubble {
+    @include editorBubble(rgba(gray, 0.1));
+}
+
+.editorMathBubble {
+    @include editorBubble(rgba($main-color, 0.1));
+}
+
+.editorCodeBubble {
+    @include editorBubble(rgba($main-color, 0.1));
+}
