@@ -38,6 +38,7 @@ function BubbleList() {
                             <div className='content'> { bubble.content.substring(0, 100) } </div>
                         </div>
                     </Link>
+                    <hr/>
                 </div>)}
             </div>
 

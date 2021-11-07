@@ -6,11 +6,10 @@ const router = new Router();
 // Post a guide (manual)
 router.post('/', async (ctx) => {
     const bubbleObj = ctx.request.body;
-    const contentString = JSON.stringify(bubbleObj.content);
 
     const bubble = new Bubble({
         name: bubbleObj.name,
-        content: contentString,
+        content: bubbleObj.content,
         tags: bubbleObj.tags
     });
     await bubble.save();

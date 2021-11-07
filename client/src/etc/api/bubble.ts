@@ -26,7 +26,7 @@ export const getBubbles = async () => {
     return response.data as BubbleType[];
 }
 
-export const getBubble = async (id: number) => {
+export const getBubble = async (id: string) => {
     let response = await Axios.get(`${apiAddress}/bubble/${id}`, {
         validateStatus: authValidateStatus, 
     });

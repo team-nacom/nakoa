@@ -13,8 +13,9 @@ import Button from './Button';
 import { TagData } from '@yaireo/tagify';
 
 
-import { useTextEditorState } from 'components/editor/globals'; //states defined globally.
+import { useNaBubbleState, useTextEditorState } from 'components/editor/globals'; //states defined globally.
 import BubbleEditor from './editor/BubbleEditor';
+import { FlatBubble } from './nabubble/data';
 
 interface Props {
     initialBubble?: Partial<BubblePost>,
@@ -25,6 +26,10 @@ interface Props {
 
 
 function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
+    const bubbleRef = useRef<FlatBubble>();
+    const [ bubble ] = useNaBubbleState('bubble');
+    bubbleRef.current = bubble;
+
     let [name, setName] = React.useState<string>(initialBubble.name ?? '');
 
     let [text, setText] = useTextEditorState('text');
@@ -68,7 +73,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
                 <Button className='submit link' onClick={
                     async () => {
                         upload(
-                            { name, content: text, tags: tags },
+                            { name, content: JSON.stringify(bubbleRef.current), tags: tags },
                             setMessage
                         );
                     }

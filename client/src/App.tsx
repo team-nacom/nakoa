@@ -34,6 +34,7 @@ import ReactGA from 'react-ga';
 import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
+import Bubble from 'pages/bubble/Bubble';
 
 const localeMessages = {
   'en': messageEn,
@@ -86,6 +87,7 @@ function App() {
           <Route exact path='/about' component={About} />
           <Route exact path='/bubble' component={BubbleList} />
           <Route exact path='/bubble/write' component={BubbleWrite} />
+          <Route exact path='/bubble/:id' component={Bubble} />
           <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>
