@@ -15,11 +15,11 @@ function About() {
     return (
         <>
             <Header/>
-
-            <MarkdownRenderer isManual usePriority useTOC>
-                { message }
-            </MarkdownRenderer>
-            
+            <div id='content'>
+                <MarkdownRenderer isManual={true}>
+                    { message }
+                </MarkdownRenderer>
+            </div>
             <Footer/>
         </>
     );

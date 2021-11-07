@@ -10,7 +10,9 @@ function Main() {
         <>
             <Header/>
 
-            { intl.formatMessage({ id: 'main.greeting' })}
+            <div id='content'>
+                { intl.formatMessage({ id: 'main.greeting' })}
+            </div>
             
             <Footer/>
         </>

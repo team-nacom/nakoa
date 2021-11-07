@@ -350,5 +350,4 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     </>)
 }
 
-
 export default GuideEditor;

@@ -2,6 +2,8 @@ import { Document, model, Schema } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 import { createHash } from "crypto";
 import { baseid, sendMail } from "../utils";
+import Guides from "./guide";
+
 import { SentMessageInfo } from "nodemailer";
 
 export const givenOptions = { "usernameField": "email" };
@@ -14,6 +16,10 @@ export interface UserDocument extends Document {
     verifyHash: string,
     guides: [Schema.Types.ObjectId],
     joinDate: number,
+
+    bio: string,
+    website: string,
+    affiliation: string,
     
     sendEmailVerification: () => Promise<UserDocument>,
     checkEmailVerification: (secret: string) => Promise<boolean>,
@@ -27,9 +33,14 @@ const userSchema = new Schema<UserDocument>({
     
     guides: [{ type: Schema.Types.ObjectId, ref: 'Guide' }],
 
-    joinDate: { type: Number, default: Date.now }
+    joinDate: { type: Number, default: Date.now },
+
+    bio: String,
+    website: String,
+    affiliation: String,
 });
 
+//@ts-ignore
 userSchema.plugin(passportLocalMongoose, givenOptions);
 
 function getHash(secret: string): string {
@@ -50,6 +61,13 @@ userSchema.methods.sendEmailVerification = async function(): Promise<SentMessage
 userSchema.methods.checkEmailVerification = async function(secret: string): Promise<boolean>{
     return (this.verifyHash === getHash(secret));
 }
+
+// userSchema.methods.getTagList = async function(): Promise<Array<string>>{
+//     await this.guides
+//         .map(async (id) => await (Guides.findById(id).then((guide) => guide!.tags)))
+//         .reduce((result, value) => result.concat(value))
+//         .filter()
+// }
 
 export default model<UserDocument>('User', userSchema, 'users');
 

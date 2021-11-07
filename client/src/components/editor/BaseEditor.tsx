@@ -28,10 +28,15 @@ function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
     let intl = useIntl();
 
     return(
-        <textarea {...props} placeholder={ intl.formatMessage({id: 'editor.placeholder'}) } />
+        <textarea
+            {...props}
+            placeholder={ intl.formatMessage({id: 'editor.placeholder'}) }
+            spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
+            ref = {ref}
+        />
         // className={ (props.className || '') + ' editorArea' }
-    )
-}
+    );
+})
 
 const MemoizedRenderer = React.memo(MarkdownRenderer);
 function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
@@ -105,12 +110,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         }
     }, [collapse])
 
-
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const insertText = (text : string) => {
         const isSuccess = document.execCommand('insertText', false, text);
 
         if(!isSuccess){
-            const mdArea = document.getElementsByTagName('textarea')[0] as HTMLTextAreaElement;
+            const mdArea = textareaRef.current;
 
             if(!mdArea) return;
 
@@ -119,7 +124,8 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             const ed = mdArea.selectionEnd;
 
             mdArea.setRangeText(text, st, ed);
-            mdArea.selectionStart = mdArea.selectionEnd = st + text.length;
+            // mdArea.selectionStart = st;
+            mdArea.selectionEnd = st + text.length;
 
             // notify to event listeners
             const e = document.createEvent('UIEvent');
@@ -261,6 +267,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
                         value = { value }
+                        ref = { textareaRef }
                     />
                 </Panel>
                 <Panel className='panel2'>

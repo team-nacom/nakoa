@@ -57,7 +57,9 @@ function GuideWrite({ location } : Props) {
     return (
         <>
             <Header/>
-            <GuideEditor initialGuide={initialGuide} upload={upload} behavior='add' />
+            <div id='content'>
+                <GuideEditor initialGuide={initialGuide} upload={upload} behavior='add' />
+            </div>
             <Footer/>
         </>
     )

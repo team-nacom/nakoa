@@ -40,7 +40,9 @@ function GuideEdit() {
     return (
         <>
             <Header/>
-            <GuideEditor initialGuide={guide} upload={upload} behavior='edit' />
+            <div id='content'>
+                <GuideEditor initialGuide={guide} upload={upload} behavior='edit' />
+            </div>
             <Footer/>
         </>
     )

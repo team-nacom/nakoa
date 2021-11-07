@@ -4,6 +4,7 @@ import passport from 'koa-passport';
 
 import User, {givenOptions} from '../models/user';
 import createHttpError from 'http-errors';
+import {isVerifiedMiddleware} from '../utils';
 
 const router = new Router();
 
@@ -30,12 +31,35 @@ const validateLoginTokens = (ctx, next) => validateAllTokens(ctx, next, false);
 // information about current session
 router.get('/mypage', async (ctx) => {
   if(ctx.isAuthenticated()){
-    await User.findById(ctx.state.user._id).populate({path: 'guides', options: { sort: { 'createDate': -1 } }}).select("nickname guides").lean().catch(err => ctx.throw(500, err)).then(docs => ctx.body = docs);
+    const docs = await User.findById(ctx.state.user._id)
+                           .populate({path: 'guides', options: { sort: { 'createDate': -1 } }})
+                           .select("nickname guides")
+                           .lean();
+
+    ctx.body = docs;
   }
-  else{
-    ctx.body = {auth: false}
+  else {
+    ctx.body = null;
   }
 });
+
+// Get user information
+router.get('/profile/:nickname', async (ctx) => {
+  const nickname = ctx.params.nickname;
+  const user = await User.findOne({ nickname })
+                         .populate({ path: 'guides', options: { sort: { 'createDate': -1 }}})
+                         .select('nickname guides')
+                         .lean();
+
+  if (user) {
+    ctx.body = {
+      nickname: user.nickname,
+      guides: user.guides,
+    }
+  } else {
+    ctx.body = null;
+  }
+})
 
 // information about current session
 router.get('/', (ctx) => {
@@ -45,7 +69,10 @@ router.get('/', (ctx) => {
       "isAuth": true,
       "email": user.email,
       "nickname": user.nickname,
-      "verified": user.verified
+      "verified": user.verified,
+      "bio": user.bio,
+      "website": user.website,
+      "affiliation": user.affiliation,
     };
   } else {
     ctx.body = {
@@ -103,6 +130,17 @@ router.post('/register', async (ctx, next) => {
     console.log(`New user ${userObj.email} successfully registered! Please check your e-mail to verify this account.`);
     ctx.body = "Success";
   }
+});
+
+router.put('/edit', isVerifiedMiddleware, async (ctx) => {
+  const obj = ctx.request.body;
+  if (ctx.state.user.email != obj.email) ctx.throw(400);
+  let skimmedObj = {};
+  if (obj.bio != null) skimmedObj.bio = obj.bio;
+  if (obj.website != null) skimmedObj.website = obj.website;
+  if (obj.affiliation != null) skimmedObj.affiliation = obj.affiliation;
+  await User.findOneAndUpdate({"email": obj.email} , { $set: skimmedObj });
+  ctx.body = "Success";
 });
 
 // login (email, password)

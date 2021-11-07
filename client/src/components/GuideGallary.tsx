@@ -15,9 +15,9 @@ function GuideView({ guide } : GuideViewProps) {
                     className={`guideFeedContent`}
                 >
                     <div className='author'> { guide.authors.join(', ')} </div>
-                    <div className='tags'> { guide.tags && guide.tags.map((s) => `#${s} `) } </div> 
                     <div className='title'> { guide.name } </div>
                     <div className='content'> { guide.content.substring(0, 100) } </div>
+                    <div className='tags'> { guide.tags && guide.tags.map((s) => `#${s} `) } </div> 
                 </div>
             </Link>
         </div>
@@ -31,9 +31,11 @@ interface Props {
 function GuideGallary({ guides }: Props) {
     
     return (
-        <div className='guideFeedList'>
-            { guides?.map((guide) => <GuideView guide={guide} />) }
-        </div>
+        <>
+            <div className='guideFeedList'>
+                { guides?.map((guide) => <GuideView guide={guide} />) }
+            </div>
+        </>
     );
 }
 
