@@ -26,13 +26,14 @@ import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
-import NaMark from '../namark'
+import NaMarkTextbox from './textbox'
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 interface RendererOptionProps{
     isManual?: boolean,
-    noTOC?: boolean,
+    usePriority?: boolean,
+    useTOC?: boolean,
     openDetails?: boolean
 }
 
@@ -44,13 +45,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         Directive,
         CodeFrontmatter,
 
-        // custom plugins
-        NaMark,
+        /////// custom plugins
+        NaMarkTextbox,
+        // DirectiveHandler, //legacy
 
-        SectionPriorityHandler,
         InternalLinkHandler,
-        DirectiveHandler, //legacy
-        [SectionEnumerator, {noTOC: props.noTOC}],
+        ...( props.usePriority ? [SectionPriorityHandler] : [] ),
+        ...( props.useTOC ? [SectionEnumerator] : [] ),
         FootnoteEnumerator,
     ]
 
@@ -58,9 +59,9 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
         root: (p: any) => (
             <>
-                { p.children[0] }
+                { props.useTOC ? p.children[0] : '' }
                 <div className='markdown'>
-                    { p.children.slice(1) }
+                    { props.useTOC ? p.children.slice(1) : p.children }
                 </div>
             </>
         ),
@@ -87,13 +88,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         math: (p: any) => <TeX block math = { p.value as string } />,
         inlineMath: (p: any) => <TeX math = { p.value as string } />,
         code: (p: any) => { // ({language, value}) => {
-            if(!p.language){
-                return (
-                    <pre>
-                        <code>{ p.value }</code>
-                    </pre>
-                );
-            }
+            // if(!p.language){
+            //     return (
+            //         <pre>
+            //             <code>{ p.value }</code>
+            //         </pre>
+            //     );
+            // }
             return ( 
                 <Highlight className = { p.language } >
                     { p.value }

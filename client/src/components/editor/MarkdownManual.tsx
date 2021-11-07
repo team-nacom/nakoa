@@ -1,4 +1,4 @@
-import MarkdownRenderer from './markdown/MarkdownRenderer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 import React, { useState, useEffect } from 'react';
 
 import { FormattedMessage } from 'react-intl';
@@ -27,7 +27,7 @@ function MarkdownManual({visible, setVisible} : PopupProps) {
                 <div className='manualHeader'>
                     <FormattedMessage id='editor.manual' />
                 </div>
-                <MarkdownRenderer isManual={ true }>
+                <MarkdownRenderer isManual usePriority useTOC>
                     { manual }
                 </MarkdownRenderer>
             </div>

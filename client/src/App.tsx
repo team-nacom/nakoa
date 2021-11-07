@@ -20,6 +20,7 @@ import GuideWrite from 'pages/guide/GuideWrite';
 import About from 'pages/About';
 import NotFound from 'pages/NotFound';
 import GuideEdit from 'pages/guide/GuideEdit';
+import BubbleList from 'pages/bubble/BubbleList';
 
 import messageEn from './locale/en.json';
 import messageKo from './locale/ko.json';
@@ -32,6 +33,7 @@ import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
+import BubbleWrite from 'pages/bubble/BubbleWrite';
 import User from 'pages/user/User';
 
 const localeMessages = {
@@ -85,6 +87,8 @@ function App() {
           <Route exact path='/signup' component={SignUp} />
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/about' component={About} />
+          <Route exact path='/bubble' component={BubbleList} />
+          <Route exact path='/bubble/write' component={BubbleWrite} />
           <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>

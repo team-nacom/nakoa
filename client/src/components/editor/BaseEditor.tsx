@@ -1,14 +1,18 @@
+// Common features on MarkdownEditor and BubbleEditor.
+
+// 2021.11.02 not working now
+
 import React, { useState, useRef, useEffect, Component } from 'react';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 
 import { useMediaQuery } from 'react-responsive';
 
-import MarkdownRenderer from './markdown/MarkdownRenderer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
-import MarkdownManual from './MarkdownManual';
+import MarkdownManual from 'components/editor/MarkdownManual';
 
-import { fileUpload, imgUpload } from '../etc/FileUpload'
+import { fileUpload, imgUpload } from 'etc/FileUpload'
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -40,8 +44,6 @@ function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
         <div {...props} />
     )
 }
-
-
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
@@ -270,7 +272,7 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
-                        <MemoizedRenderer openDetails>
+                        <MemoizedRenderer usePriority useTOC openDetails>
                             { previewValue }
                         </MemoizedRenderer>
                     </PreviewArea>

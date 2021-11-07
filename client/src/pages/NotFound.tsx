@@ -3,10 +3,14 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
+import { EditorRootBubble, RenderedRootBubble, useNaBubbleState, dispatchNaBubbleState as dispatch } from 'components/nabubble';
 
+import BubbleEditor from 'components/editor/BubbleEditor'
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
+
+    let [ bubble ] = useNaBubbleState('bubble');
 
     React.useEffect(() => {
         fetch('./404.md')
@@ -22,6 +26,8 @@ function NotFound() {
                     { message }
                 </MarkdownRenderer>
             </div>
+            {/* for testing: */}
+            <BubbleEditor />
             <Footer/>
         </>
     );
