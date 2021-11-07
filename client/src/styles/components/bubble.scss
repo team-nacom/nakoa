@@ -11,11 +11,18 @@
 }
 
 .textBubble {
-    @include bubble(rgba(gray, 0.1));
+    @include bubble(rgba(gray, 0.08));
 }
 
 .mathBubble {
-    @include bubble(rgba($main-color, 0.1));
+    @include bubble(rgba($main-color, 0.08));
+}
+
+.codeBubble {
+    @include bubble(rgba(gray, 0.12));
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 13.33px;
 }
 
 @mixin editorBubble($color) {
@@ -33,13 +40,13 @@
 }
 
 .editorTextBubble {
-    @include editorBubble(rgba(gray, 0.1));
+    @include editorBubble(rgba(gray, 0.08));
 }
 
 .editorMathBubble {
-    @include editorBubble(rgba($main-color, 0.1));
+    @include editorBubble(rgba($main-color, 0.08));
 }
 
 .editorCodeBubble {
-    @include editorBubble(rgba($main-color, 0.1));
+    @include editorBubble(rgba(gray, 0.12));
 }
