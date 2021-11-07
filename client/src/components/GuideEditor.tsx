@@ -305,7 +305,6 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                     {/* TODO whitelist from API */}
                     <Tags onChange={useCallback((e) => {
                         let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
-                        console.log(tagStrings);
                         setTags(tagStrings);
                     }, [])} defaultValue="welcome, to, nacom"/>
                 </div>
