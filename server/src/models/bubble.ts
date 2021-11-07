@@ -3,13 +3,17 @@ import {baseid} from "../utils";
 
 export interface BubbleDocument extends Document {
     index: string,
+    name: string,
     content: string,
+    tags: string[],
     createDate: number
 }
 
 const bubbleSchema = new Schema<BubbleDocument>({
     index: { type: String, index: true, unique: true, default: () => baseid(8) },
+    name: String,
     content: String,
+    tags: [String],
     createDate: { type: Number, default: Date.now }
 });
 
