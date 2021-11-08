@@ -13,7 +13,7 @@ function NotFound() {
     let [ bubble ] = useNaBubbleState('bubble');
 
     React.useEffect(() => {
-        fetch('./404.md')
+        fetch(process.env.PUBLIC_URL + '/404.md')
             .then(response => response.text())
             .then(text => setMessage(text));
     }, [])

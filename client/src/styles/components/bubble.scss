@@ -5,7 +5,6 @@
     padding: 1px 10px;
     box-sizing: border-box;
     min-height: 54px;
-    max-height: 250px;
     overflow: scroll;
     background: $color;
 }
@@ -19,7 +18,7 @@
 }
 
 .codeBubble {
-    @include bubble(rgba(gray, 0.12));
+    @include bubble(rgba(gray, 0.16));
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 13.33px;
@@ -48,5 +47,5 @@
 }
 
 .editorCodeBubble {
-    @include editorBubble(rgba(gray, 0.12));
+    @include editorBubble(rgba(gray, 0.16));
 }
