@@ -8,6 +8,8 @@ import { Redirect, useParams } from 'react-router';
 import Loading from 'pages/Loading';
 import Tabs, { TabData } from 'components/Tabs';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+import { RootReducer } from 'store';
+import { useSelector } from 'react-redux';
 
 const UserContext = React.createContext<UserData | undefined>(undefined);
 
@@ -23,14 +25,17 @@ function UserMain() {
         </div>
     )
 }
+interface userGuideParams {
+    isPublic: Boolean;
+};
 
-function UserGuides() {
+function UserGuides(props: userGuideParams) {
     const user = React.useContext(UserContext);
     
     if (!user) return <></>;
     return (
         <div id='content'>
-            <GuideGallary guides={user.guides} />
+            <GuideGallary guides={user.guides.filter(guide => guide.isPublic === props.isPublic)} />
         </div>
     )
 }
@@ -45,6 +50,7 @@ function User() {
     let menu = React.useMemo(() => params.menu, [params]);
     
     let [userLoading, user] = usePromise(() => getUserProfile(nickname));
+    let currentUser = useSelector((state: RootReducer) => state.user);
 
     let tabData: TabData[] = React.useMemo(() => [
         {
@@ -55,6 +61,10 @@ function User() {
             name: '작성한 글',
             link: `/user/${nickname}/posts`,
             active: (menu === 'posts'),
+        },{
+            name: '작성 중인 글',
+            link: `/user/${nickname}/incompletePosts`,
+            active: (menu === 'incompletePosts'),
         },
     ], [params]);
 
@@ -71,7 +81,11 @@ function User() {
             </div>
         </>
     );
-    else return (
+    else{
+        if(currentUser?.nickname !== user.nickname){
+            tabData = tabData.slice(0,2);
+        }
+        return (
         <>
             <Header />
             <div className='guideBackground' />
@@ -83,10 +97,12 @@ function User() {
             <Tabs data={tabData} className='userTabs' />
             <UserContext.Provider value={user}>
                 { tabData[0].active && <UserMain/> }
-                { tabData[1].active && <UserGuides/> }
+                { tabData[1].active && <UserGuides isPublic={true}/> }
+                { tabData.length > 2 && tabData[2].active && <UserGuides isPublic={false}/> }
             </UserContext.Provider>
         </>
     )
+    }
 }
 
 export default User;
