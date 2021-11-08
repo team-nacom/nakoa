@@ -51,7 +51,7 @@ function EditorTextBubble(props: EditorBubbleComponentProps){
     const contents = makeString(bubble.record[bid].value);
 
     return (<>
-        <TextareaAutosize autoFocus
+        <TextareaAutosize autoFocus cacheMeasurements
             ref = { (el) => { props.refs.current[bid] = el } }
             name={ 'NaBubble' + bid }
             className='editorTextBubble editorBubble'

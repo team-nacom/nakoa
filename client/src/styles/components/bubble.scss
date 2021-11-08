@@ -36,6 +36,7 @@
     min-height: 54px;
     max-height: 250px;
     line-height: 20px;
+    overflow-y: hidden; // autoresized
 }
 
 .editorTextBubble {
