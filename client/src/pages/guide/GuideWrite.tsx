@@ -37,7 +37,8 @@ function GuideWrite({ location } : Props) {
     
     let upload = (guide: GuidePost, setMessage: (message: string) => void) => {
         if (isProfile){
-            guide.isProfile = true
+            guide.isProfile = true;
+            guide.isPublic = false;
         }
         if (!guide.name || !guide.content || guide.authors.length < 1) {
             setMessage('모든 항목을 채워주세요.');
