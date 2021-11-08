@@ -75,7 +75,7 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                     </Link>) 
                 ) }
                 { tags.map((tag) => (
-                    <Link to='/'> 
+                    <Link to={`/guide/search/${tag}`}> 
                         <button className='tag'> 
                             <span className='material-icons'> tag </span>
                             { tag } 

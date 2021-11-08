@@ -35,6 +35,7 @@ import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
 import User from 'pages/user/User';
+import GuideSearchList from 'pages/guide/GuideSearchList';
 
 const localeMessages = {
   'en': messageEn,
@@ -79,6 +80,7 @@ function App() {
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
           <Route exact path='/guide/:id(\d+)' component={Guide} />
           <Route exact path='/guide' component={GuideList} />
+          <Route exact path='/guide/search/:tag' component={GuideSearchList} />
           <Route exact path='/guide/list1' component={GuideGallary} />
           <Route exact path='/mypage' component={MyPage} />
           <Route exact path='/signup/done' component={SignUpDone} />
