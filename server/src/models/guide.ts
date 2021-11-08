@@ -6,6 +6,7 @@ export interface GuideDocument extends Document {
     index: number,
     name: string, // change the name to title?
     authors: [string],
+    isProfile: boolean,
     content: string,
     isPublic: boolean,
     createDate: number,
@@ -29,6 +30,7 @@ const guideSchema = new Schema<GuideDocument>({
     authors: [String],
     content: String,
     tags: [String],
+    isProfile: Boolean,
     writer: { type: Schema.Types.ObjectId, ref: 'User' },
 
     isPublic: { type: Boolean, default: false },
