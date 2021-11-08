@@ -48,6 +48,15 @@ export const getGuides = async () => {
     return response.data as GuideType[];
 }
 
+export const searchGuides = async (tag: string) => {
+    let response = await Axios.get(`${apiAddress}/guide?per=50&tag=${tag}`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.data as GuideType[];
+}
+
 export const getGuideMaxIndex = async () => {
     let response = await Axios.get(`${apiAddress}/guide/indices`);
 
