@@ -21,6 +21,7 @@ export interface GuidePost {
     content: string;
     tags: string[];
     isPublic?: boolean;
+    isProfile?: boolean;
 }
 
 export const priorityTags = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'] as const;

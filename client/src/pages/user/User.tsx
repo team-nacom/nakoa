@@ -10,20 +10,64 @@ import Tabs, { TabData } from 'components/Tabs';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 import { RootReducer } from 'store';
 import { useSelector } from 'react-redux';
+import GuideView from 'components/GuideView';
+import GuideSidebar from 'components/GuideSidebar';
+import { Link } from 'react-router-dom';
 
 const UserContext = React.createContext<UserData | undefined>(undefined);
 
 function UserMain() {
     const user = React.useContext(UserContext);
+    console.log(user);
+
+    let currentUser = useSelector((state: RootReducer) => state.user);
+    let isEditable = user?.nickname === currentUser.nickname
     
     if (!user) return <></>;
-    return (
-        <div id='content'>
-            <MarkdownRenderer>
-                {`# 반갑습니다! \n${user.nickname}의 개인 페이지입니다.`}
+    else if (user.profile === undefined){
+        return (
+            <>
+            <div id='content'>
+                <MarkdownRenderer>
+                    {`# 반갑습니다! \n${user.nickname}의 개인 페이지입니다.`}
+                </MarkdownRenderer>
+            </div>
+            <GuideSidebar on='list'>
+                { isEditable && (
+                    <span>
+                        <Link to={'/guide/write?profile=true'}>
+                            <button className='roundButton material-icons'> 
+                                create
+                            </button>
+                        </Link>
+                    </span>
+                )}
+            </GuideSidebar>
+            </>
+        )
+    }
+    else{
+        return (
+            <>
+            <MarkdownRenderer useTOC={false}>
+                {user.profile.content}
             </MarkdownRenderer>
-        </div>
-    )
+
+            <GuideSidebar on='list'>
+                { isEditable && (
+                    <span>
+                        <Link to={`/guide/${user.profile.index}/edit`}>
+                            <button className='roundButton material-icons'> 
+                                create
+                            </button>
+                        </Link>
+                    </span>
+                )}
+            </GuideSidebar>
+            
+            </>
+        )
+    }
 }
 interface userGuideParams {
     isPublic: Boolean;

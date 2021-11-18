@@ -35,7 +35,7 @@ router.get('/', async (ctx) => {
   const page: number = +ctx.query.page! || 1;
   const per: number = +ctx.query.per! || 20;
   const keyword: string = ctx.query.tag;
-  const filter = (isAdmin(ctx) ? {} : {$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}); 
+  const filter = (isAdmin(ctx) ? {} : {$and: [{$or: [{isPublic: true}, {authors:{$elemMatch: {$eq: name}}}]}, {isProfile: {$ne: true}} ]} ); 
   const filter2 = (keyword ? {tags: keyword} : {});
   console.log(keyword);
   const query = Guide.find({

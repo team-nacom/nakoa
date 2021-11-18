@@ -54,7 +54,8 @@ router.get('/profile/:nickname', async (ctx) => {
   if (user) {
     ctx.body = {
       nickname: user.nickname,
-      guides: user.guides,
+      guides: user.guides.filter(guide => guide.isProfile !== true),
+      profile: user.guides.find(guide => guide.isProfile === true),
     }
   } else {
     ctx.body = null;

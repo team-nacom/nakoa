@@ -34,6 +34,7 @@ export interface UserData {
     email: string;
     nickname: string;
     guides: GuideType[];
+    profile: GuideType;
 }
 
 export type UserAuthData = UserData & {
@@ -106,6 +107,5 @@ export const getMyPage = async() => {
 
 export const getUserProfile = async (nickname: string) => {
     let response = await Axios.get(`${apiAddress}/user/profile/${nickname}`);
-
     return response.data as UserData;
 }
