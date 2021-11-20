@@ -7,6 +7,12 @@ div.writeBox {
     border-radius: 10px;
     margin: 40px 20px;
 
+    .titleEditor {
+        label {
+            margin-left: 40px;
+        }
+    }
+
     .writeForm {
         > * {
             box-sizing: border-box;

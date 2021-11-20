@@ -115,7 +115,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                 </div>
             )}
 
-            <div className=''>
+            <div className='titleEditor'>
                 <label>
                     <FormattedMessage id='editor.guidetitle' />
                 </label>

@@ -20,8 +20,10 @@
 
 .userTabs {
     background: white;
+    padding: 0px 10px;
     
     button {
         @include underlineButton;
+        margin-right: 10px;
     }
 }

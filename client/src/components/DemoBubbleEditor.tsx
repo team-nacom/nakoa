@@ -1,17 +1,11 @@
 import PageTitle from 'components/PageTitle';
 
 import { BubblePost, postBubble } from 'etc/api/bubble';
-import { useIsAdmin } from 'etc/api/user';
 import React, {useCallback, useEffect, useRef} from 'react';
-
 import Tags from "@yaireo/tagify/dist/react.tagify";
-
 import { FormattedMessage, useIntl } from 'react-intl';
-import usePromise from 'etc/usePromise';
-import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
 import { TagData } from '@yaireo/tagify';
-
 
 import { useTextEditorState } from 'components/editor/globals'; //states defined globally.
 import BubbleEditor from './editor/BubbleEditor';
@@ -47,7 +41,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
                 버블 추가
             </PageTitle>
 
-            <div className=''>
+            <div className='titleEditor'>
                 <label>
                     버블 제목
                 </label>
@@ -59,10 +53,10 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
             <div className='editorBottom'>
                 <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
                     {/* TODO whitelist from API */}
-                    <Tags onChange={useCallback((e) => {
-                        let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
-                        setTags(tagStrings);
-                    }, [])} defaultValue="welcome, to, nacom"/>
+                    <Tags onChange={useCallback((e: CustomEvent<Tagify.ChangeEventData<TagData>>) => {
+                        const tags = e.detail.tagify.value.map((element: TagData) => element.value);
+                        setTags(tags);
+                    }, [])} defaultValue={tags.join(', ')}/>
                 </div>
 
                 <Button className='submit link' onClick={
