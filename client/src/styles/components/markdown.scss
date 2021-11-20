@@ -33,6 +33,7 @@ $code-color: #f0f0f0;
         @include boxlabel($border-color, $label-color);
     }
 }
+
 @mixin boxlabel($background-color: gray, $color: white) {
     position: relative;
     left: -3px - $lBoxPadding;
@@ -84,8 +85,7 @@ $code-color: #f0f0f0;
         line-height: 28px;
         font-weight: 300;
         margin: 12px 0px;
-
-        overflow: hidden;
+        box-sizing: border-box;
     }
 
     a {

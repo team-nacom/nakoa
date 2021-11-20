@@ -9,6 +9,18 @@
     background: $color;
 }
 
+@mixin bubblelabel($background-color: gray, $color: white) {
+    width: fit-content;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 15px;
+    margin-bottom: -28px;
+    margin-left: 5px;
+
+    background-color: $background-color;
+    color: $color;
+}
+
 .textBubble {
     @include bubble(rgba(gray, 0.08));
 }
@@ -17,12 +29,21 @@
     @include bubble(rgba($main-color, 0.08));
 }
 
+summary.mathBubblePreview {
+    @include bubblelabel($primary-color,white);
+}
+
 .codeBubble {
     @include bubble(rgba(gray, 0.16));
-    padding-top: 10px;
+    padding-top: 30px;
     padding-bottom: 10px;
     font-size: 13.33px;
 }
+
+summary.codeBubblePreview {
+    @include bubblelabel(gray, white);
+}
+
 
 @mixin editorBubble($color) {
     display: block;

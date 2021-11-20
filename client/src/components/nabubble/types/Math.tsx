@@ -20,11 +20,16 @@ function RenderedMathBubble(props: BubbleComponentProps){
     const [ bubble ] = useNaBubbleState('bubble');
     const contents = bubble.record[props.bubbleId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     return (
-        <div className='mathBubble renderedMathBubble' >
-            <TeX block math = { contents } />
-        </div>
+        <>
+            <summary className='mathBubblePreview'>
+                수식
+            </summary>
+            <div className='mathBubble renderedMathBubble' >
+                <TeX block math = { contents } />
+            </div>
+        </>
     );
 }
 
@@ -32,11 +37,16 @@ function PreviewMathBubble(props: BubbleComponentProps){
     const [ bubble ] = useNaBubbleState('previewBubble');
     const contents = bubble?.record[props.bubbleId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     return (
-        <div className='mathBubble previewMathBubble' >
-            <TeX block math = { contents } />
-        </div>
+        <>
+            <summary className='mathBubblePreview'>
+                수식
+            </summary>
+            <div className='mathBubble previewMathBubble' >
+                <TeX block math = { contents } />
+            </div>
+        </>
     );
 }
 
