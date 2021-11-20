@@ -27,7 +27,9 @@ function BubbleWrite() {
     return (
         <>
             <Header/>
-            <DemoBubbleEditor upload={upload}/>
+            <div id='content'>
+                <DemoBubbleEditor upload={upload}/>
+            </div>
             <Footer/>
         </>
     )

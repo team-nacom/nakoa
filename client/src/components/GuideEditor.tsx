@@ -105,7 +105,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
 
     return (<>
         <div className='writeBox guide'>
-            <PageTitle style={{margin: '40px'}}> 
+            <PageTitle style={{padding: '40px'}}> 
                 <FormattedMessage id={ behavior === 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
 

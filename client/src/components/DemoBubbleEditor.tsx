@@ -43,7 +43,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
 
     return (<>
         <div className='writeBox guide'>
-            <PageTitle style={{margin: '40px'}}> 
+            <PageTitle style={{padding: '40px'}}> 
                 버블 추가
             </PageTitle>
 
