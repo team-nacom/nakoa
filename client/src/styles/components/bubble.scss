@@ -30,7 +30,7 @@
 }
 
 summary.mathBubblePreview {
-    @include bubblelabel($primary-color,white);
+    @include bubblelabel(rgba($main-color, 0.8),white);
 }
 
 .codeBubble {
@@ -41,7 +41,7 @@ summary.mathBubblePreview {
 }
 
 summary.codeBubblePreview {
-    @include bubblelabel(gray, white);
+    @include bubblelabel(rgba(gray, 0.8), white);
 }
 
 
