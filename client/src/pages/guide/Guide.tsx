@@ -18,8 +18,8 @@ interface Params {
 };
 
 function Guide() {
-    let { id: idStr } = useParams<Params>();
-    let id = React.useMemo(() => Number.parseInt(idStr), [idStr]);
+    let params = useParams<Params>();
+    let id = React.useMemo(() => Number.parseInt(params.id), [params]);
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
     
@@ -91,11 +91,13 @@ function Guide() {
 
             </GuideSidebar>
 
-            { guide ? (
-                <GuideView guide={guide} filter={filter} />
-            ) : (
-                <p> 존재하지 않는 가이드입니다. </p>
-            )}
+            <div id='content'>
+                { guide ? (
+                    <GuideView guide={guide} filter={filter} />
+                ) : (
+                    <p> 존재하지 않는 가이드입니다. </p>
+                )}
+            </div>
             <Footer />
         </>
     );

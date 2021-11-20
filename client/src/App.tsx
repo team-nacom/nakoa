@@ -20,6 +20,7 @@ import GuideWrite from 'pages/guide/GuideWrite';
 import About from 'pages/About';
 import NotFound from 'pages/NotFound';
 import GuideEdit from 'pages/guide/GuideEdit';
+import BubbleList from 'pages/bubble/BubbleList';
 
 import messageEn from './locale/en.json';
 import messageKo from './locale/ko.json';
@@ -32,6 +33,9 @@ import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
+import BubbleWrite from 'pages/bubble/BubbleWrite';
+import User from 'pages/user/User';
+import GuideSearchList from 'pages/guide/GuideSearchList';
 
 const localeMessages = {
   'en': messageEn,
@@ -69,11 +73,14 @@ function App() {
           <Redirect path='/quiz' to='/quiz/1'/>
           <Route path='/quiz/write' component={QuizWrite} />*/}
 
+          <Route exact path='/user/:nickname/:menu' component={User} />
+          <Route exact path='/user/:nickname' component={User} />
           <Route exact path='/user' component={MyPage} />
           <Route exact path='/guide/write' component={GuideWrite} />
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
           <Route exact path='/guide/:id(\d+)' component={Guide} />
           <Route exact path='/guide' component={GuideList} />
+          <Route exact path='/guide/search/:tag' component={GuideSearchList} />
           <Route exact path='/guide/list1' component={GuideGallary} />
           <Route exact path='/mypage' component={MyPage} />
           <Route exact path='/signup/done' component={SignUpDone} />
@@ -82,6 +89,8 @@ function App() {
           <Route exact path='/signup' component={SignUp} />
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/about' component={About} />
+          <Route exact path='/bubble' component={BubbleList} />
+          <Route exact path='/bubble/write' component={BubbleWrite} />
           <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>

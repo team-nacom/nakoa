@@ -14,7 +14,7 @@ export const s3 = new S3Client({
 
 async function initialRun() {
   if(!BUCKET){
-    console.log("Not connecting to S3 bucket... Perhaps you're missing .env file?");
+    console.log("Can't connect to S3 bucket... Perhaps you're missing an .env entry?");
     return false;
   }
   console.log(`Trying to connect to ${BUCKET}...`);
@@ -33,7 +33,6 @@ async function initialRun() {
 
 async function getRootUrl() {
   if(!BUCKET){
-    console.log("Not connected to S3 bucket... Perhaps you're missing .env file?");
     return "";
   }
   let endpoint = await s3.config.endpoint();

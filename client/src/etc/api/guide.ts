@@ -21,6 +21,7 @@ export interface GuidePost {
     content: string;
     tags: string[];
     isPublic?: boolean;
+    isProfile?: boolean;
 }
 
 export const priorityTags = ['Draft', 'Optional', 'Readable', 'Recommendable', 'Essential'] as const;
@@ -41,6 +42,15 @@ export const defaultGuideFilter : GuideFilterType = {
 
 export const getGuides = async () => {
     let response = await Axios.get(`${apiAddress}/guide?per=50`, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.data as GuideType[];
+}
+
+export const searchGuides = async (tag: string) => {
+    let response = await Axios.get(`${apiAddress}/guide?per=50&tag=${tag}`, {
         validateStatus: authValidateStatus, 
         withCredentials: true 
     });

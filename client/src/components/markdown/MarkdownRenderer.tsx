@@ -12,7 +12,6 @@ import Directive from 'remark-directive';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
 
-
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
@@ -27,10 +26,15 @@ import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
+import NaMarkTextbox from './textbox'
+
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
 interface RendererOptionProps{
-    isManual?: boolean
+    isManual?: boolean,
+    usePriority?: boolean,
+    useTOC?: boolean,
+    openDetails?: boolean
 }
 
 function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOptionProps) {
@@ -41,11 +45,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         Directive,
         CodeFrontmatter,
 
-        // custom plugins
-        SectionPriorityHandler,
+        /////// custom plugins
+        NaMarkTextbox,
+        // DirectiveHandler, //legacy
+
         InternalLinkHandler,
-        DirectiveHandler,
-        SectionEnumerator,
+        ...( props.usePriority ? [SectionPriorityHandler] : [] ),
+        ...( props.useTOC ? [SectionEnumerator] : [] ),
         FootnoteEnumerator,
     ]
 
@@ -53,9 +59,9 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
         root: (p: any) => (
             <>
-                { p.children[0] }
+                { props.useTOC ? p.children[0] : '' }
                 <div className='markdown'>
-                    { p.children.slice(1) }
+                    { props.useTOC ? p.children.slice(1) : p.children }
                 </div>
             </>
         ),
@@ -82,13 +88,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         math: (p: any) => <TeX block math = { p.value as string } />,
         inlineMath: (p: any) => <TeX math = { p.value as string } />,
         code: (p: any) => { // ({language, value}) => {
-            if(!p.language){
-                return (
-                    <pre>
-                        <code>{ p.value }</code>
-                    </pre>
-                );
-            }
+            // if(!p.language){
+            //     return (
+            //         <pre>
+            //             <code>{ p.value }</code>
+            //         </pre>
+            //     );
+            // }
             return ( 
                 <Highlight className = { p.language } >
                     { p.value }
@@ -107,13 +113,19 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         },
 
         //handled directives
-
+        textbox: (p: any) => {
+            return (
+                <div className='textframe' >
+                    { p.children }
+                </div>
+            );
+        },
         exercise: (p: any) => {
             var label : any = '';
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
@@ -130,13 +142,13 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             var children = p.children;
 
             var c = children[0];
-            if(c?.props?.data?.directiveLabel){
+            if(c?.props?.data?.textboxLabel || c?.props?.data?.directiveLabel){
                 label = c.props.children;
                 children = children.slice(1);
             }
 
             return (
-                <details>
+                <details open={ props.openDetails }>
                     <summary>{ label }</summary>
                     <div>
                         { children }

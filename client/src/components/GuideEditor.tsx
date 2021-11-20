@@ -1,11 +1,8 @@
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import PageTitle from 'components/PageTitle';
-import MarkdownEditor from 'components/MarkdownEditor';
 
 import { /*getGuideCategories, getGuideSections,*/ GuidePost, GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
 import { useIsAdmin } from 'etc/api/user';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 
 import Tags from "@yaireo/tagify/dist/react.tagify";
 
@@ -15,6 +12,10 @@ import usePromise from 'etc/usePromise';
 import useSmoothValue from 'etc/useSmoothValue';
 import Button from './Button';
 import { TagData } from '@yaireo/tagify';
+
+
+import TextEditor from 'components/editor/TextEditor';
+import { useTextEditorState } from 'components/editor/globals'; //states defined globally.
 
 // This function can be well modified for better auto-complete support
 function isStringRelated(current: string, target: string) {
@@ -228,7 +229,14 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     //let [cateName, setCateName] = React.useState<string>('');
     //let [goryName, setGoryName] = React.useState<string>('');
     let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
-    let [content, setContent] = React.useState<string>(initialGuide.content ?? '');
+
+    let [text, setText] = useTextEditorState('text');
+    let [previewText, setPreviewText] = useTextEditorState('previewText');
+    useEffect(()=>{
+        setText(initialGuide.content ?? '');
+        setPreviewText(initialGuide.content ?? '');
+    },[]); //initialize these only once!
+
     //let [priority, setPriority] = React.useState<number>(initialGuide.priority ?? 4);
     // let [isPublic, setIsPublic] = React.useState<boolean>(initialGuide.isPublic ?? true);
     let [message, setMessage] = React.useState<string>();
@@ -240,6 +248,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     //let [gories, setGories] = React.useState<GoryType[]>();
 
     let [tags, setTags] = React.useState<string[]>(initialGuide.tags ?? []);
+
     React.useEffect(() => {
         /*if (initialGuide?.cate) {
             getCateDetail(initialGuide.cate).then(({ name }) => {
@@ -266,7 +275,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
     return (<>
         <div className='writeBox guide'>
             <PageTitle style={{margin: '40px'}}> 
-                <FormattedMessage id={ behavior == 'add' ? 'editor.addguide' : 'editor.updateguide' } />
+                <FormattedMessage id={ behavior === 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
 {/* 
             <div className='flexbox'>
@@ -289,15 +298,15 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                 <input className='title' value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
-            <MarkdownEditor className='' body={ content } update={ (c) => setContent(c) } />
+            <TextEditor className='' body={ text } />
 
             <div className='editorBottom'>
                 <div style={{flex: 1, overflow: 'auto', fontSize: '16px', margin: '20px 20px 10px 10px'}}>
                     {/* TODO whitelist from API */}
-                    <Tags value={tags} onChange={useCallback((e) => {
+                    <Tags onChange={useCallback((e) => {
                         let tagStrings = e.detail.tagify.value.map((element: TagData) => element.value);
                         setTags(tagStrings);
-                    }, [])}/>
+                    }, [])} defaultValue="welcome, to, nacom"/>
                 </div>
                 {/* <div style={{flexGrow: 1, fontSize: '16px', lineHeight: '24px', margin: '30px 0px'}}>
                     <span className='material-icons link' onClick={() => setIsPublic(!isPublic)} style={{transform: 'translateY(6px)'}}> 
@@ -310,7 +319,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                     async () => {
                         upload(
                             // TODO add tags
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: false },
+                            { name, content: text, authors: authors.filter((s) => s.length > 0), tags: tags },
                             setMessage
                         );
                     }
@@ -328,7 +337,7 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                         let gory = goryIndex ?? (await postGory({ name: goryName, cate, guides: [] })).index;*/
                         
                         upload(
-                            { name, content, authors: authors.filter((s) => s.length > 0), tags: tags, isPublic: true },
+                            { name, content: text, authors: authors.filter((s) => s.length > 0), tags: tags },
                             setMessage
                         );
                     }
@@ -340,6 +349,5 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
         </div>
     </>)
 }
-
 
 export default GuideEditor;

@@ -1,14 +1,18 @@
+// Common features on MarkdownEditor and BubbleEditor.
+
+// 2021.11.02 not working now
+
 import React, { useState, useRef, useEffect, Component } from 'react';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 
 import { useMediaQuery } from 'react-responsive';
 
-import MarkdownRenderer from './markdown/MarkdownRenderer';
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
-import MarkdownManual from './MarkdownManual';
+import MarkdownManual from 'components/editor/MarkdownManual';
 
-import { fileUpload, imgUpload } from '../etc/FileUpload'
+import { fileUpload, imgUpload } from 'etc/FileUpload'
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -18,16 +22,21 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
       ref.current = value;
     });
     return ref.current;
-  };
+};
 
-function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement>){
-    let intl = useIntl(); //IS THIS OK???
+const EditorArea = React.forwardRef<HTMLTextAreaElement, JSX.IntrinsicElements['textarea']>((props, ref) => {
+    let intl = useIntl();
 
     return(
-        <textarea {...props} placeholder={ intl.formatMessage({id: 'editor.placeholder'}) } />
+        <textarea
+            {...props}
+            placeholder={ intl.formatMessage({id: 'editor.placeholder'}) }
+            spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
+            ref = {ref}
+        />
         // className={ (props.className || '') + ' editorArea' }
-    )
-}
+    );
+})
 
 const MemoizedRenderer = React.memo(MarkdownRenderer);
 function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
@@ -35,8 +44,6 @@ function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
         <div {...props} />
     )
 }
-
-
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement>{}
 
@@ -103,12 +110,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
         }
     }, [collapse])
 
-
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const insertText = (text : string) => {
         const isSuccess = document.execCommand('insertText', false, text);
 
         if(!isSuccess){
-            const mdArea = document.getElementsByTagName('textarea')[0] as HTMLTextAreaElement;
+            const mdArea = textareaRef.current;
 
             if(!mdArea) return;
 
@@ -117,7 +124,8 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
             const ed = mdArea.selectionEnd;
 
             mdArea.setRangeText(text, st, ed);
-            mdArea.selectionStart = mdArea.selectionEnd = st + text.length;
+            // mdArea.selectionStart = st;
+            mdArea.selectionEnd = st + text.length;
 
             // notify to event listeners
             const e = document.createEvent('UIEvent');
@@ -259,11 +267,12 @@ function MarkdownEditor({ body, update, ...other } : EditorProps) {
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
                         value = { value }
+                        ref = { textareaRef }
                     />
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
-                        <MemoizedRenderer>
+                        <MemoizedRenderer usePriority useTOC openDetails>
                             { previewValue }
                         </MemoizedRenderer>
                     </PreviewArea>

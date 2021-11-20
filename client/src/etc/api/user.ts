@@ -31,15 +31,19 @@ export const register = async (data : RegisterData) => {
 }
 
 export interface UserData {
-    isAuth: boolean;
     email: string;
     nickname: string;
     guides: GuideType[];
+    profile: GuideType;
+}
+
+export type UserAuthData = UserData & {
+    isAuth: boolean;
 }
 
 export const setUserInfo = async () => {
     let response = await Axios.get(`${apiAddress}/user`, { validateStatus: authValidateStatus, withCredentials: true });
-    let data = response.data as UserData;
+    let data = response.data as UserAuthData;
 
     if (data.isAuth) store.dispatch(setUser(data.email, data.nickname));
     else store.dispatch(clearUser());
@@ -98,5 +102,10 @@ export const getMyPage = async() => {
         withCredentials: true 
     });
 
+    return response.data as UserAuthData;
+}
+
+export const getUserProfile = async (nickname: string) => {
+    let response = await Axios.get(`${apiAddress}/user/profile/${nickname}`);
     return response.data as UserData;
 }

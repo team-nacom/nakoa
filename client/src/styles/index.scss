@@ -81,6 +81,9 @@ html {
     font-weight: 300;  
 
     min-height: 100%;
+}
+
+#content {
     margin-left: calc(10% - 20px);
     margin-right: calc(10% - 20px);
 }
@@ -105,7 +108,7 @@ label {
 
 .pageTitle {
 	font-family: SeoulNamsan;
-	margin: 25px 0px;
+	margin: 32px 0px;
 }
 
 .desktopOnly {
@@ -125,13 +128,15 @@ label {
 @import './layout/footer.scss';
 @import './layout/header.scss';
 
+@import './components/bubble.scss';
 @import './components/buttons.scss';
 @import './components/guide.scss';
 @import './components/challenge.scss';
 @import './components/markdown.scss';
+@import './components/user.scss';
 @import './components/popup.scss';
 @import './components/quiz.scss';
 @import './components/signin.scss';
 @import './components/signup.scss';
 @import './components/tabs.scss';
-@import './components/tags.scss';   
+@import './components/tags.scss';

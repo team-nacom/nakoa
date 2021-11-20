@@ -56,30 +56,33 @@ interface Params {
 function GuideView({ guide, filter = defaultGuideFilter }: Params) {
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
+    const title = guide.name;
+    const authors = guide.authors ?? [];
+    const tags = guide.tags ?? [];
+
     if (redirectTo) return <Redirect push to={redirectTo}/>
     else return (
-        <div className='guide'>
+        <div id='content' className='guide'>
             <div className='guideBackground' />
-            {/*
-            <div className='metadata'> 
-                <select className='metadataItem' value={ guide.cate } onChange={(e) => setRedirectTo(`/guide?cate=${e.target.value}`)}> 
-                    { cates?.map((cate) => (
-                        <option value={cate.index}> { cate.name } </option>
-                    )) } 
-                </select>
-                <span> { '>' } </span> 
-                <select className='metadataItem' value={ guide.gory } onChange={(e) => setRedirectTo(`/guide?cate=${guide.cate}&gory=${e.target.value}`)}> 
-                    { cate?.gories.map((gory) => (
-                        <option value={gory.index}> { gory.name } </option>
-                    )) } 
-                </select>
+            <h1 className='title'> { title } </h1>
+            <div className='subcontainer'> 
+                { authors.map((author) => (
+                    <Link to={`/user/${author}`}> 
+                        <button className='author'> 
+                            <span className='material-icons'> edit </span>
+                            { author } 
+                        </button> 
+                    </Link>) 
+                ) }
+                { tags.map((tag) => (
+                    <Link to={`/guide/search/${tag}`}> 
+                        <button className='tag'> 
+                            <span className='material-icons'> tag </span>
+                            { tag } 
+                        </button> 
+                    </Link>) 
+                )}
             </div>
-            */}
-            <h2 className='subtitle'> { guide.authors ? guide.authors.join(', ') : 'junie' } </h2>
-            <h1 className='title'> { guide.name } </h1>
-            {(guide.tags != null && guide.tags.length > 0) && 
-                <h3 className='tags'> { '#' + guide.tags.join(' #')} </h3>
-            }
             <div className={
                 'guideContent'
                 + (filter.Essential ? '' : ' hideEssential')
@@ -88,11 +91,10 @@ function GuideView({ guide, filter = defaultGuideFilter }: Params) {
                 + (filter.Optional ? '' : ' hideOptional')
                 + (filter.Draft ? '' : ' showDraft')
             }>
-                <MarkdownRenderer>
+                <MarkdownRenderer usePriority useTOC>
                     { guide.content }
                 </MarkdownRenderer>
                 <hr/>
-                <div>{(guide.tags != null && guide.tags.length > 0) &&  '#' + guide.tags.join(' #')}</div>
             </div>
         </div>
     );
