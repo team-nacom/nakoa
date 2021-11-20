@@ -46,12 +46,13 @@ function UserMain() {
             </>
         )
     }
-    else{
-        return (
-            <>
-            <MarkdownRenderer useTOC={false}>
-                {user.profile.content}
-            </MarkdownRenderer>
+    else return (
+        <>
+            <div id='content'>
+                <MarkdownRenderer useTOC={false}>
+                    {user.profile.content}
+                </MarkdownRenderer>
+            </div>
 
             <GuideSidebar on='list'>
                 { isEditable && (
@@ -64,10 +65,8 @@ function UserMain() {
                     </span>
                 )}
             </GuideSidebar>
-            
-            </>
-        )
-    }
+        </>
+    )
 }
 interface userGuideParams {
     isPublic: Boolean;
