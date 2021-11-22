@@ -7,6 +7,26 @@
     min-height: 54px;
     overflow: scroll;
     background: $color;
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+@mixin bubblelabel($background-color: gray, $color: white) {
+    width: fit-content;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 15px;
+    margin-bottom: -28px;
+    margin-left: 5px;
+
+    background-color: $background-color;
+    color: $color;
 }
 
 .textBubble {
@@ -17,12 +37,21 @@
     @include bubble(rgba($main-color, 0.08));
 }
 
+summary.mathBubblePreview {
+    @include bubblelabel(rgba($main-color, 0.8),white);
+}
+
 .codeBubble {
     @include bubble(rgba(gray, 0.16));
-    padding-top: 10px;
+    padding-top: 30px;
     padding-bottom: 10px;
     font-size: 13.33px;
 }
+
+summary.codeBubblePreview {
+    @include bubblelabel(rgba(gray, 0.8), white);
+}
+
 
 @mixin editorBubble($color) {
     display: block;

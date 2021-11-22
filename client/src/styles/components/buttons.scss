@@ -39,6 +39,7 @@
 }
 
 @mixin sidebarButton {
+    margin: 8px;
     height: 60px;
     width: 60px;
     border-radius: 50%;
@@ -57,7 +58,7 @@
 }
 
 @mixin underlineButton {
-    padding: 15px 30px;
+    padding: 15px 25px;
     background: white;
     font-size: 14px;
     border-bottom: 2px solid #00000000;

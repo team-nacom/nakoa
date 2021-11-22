@@ -28,9 +28,14 @@ function RenderedCodeBubble(props: BubbleComponentProps){
     //     </Highlight>
     // ); 
     return (
-        <pre className='codeBubble renderedCodeBubble'>
-            <code>{ contents }</code>
-        </pre>
+        <>
+            <summary className='codeBubblePreview'>
+                코드
+            </summary>
+            <pre className='codeBubble renderedCodeBubble'>
+                <code>{ contents }</code>
+            </pre>
+        </>
     );
 }
 
@@ -45,9 +50,14 @@ function PreviewCodeBubble(props: BubbleComponentProps){
     //     </Highlight>
     // ); 
     return (
-        <pre className='codeBubble previewCodeBubble'>
-            <code>{ contents }</code>
-        </pre>
+        <>
+            <summary className='codeBubblePreview'>
+                코드
+            </summary>
+            <pre className='codeBubble previewCodeBubble'>
+                <code>{ contents }</code>
+            </pre>
+        </>
     );
 }
 
