@@ -74,7 +74,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         tocHeading : TocHeadingRendererFactory(props.isManual),
 
         //section renderers
-        section: SectionRendererFactory(props.isManual),
+        section: SectionRendererFactory(props.isManual, props.usePriority),
         sectionHeading: SectionHeadingRendererFactory(props.isManual, props.usePriority),
 
         //footnote renderers
