@@ -5,7 +5,7 @@ import { Root } from 'mdast';
 import { textbox } from './micromark-textbox';
 import { textboxFromMarkdown, textboxToMarkdown, NamedTextboxes } from './mdast-textbox'
 
-const naMark : Plugin = function(){
+const namarkTextbox : Plugin = function(){
     var self = this;
     var data = self.data();
 
@@ -21,4 +21,4 @@ const naMark : Plugin = function(){
 }
 
 export type { NamedTextboxes };
-export default naMark;
+export default namarkTextbox;

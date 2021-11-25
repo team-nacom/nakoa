@@ -18,6 +18,24 @@ function wrap(tokenizer : Tokenizer){
     return { tokenize: tokenizer, partial: true };
 }
 
+const tokenizeNonLazyLine : Tokenizer = function(effects, ok, nok){
+    const self = this;
+
+    const start : State = function(code){
+        assert(markdownLineEnding(code), 'expected eol');
+        effects.enter(types.lineEnding);
+        effects.consume(code);
+        effects.exit(types.lineEnding);
+        return lineStart;
+    }
+
+    const lineStart : State = function(code){
+        return self.parser.lazy[self.now().line] ? nok(code) : ok(code);
+    }
+
+    return start;
+}
+
 const tokenizeName : Tokenizer = function(effects, ok, nok){
     const self = this;
 
@@ -141,24 +159,6 @@ const tokenizeLabel : Tokenizer = function(effects, ok, nok){
         return label(code);
     }
 
-
-    return start;
-}
-
-const tokenizeNonLazyLine : Tokenizer = function(effects, ok, nok){
-    const self = this;
-
-    const start : State = function(code){
-        assert(markdownLineEnding(code), 'expected eol');
-        effects.enter(types.lineEnding);
-        effects.consume(code);
-        effects.exit(types.lineEnding);
-        return lineStart;
-    }
-
-    const lineStart : State = function(code){
-        return self.parser.lazy[self.now().line] ? nok(code) : ok(code);
-    }
 
     return start;
 }

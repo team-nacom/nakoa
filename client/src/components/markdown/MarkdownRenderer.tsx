@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { PluggableList } from 'unified';
+import { Transformer, PluggableList } from 'unified';
 import { Node, Parent } from 'unist';
 
 import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
@@ -21,12 +21,12 @@ import 'highlight.js/styles/github.css';
 
 import DirectiveHandler, { TextDirectives, LeafDirectives, ContainerDirectives } from './DirectiveHandler';
 import SectionEnumerator, { TocRendererFactory, TocHeadingRendererFactory, SectionRendererFactory, SectionHeadingRendererFactory } from './SectionEnumerator';
-import SectionPriorityHandler from './SectionPriorityHandler';
 import InternalLinkHandler from './InternalLinkHandler';
 
 import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 
-import NaMarkTextbox from './textbox'
+import namarkTextbox from './textbox';
+import namarkNaHeading from './heading';
 
 type Renderer = (p: Node) => JSX.Element; //can't we use ReactMarkdown.Renderer or something similar?
 
@@ -46,13 +46,14 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         CodeFrontmatter,
 
         /////// custom plugins
-        NaMarkTextbox,
+        namarkTextbox,
+        namarkNaHeading,
         // DirectiveHandler, //legacy
 
         InternalLinkHandler,
-        ...( props.usePriority ? [SectionPriorityHandler] : [] ),
         ...( props.useTOC ? [SectionEnumerator] : [] ),
         FootnoteEnumerator,
+        (settings) => ( (tree,file) => {console.log(tree)} )
     ]
 
     const renderers : {[nodeType: string]: Renderer}
@@ -72,7 +73,7 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
 
         //section renderers
         section: SectionRendererFactory(props.isManual),
-        sectionHeading: SectionHeadingRendererFactory(props.isManual),
+        sectionHeading: SectionHeadingRendererFactory(props.isManual, props.usePriority),
 
         //footnote renderers
         footnoteReference: FootnoteReferenceRenderer,

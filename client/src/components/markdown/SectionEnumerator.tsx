@@ -4,10 +4,6 @@ import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
 import visit from 'unist-util-visit';
 
-import ReactMarkdown from 'react-markdown';
-import Math from 'remark-math';
-import TeX from '@matejmazur/react-katex';
-
 import { HashLink } from 'react-router-hash-link';
 import { priorityTags } from 'etc/api/guide';
 import { FormattedMessage } from 'react-intl';
@@ -73,9 +69,6 @@ function wrapSection(nodes: Node[], depth: Number){
     return nodes;
 }
 
-interface SectionEnumeratorOptions {
-    noTOC?: boolean
-}
 const SectionEnumerator : Plugin = (settings) => {
     const sectionEnumerator : Transformer = (tree, file) => {
         let sectionNum = 0, subsectionNum = 0, subsubsectionNum = 0;
@@ -134,8 +127,6 @@ const SectionEnumerator : Plugin = (settings) => {
         if(!(settings?.noTOC)){
             root.children = [{ type: 'toc', children: tocList } as Node].concat(newChildren);
         }
-
-        // console.log(root);
     }
 
     return sectionEnumerator;
@@ -173,17 +164,17 @@ const TocHeadingRendererFactory = (isManual? : boolean) =>{
     )
 }
 
-const SectionRendererFactory = (isManual? : boolean) => {
+const SectionRendererFactory = (isManual? : boolean, usePriority? : boolean) => {
     return (n : any) => {
         return (
-            <div className={ 'sectionBlock ' + priorityTags[n.priority] }>
+            <div className={ 'sectionBlock ' + (usePriority ? priorityTags[n.priority] : '') }>
                 { n.children }
             </div>
         )
     }
 }
 
-const SectionHeadingRendererFactory = (isManual? : boolean) => {
+const SectionHeadingRendererFactory = (isManual? : boolean, usePriority? : boolean) => {
     return (n : any) => {
         // console.log(n);
         let children = n.children;
@@ -198,7 +189,7 @@ const SectionHeadingRendererFactory = (isManual? : boolean) => {
 
         return (        
             <div className={ 'headingBlock ' + hnames[n.depth] }>
-                { n.priority !== -1 &&
+                { usePriority && n.priority !== -1 &&
                     <HashLink
                         to={ (isManual ? '#man-':'#') + 'toc-label' }
                         id={ (isManual ? 'man-':'') + 'heading-' + n.numbering.join('-') }
