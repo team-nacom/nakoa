@@ -53,8 +53,10 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
         InternalLinkHandler,
         ...( props.useTOC ? [SectionEnumerator] : [] ),
         FootnoteEnumerator,
-        (settings) => ( (tree,file) => {console.log(tree)} )
+        // (settings) => ( (tree,file) => {console.log(tree)} )
     ]
+
+    const macros = {};
 
     const renderers : {[nodeType: string]: Renderer}
     & Record<TextDirectives | LeafDirectives | ContainerDirectives, Renderer> = {
@@ -86,8 +88,8 @@ function MarkdownRenderer(props : ReactMarkdown.ReactMarkdownProps & RendererOpt
             : (<></>)
         ),
 
-        math: (p: any) => <TeX block math = { p.value as string } />,
-        inlineMath: (p: any) => <TeX math = { p.value as string } />,
+        math: (p: any) => <TeX block math = { p.value as string } settings = { {macros : macros, globalGroup : true} } />,
+        inlineMath: (p: any) => <TeX math = { p.value as string } settings = { {macros : macros, globalGroup : true} } />,
         code: (p: any) => { // ({language, value}) => {
             // if(!p.language){
             //     return (
