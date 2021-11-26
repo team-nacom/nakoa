@@ -16,7 +16,7 @@ function About() {
         <>
             <Header/>
             <div id='content'>
-                <MarkdownRenderer isManual={true} useTOC>
+                <MarkdownRenderer isManual useTOC>
                     { message }
                 </MarkdownRenderer>
             </div>

@@ -2,6 +2,8 @@ import Axios from 'axios';
 import { authValidateStatus } from '.';
 import config from '../config';
 
+import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
+
 const apiAddress = config.apiAddress;
 
 export interface BubbleType {
@@ -26,10 +28,23 @@ export const getBubbles = async () => {
     return response.data as BubbleType[];
 }
 
-export const getBubble = async (id: number) => {
+export const getBubble = async (id: string) => {
     let response = await Axios.get(`${apiAddress}/bubble/${id}`, {
         validateStatus: authValidateStatus, 
     });
+
+    let content = response.data.content;
+    while(typeof content === 'string'){
+        content = JSON.parse(content);
+    }
+
+    dispatch({
+        type: 'init',
+        bubble: content || {
+            type: 'parent',
+            children : [ {type: 'text', value: ''} ]
+        }
+    })
 
     return response.data as BubbleType;
 }

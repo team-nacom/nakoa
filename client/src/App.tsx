@@ -21,6 +21,7 @@ import About from 'pages/About';
 import NotFound from 'pages/NotFound';
 import GuideEdit from 'pages/guide/GuideEdit';
 import BubbleList from 'pages/bubble/BubbleList';
+import BubblePage from 'pages/bubble/BubblePage';
 
 import messageEn from './locale/en.json';
 import messageKo from './locale/ko.json';
@@ -90,6 +91,7 @@ function App() {
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/about' component={About} />
           <Route exact path='/bubble' component={BubbleList} />
+          <Route exact path='/bubble/:id' component={BubblePage} />
           <Route exact path='/bubble/write' component={BubbleWrite} />
           <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}

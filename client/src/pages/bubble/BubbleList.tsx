@@ -27,7 +27,7 @@ function BubbleList() {
                 </span>
             </GuideSidebar>
             <PageTitle>
-                모든 방울 보기
+                모든 버블 보기
             </PageTitle>
             <div>
                 {bubbles?.map((bubble) => <div key={bubble.name} className='bubbleFeed'>

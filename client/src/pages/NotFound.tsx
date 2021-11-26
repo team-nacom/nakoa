@@ -27,7 +27,7 @@ function NotFound() {
                 </MarkdownRenderer>
             </div>
             {/* for testing: */}
-            <BubbleEditor />
+            {/* <BubbleEditor /> */}
             <Footer/>
         </>
     );
