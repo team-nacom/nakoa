@@ -92,9 +92,9 @@ function App() {
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/about' component={About} />
           <Route exact path='/bubble' component={BubbleList} />
+          <Route exact path='/bubble/write' component={BubbleWrite} />
           <Route exact path='/bubble/:id' component={BubblePage} />
           <Route exact path='/bubble/:id/edit' component={BubbleEdit} />
-          <Route exact path='/bubble/write' component={BubbleWrite} />
           <Redirect exact path='/' to='/guide' />
 {/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>
