@@ -15,6 +15,13 @@ function focusElem(refs: refsType, bid: string, pos: number){
         elem.selectionStart = elem.selectionEnd = pos;
     }, 10);
 }
+function focusSibling(refs: refsType, evalSiblingId: () => string[], idx: number, pos: number){
+    setTimeout(()=>{
+        const elem = refs.current[ evalSiblingId()[idx] ] as HTMLTextAreaElement;
+        elem.focus();
+        elem.selectionStart = elem.selectionEnd = pos;
+    }, 10);
+}
 
 function handleChangeFactory(fb: FlatBubble, bid: string, dispatch: dispatchType){
     return (e : React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -30,8 +37,12 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
         //get sibling index.
         var pbid = record[bid].parentId;
         if(typeof pbid === 'undefined') return;
-    
-        var siblingId = record[pbid].childrenId || [];
+
+        // var siblingId = record[pbid].childrenId || [];
+
+        const evalSiblingId = () => {return record[pbid || '_'].childrenId || []};
+        var siblingId = evalSiblingId();
+
         var idx = siblingId.indexOf(bid);
         if(idx === -1) idx = siblingId.length;
     
@@ -53,8 +64,7 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
                 } });
 
                 // will be autofocused on newly created element
-                // focusElem(refs,idx,0);
-                // focusElem(refs,siblingId[idx + 1],0);
+                focusSibling(refs,evalSiblingId,idx+1,0);
             }
             else{ //trigger 2 : @@@ + enter
                 if(str[curStart] !== '\n' && curStart !== str.length) return;
@@ -83,8 +93,7 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
                 } });
 
                 // will be autofocused on newly created element
-                // focusElem(refs,idx,0);
-                // focusElem(refs,siblingId[idx + 1],0);
+                focusSibling(refs,evalSiblingId,idx+1,0);
             }
         }
     

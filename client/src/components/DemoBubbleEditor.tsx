@@ -17,10 +17,11 @@ interface Props {
     upload: (guide: BubblePost, 
              setMessage: (message: string) => void) 
         => void,
+    behavior: 'add' | 'edit'
 }
 
 
-function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
+function DemoBubbleEditor({ initialBubble = {}, upload, behavior } : Props) {
     let [name, setName] = React.useState<string>(initialBubble.name ?? '');
     let [ bubble ] = useNaBubbleState('bubble');
 
@@ -34,7 +35,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload } : Props) {
     return (<>
         <div className='writeBox guide'>
             <PageTitle style={{padding: '40px'}}> 
-                버블 추가
+                {behavior === 'edit' ? '버블 편집' : '버블 추가'}
             </PageTitle>
 
             <div className='titleEditor'>

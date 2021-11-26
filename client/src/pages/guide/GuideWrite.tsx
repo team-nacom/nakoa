@@ -10,10 +10,10 @@ import { RootReducer } from 'store';
 import queryString from 'query-string';
 import GuideEditor from 'components/GuideEditor';
 
-interface Query {
-    cate?: string;
-    gory?: string;
-}
+// interface Query {
+//     cate?: string;
+//     gory?: string;
+// }
 
 interface Props {
     location: Location;
