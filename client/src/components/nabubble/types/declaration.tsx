@@ -1,4 +1,5 @@
 interface BubbleMap<T>{
+    root: T;
     parent: T;
     text: T;
     math: T;
@@ -9,6 +10,7 @@ type BubbleType = keyof BubbleMap<string>;
 
 type BubbleBehaviorList = 'parent' | 'text';
 const bubbleBehavior : BubbleMap<BubbleBehaviorList> = {
+    root: 'parent',
     parent: 'parent',
     text: 'text',
     math: 'text',

@@ -80,6 +80,7 @@ function EditorRootBubble(props : React.HTMLAttributes<HTMLElement>){
 function RenderedBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
     const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+        root : RenderedParentBubble,
         parent : RenderedParentBubble,
         text : RenderedTextBubble,
         math : RenderedMathBubble,
@@ -92,6 +93,7 @@ function RenderedBubble(props : BubbleComponentProps){
 function PreviewBubble(props : BubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('preivewBubble');
     const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
+        root : RenderedParentBubble,
         parent : PreviewParentBubble,
         text : PreviewTextBubble,
         math : PreviewMathBubble,
@@ -104,6 +106,7 @@ function PreviewBubble(props : BubbleComponentProps){
 function EditorBubble(props : EditorBubbleComponentProps){
     // const [ bubble ] = useNaBubbleState('bubble');
     const map : BubbleMap<(props : EditorBubbleComponentProps) => JSX.Element> = {
+        root : RenderedParentBubble,
         parent : EditorParentBubble,
         text : EditorTextBubble,
         math : EditorMathBubble,
