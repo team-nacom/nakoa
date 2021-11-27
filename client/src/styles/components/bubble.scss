@@ -52,11 +52,20 @@ summary.codeCellPreview {
     @include celllabel(rgba(gray, 0.8), white);
 }
 
+.editorCellContainer {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
 
 @mixin editorCell($color) {
     display: inline-block;
-    width: calc(100% - 6px);
-    margin: 2px 0;
+    width: 100%; //calc(100% - 6px);
+    // margin: 2px 0;
+    margin: 0;
     padding: 10px;
     box-sizing: border-box;
     resize: none;
@@ -66,10 +75,10 @@ summary.codeCellPreview {
     // max-height: 250px;
     line-height: 20px;
     vertical-align: middle;
-    overflow-x: hidden;
+    overflow-y: hidden;
 
     //height is intended to be auto-adjusted by react-textarea-autosize package.
-    //do not specify min- or max-height and leave `overflow-x:hidden` as it is.
+    //do not specify min- or max-height and leave `overflow-y:hidden` as it is.
 }
 
 .editorTextCell {
@@ -86,12 +95,13 @@ summary.codeCellPreview {
 
 .addCellButton {
     display: block;
-    width: 100%;
+    width: calc(100% - 6px);
     background-color: blue;
     opacity: 0;
     font-size: 0; // hide text.
+    border: 0;
     height: 6px;
-    border: none;
+    margin-left: 6px;
 
     &:hover{
         opacity: 1;
@@ -105,7 +115,7 @@ summary.codeCellPreview {
     background-color: blue;
     opacity: 0;
     font-size: 0;
-    height: 36px;
+    // height: 36px;
     border: none;
     margin: 0;
     padding: 0;

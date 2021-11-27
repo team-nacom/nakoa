@@ -89,8 +89,8 @@ function RenderedCell(props: StaticCellComponentProps) {
         math: RenderedMathCell,
         code: RenderedCodeCell,
     }
-    const RenderedTypedBubble = map[props.type];
-    return <RenderedTypedBubble {...props} />
+    const RenderedTypedCell = map[props.type];
+    return <RenderedTypedCell {...props} />
 }
 
 function PreviewCell(props: StaticCellComponentProps) {
@@ -102,8 +102,8 @@ function PreviewCell(props: StaticCellComponentProps) {
         math: PreviewMathCell,
         code: PreviewCodeCell,
     }
-    const PreviewTypedBubble = map[props.type];
-    return <PreviewTypedBubble {...props} />
+    const PreviewTypedCell = map[props.type];
+    return <PreviewTypedCell {...props} />
 }
 
 function EditorCell(props: EditorCellComponentProps) {
@@ -119,10 +119,10 @@ function EditorCell(props: EditorCellComponentProps) {
         math: EditorMathCell,
         code: EditorCodeCell,
     }
-    const EditorTypedBubble = map[props.type];
-    return <div style={ {margin:0, padding:0, border:0} }>
+    const EditorTypedCell = map[props.type];
+    return <div className='editorCellContainer'>
         <CellOptionButton parentId = { parentId || '_' } cellId = {props.cellId} evalSiblingId = { evalSiblingId } refs={props.refs} dispatch={dispatch} />
-        <EditorTypedBubble {...props} />
+        <EditorTypedCell {...props} />
     </div>;
 }
 
