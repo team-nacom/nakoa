@@ -37,4 +37,22 @@ router.delete('/:index', async (ctx) => {
     ctx.body = await Bubble.findOneAndDelete({index: index}).exec();
 })
 
+router.put('/:index', async (ctx) => {
+    const bubbleObj = ctx.request.body;
+    const contentString = JSON.stringify(bubbleObj.content);
+    const index: string = ctx.params.index;
+
+    try {
+        await Bubble.findOneAndUpdate({index: index}, {$set: {
+            name: bubbleObj.name,
+            content: contentString,
+            tags: bubbleObj.tags
+        }}).exec();
+        ctx.body = "Success";
+    } catch (e) {
+        ctx.throw(400, "Error while updating bubble");
+    }
+
+})
+
 export default router;
