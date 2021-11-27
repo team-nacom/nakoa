@@ -1,5 +1,5 @@
 
-import { BubbleType } from './cellTypes'
+import { BubbleType } from './types'
 
 interface Data {}
 

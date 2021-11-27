@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flat } from '../../bubble';
 import { FlatAction, FlatSubAction } from '../../action';
-import { BubbleType, bubbleBehavior } from '../../cellTypes';
+import { BubbleType, bubbleBehavior } from '../../types';
 
 type dispatchType = (action : FlatAction | FlatSubAction) => FlatAction | FlatSubAction;
 
@@ -137,4 +137,6 @@ function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, r
     }
 }
 
+export type { dispatchType, refsType };
+export { focusSibling };
 export { handleChangeFactory, handleKeyDownFactory };

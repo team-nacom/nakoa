@@ -1,7 +1,6 @@
 import React, { useRef, MutableRefObject } from 'react';
 
-import { BubbleType } from '../cellTypes'
-
+import { BubbleType } from '../types'
 import { Flat } from '../bubble';
 import { FlatSubAction, FlatAction } from '../action';
 

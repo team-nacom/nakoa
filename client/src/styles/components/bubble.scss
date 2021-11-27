@@ -56,7 +56,7 @@ summary.codeCellPreview {
 @mixin editorCell($color) {
     display: block;
     width: 100%;
-    margin: 10px 0;
+    margin: 2px 0;
     padding: 10px;
     box-sizing: border-box;
     resize: none;
@@ -77,4 +77,19 @@ summary.codeCellPreview {
 
 .editorCodeCell {
     @include editorCell(rgba(gray, 0.16));
+}
+
+.addCellButton {
+    display: block;
+    width: 100%;
+    background-color: blue;
+    opacity: 0;
+    font-size: 0; // hide text.
+    height: 6px;
+    border: none;
+
+    &:hover{
+        opacity: 1;
+        transition: 0.3s;
+    }
 }
