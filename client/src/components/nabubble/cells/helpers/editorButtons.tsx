@@ -1,4 +1,4 @@
-import { FlatAction, FlatSubAction } from '../../action';
+// import { FlatAction, FlatSubAction } from '../../action';
 import { BubbleType, bubbleBehavior } from '../../types';
 
 import { dispatchType, refsType } from './handlers';
@@ -7,21 +7,21 @@ import { focusSibling } from './handlers'
 interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     parentId : string,
     idx : number,
-    evalChildrenId : () => string[]
-    cellType? : BubbleType,
+    evalSiblingId : () => string[]
     refs : refsType
     dispatch : dispatchType
 }
 
-function AddCellButton({ parentId, idx, cellType, refs, evalChildrenId, dispatch, ...others }: AddCellButtonProps){
+function AddCellButton({ parentId, idx, refs, evalSiblingId, dispatch, ...others }: AddCellButtonProps){
 
     const addCellHandler = (e: any) => {
+        let newType : BubbleType = 'text';
         dispatch({ type: 'add', parentId: parentId, idx: idx, bubble: {
-            type : cellType || 'text',
+            type : newType || 'text',
             value : '',
-            children : (cellType === 'parent' ? [] : undefined)
+            // children : (newType === 'parent' ? [] : undefined)
         } });
-        focusSibling(refs, evalChildrenId, idx, 0);
+        focusSibling(refs, evalSiblingId, idx, 0);
     }
 
     return (<button className='addCellButton' onClick = { addCellHandler }>
@@ -29,4 +29,18 @@ function AddCellButton({ parentId, idx, cellType, refs, evalChildrenId, dispatch
     </button>)
 }
 
-export { AddCellButton };
+interface CellOptionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
+    parentId : string,
+    cellId : string,
+    evalSiblingId : () => string[]
+    refs : refsType
+    dispatch : dispatchType
+}
+
+function CellOptionButton({parentId, cellId, refs, evalSiblingId, dispatch, ...others} : CellOptionButtonProps){
+    return (<button className='cellOptionButton'>
+        cell option
+    </button>)
+}
+
+export { AddCellButton, CellOptionButton };

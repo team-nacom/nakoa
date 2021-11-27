@@ -10,7 +10,7 @@ import { RenderedCodeCell, PreviewCodeCell, EditorCodeCell } from './Code';
 
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
 
-import { AddCellButton } from './helpers/editorButtons'
+import { AddCellButton, CellOptionButton } from './helpers/editorButtons'
 
 //type: 'parent'
 //value: title
@@ -56,8 +56,8 @@ function EditorParentCell(props: EditorCellComponentProps) {
         {
             childrenId.reduce((prev, childId, idx) => prev.concat(
                 <EditorCell {...others} cellId={childId} type={flat.record[childId].type} refs={refs} />,
-                <AddCellButton parentId={cellId} evalChildrenId={ evalChildrenId } idx={idx + 1} dispatch={dispatch} refs={refs} />
-            ), [<AddCellButton parentId={cellId} evalChildrenId={ evalChildrenId } idx={0} dispatch={dispatch} refs={refs} />])
+                <AddCellButton parentId={cellId} evalSiblingId={ evalChildrenId } idx={idx + 1} dispatch={dispatch} refs={refs} />
+            ), [<AddCellButton parentId={cellId} evalSiblingId={ evalChildrenId } idx={0} dispatch={dispatch} refs={refs} />])
         }
     </div>);
 }
@@ -83,7 +83,7 @@ function EditorRootCell(props: React.HTMLAttributes<HTMLElement>) {
 function RenderedCell(props: StaticCellComponentProps) {
     // const [ flat ] = useNaBubbleState('flat');
     const map: BubbleMap<(props: StaticCellComponentProps) => JSX.Element> = {
-        root: RenderedParentCell,
+        root: RenderedParentCell, //should't be called.
         parent: RenderedParentCell,
         text: RenderedTextCell,
         math: RenderedMathCell,
@@ -96,7 +96,7 @@ function RenderedCell(props: StaticCellComponentProps) {
 function PreviewCell(props: StaticCellComponentProps) {
     // const [ flat ] = useNaBubbleState('preivewFlat');
     const map: BubbleMap<(props: StaticCellComponentProps) => JSX.Element> = {
-        root: PreviewParentCell,
+        root: PreviewParentCell, //should't be called.
         parent: PreviewParentCell,
         text: PreviewTextCell,
         math: PreviewMathCell,
@@ -107,16 +107,23 @@ function PreviewCell(props: StaticCellComponentProps) {
 }
 
 function EditorCell(props: EditorCellComponentProps) {
-    // const [ flat ] = useNaBubbleState('flat');
+    const [ flat ] = useNaBubbleState('flat');
+
+    const parentId = flat.record[props.cellId].parentId;
+    const evalSiblingId = ()=>(flat.record[parentId || '_'].childrenId || []);
+
     const map: BubbleMap<(props: EditorCellComponentProps) => JSX.Element> = {
-        root: EditorParentCell,
+        root: EditorParentCell, //should't be called.
         parent: EditorParentCell,
         text: EditorTextCell,
         math: EditorMathCell,
         code: EditorCodeCell,
     }
     const EditorTypedBubble = map[props.type];
-    return <EditorTypedBubble {...props} />
+    return <div style={ {margin:0, padding:0, border:0} }>
+        <CellOptionButton parentId = { parentId || '_' } cellId = {props.cellId} evalSiblingId = { evalSiblingId } refs={props.refs} dispatch={dispatch} />
+        <EditorTypedBubble {...props} />
+    </div>;
 }
 
 export {

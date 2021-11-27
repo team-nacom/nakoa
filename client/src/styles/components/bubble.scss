@@ -54,8 +54,8 @@ summary.codeCellPreview {
 
 
 @mixin editorCell($color) {
-    display: block;
-    width: 100%;
+    display: inline-block;
+    width: calc(100% - 6px);
     margin: 2px 0;
     padding: 10px;
     box-sizing: border-box;
@@ -65,6 +65,7 @@ summary.codeCellPreview {
     // min-height: 54px;
     // max-height: 250px;
     line-height: 20px;
+    vertical-align: middle;
 }
 
 .editorTextCell {
@@ -87,6 +88,24 @@ summary.codeCellPreview {
     font-size: 0; // hide text.
     height: 6px;
     border: none;
+
+    &:hover{
+        opacity: 1;
+        transition: 0.3s;
+    }
+}
+
+.cellOptionButton {
+    display: inline-block;
+    width: 6px;
+    background-color: blue;
+    opacity: 0;
+    font-size: 0;
+    height: 36px;
+    border: none;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
 
     &:hover{
         opacity: 1;
