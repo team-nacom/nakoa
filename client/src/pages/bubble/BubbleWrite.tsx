@@ -9,9 +9,22 @@ import { RootReducer } from 'store';
 import queryString from 'query-string';
 import DemoBubbleEditor from 'components/DemoBubbleEditor';
 
+import { dispatchNaBubbleState as dispatch } from 'components/nabubble'
+
 function BubbleWrite() {
     let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
+
+    // initialize
+    useEffect(()=>{
+        dispatch({
+            type: 'init',
+            bubble: {
+                type: 'parent',
+                children : [ {type: 'text', value: ''} ]
+            }
+        })
+    },[]);
 
     let upload = (bubble: BubblePost, setMessage: (message: string) => void) => {
         postBubble(bubble).then(({success, index}) => {

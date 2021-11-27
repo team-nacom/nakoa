@@ -1,7 +1,7 @@
 import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getBubble } from 'etc/api/bubble';
+import { getBubble, removeBubble } from 'etc/api/bubble';
 import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
@@ -26,16 +26,47 @@ function BubblePage() {
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
     
+    let [redirectToList, setRedirectToList] = React.useState(false);
     let [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
 
+    let isEditable = true;
+
+    if (redirectToList) return <Redirect to='/bubble' />;
     if (bubbleLoading) return <Loading/>;
     return (
         <>
             <Header />
 
+            <GuideSidebar on='post'>
+                { isEditable && 
+                    <Button className='material-icons' onClick={async (e) => {
+                        e.preventDefault();
+                        if (window.confirm('정말 삭제하시겠습니까?') && await removeBubble(index)) {
+                            setRedirectToList(true);
+                        }
+                    }}>
+                        delete
+                    </Button> 
+                }
+
+                { isEditable && 
+                    <span>
+                        <Link to={`/bubble/${index}/edit`}>
+                            <button className='material-icons'>
+                                edit
+                            </button> 
+                        </Link>
+                    </span>
+                }
+
+            </GuideSidebar>
+
             <div id='content'>
                 { bubblePost ? (
-                    <RenderedRootCell />
+                    <>
+                        <h1 className='title'> { bubblePost.name } </h1>
+                        <RenderedRootCell />
+                    </>
                 ) : (
                     <p> 존재하지 않는 버블입니다. </p>
                 )}
