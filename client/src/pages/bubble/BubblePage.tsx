@@ -13,7 +13,7 @@ import GuideSidebar from 'components/GuideSidebar';
 import { priorityTags } from 'etc/api/guide';
 import Button from 'components/Button';
 
-import { RenderedRootBubble } from 'components/nabubble/types/Parent';
+import { RenderedRootBubble } from 'components/nabubble/cells/Parent';
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 
 interface Params {
@@ -27,7 +27,7 @@ function BubblePage() {
     let isAdmin = useIsAdmin();
     
     let [bubbleLoading, bubblePost] = usePromise(() => getBubble(id), [id]);
-    
+
     if (bubbleLoading) return <Loading/>;
     return (
         <>

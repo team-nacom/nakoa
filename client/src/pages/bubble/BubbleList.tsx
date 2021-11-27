@@ -1,7 +1,7 @@
 import Footer from "components/Footer";
 import GuideSidebar from "components/GuideSidebar";
 import Header from "components/Header";
-import { BubbleType } from "components/nabubble/types/declaration";
+import { BubbleType } from "components/nabubble/cells/declaration";
 import PageTitle from "components/PageTitle";
 import { getBubbles } from "etc/api/bubble";
 import usePromise from "etc/usePromise";

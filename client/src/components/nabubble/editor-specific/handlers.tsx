@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flat } from '../data';
 import { BubbleAction, BubbleSubAction } from '../action';
-import { BubbleType, bubbleBehavior } from '../types/declaration';
+import { BubbleType, bubbleBehavior } from '../cells/declaration';
 
 type dispatchType = (action : BubbleAction | BubbleSubAction) => BubbleAction | BubbleSubAction;
 
