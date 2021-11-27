@@ -138,15 +138,15 @@ function BubbleEditor({ body, ...other } : EditorProps) {
     // });
 
     //initialize
-    useEffect(()=>{
-        dispatch({
-            type: 'init',
-            bubble: body || {
-                type: 'parent',
-                children : [ {type: 'text', value: ''} ]
-            }
-        })
-    },[]);
+    // useEffect(()=>{
+    //     dispatch({
+    //         type: 'init',
+    //         bubble: body || {
+    //             type: 'parent',
+    //             children : [ {type: 'text', value: ''} ]
+    //         }
+    //     })
+    // },[]);
 
     return (<>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>

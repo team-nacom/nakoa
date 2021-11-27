@@ -17,16 +17,16 @@ import { RenderedRootCell } from 'components/nabubble/cells/Parent';
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 
 interface Params {
-    id: string;
+    index: string;
 };
 
 function BubblePage() {
     let params = useParams<Params>();
-    let id = React.useMemo(() => params.id, [params]);
+    let index = React.useMemo(() => params.index, [params]);
     let user = useSelector((state: RootReducer) => state.user);
     let isAdmin = useIsAdmin();
     
-    let [bubbleLoading, bubblePost] = usePromise(() => getBubble(id), [id]);
+    let [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
 
     if (bubbleLoading) return <Loading/>;
     return (

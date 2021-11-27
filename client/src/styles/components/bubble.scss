@@ -66,6 +66,10 @@ summary.codeCellPreview {
     // max-height: 250px;
     line-height: 20px;
     vertical-align: middle;
+    overflow-x: hidden;
+
+    //height is intended to be auto-adjusted by react-textarea-autosize package.
+    //do not specify min- or max-height and leave `overflow-x:hidden` as it is.
 }
 
 .editorTextCell {

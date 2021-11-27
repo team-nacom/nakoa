@@ -60,8 +60,17 @@ export const postBubble = async (data: BubblePost) => {
     };
 }
 
-export const removeBubble = async (id: number) => {
-    let response = await Axios.delete(`${apiAddress}/bubble/${id}`)
+export const editBubble = async (index: string, data: BubblePost) => {
+    let response = await Axios.put(`${apiAddress}/bubble/${index}`, data, {
+        validateStatus: authValidateStatus, 
+        withCredentials: true 
+    });
+
+    return response.status < 300;
+}
+
+export const removeBubble = async (index: string) => {
+    let response = await Axios.delete(`${apiAddress}/bubble/${index}`)
 
     return response.status < 300;
 }
