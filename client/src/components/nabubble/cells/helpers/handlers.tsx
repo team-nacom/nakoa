@@ -66,13 +66,13 @@ function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, r
                 // will be autofocused on newly created element
                 focusSibling(refs,evalSiblingId,idx+1,0);
             }
-            else{ //trigger 2 : @@@ + enter
+            else{ //trigger 2 : ;;; + enter
                 if(str[curStart] !== '\n' && curStart !== str.length) return;
     
                 const lineStart : number = str.lastIndexOf('\n',curStart-1) + 1; //previous line.
                 //if '\n' not found, lineStart === 0.
     
-                var result = str.slice(lineStart,curStart).match(/^(@{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
+                var result = str.slice(lineStart,curStart).match(/^(;{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
                 if(!result) return;
 
                 // create a new bubble based on type. for now we only support on text-behavior bubbles.
