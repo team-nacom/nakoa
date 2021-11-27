@@ -1,48 +1,48 @@
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, FlatBubble, prefixFlatBubble, flatten, inflate, deepCopyFlat } from './data';
+import { Bubble, Flat, prefixFlat, flatten, inflate, deepCopyFlat } from './data';
 import { BubbleState, BubbleAction, BubbleSubAction } from './action';
 
 const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (state, action) => {
     var newState : BubbleState = {
         counter : state.counter,
-        bubble : {
-            rootId : state.bubble.rootId,
-            record : {...state.bubble.record}
+        flat : {
+            rootId : state.flat.rootId,
+            record : {...state.flat.record}
         }, //shallow copy (childrenId are not copied yet)
-        previewBubble : state.previewBubble,
+        previewFlat : state.previewFlat,
         autoRender : state.autoRender
     };
     switch (action.type){
         //BubbleSubAction : involving previewBubble
         //previewBubble shares ref of bubble until a bubble has been modified
         case 'init':
-            newState.previewBubble = newState.bubble = flatten(action.bubble);
+            newState.previewFlat = newState.flat = flatten(action.bubble);
             return newState;
         case 'preview':
             newState.autoRender = true;
-            newState.previewBubble = newState.bubble;
+            newState.previewFlat = newState.flat;
             return newState;
         case 'previewFreeze':
             newState.autoRender = false;
             // newState.previewBubble = deepCopyFlat(state.previewBubble);
-            newState.previewBubble = flatten(inflate(state.previewBubble));
+            newState.previewFlat = flatten(inflate(state.previewFlat));
             return newState;
         
         //BubbleAction
         case 'update': //BubbleUpdateAction
             if(typeof action.label !== 'undefined'){
-                newState.bubble.record[action.id].label = action.label;    
+                newState.flat.record[action.id].label = action.label;    
             }
-            newState.bubble.record[action.id].value = action.value;
+            newState.flat.record[action.id].value = action.value;
             break;
         case 'add': //BubbleAddAction
-            var childrenId = newState.bubble.record[action.parentId].childrenId;
+            var childrenId = newState.flat.record[action.parentId].childrenId;
             if(typeof childrenId === 'undefined'){ //convert this node into parent.
-                newState.bubble.record[action.parentId] = {
+                newState.flat.record[action.parentId] = {
                     id: action.parentId,
                     type: 'parent',
-                    parentId: newState.bubble.record[action.parentId].parentId,
+                    parentId: newState.flat.record[action.parentId].parentId,
                     childrenId: []
                 };
                 childrenId = [];
@@ -62,32 +62,32 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             else{
                 childrenId = childrenId.slice(0,action.idx).concat(newBubbleRootId, childrenId.slice(action.idx) );
             }
-            newState.bubble.record[action.parentId].childrenId = childrenId;
+            newState.flat.record[action.parentId].childrenId = childrenId;
 
-            var fb = prefixFlatBubble(flatten(action.bubble), newBubblePrefix); //root : '_A7_' or similar
+            var fb = prefixFlat(flatten(action.bubble), newBubblePrefix); //root : '_A7_' or similar
             fb.record[fb.rootId].parentId = action.parentId;
 
-            newState.bubble.record = {
-                ...newState.bubble.record,
+            newState.flat.record = {
+                ...newState.flat.record,
                 ...fb.record
             };
             break;
         case 'delete':
-            var parentId = newState.bubble.record[action.id].parentId;
+            var parentId = newState.flat.record[action.id].parentId;
             if(typeof parentId !== 'undefined'){
-                var childrenId = newState.bubble.record[parentId].childrenId;
+                var childrenId = newState.flat.record[parentId].childrenId;
                 if(typeof childrenId !== 'undefined'){
                     // remove the id from children list.
-                    newState.bubble.record[parentId].childrenId = childrenId.filter( (id) => ( id !== action.id ) );
+                    newState.flat.record[parentId].childrenId = childrenId.filter( (id) => ( id !== action.id ) );
                 }
             }
             //deposit the node.
-            var { [action.id] : _, ...newRecord } = newState.bubble.record;
-            newState.bubble.record = newRecord;
+            var { [action.id] : _, ...newRecord } = newState.flat.record;
+            newState.flat.record = newRecord;
             break;
     }
     if(newState.autoRender){
-        newState.previewBubble = newState.bubble
+        newState.previewFlat = newState.flat
     }
     return newState;
 };
@@ -95,11 +95,11 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
 const defaultState : BubbleState = {
     counter : 0,
     autoRender : true,
-    bubble : flatten({
+    flat : flatten({
         type: 'parent',
         children : [ {type: 'text', value: ''} ]
     }),
-    previewBubble : flatten({
+    previewFlat : flatten({
         type: 'parent',
         children : [ {type: 'text', value: ''} ]
     })

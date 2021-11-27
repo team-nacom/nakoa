@@ -3,50 +3,50 @@
 import React from 'react';
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, FlatBubble } from 'components/nabubble/data';
+import { Bubble, Flat } from 'components/nabubble/data';
 
-interface BubbleState {
+interface FlatState {
     counter : number;
-    bubble : FlatBubble;
-    previewBubble : FlatBubble;
+    flat : Flat;
+    previewFlat : Flat;
     autoRender? : boolean;
 }
 
-interface BubbleInitialize { //initialize bubble and previewBubble
+interface FlatInitialize { //initialize bubble and previewBubble
     type: 'init';
     bubble : Bubble;
 }
 
-interface BubblePreview {
+interface FlatPreview {
     type: 'preview';
 }
 
-interface BubblePreviewFreeze {
+interface FlatPreviewFreeze {
     type: 'previewFreeze';
 }
 
-// Bubble Manipulation.
+// Flat Manipulation.
 
-interface BubbleUpdateAction { //for now, change value only. TODO: change type or children.
+interface FlatUpdateAction { //for now, change value only. TODO: change type or children.
     type : 'update';
     id : string;
     label? : string;
     value : unknown;
 }
 
-interface BubbleAddAction {
+interface FlatAddAction {
     type : 'add';
     parentId : string;
     idx? : number;
     bubble : Bubble;
 }
 
-interface BubbleDeleteAction{
+interface FlatDeleteAction{
     type : 'delete';
     id : string;
 }
 
-type BubbleSubAction = BubbleInitialize | BubblePreview | BubblePreviewFreeze;
-type BubbleAction = BubbleUpdateAction | BubbleAddAction | BubbleDeleteAction;
+type BubbleSubAction = FlatInitialize | FlatPreview | FlatPreviewFreeze;
+type BubbleAction = FlatUpdateAction | FlatAddAction | FlatDeleteAction;
 
-export type { BubbleState, BubbleSubAction, BubbleAction };
+export type { FlatState as BubbleState, BubbleSubAction, BubbleAction };

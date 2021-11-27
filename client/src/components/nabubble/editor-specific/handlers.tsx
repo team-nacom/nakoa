@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatBubble } from '../data';
+import { Flat } from '../data';
 import { BubbleAction, BubbleSubAction } from '../action';
 import { BubbleType, bubbleBehavior } from '../types/declaration';
 
@@ -8,9 +8,9 @@ type dispatchType = (action : BubbleAction | BubbleSubAction) => BubbleAction | 
 type refsType = React.MutableRefObject<Record<string,HTMLElement | null>>;
 
 //focuser. can we do this as a promise?
-function focusElem(refs: refsType, bid: string, pos: number){
+function focusElem(refs: refsType, cid: string, pos: number){
     setTimeout(()=>{
-        const elem = refs.current[bid] as HTMLTextAreaElement;
+        const elem = refs.current[cid] as HTMLTextAreaElement;
         elem.focus();
         elem.selectionStart = elem.selectionEnd = pos;
     }, 10);
@@ -23,30 +23,30 @@ function focusSibling(refs: refsType, evalSiblingId: () => string[], idx: number
     }, 10);
 }
 
-function handleChangeFactory(fb: FlatBubble, bid: string, dispatch: dispatchType){
+function handleChangeFactory(flat: Flat, cid: string, dispatch: dispatchType){
     return (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         var str : string = e.target.value;
-        dispatch({ type: 'update', id: bid, value : str });
+        dispatch({ type: 'update', id: cid, value : str });
     }
 }
 
-function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchType, refs : React.MutableRefObject<Record<string,HTMLElement | null>> ){
-    const record = fb.record;
+function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, refs : React.MutableRefObject<Record<string,HTMLElement | null>> ){
+    const record = flat.record;
 
     return (e : React.KeyboardEvent<HTMLTextAreaElement>) => {
         //get sibling index.
-        var pbid = record[bid].parentId;
-        if(typeof pbid === 'undefined') return;
+        var pcid = record[cid].parentId;
+        if(typeof pcid === 'undefined') return;
 
-        // var siblingId = record[pbid].childrenId || [];
+        // var siblingId = record[pcid].childrenId || [];
 
-        const evalSiblingId = () => {return record[pbid || '_'].childrenId || []};
+        const evalSiblingId = () => {return record[pcid || '_'].childrenId || []};
         var siblingId = evalSiblingId();
 
-        var idx = siblingId.indexOf(bid);
+        var idx = siblingId.indexOf(cid);
         if(idx === -1) idx = siblingId.length;
     
-        // console.log(bid);
+        // console.log(cid);
     
         //bubble splits.
         if(e.key === 'Enter'){
@@ -55,10 +55,10 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             const curStart : number = e.currentTarget.selectionStart;
             const curEnd : number = e.currentTarget.selectionEnd;
             if(e.ctrlKey){ //trigger 1 : ctrl + enter. text bubbles only
-                dispatch({ type: 'update', id: bid,
+                dispatch({ type: 'update', id: cid,
                     value : str[curStart] === '\n' ? str.slice(0,curStart-1) : str.slice(0, curStart)
                 });
-                dispatch({ type: 'add', parentId: pbid, idx: idx + 1, bubble: {
+                dispatch({ type: 'add', parentId: pcid, idx: idx + 1, bubble: {
                     type : 'text',
                     value : str[curStart - 1] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
                 } });
@@ -82,12 +82,12 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
                     type = 'text';
                 }
                 
-                dispatch({ type: 'update', id: bid, value : str.slice(0, lineStart ? lineStart - 1 : 0) });
-                dispatch({ type: 'add', parentId: pbid, idx: idx+1, bubble: {
+                dispatch({ type: 'update', id: cid, value : str.slice(0, lineStart ? lineStart - 1 : 0) });
+                dispatch({ type: 'add', parentId: pcid, idx: idx+1, bubble: {
                     type : type,
                 //     value : ''
                 // } });
-                // dispatch({ type: 'add', parentId: pbid, idx: idx+2, bubble: {
+                // dispatch({ type: 'add', parentId: pcid, idx: idx+2, bubble: {
                 //     type : 'text',
                     value : str.slice(curStart)
                 } });
@@ -107,15 +107,15 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             if(curStart !== 0 || curStart !== curEnd) return;
             if(idx === 0) return;
     
-            const targetbid = siblingId[idx-1];
-            if( bubbleBehavior[ record[targetbid].type ] !== 'text') return; //can only merge with text node for now.
+            const targetcid = siblingId[idx-1];
+            if( bubbleBehavior[ record[targetcid].type ] !== 'text') return; //can only merge with text node for now.
     
-            const targetStr = record[targetbid].value + '';
+            const targetStr = record[targetcid].value + '';
             
             //first bubble remains.
-            dispatch({ type: 'update', id: targetbid, value : targetStr + (str ? '\n' + str : '') });
-            dispatch({ type: 'delete', id: bid });
-            focusElem(refs,targetbid,targetStr.length);
+            dispatch({ type: 'update', id: targetcid, value : targetStr + (str ? '\n' + str : '') });
+            dispatch({ type: 'delete', id: cid });
+            focusElem(refs,targetcid,targetStr.length);
         }
         if(e.key === 'Delete'){
             const str : string = e.currentTarget.value;
@@ -126,13 +126,13 @@ function handleKeyDownFactory(fb: FlatBubble, bid: string, dispatch: dispatchTyp
             if(curStart !== str.length || curStart !== curEnd) return;
             if(idx === siblingId.length - 1) return;
     
-            const targetbid = siblingId[idx+1];
-            if( bubbleBehavior[ record[targetbid].type ] !== 'text') return; //can only merge with text node for now.
+            const targetcid = siblingId[idx+1];
+            if( bubbleBehavior[ record[targetcid].type ] !== 'text') return; //can only merge with text node for now.
             
             //first bubble remains.
-            dispatch({ type: 'update', id: bid, value : (str ? str + '\n' : '') + record[targetbid].value });
-            dispatch({ type: 'delete', id: targetbid });
-            focusElem(refs,bid,str.length);
+            dispatch({ type: 'update', id: cid, value : (str ? str + '\n' : '') + record[targetcid].value });
+            dispatch({ type: 'delete', id: targetcid });
+            focusElem(refs,cid,str.length);
         }
     }
 }

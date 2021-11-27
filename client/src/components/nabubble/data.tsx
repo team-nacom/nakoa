@@ -1,14 +1,22 @@
 
 import { BubbleType } from './types/declaration'
 
+interface Data {}
+
+/**
+ * Format specification for tree-like document structure 'NaBubble', or simply bubble.
+ * Should be generated from JSON (i.e. no circulation) and compatible with unist Node structure.
+ */
 interface Bubble {
     type : BubbleType;
     value? : unknown;
+    data? : Data;
     label? : string;
     children? : Bubble[];
 }
 
-interface FlatBubbleEntity {
+
+interface Cell {
     id : string; //possibly unnecessary??
     type : BubbleType;
     value? : unknown;
@@ -17,54 +25,54 @@ interface FlatBubbleEntity {
     childrenId? : string[];
 }
 
-type FlatBubbleRecord = Record<string, FlatBubbleEntity>;
-interface FlatBubble{
+type CellRecord = Record<string, Cell>;
+interface Flat{
     rootId : string;
-    record : FlatBubbleRecord;
+    record : CellRecord;
 }
 
-function prefixFlatBubble(fb : FlatBubble, prefix : string) : FlatBubble{
-    var fbr : FlatBubbleRecord = {};
-    for(var id in fb.record){
-        var fbe = { ...fb.record[id] }; //make a copy (shallow)
+function prefixFlat(flat : Flat, prefix : string) : Flat{
+    var record : CellRecord = {};
+    for(var id in flat.record){
+        var flatCopy = { ...flat.record[id] }; //make a copy (shallow)
 
-        fbe.id = prefix + fbe.id;
-        if(typeof fbe.parentId !== 'undefined'){
-            fbe.parentId = prefix + fbe.parentId;
+        flatCopy.id = prefix + flatCopy.id;
+        if(typeof flatCopy.parentId !== 'undefined'){
+            flatCopy.parentId = prefix + flatCopy.parentId;
         }
-        if(typeof fbe.childrenId !== 'undefined'){
-            fbe.childrenId = fbe.childrenId.map( id => (prefix+id) );
+        if(typeof flatCopy.childrenId !== 'undefined'){
+            flatCopy.childrenId = flatCopy.childrenId.map( id => (prefix+id) );
         }
 
-        fbr[prefix + id] = fbe;
+        record[prefix + id] = flatCopy;
     }
     return {
-        rootId : prefix + fb.rootId,
-        record : fbr
+        rootId : prefix + flat.rootId,
+        record : record
     };
 }
 
-function flatten(bubble : Bubble) : FlatBubble{
+function flatten(bubble : Bubble) : Flat{
     var {children, ...others} = bubble;
 
     if(typeof children !== 'undefined'){
-        var fbr : FlatBubbleRecord = {};
+        var record : CellRecord = {};
         var childrenId : string[] = [];
         var counter = 0;
         for(var child of children){
-            var flatChild = prefixFlatBubble(flatten(child), '_' + String(counter));
+            var flatChild = prefixFlat(flatten(child), '_' + String(counter));
             counter++;
 
             childrenId.push(flatChild.rootId);
             flatChild.record[flatChild.rootId].parentId = '_';
 
-            fbr = {...fbr, ...flatChild.record};
+            record = {...record, ...flatChild.record};
         }
         return {
             rootId : '_',
             record : {
                 '_' : {id : '_', childrenId, ...others},
-                ...fbr
+                ...record
             }
         }
     }
@@ -78,27 +86,29 @@ function flatten(bubble : Bubble) : FlatBubble{
     }
 }
 
-function inflate(fb : FlatBubble) : Bubble{
+function _inflate(fb : Flat) : Bubble{
     var {rootId, record} = fb;
-    try{
-        var {id, parentId, childrenId, ...others} = record[rootId]; //id, parentId : discharge
-        if (typeof childrenId !== 'undefined'){
-            var children = childrenId.map((childId)=>{
-                return inflate({ rootId : childId, record });
-            });
-            return { ...others, children };
-        }
-        else return { ...others };
+    var {id, parentId, childrenId, ...others} = record[rootId]; //id, parentId : discharge
+    if (typeof childrenId !== 'undefined'){
+        var children = childrenId.map((childId)=>{
+            return _inflate({ rootId : childId, record });
+        });
+        return { ...others, children };
     }
-    catch (e){
+    else return { ...others };
+}
+
+function inflate(fb : Flat) : Bubble{
+    try{ return _inflate(fb); }
+    catch(e){
         return {
-            type: 'text', //ERROR HANDLER SOMEWHERE?
+            type: 'parent', //ERROR HANDLER SOMEWHERE?
             value: '[Error : Invalid FlatBubble]'
         };
     }
 }
 
-function deepCopyFlat(fb: FlatBubble) : FlatBubble{
+function deepCopyFlat(fb: Flat) : Flat{
     const newFb = {
         rootId : fb.rootId,
         record : {...fb.record}
@@ -115,7 +125,7 @@ function deepCopyFlat(fb: FlatBubble) : FlatBubble{
 }
 
 
-function getCounter(fb: FlatBubble) : number{
+function getCounter(fb: Flat) : number{
     return Math.max.apply(
         null,
         Object.keys(fb.record).map(parseInt)
@@ -124,7 +134,7 @@ function getCounter(fb: FlatBubble) : number{
     );
 }
 
-function findSibling(fb: FlatBubble, id: string, delta: number) : string{
+function findSibling(fb: Flat, id: string, delta: number) : string{
     const pid = fb.record[id].parentId;
     if( typeof pid === 'undefined' ) return id;
 
@@ -136,9 +146,9 @@ function findSibling(fb: FlatBubble, id: string, delta: number) : string{
 }
 
 
-export type { Bubble, FlatBubble };
+export type { Bubble, Flat };
 export {
     flatten, inflate, deepCopyFlat,
-    prefixFlatBubble, getCounter,
+    prefixFlat, getCounter,
     findSibling
 };

@@ -10,7 +10,7 @@ import BubbleEditor from 'components/editor/BubbleEditor'
 function NotFound() {
     let [message, setMessage] = React.useState('');
 
-    let [ bubble ] = useNaBubbleState('bubble');
+    let [ bubble ] = useNaBubbleState('flat');
 
     React.useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/404.md')

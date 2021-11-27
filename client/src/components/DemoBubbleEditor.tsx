@@ -23,7 +23,7 @@ interface Props {
 
 function DemoBubbleEditor({ initialBubble = {}, upload, behavior } : Props) {
     let [name, setName] = React.useState<string>(initialBubble.name ?? '');
-    let [ bubble ] = useNaBubbleState('bubble');
+    let [ flat ] = useNaBubbleState('flat');
 
     let [message, setMessage] = React.useState<string>();
 
@@ -59,7 +59,7 @@ function DemoBubbleEditor({ initialBubble = {}, upload, behavior } : Props) {
                 <Button className='submit link' onClick={
                     async () => {
                         upload(
-                            { name, content: JSON.stringify(inflate(bubble)), tags: tags },
+                            { name, content: JSON.stringify(inflate(flat)), tags: tags },
                             setMessage
                         );
                     }

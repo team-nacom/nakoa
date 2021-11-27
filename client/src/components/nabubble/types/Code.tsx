@@ -18,8 +18,8 @@ function makeString(v : unknown) : string{
 }
 
 function RenderedCodeBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('bubble');
-    const contents = bubble.record[props.bubbleId].value;
+    const [ bubble ] = useNaBubbleState('flat');
+    const contents = bubble.record[props.cellId].value;
 
     if(typeof contents !== 'string') return (<></>);
     // return ( 
@@ -40,8 +40,8 @@ function RenderedCodeBubble(props: BubbleComponentProps){
 }
 
 function PreviewCodeBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('previewBubble');
-    const contents = bubble?.record[props.bubbleId].value;
+    const [ bubble ] = useNaBubbleState('previewFlat');
+    const contents = bubble?.record[props.cellId].value;
 
     if(typeof contents !== 'string') return (<></>);
     // return ( 
@@ -62,9 +62,9 @@ function PreviewCodeBubble(props: BubbleComponentProps){
 }
 
 function EditorCodeBubble(props: EditorBubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('bubble');
+    const [ bubble ] = useNaBubbleState('flat');
 
-    const bid = props.bubbleId;
+    const bid = props.cellId;
     const contents = makeString(bubble.record[bid].value);
 
     return (<>
