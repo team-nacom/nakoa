@@ -10,7 +10,7 @@ import { TagData } from '@yaireo/tagify';
 import { useTextEditorState } from 'components/editor/globals'; //states defined globally.
 import BubbleEditor from './editor/BubbleEditor';
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from './editor/globals';
-import { inflate, Bubble } from './nabubble/data';
+import { inflate, Bubble } from './nabubble/bubble';
 
 interface Props {
     initialBubble?: Partial<BubblePost>,

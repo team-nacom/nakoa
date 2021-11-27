@@ -1,10 +1,10 @@
 import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
+import { StaticCellComponentProps, EditorCellComponentProps } from './componentProps';
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
 
-import { handleChangeFactory, handleKeyDownFactory } from '../editor-specific/handlers';
+import { handleChangeFactory, handleKeyDownFactory } from './helpers/handlers';
 
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
@@ -16,53 +16,53 @@ function makeString(v : unknown) : string{
     return typeof v !== 'string' ? '' : v;
 }
 
-function RenderedMathBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
-    const contents = bubble.record[props.cellId].value;
+function RenderedMathCell(props: StaticCellComponentProps){
+    const [ flat ] = useNaBubbleState('flat');
+    const contents = flat.record[props.cellId].value;
 
     if (typeof contents !== 'string') return (<></>);
     return (
         <>
-            <summary className='mathBubblePreview'>
+            <summary className='mathCellPreview'>
                 수식
             </summary>
-            <div className='mathBubble renderedMathBubble' >
+            <div className='mathCell renderedMathCell' >
                 <TeX block math = { contents } />
             </div>
         </>
     );
 }
 
-function PreviewMathBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('previewFlat');
-    const contents = bubble?.record[props.cellId].value;
+function PreviewMathCell(props: StaticCellComponentProps){
+    const [ flat ] = useNaBubbleState('previewFlat');
+    const contents = flat?.record[props.cellId].value;
 
     if (typeof contents !== 'string') return (<></>);
     return (
         <>
-            <summary className='mathBubblePreview'>
+            <summary className='mathCellPreview'>
                 수식
             </summary>
-            <div className='mathBubble previewMathBubble' >
+            <div className='mathCell previewMathCell' >
                 <TeX block math = { contents } />
             </div>
         </>
     );
 }
 
-function EditorMathBubble(props: EditorBubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
+function EditorMathCell(props: EditorCellComponentProps){
+    const [ flat ] = useNaBubbleState('flat');
 
-    const bid = props.cellId;
-    const contents = makeString(bubble.record[bid].value);
+    const cid = props.cellId;
+    const contents = makeString(flat.record[cid].value);
 
     return (<>
         <TextareaAutosize autoFocus
-            ref = { (el) => { props.refs.current[bid] = el } }
-            name={ 'NaBubble' + bid }
-            className='editorMathBubble editorBubble'
-            onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
-            onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
+            ref = { (el) => { props.refs.current[cid] = el } }
+            name={ 'cell' + cid }
+            className='editorMathCell editorCell'
+            onChange={ handleChangeFactory(flat, cid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
+            onKeyDown={ handleKeyDownFactory(flat, cid, dispatch, props.refs) }
             // onPaste={ props.onPaste } // pasteHandler
             value={ contents }
             spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
@@ -70,4 +70,4 @@ function EditorMathBubble(props: EditorBubbleComponentProps){
     </>);
 }
 
-export { RenderedMathBubble, PreviewMathBubble, EditorMathBubble };
+export { RenderedMathCell, PreviewMathCell, EditorMathCell };

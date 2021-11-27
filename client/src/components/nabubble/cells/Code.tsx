@@ -1,10 +1,10 @@
 import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
+import { StaticCellComponentProps, EditorCellComponentProps } from './componentProps';
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
 
-import { handleChangeFactory, handleKeyDownFactory } from '../editor-specific/handlers';
+import { handleChangeFactory, handleKeyDownFactory } from './helpers/handlers';
 
 import Highlight from 'react-highlight';
 import 'highlight.js/styles/github.css';
@@ -13,15 +13,15 @@ import 'highlight.js/styles/github.css';
 //type : 'code'
 //value : contents
 
-function makeString(v : unknown) : string{
+function makeString(v: unknown): string {
     return typeof v !== 'string' ? '' : v;
 }
 
-function RenderedCodeBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
-    const contents = bubble.record[props.cellId].value;
+function RenderedCodeCell(props: StaticCellComponentProps) {
+    const [flat] = useNaBubbleState('flat');
+    const contents = flat.record[props.cellId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     // return ( 
     //     <Highlight className = { '' } >
     //         { contents }
@@ -29,21 +29,21 @@ function RenderedCodeBubble(props: BubbleComponentProps){
     // ); 
     return (
         <>
-            <summary className='codeBubblePreview'>
+            <summary className='codeCellPreview'>
                 코드
             </summary>
-            <pre className='codeBubble renderedCodeBubble'>
-                <code>{ contents }</code>
+            <pre className='codeCell renderedCodeCell'>
+                <code>{contents}</code>
             </pre>
         </>
     );
 }
 
-function PreviewCodeBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('previewFlat');
-    const contents = bubble?.record[props.cellId].value;
+function PreviewCodeCell(props: StaticCellComponentProps) {
+    const [flat] = useNaBubbleState('previewFlat');
+    const contents = flat?.record[props.cellId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     // return ( 
     //     <Highlight className = { '' } >
     //         { contents }
@@ -51,34 +51,34 @@ function PreviewCodeBubble(props: BubbleComponentProps){
     // ); 
     return (
         <>
-            <summary className='codeBubblePreview'>
+            <summary className='codeCellPreview'>
                 코드
             </summary>
-            <pre className='codeBubble previewCodeBubble'>
-                <code>{ contents }</code>
+            <pre className='codeCell previewCodeCell'>
+                <code>{contents}</code>
             </pre>
         </>
     );
 }
 
-function EditorCodeBubble(props: EditorBubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
+function EditorCodeCell(props: EditorCellComponentProps) {
+    const [flat] = useNaBubbleState('flat');
 
-    const bid = props.cellId;
-    const contents = makeString(bubble.record[bid].value);
+    const cid = props.cellId;
+    const contents = makeString(flat.record[cid].value);
 
     return (<>
         <TextareaAutosize autoFocus
-            ref = { (el) => { props.refs.current[bid] = el } }
-            name={ 'NaBubble' + bid }
-            className='editorCodeBubble editorBubble'
-            onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
-            onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
+            ref={(el) => { props.refs.current[cid] = el }}
+            name={'cell' + cid}
+            className='editorCodeCell editorCell'
+            onChange={handleChangeFactory(flat, cid, dispatch)} // TODO : ensure onChange is called before onKeyDown?
+            onKeyDown={handleKeyDownFactory(flat, cid, dispatch, props.refs)}
             // onPaste={ props.onPaste } // pasteHandler
-            value={ contents }
-            spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
+            value={contents}
+            spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     </>);
 }
 
-export { RenderedCodeBubble, PreviewCodeBubble, EditorCodeBubble };
+export { RenderedCodeCell, PreviewCodeCell, EditorCodeCell };

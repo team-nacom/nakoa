@@ -1,12 +1,12 @@
 import React, { useRef, MutableRefObject } from 'react';
-import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
+import { CellComponentProps, StaticCellComponentProps, EditorCellComponentProps } from './componentProps';
 
-import { BubbleType, BubbleMap } from './declaration';
+import { BubbleType, BubbleMap } from '../cellTypes';
 
-// WE NEED POLYMORPHISM!!!!!!!!
-import { RenderedTextBubble, PreviewTextBubble, EditorTextBubble } from './Text';
-import { RenderedMathBubble, PreviewMathBubble, EditorMathBubble } from './Math';
-import { RenderedCodeBubble, PreviewCodeBubble, EditorCodeBubble } from './Code';
+// WE NEED POLYMORPHISM.....
+import { RenderedTextCell, PreviewTextCell, EditorTextCell } from './Text';
+import { RenderedMathCell, PreviewMathCell, EditorMathCell } from './Math';
+import { RenderedCodeCell, PreviewCodeCell, EditorCodeCell } from './Code';
 
 import { useNaBubbleState } from '../actionReducer';
 
@@ -14,110 +14,107 @@ import { useNaBubbleState } from '../actionReducer';
 //value: title
 //has children
 
-function RenderedParentBubble(props : BubbleComponentProps){
-    const { cellId: bubbleId, ...others } = props;
+function RenderedParentCell(props : StaticCellComponentProps){
+    const { cellId, ...others } = props;
 
-    const [ bubble ] = useNaBubbleState('flat');
-    const childrenId = bubble.record[bubbleId].childrenId || [];
+    const [ flat ] = useNaBubbleState('flat');
+    const childrenId = flat.record[cellId].childrenId || [];
 
     return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(
-            <RenderedBubble {...others} cellId = { childId } bubbleType = { bubble.record[childId].type } />
+            <RenderedCell {...others} cellId = { childId } type = { flat.record[childId].type } />
         )) }
     </div>);
 }
 
-function PreviewParentBubble(props : BubbleComponentProps){
-    const { cellId: bubbleId, ...others } = props;
+function PreviewParentCell(props : StaticCellComponentProps){
+    const { cellId, ...others } = props;
 
     const [ flat ] = useNaBubbleState('previewFlat');
-    const childrenId = flat.record[bubbleId].childrenId || [];
-
-    console.log(childrenId);
-    console.log(flat.record);
+    const childrenId = flat.record[cellId].childrenId || [];
 
     return (<div style = { { padding:'5px', border:'1px solid black' } }>
         { childrenId.map((childId)=>(
-            <PreviewBubble {...others} cellId = { childId } bubbleType = { flat.record[childId].type } />
+            <PreviewCell {...others} cellId = { childId } type = { flat.record[childId].type } />
         )) }
     </div>);
 }
 
-function EditorParentBubble(props : EditorBubbleComponentProps){
-    const { cellId: bubbleId, refs, ...others } = props;
+function EditorParentCell(props : EditorCellComponentProps){
+    const { cellId, refs, ...others } = props;
 
-    const [ bubble ] = useNaBubbleState('flat');
-    const childrenId = bubble.record[bubbleId].childrenId || [];
+    const [ flat ] = useNaBubbleState('flat');
+    const childrenId = flat.record[cellId].childrenId || [];
 
     return (<div
-        ref = { (el) => { refs.current[bubbleId] = el } }
+        ref = { (el) => { refs.current[cellId] = el } }
         style = {{ border: '1px solid gray', padding: '0 10px' }}
     >
         { childrenId.map((childId)=>(
-            <EditorBubble {...others} cellId = { childId } bubbleType = { bubble.record[childId].type } refs = { refs }/>
+            <EditorCell {...others} cellId = { childId } type = { flat.record[childId].type } refs = { refs }/>
         )) }
     </div>);
 }
 
-function RenderedRootBubble(props : React.HTMLAttributes<HTMLElement>){
+function RenderedRootCell(props : React.HTMLAttributes<HTMLElement>){
     const [ flat ] = useNaBubbleState('flat');
-    return (<RenderedParentBubble {...props} cellId = { flat.rootId } bubbleType = 'parent' />);
+    return (<RenderedParentCell {...props} cellId = { flat.rootId } method='render' type = 'parent' />);
 }
 
-function PreviewRootBubble(props : React.HTMLAttributes<HTMLElement>){
+function PreviewRootCell(props : React.HTMLAttributes<HTMLElement>){
     const [ flat ] = useNaBubbleState('previewFlat');
     if(!flat) return (<></>);
-    return (<PreviewParentBubble {...props} cellId = { flat.rootId } bubbleType = 'parent' />);
+    return (<PreviewParentCell {...props} cellId = { flat.rootId } method='preview' type = 'parent' />);
 }
 
-function EditorRootBubble(props : React.HTMLAttributes<HTMLElement>){
+function EditorRootCell(props : React.HTMLAttributes<HTMLElement>){
     const [ flat ] = useNaBubbleState('flat');
-    return (<EditorParentBubble {...props} cellId = { flat.rootId } bubbleType = 'parent' refs = { useRef({}) } />);
+    return (<EditorParentCell {...props} cellId = { flat.rootId } method = 'editor' type = 'parent' refs = { useRef({}) } />);
 }
 
 //////// general renderers. register renderers when adding a new bubble.
 
-function RenderedBubble(props : BubbleComponentProps){
-    // const [ bubble ] = useNaBubbleState('bubble');
-    const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
-        root : RenderedParentBubble,
-        parent : RenderedParentBubble,
-        text : RenderedTextBubble,
-        math : RenderedMathBubble,
-        code : RenderedCodeBubble,
+function RenderedCell(props : StaticCellComponentProps){
+    // const [ flat ] = useNaBubbleState('flat');
+    const map : BubbleMap<(props : StaticCellComponentProps) => JSX.Element> = {
+        root : RenderedParentCell,
+        parent : RenderedParentCell,
+        text : RenderedTextCell,
+        math : RenderedMathCell,
+        code : RenderedCodeCell,
     }
-    const RenderedTypedBubble = map[props.bubbleType];
+    const RenderedTypedBubble = map[props.type];
     return <RenderedTypedBubble {...props} />
 }
 
-function PreviewBubble(props : BubbleComponentProps){
-    // const [ bubble ] = useNaBubbleState('preivewBubble');
-    const map : BubbleMap<(props : BubbleComponentProps) => JSX.Element> = {
-        root : RenderedParentBubble,
-        parent : PreviewParentBubble,
-        text : PreviewTextBubble,
-        math : PreviewMathBubble,
-        code : PreviewCodeBubble,
+function PreviewCell(props : StaticCellComponentProps){
+    // const [ flat ] = useNaBubbleState('preivewFlat');
+    const map : BubbleMap<(props : StaticCellComponentProps) => JSX.Element> = {
+        root : PreviewParentCell,
+        parent : PreviewParentCell,
+        text : PreviewTextCell,
+        math : PreviewMathCell,
+        code : PreviewCodeCell,
     }
-    const PreviewTypedBubble = map[props.bubbleType];
+    const PreviewTypedBubble = map[props.type];
     return <PreviewTypedBubble {...props} />
 }
 
-function EditorBubble(props : EditorBubbleComponentProps){
-    // const [ bubble ] = useNaBubbleState('bubble');
-    const map : BubbleMap<(props : EditorBubbleComponentProps) => JSX.Element> = {
-        root : RenderedParentBubble,
-        parent : EditorParentBubble,
-        text : EditorTextBubble,
-        math : EditorMathBubble,
-        code : EditorCodeBubble,
+function EditorCell(props : EditorCellComponentProps){
+    // const [ flat ] = useNaBubbleState('flat');
+    const map : BubbleMap<(props : EditorCellComponentProps) => JSX.Element> = {
+        root : EditorParentCell,
+        parent : EditorParentCell,
+        text : EditorTextCell,
+        math : EditorMathCell,
+        code : EditorCodeCell,
     }
-    const EditorTypedBubble = map[props.bubbleType];
+    const EditorTypedBubble = map[props.type];
     return <EditorTypedBubble {...props} />
 }
 
 export {
-    RenderedRootBubble, EditorRootBubble, PreviewRootBubble,
+    RenderedRootCell, EditorRootCell, PreviewRootCell,
     // RenderedBubble, EditorBubble, PreviewBubble
-    RenderedParentBubble, EditorParentBubble, PreviewParentBubble
+    RenderedParentCell, EditorParentCell, PreviewParentCell
 };

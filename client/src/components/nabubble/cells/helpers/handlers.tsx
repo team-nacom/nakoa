@@ -1,9 +1,9 @@
 import React from 'react';
-import { Flat } from '../data';
-import { BubbleAction, BubbleSubAction } from '../action';
-import { BubbleType, bubbleBehavior } from '../cells/declaration';
+import { Flat } from '../../bubble';
+import { FlatAction, FlatSubAction } from '../../action';
+import { BubbleType, bubbleBehavior } from '../../cellTypes';
 
-type dispatchType = (action : BubbleAction | BubbleSubAction) => BubbleAction | BubbleSubAction;
+type dispatchType = (action : FlatAction | FlatSubAction) => FlatAction | FlatSubAction;
 
 type refsType = React.MutableRefObject<Record<string,HTMLElement | null>>;
 

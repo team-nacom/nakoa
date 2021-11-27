@@ -1,10 +1,10 @@
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, Flat, prefixFlat, flatten, inflate, deepCopyFlat } from './data';
-import { BubbleState, BubbleAction, BubbleSubAction } from './action';
+import { Bubble, Flat, prefixFlat, flatten, inflate, deepCopyFlat } from './bubble';
+import { FlatState, FlatAction, FlatSubAction } from './action';
 
-const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (state, action) => {
-    var newState : BubbleState = {
+const reducer : React.Reducer<FlatState, FlatAction | FlatSubAction> = (state, action) => {
+    var newState : FlatState = {
         counter : state.counter,
         flat : {
             rootId : state.flat.rootId,
@@ -14,7 +14,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
         autoRender : state.autoRender
     };
     switch (action.type){
-        //BubbleSubAction : involving previewBubble
+        //FlatSubAction : involving previewBubble
         //previewBubble shares ref of bubble until a bubble has been modified
         case 'init':
             newState.previewFlat = newState.flat = flatten(action.bubble);
@@ -29,7 +29,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
             newState.previewFlat = flatten(inflate(state.previewFlat));
             return newState;
         
-        //BubbleAction
+        //FlatAction
         case 'update': //BubbleUpdateAction
             if(typeof action.label !== 'undefined'){
                 newState.flat.record[action.id].label = action.label;    
@@ -92,7 +92,7 @@ const reducer : React.Reducer<BubbleState, BubbleAction | BubbleSubAction> = (st
     return newState;
 };
 
-const defaultState : BubbleState = {
+const defaultState : FlatState = {
     counter : 0,
     autoRender : true,
     flat : flatten({

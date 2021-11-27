@@ -1,10 +1,10 @@
 import React, { useRef, MutableRefObject } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { BubbleComponentProps, EditorBubbleComponentProps } from '../componentProps';
+import { StaticCellComponentProps, EditorCellComponentProps } from './componentProps';
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
 
-import { handleChangeFactory, handleKeyDownFactory } from '../editor-specific/handlers';
+import { handleChangeFactory, handleKeyDownFactory } from './helpers/handlers';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
@@ -12,56 +12,56 @@ const MemoizedRenderer = React.memo(MarkdownRenderer);
 //type : 'text'
 //value : contents
 
-function makeString(v : unknown) : string{
+function makeString(v: unknown): string {
     return typeof v !== 'string' ? '' : v;
 }
 
-function RenderedTextBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
-    const contents = bubble.record[props.cellId].value;
+function RenderedTextCell(props: StaticCellComponentProps) {
+    const [flat] = useNaBubbleState('flat');
+    const contents = flat.record[props.cellId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     return (
-        <div className='textBubble renderedTextBubble'>
+        <div className='textCell renderedTextCell'>
             <MemoizedRenderer>
-                { contents }
+                {contents}
             </MemoizedRenderer>
         </div>
     );
 }
 
-function PreviewTextBubble(props: BubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('previewFlat');
-    const contents = bubble?.record[props.cellId].value;
+function PreviewTextCell(props: StaticCellComponentProps) {
+    const [flat] = useNaBubbleState('previewFlat');
+    const contents = flat.record[props.cellId].value;
 
-    if(typeof contents !== 'string') return (<></>);
+    if (typeof contents !== 'string') return (<></>);
     return (
-        <div className='textBubble previewTextBubble'>
+        <div className='textCell previewTextCell'>
             <MemoizedRenderer openDetails>
-                { contents }
+                {contents}
             </MemoizedRenderer>
         </div>
     );
 }
 
-function EditorTextBubble(props: EditorBubbleComponentProps){
-    const [ bubble ] = useNaBubbleState('flat');
+function EditorTextCell(props: EditorCellComponentProps) {
+    const [flat] = useNaBubbleState('flat');
 
-    const bid = props.cellId;
-    const contents = makeString(bubble.record[bid].value);
+    const cid = props.cellId;
+    const contents = makeString(flat.record[cid].value);
 
     return (<>
         <TextareaAutosize autoFocus
-            ref = { (el) => { props.refs.current[bid] = el } }
-            name={ 'NaBubble' + bid }
-            className='editorTextBubble editorBubble'
-            onChange={ handleChangeFactory(bubble, bid, dispatch) } // TODO : ensure onChange is called before onKeyDown?
-            onKeyDown={ handleKeyDownFactory(bubble, bid, dispatch, props.refs) }
-            onPaste={ props.onPaste } // pasteHandler
-            value={ contents }
-            spellCheck={ false } autoComplete='off' autoCorrect='off' autoCapitalize='off'
+            ref={(el) => { props.refs.current[cid] = el }}
+            name={'cell' + cid}
+            className='editorTextCell editorCell'
+            onChange={handleChangeFactory(flat, cid, dispatch)} // TODO : ensure onChange is called before onKeyDown?
+            onKeyDown={handleKeyDownFactory(flat, cid, dispatch, props.refs)}
+            onPaste={props.onPaste} // pasteHandler
+            value={contents}
+            spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     </>);
 }
 
-export { RenderedTextBubble, PreviewTextBubble, EditorTextBubble };
+export { RenderedTextCell, PreviewTextCell, EditorTextCell };

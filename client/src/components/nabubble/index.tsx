@@ -1,5 +1,5 @@
-import { RenderedRootBubble, PreviewRootBubble, EditorRootBubble } from './cells/Parent';
+import { RenderedRootCell, PreviewRootCell, EditorRootCell } from './cells/Parent';
 import { useNaBubbleState, dispatchNaBubbleState } from './actionReducer';
-import * as NaBubble from './data';
+import * as NaBubble from './bubble';
 
-export { RenderedRootBubble, PreviewRootBubble, EditorRootBubble, useNaBubbleState, dispatchNaBubbleState, NaBubble };
+export { RenderedRootCell, PreviewRootCell, EditorRootCell, useNaBubbleState, dispatchNaBubbleState, NaBubble };

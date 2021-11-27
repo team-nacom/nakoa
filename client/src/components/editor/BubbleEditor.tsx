@@ -6,8 +6,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import Manual from './MarkdownManual';
 import { useTextEditorState, useNaBubbleState, dispatchNaBubbleState as dispatch } from './globals';
-import { EditorRootBubble, PreviewRootBubble, RenderedRootBubble } from 'components/nabubble';
-import { Bubble } from 'components/nabubble/data';
+import { EditorRootCell, PreviewRootCell, RenderedRootCell } from 'components/nabubble';
+import { Bubble } from 'components/nabubble/bubble';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers';
 
@@ -171,7 +171,7 @@ function BubbleEditor({ body, ...other } : EditorProps) {
             <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
                     <div className='editorArea'>
-                        <EditorRootBubble
+                        <EditorRootCell
                             {...other}
                             // onChange={ innerUpdate }
                             onPaste={ pasteHandler }
@@ -180,8 +180,8 @@ function BubbleEditor({ body, ...other } : EditorProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <div className='previewArea'>
-                        <PreviewRootBubble />
-                        {/* <RenderedRootBubble /> */}
+                        <PreviewRootCell />
+                        {/* <RenderedRootCell /> */}
                     </div>
                 </Panel>
                 <div

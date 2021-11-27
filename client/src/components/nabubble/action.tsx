@@ -3,7 +3,7 @@
 import React from 'react';
 import { createStore } from 'react-hooks-global-state';
 
-import { Bubble, Flat } from 'components/nabubble/data';
+import { Bubble, Flat } from './bubble';
 
 interface FlatState {
     counter : number;
@@ -46,7 +46,7 @@ interface FlatDeleteAction{
     id : string;
 }
 
-type BubbleSubAction = FlatInitialize | FlatPreview | FlatPreviewFreeze;
-type BubbleAction = FlatUpdateAction | FlatAddAction | FlatDeleteAction;
+type FlatSubAction = FlatInitialize | FlatPreview | FlatPreviewFreeze;
+type FlatAction = FlatUpdateAction | FlatAddAction | FlatDeleteAction;
 
-export type { FlatState as BubbleState, BubbleSubAction, BubbleAction };
+export type { FlatState, FlatSubAction, FlatAction };

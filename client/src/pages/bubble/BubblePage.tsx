@@ -13,7 +13,7 @@ import GuideSidebar from 'components/GuideSidebar';
 import { priorityTags } from 'etc/api/guide';
 import Button from 'components/Button';
 
-import { RenderedRootBubble } from 'components/nabubble/cells/Parent';
+import { RenderedRootCell } from 'components/nabubble/cells/Parent';
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 
 interface Params {
@@ -35,7 +35,7 @@ function BubblePage() {
 
             <div id='content'>
                 { bubblePost ? (
-                    <RenderedRootBubble />
+                    <RenderedRootCell />
                 ) : (
                     <p> 존재하지 않는 버블입니다. </p>
                 )}

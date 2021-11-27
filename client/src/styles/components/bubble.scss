@@ -1,6 +1,6 @@
 @import '../consts.scss';
 
-@mixin bubble($color) {
+@mixin cell($color) {
     margin: 5px;
     padding: 1px 10px;
     box-sizing: border-box;
@@ -17,7 +17,7 @@
     scrollbar-width: none;  /* Firefox */
 }
 
-@mixin bubblelabel($background-color: gray, $color: white) {
+@mixin celllabel($background-color: gray, $color: white) {
     width: fit-content;
     padding: 4px 8px;
     font-size: 13px;
@@ -29,31 +29,31 @@
     color: $color;
 }
 
-.textBubble {
-    @include bubble(rgba(gray, 0.08));
+.textCell {
+    @include cell(rgba(gray, 0.08));
 }
 
-.mathBubble {
-    @include bubble(rgba($main-color, 0.08));
+.mathCell {
+    @include cell(rgba($main-color, 0.08));
 }
 
-summary.mathBubblePreview {
-    @include bubblelabel(rgba($main-color, 0.8),white);
+summary.mathCellPreview {
+    @include celllabel(rgba($main-color, 0.8),white);
 }
 
-.codeBubble {
-    @include bubble(rgba(gray, 0.16));
+.codeCell {
+    @include cell(rgba(gray, 0.16));
     padding-top: 30px;
     padding-bottom: 10px;
     font-size: 13.33px;
 }
 
-summary.codeBubblePreview {
-    @include bubblelabel(rgba(gray, 0.8), white);
+summary.codeCellPreview {
+    @include celllabel(rgba(gray, 0.8), white);
 }
 
 
-@mixin editorBubble($color) {
+@mixin editorCell($color) {
     display: block;
     width: 100%;
     margin: 10px 0;
@@ -67,14 +67,14 @@ summary.codeBubblePreview {
     line-height: 20px;
 }
 
-.editorTextBubble {
-    @include editorBubble(rgba(gray, 0.08));
+.editorTextCell {
+    @include editorCell(rgba(gray, 0.08));
 }
 
-.editorMathBubble {
-    @include editorBubble(rgba($main-color, 0.08));
+.editorMathCell {
+    @include editorCell(rgba($main-color, 0.08));
 }
 
-.editorCodeBubble {
-    @include editorBubble(rgba(gray, 0.16));
+.editorCodeCell {
+    @include editorCell(rgba(gray, 0.16));
 }
