@@ -34,7 +34,7 @@ function BubblePage({ index } : Params) {
 
                 { isEditable && 
                     <span>
-                        <Link to={`/bubble/${index}/edit`}>
+                        <Link to={`/bubble/${id}/edit`}>
                             <button className='material-icons'>
                                 edit
                             </button> 
