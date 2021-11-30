@@ -64,7 +64,7 @@ function BubblePage() {
             <div id='content'>
                 { bubblePost ? (
                     <>
-                        <h1 className='title'> { bubblePost.name } </h1>
+                        <h1 className='title' style={{lineHeight: '100px'}}> { bubblePost.name } </h1>
                         <RenderedRootCell />
                     </>
                 ) : (

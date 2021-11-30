@@ -18,7 +18,7 @@ function CellOptionButton1({parentId, cellId, refs, evalSiblingId, dispatch, ...
 
 function CellOptionButton2({parentId, cellId, refs, evalSiblingId, dispatch, ...others} : CellOptionButtonProps){
     return (
-        <button className='cellOptionButton material-icons' style={{transform: 'translate(-54px, 48px)'}}>
+        <button className='cellOptionButton material-icons'>
             calculate
         </button>
     )
@@ -26,7 +26,7 @@ function CellOptionButton2({parentId, cellId, refs, evalSiblingId, dispatch, ...
 
 function CellOptionButton3({parentId, cellId, refs, evalSiblingId, dispatch, ...others} : CellOptionButtonProps){
     return (
-        <button className='cellOptionButton material-icons' style={{transform: 'translate(-54px, 96px)'}}>
+        <button className='cellOptionButton material-icons'>
             code
         </button>
     )
