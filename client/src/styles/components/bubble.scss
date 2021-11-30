@@ -152,11 +152,6 @@ summary.codeCellPreview {
         }
     }
 }
-.editorCodeBubble {
-    @include editorBubble(rgba(gray, 0.16));
-}
-
-
 
 .bubbleFeedList {
     margin: auto;
