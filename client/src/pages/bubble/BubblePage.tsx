@@ -21,18 +21,31 @@ interface Params {
 };
 
 function BubblePage() {
-    let params = useParams<Params>();
-    let id = React.useMemo(() => params.id, [params]);
-    let user = useSelector((state: RootReducer) => state.user);
-    let isAdmin = useIsAdmin();
+    const params = useParams<Params>();
+    const id = React.useMemo(() => params.id, [params]);
+    const user = useSelector((state: RootReducer) => state.user);
+    const isAdmin = useIsAdmin();
+
+    const isEditable = true;
     
-    let [bubbleLoading, bubblePost] = usePromise(() => getBubble(id), [id]);
+    const [bubbleLoading, bubblePost] = usePromise(() => getBubble(id), [id]);
     
     if (bubbleLoading) return <Loading/>;
     return (
         <>
             <Header />
+            <div className='bubbleSidebar'>
 
+                { isEditable && 
+                    <span>
+                        <Link to={`/bubble/${id}/edit`}>
+                            <button className='material-icons'>
+                                edit
+                            </button> 
+                        </Link>
+                    </span>
+                }
+            </div>
             <div id='content'>
                 { bubblePost ? (
                     <RenderedRootBubble />
