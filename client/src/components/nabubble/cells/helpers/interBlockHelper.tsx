@@ -24,23 +24,19 @@ function AddCellButton({ parentId, idx, refs, evalSiblingId, dispatch, ...others
         focusSibling(refs, evalSiblingId, idx, 0);
     }
 
-    return (<button className='addCellButton' onClick = { addCellHandler }>
-        add cell
-    </button>)
+    return (
+        <button className='addCellButton material-icons' onClick = { addCellHandler }>
+            add
+        </button>
+    )
 }
 
-interface CellOptionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
-    parentId : string,
-    cellId : string,
-    evalSiblingId : () => string[]
-    refs : refsType
-    dispatch : dispatchType
+function InterBlockHelper(props: AddCellButtonProps) {
+    return (
+        <div className='interBlockHelper'>
+            <AddCellButton {...props} />
+        </div>
+    )
 }
 
-function CellOptionButton({parentId, cellId, refs, evalSiblingId, dispatch, ...others} : CellOptionButtonProps){
-    return (<button className='cellOptionButton'>
-        cell option
-    </button>)
-}
-
-export { AddCellButton, CellOptionButton };
+export default InterBlockHelper;

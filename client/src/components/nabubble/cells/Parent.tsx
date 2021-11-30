@@ -9,8 +9,8 @@ import { RenderedMathCell, PreviewMathCell, EditorMathCell } from './Math';
 import { RenderedCodeCell, PreviewCodeCell, EditorCodeCell } from './Code';
 
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from '../actionReducer';
-
-import { AddCellButton, CellOptionButton } from './helpers/editorButtons'
+import SideBlockHelper from './helpers/sideBlockHelper';
+import InterBlockHelper from './helpers/interBlockHelper';
 
 //type: 'parent'
 //value: title
@@ -56,8 +56,8 @@ function EditorParentCell(props: EditorCellComponentProps) {
         {
             childrenId.reduce((prev, childId, idx) => prev.concat(
                 <EditorCell {...others} cellId={childId} type={flat.record[childId].type} refs={refs} />,
-                <AddCellButton parentId={cellId} evalSiblingId={ evalChildrenId } idx={idx + 1} dispatch={dispatch} refs={refs} />
-            ), [<AddCellButton parentId={cellId} evalSiblingId={ evalChildrenId } idx={0} dispatch={dispatch} refs={refs} />])
+                <InterBlockHelper parentId={cellId} evalSiblingId={ evalChildrenId } idx={idx + 1} dispatch={dispatch} refs={refs} />
+            ), [<InterBlockHelper parentId={cellId} evalSiblingId={ evalChildrenId } idx={0} dispatch={dispatch} refs={refs} />])
         }
     </div>);
 }
@@ -121,7 +121,7 @@ function EditorCell(props: EditorCellComponentProps) {
     }
     const EditorTypedCell = map[props.type];
     return <div className='editorCellContainer'>
-        <CellOptionButton parentId = { parentId || '_' } cellId = {props.cellId} evalSiblingId = { evalSiblingId } refs={props.refs} dispatch={dispatch} />
+        <SideBlockHelper parentId = { parentId || '_' } cellId = {props.cellId} evalSiblingId = { evalSiblingId } refs={props.refs} dispatch={dispatch} />
         <EditorTypedCell {...props} />
     </div>;
 }
