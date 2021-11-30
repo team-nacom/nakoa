@@ -152,3 +152,110 @@ summary.codeCellPreview {
         }
     }
 }
+.editorCodeBubble {
+    @include editorBubble(rgba(gray, 0.16));
+}
+
+
+
+.bubbleFeedList {
+    margin: auto;
+    max-width: 1350px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .bubbleFeed {
+        margin: 25px;
+        flex: 0 0 283px;
+
+        @media (max-width: $max-mobile-width) {
+            flex: 1 0 51%;
+        }
+
+        .bubbleFeedContent {
+            border-radius: 3.5px;
+            background: white;
+            border-top: 10px $primary-color solid;
+            box-shadow: 0px 5px 15px #00000056;
+            padding-top: 5px;
+            min-height: 245px;
+
+
+            background-image: linear-gradient(120deg, #f3f3f3 0%, #fafafa 100%);
+
+
+
+            .author {
+                font-size: 14px;
+                line-height: 14px;
+                padding: 5px 15px;
+                padding-bottom: 10px;
+                bottom: 0;
+            }
+
+            .tags {
+                font-size: 11px;
+                line-height: 20px;
+                padding: 15px 15px;
+                bottom: 0;
+                max-height: 15px;
+                overflow: hidden;
+            }
+
+            .title {
+                font-size: 20px;
+                line-height: 26px;
+                text-shadow: 0px 1px 8px #ffffff88;
+                padding: 3px 15px;
+                max-height: 26px;
+                overflow: hidden;
+            }
+
+            .content {
+//                background: #ffffff88;
+                padding: 4px 15px;
+                font-size: 11px;
+                line-height: 22px;
+                height: 132px;
+                overflow: hidden;
+            }
+            .metadata {
+                font-size: 12px;
+                line-height: 20px;
+                margin: 10px 15px;
+                bottom: 0;
+            }
+        }
+    }
+}
+
+.bubbleSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3;
+    button {
+        @include sidebarButton;
+    }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: -140px;
+        top: -220px;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 2px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004D;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
+}

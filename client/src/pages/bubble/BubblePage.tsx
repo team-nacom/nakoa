@@ -20,34 +20,17 @@ interface Params {
     index: string;
 };
 
-function BubblePage() {
-    let params = useParams<Params>();
-    let index = React.useMemo(() => params.index, [params]);
-    let user = useSelector((state: RootReducer) => state.user);
-    let isAdmin = useIsAdmin();
+function BubblePage({ index } : Params) {
+
+    const isEditable = true;
     
-    let [redirectToList, setRedirectToList] = React.useState(false);
-    let [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
-
-    let isEditable = true;
-
-    if (redirectToList) return <Redirect to='/bubble' />;
+    const [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
+    
     if (bubbleLoading) return <Loading/>;
     return (
         <>
             <Header />
-
-            <GuideSidebar on='post'>
-                { isEditable && 
-                    <Button className='material-icons' onClick={async (e) => {
-                        e.preventDefault();
-                        if (window.confirm('정말 삭제하시겠습니까?') && await removeBubble(index)) {
-                            setRedirectToList(true);
-                        }
-                    }}>
-                        delete
-                    </Button> 
-                }
+            <div className='bubbleSidebar'>
 
                 { isEditable && 
                     <span>
@@ -58,9 +41,7 @@ function BubblePage() {
                         </Link>
                     </span>
                 }
-
-            </GuideSidebar>
-
+            </div>
             <div id='content'>
                 { bubblePost ? (
                     <>

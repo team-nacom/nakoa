@@ -26,19 +26,21 @@ function BubbleList() {
                     </Link>
                 </span>
             </GuideSidebar>
-            <PageTitle>
-                모든 버블 보기
-            </PageTitle>
-            <div>
-                {bubbles?.map((bubble) => <div key={bubble.name} className='bubbleFeed'>
-                    <Link to={`/bubble/${bubble.index}`}>
-                        <div>
-                            <div className='title'> { bubble.name } </div>
-                            <div className='tags'> { bubble.tags && bubble.tags.map((s) => `#${s} `) } </div> 
-                            <div className='content'> { bubble.content.substring(0, 100) } </div>
-                        </div>
-                    </Link>
-                </div>)}
+            <div id='content'>
+                <PageTitle>
+                    모든 버블 보기
+                </PageTitle>
+                <div className='bubbleFeedList'>
+                    {bubbles?.map((bubble) => <div key={bubble.name} className='bubbleFeed'>
+                        <Link to={`/bubble/${bubble.index}`}>
+                            <div className='bubbleFeedContent'>
+                                <div className='title'> { bubble.name } </div>
+                                <div className='tags'> { bubble.tags && bubble.tags.map((s) => `#${s} `) } </div> 
+                                <div className='content'> { bubble.content.substring(0, 100) } </div>
+                            </div>
+                        </Link>
+                    </div>)}
+                </div>
             </div>
 
             <Footer/>
