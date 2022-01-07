@@ -9,7 +9,6 @@ import session from 'koa-session';
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
 
-import guideRouter from './guide';
 import fileRouter from './file';
 import bubbleRouter from './bubble';
 
@@ -25,8 +24,6 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
-// Guides
-router.use('/guide', guideRouter.routes());
 // Files
 router.use('/file', fileRouter.routes());
 // Bubble (for demo)

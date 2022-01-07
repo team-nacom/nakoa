@@ -1,5 +1,4 @@
 import Count from "./models/count";
-import Guide from "./models/guide";
 import { customAlphabet } from 'nanoid'
 
 // base64+1
@@ -21,13 +20,3 @@ export async function handleErrorMiddleware(ctx :any, next :any) {
     ctx.app.emit('error', err, ctx);
   }
 };
-
-// utility function for removing all documents and resetting a count of a collection
-const collections = ["guide", "cate", "gory"];
-export async function resetCollection(name :string) {
-  if(!collections.includes(name)) throw Error("??");
-  // currently supports only guide collection
-  await Guide.deleteMany({}).exec();
-  await Count.resetCount(name);
-  console.log(`Deleting all documents and resetting count of collection ${name} was successful!`);
-}
