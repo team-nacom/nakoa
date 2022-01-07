@@ -1,5 +1,5 @@
 import Footer from "components/Footer";
-import GuideSidebar from "components/GuideSidebar";
+import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import { BubbleType } from "components/nabubble/types";
 import PageTitle from "components/PageTitle";
@@ -17,7 +17,7 @@ function BubbleList() {
         <>
             <Header/>
             <div className='guideBackground' /> 
-            <GuideSidebar on='list'>
+            <BubbleSidebar on='list'>
                 <span>
                     <Link to={'/bubble/write'}>
                         <button className='roundButton material-icons'> 
@@ -25,7 +25,7 @@ function BubbleList() {
                         </button>
                     </Link>
                 </span>
-            </GuideSidebar>
+            </BubbleSidebar>
             <div id='content'>
                 <PageTitle>
                     모든 버블 보기

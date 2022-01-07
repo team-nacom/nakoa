@@ -76,11 +76,6 @@ function Header() {
                             <div> { intl.formatMessage({id: 'header.chal'})} </div>
                         </a>
                     </span>
-                    <span className={'navitem menu' + (pathname.startsWith('/guide') ? ' active' : '')}>
-                        <Link to='/guide'> 
-                            <div> { intl.formatMessage({id: 'header.guide'}) } </div>
-                        </Link>
-                    </span>
                     <span className={'icon material-icons expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
                         e.preventDefault();
                         setExpanded(!expanded);

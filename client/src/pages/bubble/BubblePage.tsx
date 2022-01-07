@@ -1,4 +1,3 @@
-import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import { getBubble, removeBubble } from 'etc/api/bubble';
@@ -8,8 +7,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Loading from '../Loading';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
-import GuideSidebar from 'components/GuideSidebar';
-import { priorityTags } from 'etc/api/guide';
+import BubbleSidebar from 'components/BubbleSidebar';
 import Button from 'components/Button';
 
 import { RenderedRootCell } from 'components/nabubble/cells/Parent';
@@ -34,7 +32,7 @@ function BubblePage() {
         <>
             <Header />
 
-            <GuideSidebar on='post'>
+            <BubbleSidebar on='post'>
                 { isEditable && 
                     <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
@@ -56,7 +54,7 @@ function BubblePage() {
                     </span>
                 }
 
-            </GuideSidebar>
+            </BubbleSidebar>
 
             <div id='content'>
                 { bubblePost ? (
