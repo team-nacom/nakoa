@@ -5,7 +5,6 @@ import Cors from '@koa/cors';
 import koaBody from "koa-body";
 
 import session from 'koa-session';
-import passport from 'koa-passport';
 
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
@@ -53,8 +52,6 @@ app.use(Cors({
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
 app.use(session({}, app));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
