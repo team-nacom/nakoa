@@ -1,15 +1,7 @@
 import React from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import Main from 'pages/Main';
-import ChallengeList from 'pages/challenge/ChallengeList';
-import ChallengeView from 'pages/challenge/ChallengeView';
-import ChallengeSubmit from 'pages/challenge/ChallengeSubmit';
 import SignUp from 'pages/signup/Signup';
-import QuizView from 'pages/quiz/QuizView';
-import ChallengeSubmissions from 'pages/challenge/ChallengeSubmissions';
-import ChallengeSolution from 'pages/challenge/ChallengeSolution';
-import QuizWrite from 'pages/quiz/QuizWrite';
-import ChallengeWrite from 'pages/challenge/ChallengeWrite';
 import Guide from 'pages/guide/Guide';
 import usePromise from 'etc/usePromise';
 import { setUserInfo } from 'etc/api/user';
