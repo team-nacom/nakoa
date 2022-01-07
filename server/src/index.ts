@@ -5,18 +5,11 @@ import Cors from '@koa/cors';
 import koaBody from "koa-body";
 
 import session from 'koa-session';
-import passport from 'koa-passport';
 
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
-import './setup/passport'; // set up passportJS
 
-// import challRouter from './chall';
-import quizRouter from './quiz';
-import userRouter from './user';
-import guideRouter from './guide';
 import fileRouter from './file';
-// import categoryRouter from './category';
 import bubbleRouter from './bubble';
 
 import { handleErrorMiddleware } from "./utils";
@@ -31,18 +24,8 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
-// Challenges (obsolete)
-// router.use('/chall', challRouter.routes());
-// Quizzes
-router.use('/quiz', quizRouter.routes());
-// Users
-router.use('/user', userRouter.routes());
-// Guides
-router.use('/guide', guideRouter.routes());
 // Files
 router.use('/file', fileRouter.routes());
-// Categories (obsolete)
-// router.use('/category', categoryRouter.routes());
 // Bubble (for demo)
 router.use('/bubble', bubbleRouter.routes());
 
@@ -66,8 +49,6 @@ app.use(Cors({
 // we might want to keep this key secret
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6']
 app.use(session({}, app));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(handleErrorMiddleware);
 app.use(router.routes()).use(router.allowedMethods());

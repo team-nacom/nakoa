@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { RootReducer } from 'store';
 import { localeList, localeName, setLocale } from 'store/locale';
-import SignIn from './SignIn';
 
 function LocaleButton() {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
@@ -50,7 +49,6 @@ function LocaleButton() {
 
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
-    let user = useSelector((state: RootReducer) => state.user);
     let [expanded, setExpanded] = React.useState<boolean>(false);
     let intl = useIntl();
 
@@ -68,18 +66,6 @@ function Header() {
                             />
                         </Link>
                     </div>
-                    { user.loggedIn && (
-                        <span className='navitem menu'>
-                            <Link to={`/user`}>
-                                <div>
-                                    <FormattedMessage 
-                                        id='header.hello'
-                                        values={{name: user.nickname}}
-                                    />
-                                </div>
-                            </Link>
-                        </span>
-                    )}
                     <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>
                         <Link to='/about'>
                             <div> { intl.formatMessage({id: 'header.about'})} </div>
@@ -90,22 +76,6 @@ function Header() {
                             <div> { intl.formatMessage({id: 'header.chal'})} </div>
                         </a>
                     </span>
-                    <span className={'navitem menu' + (pathname.startsWith('/guide') ? ' active' : '')}>
-                        <Link to='/guide'> 
-                            <div> { intl.formatMessage({id: 'header.guide'}) } </div>
-                        </Link>
-                    </span>
-                    <span className='navitem icons'>
-                        { user.loggedIn ? (
-                            <span> <Link className='icon material-icons' to='/logout'> logout </Link> </span>
-                        ) : (
-                            <>
-                                <span className='icon material-icons link' onClick={() => setSignInVisible(true)}> login </span>
-                                <span> <Link className='icon material-icons' to='/signup'> person_add </Link></span>
-                            </>
-                        ) }
-                        <LocaleButton />
-                    </span>
                     <span className={'icon material-icons expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
                         e.preventDefault();
                         setExpanded(!expanded);
@@ -114,7 +84,6 @@ function Header() {
                     </span>
                 </nav>
             </header>
-            <SignIn visible={signInVisible} setVisible={setSignInVisible} />
         </>
     )
 }

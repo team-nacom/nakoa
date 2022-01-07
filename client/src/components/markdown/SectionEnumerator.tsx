@@ -5,7 +5,6 @@ import { Node, Parent } from 'unist';
 import visit from 'unist-util-visit';
 
 import { HashLink } from 'react-router-hash-link';
-import { priorityTags } from 'etc/api/guide';
 import { FormattedMessage } from 'react-intl';
 
 function nodeDeepCopy(node: Node, depth?: number) {
@@ -167,7 +166,7 @@ const TocHeadingRendererFactory = (isManual? : boolean) =>{
 const SectionRendererFactory = (isManual? : boolean, usePriority? : boolean) => {
     return (n : any) => {
         return (
-            <div className={ 'sectionBlock ' + (usePriority ? priorityTags[n.priority] : '') }>
+            <div className={ 'sectionBlock ' + (usePriority ? 'priority' : '') }>
                 { n.children }
             </div>
         )
@@ -178,14 +177,6 @@ const SectionHeadingRendererFactory = (isManual? : boolean, usePriority? : boole
     return (n : any) => {
         // console.log(n);
         let children = n.children;
-        // console.log(children);
-        if (!isManual) {
-            children = children.concat([(
-                <span style={{ fontSize: '10px', marginLeft: '10px' }}>
-                    { priorityTags[n.priority] }
-                </span>
-            )])
-        }
 
         return (        
             <div className={ 'headingBlock ' + hnames[n.depth] }>

@@ -2,7 +2,6 @@ import Router from 'koa-router';
 
 import { rootUrlPromise } from "../setup/aws";
 import File, { uploadFileToS3 } from '../models/file';
-import { checkAdminMiddleware, isVerifiedMiddleware } from "../utils";
 
 import fs from "fs";
 import pathlib from "path";
@@ -13,7 +12,6 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
 
 const router = new Router();
 
-router.post('/upload', isVerifiedMiddleware);
 router.post('/upload', async (ctx) => {
     const folder = ctx.request.body.folder;
     //@ts-ignore
