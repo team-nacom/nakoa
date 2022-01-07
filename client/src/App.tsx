@@ -38,7 +38,6 @@ const localeMessages = {
 
 
 function App() {
-  let [userInfoLoading] = usePromise(() => setUserInfo());
   let locale = useSelector((state: RootReducer) => state.locale.locale);
 
   const history = createBrowserHistory();
@@ -48,8 +47,7 @@ function App() {
     ReactGA.pageview(location.pathname);
   })
 
-  if (userInfoLoading) return <></>;
-  else return (
+  return (
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>

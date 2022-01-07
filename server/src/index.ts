@@ -9,9 +9,7 @@ import passport from 'koa-passport';
 
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
-import './setup/passport'; // set up passportJS
 
-import userRouter from './user';
 import guideRouter from './guide';
 import fileRouter from './file';
 import bubbleRouter from './bubble';
@@ -28,8 +26,6 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
-// Users
-router.use('/user', userRouter.routes());
 // Guides
 router.use('/guide', guideRouter.routes());
 // Files

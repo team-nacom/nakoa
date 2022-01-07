@@ -1,6 +1,5 @@
 import createHttpError from "http-errors";
 import { Document, model, Schema } from "mongoose";
-import { UserDocument } from "./user";
 
 export interface GuideDocument extends Document {
     index: number,
@@ -12,15 +11,8 @@ export interface GuideDocument extends Document {
     createDate: number,
     tags: [string],
     writer: Schema.Types.ObjectId,
-
-    //TODO: Remove these
-    //cate: number,
-    //gory: string,
-    //priority: number,
+    
     updateDate: number,
-
-    hasWriteAuthority: (user: UserDocument) => boolean,
-
 }
 
 const guideSchema = new Schema<GuideDocument>({
@@ -42,14 +34,5 @@ const guideSchema = new Schema<GuideDocument>({
     createDate: { type: Number, default: Date.now },
     updateDate: { type: Number, default: Date.now }
 });
-
-guideSchema.methods.hasWriteAuthority = function(user: UserDocument){
-    if(!user) return false;
-    if(!this.authors || this.authors.length != 1) throw createHttpError(500, "Error while checking authority");
-
-    const isAdmin = (user.email === "nacommanager@gmail.com");
-    const isAuthor = (user.nickname === this.authors[0]);
-    return isAdmin || isAuthor;    
-}
 
 export default model<GuideDocument>('Guide', guideSchema, 'guides');
