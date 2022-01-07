@@ -3,7 +3,6 @@ import GuideSidebar from "components/GuideSidebar";
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
 import { searchGuides } from "etc/api/guide";
-import { useIsLoggedIn } from "etc/api/user";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from "react";
@@ -17,7 +16,6 @@ interface Params {
 };
 
 function GuideSearchList() {
-    let isLoggedIn = useIsLoggedIn();
     
     let params = useParams<Params>();
     let tag = React.useMemo(() => params.tag, [params]);
@@ -29,15 +27,13 @@ function GuideSearchList() {
             <Header/>
             <div className='guideBackground' /> 
             <GuideSidebar on='list'>
-                { isLoggedIn && (
-                    <span>
-                        <Link to={'/guide/write'}>
-                            <button className='roundButton material-icons'> 
-                                create
-                            </button>
-                        </Link>
-                    </span>
-                )}
+                <span>
+                    <Link to={'/guide/write'}>
+                        <button className='roundButton material-icons'> 
+                            create
+                        </button>
+                    </Link>
+                </span>
             </GuideSidebar>
             <div id='content'>
                 <PageTitle>

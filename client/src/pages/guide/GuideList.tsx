@@ -3,7 +3,6 @@ import GuideSidebar from "components/GuideSidebar";
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
 import { getGuides } from "etc/api/guide";
-import { useIsLoggedIn } from "etc/api/user";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import { Link } from "react-router-dom";
@@ -11,7 +10,6 @@ import GuideGallary from "../../components/GuideGallary";
 
 
 function GuideList() {
-    let isLoggedIn = useIsLoggedIn();
     
     let [guidesLoading, guides] = usePromise(getGuides);
     
@@ -21,15 +19,13 @@ function GuideList() {
             <Header/>
             <div className='guideBackground' /> 
             <GuideSidebar on='list'>
-                { isLoggedIn && (
-                    <span>
-                        <Link to={'/guide/write'}>
-                            <button className='roundButton material-icons'> 
-                                create
-                            </button>
-                        </Link>
-                    </span>
-                )}
+                <span>
+                    <Link to={'/guide/write'}>
+                        <button className='roundButton material-icons'> 
+                            create
+                        </button>
+                    </Link>
+                </span>
             </GuideSidebar>
             <div id='content'>
                 <PageTitle>

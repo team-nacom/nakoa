@@ -1,7 +1,6 @@
 import PageTitle from 'components/PageTitle';
 
 import { /*getGuideCategories, getGuideSections,*/ GuidePost, GuideType, /*priorityTagsGuideType*/} from 'etc/api/guide';
-import { useIsAdmin } from 'etc/api/user';
 import React, {useCallback, useEffect, useRef} from 'react';
 
 import Tags from "@yaireo/tagify/dist/react.tagify";
@@ -87,8 +86,6 @@ interface Props {
 
 
 function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
-    let isAdmin = useIsAdmin();
-
     let [name, setName] = React.useState<string>(initialGuide.name ?? '');
     let [authors, setAuthors] = React.useState<string[]>(initialGuide.authors ?? []);
 
@@ -109,11 +106,9 @@ function GuideEditor({ initialGuide = {}, upload, behavior } : Props) {
                 <FormattedMessage id={ behavior === 'add' ? 'editor.addguide' : 'editor.updateguide' } />
             </PageTitle>
 
-            { isAdmin && (
-                <div className='flexbox'>
-                    <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={isAdmin} />                
-                </div>
-            )}
+            <div className='flexbox'>
+                <AuthorsInput authors={authors} setAuthors={setAuthors} isAdmin={true} />                
+            </div>
 
             <div className='titleEditor'>
                 <label>

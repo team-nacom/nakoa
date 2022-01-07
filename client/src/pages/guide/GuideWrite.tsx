@@ -2,7 +2,6 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 
 import { GuidePost, postGuide } from 'etc/api/guide';
-import { useIsAdmin } from 'etc/api/user';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -24,9 +23,7 @@ function GuideWrite({ location } : Props) {
     let queryString = location.search;
     let params = new URLSearchParams(queryString);
     let isProfile = params.get("profile") === "true"
-    let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
-    let isAdmin = useIsAdmin();
 
 //    let rawQuery = location.search;
 //    let parsedQuery = queryString.parse(rawQuery);
@@ -57,7 +54,7 @@ function GuideWrite({ location } : Props) {
     let initialGuide: Partial<GuidePost> = {
         //cate: query.cate ? Number.parseInt(query.cate) : undefined,
         //gory: query.gory,
-        authors: isAdmin ? undefined : [user.nickname],
+        authors: undefined,
     };
 
     if (redirectTo) return <Redirect to={redirectTo} />

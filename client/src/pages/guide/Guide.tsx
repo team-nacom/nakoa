@@ -2,7 +2,6 @@ import GuideView from 'components/GuideView';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import { getGuide, GuideFilterType, defaultGuideFilter, PriorityTags, removeGuide } from 'etc/api/guide';
-import { useIsAdmin } from 'etc/api/user';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
@@ -20,8 +19,8 @@ interface Params {
 function Guide() {
     let params = useParams<Params>();
     let id = React.useMemo(() => Number.parseInt(params.id), [params]);
-    let user = useSelector((state: RootReducer) => state.user);
-    let isAdmin = useIsAdmin();
+    let user = {nickname: "Nickname"};
+    let isAdmin = true;
     
     let [guideLoading, guide] = usePromise(() => getGuide(id), [id]);
 

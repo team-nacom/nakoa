@@ -16,7 +16,6 @@ interface Params {
 };
 
 function BubbleEdit() {
-    let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     let params = useParams<Params>();

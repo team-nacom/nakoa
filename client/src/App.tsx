@@ -1,12 +1,8 @@
 import React from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import Main from 'pages/Main';
-import SignUp from 'pages/signup/Signup';
 import Guide from 'pages/guide/Guide';
 import usePromise from 'etc/usePromise';
-import { setUserInfo } from 'etc/api/user';
-import Logout from 'pages/Logout';
-import SignUpDone from 'pages/signup/SignupDone';
 import GuideList from 'pages/guide/GuideList';
 import GuideWrite from 'pages/guide/GuideWrite';
 import About from 'pages/About';
@@ -20,15 +16,11 @@ import messageKo from './locale/ko.json';
 import { IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
-import SignUpVerify from 'pages/signup/SignupVerify';
-import SignUpPending from 'pages/signup/SignupPending';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
-import MyPage from 'pages/user/Mypage';
 import GuideGallary from 'components/GuideGallary';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
 import BubbleEdit from 'pages/bubble/BubbleEdit';
-import User from 'pages/user/User';
 import GuideSearchList from 'pages/guide/GuideSearchList';
 
 const localeMessages = {
@@ -51,35 +43,12 @@ function App() {
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>
-          
-{/*          <Route path='/challenge/:id/submit' component={ChallengeSubmit} />
-          <Route path='/challenge/:id/solution' component={ChallengeSolution} />
-          <Route path='/challenge/:id/submissions' component={ChallengeSubmissions} />
-          <Route path='/challenge/:id' component={ChallengeView} />
-          <Route path='/challenge/write' component={ChallengeWrite} />
-          <Route path='/challenge' component={ChallengeList} />
-          <Redirect path='/problem' to='/challenge' />
-          <Redirect path='/challenges' to='/challenge' />*/}
-
-{/*          <Route path='/quiz/:id' component={QuizView} />
-          <Redirect path='/quiz' to='/quiz/1'/>
-          <Route path='/quiz/write' component={QuizWrite} />*/}
-
-          <Route exact path='/user/:nickname/:menu' component={User} />
-          <Route exact path='/user/:nickname' component={User} />
-          <Route exact path='/user' component={MyPage} />
           <Route exact path='/guide/write' component={GuideWrite} />
           <Route exact path='/guide/:id(\d+)/edit' component={GuideEdit} />
           <Route exact path='/guide/:id(\d+)' component={Guide} />
           <Route exact path='/guide' component={GuideList} />
           <Route exact path='/guide/search/:tag' component={GuideSearchList} />
           <Route exact path='/guide/list1' component={GuideGallary} />
-          <Route exact path='/mypage' component={MyPage} />
-          <Route exact path='/signup/done' component={SignUpDone} />
-          <Route exact path='/signup/pending' component={SignUpPending} />
-          <Route exact path='/signup/verify/:email/:code' component={SignUpVerify} />
-          <Route exact path='/signup' component={SignUp} />
-          <Route exact path='/logout' component={Logout} />
           <Route exact path='/about' component={About} />
           <Route exact path='/bubble' component={BubbleList} />
           <Route exact path='/bubble/write' component={BubbleWrite} />

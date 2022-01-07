@@ -12,7 +12,6 @@ import DemoBubbleEditor from 'components/DemoBubbleEditor';
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble'
 
 function BubbleWrite() {
-    let user = useSelector((state: RootReducer) => state.user);
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     // initialize
