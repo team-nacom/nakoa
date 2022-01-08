@@ -1,5 +1,5 @@
 // Import required AWS SDK clients and commands for Node.js
-import { S3Client, PutObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { fromIni } from "@aws-sdk/credential-provider-ini"
 
 // Set the AWS region
@@ -19,7 +19,7 @@ async function initialRun() {
   }
   console.log(`Trying to connect to ${BUCKET}...`);
   try {
-    const data = await s3.send(new ListObjectsCommand({
+    await s3.send(new ListObjectsCommand({
       Bucket: BUCKET,
     }));
     console.log(`Initial S3 connection to ${BUCKET} successful!`);
@@ -29,15 +29,15 @@ async function initialRun() {
     console.error(err);
     return false;
   }
-};
+}
 
 async function getRootUrl() {
   if(!BUCKET){
     return "";
   }
-  let endpoint = await s3.config.endpoint();
+  const endpoint = await s3.config.endpoint();
   // i.e. https:// nacom-dev . s3.ap-northeast-2.amazonaws.com / 
-  let result = `${endpoint.protocol}//${BUCKET}.${endpoint.hostname}${endpoint.path}`;
+  const result = `${endpoint.protocol}//${BUCKET}.${endpoint.hostname}${endpoint.path}`;
 
   return result;
 }

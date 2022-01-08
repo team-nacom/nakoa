@@ -14,10 +14,9 @@ const router = new Router();
 
 router.post('/upload', async (ctx) => {
     const folder = ctx.request.body.folder;
-    //@ts-ignore
-    const file: any = ctx.request.files?.file;
+    const file = ctx.request.files?.file;
 
-    if(!folder || !file){
+    if(!folder || !file || "length" in file){
         // console.error(folder, file);
         throw createHttpError(400, `Invalid form (folder: ${folder}, file: ${file}`);
     }

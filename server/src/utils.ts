@@ -1,5 +1,6 @@
-import Count from "./models/count";
 import { customAlphabet } from 'nanoid'
+import Koa from "koa";
+import { HttpError } from 'http-errors';
 
 // base64+1
 const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
@@ -9,14 +10,23 @@ export function baseid(count: number): string {
 }
 
 // wrapping middleware for unified error logging
-export async function handleErrorMiddleware(ctx :any, next :any) {
+export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
   try {
     await next();
   } catch (err) {
-    //@ts-ignore
-    ctx.status = err.status || 500;
-    //@ts-ignore
-    ctx.body = err.message;
+    if (err instanceof Error){
+      if (err instanceof HttpError){
+        ctx.status = err.status;
+      }
+      else {
+        ctx.status = 500;
+      }
+      ctx.body = err.message;
+    }
+    else {
+      ctx.status = 500;
+      ctx.body = "Unknown Error";
+    }
     ctx.app.emit('error', err, ctx);
   }
-};
+}
