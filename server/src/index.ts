@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import Router from 'koa-router';
-import Logger from 'koa-logger';
+import Logger from 'koa-pino-logger';
 import Cors from '@koa/cors';
 import koaBody from 'koa-body';
 

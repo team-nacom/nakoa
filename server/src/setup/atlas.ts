@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { logger } from '../utils';
 
 const connectionString = process.env.DB_CONN;
 if (!connectionString) {
@@ -12,8 +13,8 @@ mongoose.connect(connectionString, {
   useFindAndModify: false, // refer to https://mongoosejs.com/docs/deprecations.html#findandmodify
   useCreateIndex: true, // refer to https://mongoosejs.com/docs/deprecations.html#ensureindex
 }).then(() => {
-  console.log(`Successfully connected to mongodb on ${mongoose.connection.host}`);
+  logger.info(`Successfully connected to mongodb on ${mongoose.connection.host}`);
 }).catch((err) => {
-  console.error('Failed to connect.');
-  console.error(err);
+  logger.error('Failed to connect.');
+  logger.error(err);
 });

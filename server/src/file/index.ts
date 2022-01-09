@@ -6,6 +6,7 @@ import { customAlphabet } from 'nanoid';
 import createHttpError from 'http-errors';
 import File, { uploadFileToS3 } from '../models/file';
 import { rootUrlPromise } from '../setup/aws';
+import { logger } from '../utils';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
 
@@ -31,7 +32,7 @@ router.post('/upload', async (ctx) => {
   const doc = new File({ path: s3Path, mime: file.type });
   await doc.save();
 
-  console.log(`Successfully uploaded ${file.path} of type ${file.type} on ${s3Path}`);
+  logger.info(`Successfully uploaded ${file.path} of type ${file.type} on ${s3Path}`);
   ctx.body = (await rootUrlPromise) + s3Path;
 });
 

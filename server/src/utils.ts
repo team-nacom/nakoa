@@ -1,6 +1,7 @@
 import { customAlphabet } from 'nanoid';
 import Koa from 'koa';
 import { HttpError } from 'http-errors';
+import Pino from 'pino';
 
 // base64+1
 const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
@@ -28,3 +29,5 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
     ctx.app.emit('error', err, ctx);
   }
 }
+
+export const logger = Pino();
