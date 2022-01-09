@@ -2,6 +2,7 @@ import { customAlphabet } from 'nanoid';
 import Koa from 'koa';
 import { HttpError } from 'http-errors';
 import Pino from 'pino';
+import pretty from 'pino-pretty';
 
 // base64+1
 const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
@@ -26,8 +27,32 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
       ctx.status = 500;
       ctx.body = 'Unknown Error';
     }
+    ctx.log.error(err);
     ctx.app.emit('error', err, ctx);
   }
 }
 
-export const logger = Pino();
+export const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === 'production');
+const logOptions = {};
+
+function formatMessage(log: any, messageKey: string, levelLabel: string): string {
+  const [req, res, rst] = [log.req, log.res, log.responseTime];
+  if (req === undefined || res === undefined || rst === undefined) return log[messageKey] as string;
+
+  const result = `${req.headers.host} "${req.method} ${req.url}" ${res.statusCode} ${res.headers['content-length']}B ${rst}ms',`;
+  return result;
+}
+
+export const logStreams = Pino.multistream([
+  {
+    level: 'debug',
+    stream: pretty({
+      translateTime: true,
+      hideObject: true,
+      messageFormat: formatMessage,
+    }),
+  },
+  { level: 'info', stream: Pino.destination('../nakoa.log') },
+]);
+
+export const logger = Pino(logOptions, logStreams);

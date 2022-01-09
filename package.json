@@ -14,16 +14,8 @@
         "lint-server": "yarn run eslint -c server/.eslintrc.js server/src"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.0.0",
-        "@typescript-eslint/parser": "^5.0.0",
         "ansi-regex": "^5.0.1",
         "concurrently": "^5.3.0",
-        "eslint": "^8.6.0",
-        "eslint-config-airbnb": "^19.0.4",
-        "eslint-config-airbnb-typescript": "^16.1.0",
-        "eslint-plugin-import": "^2.25.4",
-        "eslint-plugin-jsx-a11y": "^6.5.1",
-        "eslint-plugin-react": "^7.28.0",
         "typescript": "^4.5.4"
     }
 }

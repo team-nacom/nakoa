@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import Router from 'koa-router';
-import Logger from 'koa-pino-logger';
+import Pino from 'koa-pino-logger';
 import Cors from '@koa/cors';
 import koaBody from 'koa-body';
 
@@ -12,7 +12,9 @@ import './setup/aws'; // connect aws S3
 import fileRouter from './file';
 import bubbleRouter from './bubble';
 
-import { handleErrorMiddleware } from './utils';
+import {
+  handleErrorMiddleware, isProduction, logger, logStreams,
+} from './utils';
 
 // Router
 const router = new Router();
@@ -29,13 +31,12 @@ router.use('/file', fileRouter.routes());
 router.use('/bubble', bubbleRouter.routes());
 
 // local / production config
-const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === 'production');
 const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
 const port = (isProduction ? 3884 : 3885);
 
 // Koa app
 const app = new Koa();
-app.use(Logger());
+app.use(Pino(logger, logStreams));
 app.use(koaBody({
   multipart: true,
   formidable: { keepExtensions: true },
