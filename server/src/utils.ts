@@ -1,5 +1,5 @@
-import { customAlphabet } from 'nanoid'
-import Koa from "koa";
+import { customAlphabet } from 'nanoid';
+import Koa from 'koa';
 import { HttpError } from 'http-errors';
 
 // base64+1
@@ -14,18 +14,16 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
   try {
     await next();
   } catch (err) {
-    if (err instanceof Error){
-      if (err instanceof HttpError){
+    if (err instanceof Error) {
+      if (err instanceof HttpError) {
         ctx.status = err.status;
-      }
-      else {
+      } else {
         ctx.status = 500;
       }
       ctx.body = err.message;
-    }
-    else {
+    } else {
       ctx.status = 500;
-      ctx.body = "Unknown Error";
+      ctx.body = 'Unknown Error';
     }
     ctx.app.emit('error', err, ctx);
   }
