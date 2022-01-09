@@ -107,7 +107,7 @@ const FootnoteDefinitionRenderer = (p : any) => {
                 </p>
             </span> 
             <span className='footnoteBody'>
-                { n.identifier[0] == ']' ? <p> { n.children } </p> : n.children }
+                { n.identifier[0] === ']' ? <p> { n.children } </p> : n.children }
             </span>
         </div>
     )

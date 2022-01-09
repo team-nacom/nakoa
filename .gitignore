@@ -6,4 +6,4 @@ build/
 
 *.pem
 
-yarn_error.log
+*.log

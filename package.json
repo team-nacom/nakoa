@@ -10,10 +10,12 @@
         "watch": "concurrently --kill-others -n \"CLIENT,SERVER\" \"yarn watch-client\" \"yarn start-server\"",
         "build-client": "yarn --cwd ./client/ build",
         "build-server": "yarn --cwd ./server/ build",
-        "build": "yarn build-client && yarn build-server"
+        "build": "yarn build-client && yarn build-server",
+        "lint-server": "yarn run eslint -c server/.eslintrc.js server/src"
     },
     "devDependencies": {
+        "ansi-regex": "^5.0.1",
         "concurrently": "^5.3.0",
-        "ansi-regex": "^5.0.1"
+        "typescript": "^4.5.4"
     }
 }
