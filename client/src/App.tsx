@@ -36,12 +36,11 @@ function App() {
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>
+          <Redirect exact path='/' to='/write' />
+          <Route exact path='/list' component={BubbleList} />
+          <Route exact path='/write' component={BubbleWrite} />
+          <Route exact path='/view/:index' component={BubblePage} />
           <Route exact path='/about' component={About} />
-          <Route exact path='/bubble' component={BubbleList} />
-          <Route exact path='/bubble/write' component={BubbleWrite} />
-          <Route exact path='/bubble/:index' component={BubblePage} />
-          <Redirect exact path='/' to='/bubble' />
-{/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>
         </Switch>
       </Router>

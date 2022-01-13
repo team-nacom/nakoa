@@ -29,7 +29,7 @@ function BubbleWrite() {
         postBubble(bubble).then(({success, index}) => {
             if (success) {
                 setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/bubble/${index}`);
+                setRedirectTo(`/view/${index}`);
             }
             else setMessage('업로드에 실패했습니다...');
         })

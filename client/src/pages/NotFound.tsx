@@ -20,7 +20,6 @@ function NotFound() {
                     { message }
                 </MarkdownRenderer>
             </div>
-            {/* for testing: */}
             <Footer/>
         </>
     );

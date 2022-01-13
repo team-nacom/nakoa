@@ -26,14 +26,14 @@ function BubblePage() {
 
     let isEditable = false;
 
-    if (redirectToList) return <Redirect to='/bubble' />;
+    if (redirectToList) return <Redirect to='/list' />;
     if (bubbleLoading) return <Loading/>;
     return (
         <>
             <Header />
 
             <BubbleSidebar on='post'>
-                { isEditable && 
+                {/* { isEditable && 
                     <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
                         if (window.confirm('정말 삭제하시겠습니까?') && await removeBubble(index)) {
@@ -44,6 +44,8 @@ function BubblePage() {
                     </Button> 
                 }
 
+                TODO add hide
+
                 { isEditable && 
                     <span>
                         <Link to={`/bubble/${index}/edit`}>
@@ -52,7 +54,7 @@ function BubblePage() {
                             </button> 
                         </Link>
                     </span>
-                }
+                } */}
 
             </BubbleSidebar>
 

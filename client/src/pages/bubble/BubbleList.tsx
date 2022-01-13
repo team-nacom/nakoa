@@ -19,7 +19,7 @@ function BubbleList() {
             <div className='guideBackground' /> 
             <BubbleSidebar on='list'>
                 <span>
-                    <Link to={'/bubble/write'}>
+                    <Link to={'/write'}>
                         <button className='roundButton material-icons'> 
                             create
                         </button>
@@ -32,7 +32,7 @@ function BubbleList() {
                 </PageTitle>
                 <div className='bubbleFeedList'>
                     {bubbles?.map((bubble) => <div key={bubble.name} className='bubbleFeed'>
-                        <Link to={`/bubble/${bubble.index}`}>
+                        <Link to={`/view/${bubble.index}`}>
                             <div className='bubbleFeedContent'>
                                 <div className='title'> { bubble.name } </div>
                                 <div className='tags'> { bubble.tags && bubble.tags.map((s) => `#${s} `) } </div> 
