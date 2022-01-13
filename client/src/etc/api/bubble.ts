@@ -21,15 +21,15 @@ export interface BubblePost {
 }
 
 export const getBubbles = async () => {
-    let response = await Axios.get(`${apiAddress}/bubble`, {
+    let response = await Axios.get(`${apiAddress}/bubble/debug`, {
         validateStatus: authValidateStatus, 
     });
 
     return response.data as BubbleType[];
 }
 
-export const getBubble = async (id: string) => {
-    let response = await Axios.get(`${apiAddress}/bubble/${id}`, {
+export const getBubble = async (index: string) => {
+    let response = await Axios.get(`${apiAddress}/bubble/view/${index}`, {
         validateStatus: authValidateStatus, 
     });
 
@@ -70,7 +70,7 @@ export const editBubble = async (index: string, data: BubblePost) => {
 }
 
 export const removeBubble = async (index: string) => {
-    let response = await Axios.delete(`${apiAddress}/bubble/${index}`)
+    let response = await Axios.delete(`${apiAddress}/bubble/delete${index}`)
 
     return response.status < 300;
 }
