@@ -24,7 +24,7 @@ function BubblePage() {
     let [redirectToList, setRedirectToList] = React.useState(false);
     let [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
 
-    let isEditable = true;
+    let isEditable = false;
 
     if (redirectToList) return <Redirect to='/bubble' />;
     if (bubbleLoading) return <Loading/>;

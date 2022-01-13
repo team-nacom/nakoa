@@ -16,6 +16,7 @@ export interface BubbleType {
 
 export interface BubblePost {
     name: string,
+    author: string,
     content: string,
     tags: string[],
 }
@@ -58,15 +59,6 @@ export const postBubble = async (data: BubblePost) => {
         success: response.status < 300,
         index: response.data.index,
     };
-}
-
-export const editBubble = async (index: string, data: BubblePost) => {
-    let response = await Axios.put(`${apiAddress}/bubble/${index}`, data, {
-        validateStatus: authValidateStatus, 
-        withCredentials: true 
-    });
-
-    return response.status < 300;
 }
 
 export const removeBubble = async (index: string) => {

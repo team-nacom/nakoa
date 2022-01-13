@@ -40,7 +40,7 @@ function BubbleWrite() {
         <>
             <Header/>
             <div id='content'>
-                <DemoBubbleEditor upload={upload} behavior='add'/>
+                <DemoBubbleEditor upload={upload}/>
             </div>
             <Footer/>
         </>
