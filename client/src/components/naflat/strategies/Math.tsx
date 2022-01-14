@@ -1,7 +1,7 @@
 import React from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { CellFragmentProps, CellFragment, CellRenderStrategy } from '../componentTypes';
+import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 
@@ -9,8 +9,10 @@ import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 const MemoizedTeX = React.memo(TeX);
 
-function DisplayMathCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function DisplayMathCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -28,8 +30,10 @@ function DisplayMathCell(props: CellFragmentProps){
 }
 
 
-function PreviewMathCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function PreviewMathCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -47,8 +51,10 @@ function PreviewMathCell(props: CellFragmentProps){
 }
 
 
-function EditorMathCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function EditorMathCell(props: CellComponentProps){
+    const { state, dispatch } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -57,7 +63,7 @@ function EditorMathCell(props: CellFragmentProps){
         <TextareaAutosize autoFocus style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorMathCell editorCell'
-            onChange={handleChangeFactory(props.cellId,props.dispatch)}
+            onChange={handleChangeFactory(props.cellId,dispatch)}
             value={contents}
             spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />

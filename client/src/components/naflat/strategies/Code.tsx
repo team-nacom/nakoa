@@ -1,12 +1,14 @@
 import React from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { CellFragmentProps, CellFragment, CellRenderStrategy } from '../componentTypes';
+import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 
-function DisplayCodeCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function DisplayCodeCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -24,8 +26,10 @@ function DisplayCodeCell(props: CellFragmentProps){
 }
 
 
-function PreviewCodeCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function PreviewCodeCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -43,8 +47,10 @@ function PreviewCodeCell(props: CellFragmentProps){
 }
 
 
-function EditorCodeCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function EditorCodeCell(props: CellComponentProps){
+    const { state, dispatch } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -53,7 +59,7 @@ function EditorCodeCell(props: CellFragmentProps){
         <TextareaAutosize autoFocus style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorCodeCell editorCell'
-            onChange={handleChangeFactory(props.cellId,props.dispatch)}
+            onChange={handleChangeFactory(props.cellId,dispatch)}
             value={contents}
             spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />

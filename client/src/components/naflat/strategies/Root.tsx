@@ -1,10 +1,12 @@
 import React from 'react';
-import { CellFragmentProps, CellFragment, CellRenderStrategy } from '../componentTypes';
+import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 
-function DisplayRootCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function DisplayRootCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -13,8 +15,10 @@ function DisplayRootCell(props: CellFragmentProps){
 }
 
 
-function PreviewRootCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function PreviewRootCell(props: CellComponentProps){
+    const { state } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -23,8 +27,10 @@ function PreviewRootCell(props: CellFragmentProps){
 }
 
 
-function EditorRootCell(props: CellFragmentProps){
-    let cell = props.getState().flat[props.cellId];
+function EditorRootCell(props: CellComponentProps){
+    const { state, dispatch } = React.useContext(FlatContext);
+
+    let cell = state.flat[props.cellId];
     let title = cell.value;
 
     if(typeof title !== 'string') return <></>;
@@ -32,7 +38,7 @@ function EditorRootCell(props: CellFragmentProps){
     return <input
         className='title'
         value={ title }
-        onChange={ handleChangeFactory(props.cellId, props.dispatch) }
+        onChange={ handleChangeFactory(props.cellId, dispatch) }
     />
 }
 

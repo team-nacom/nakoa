@@ -1,9 +1,12 @@
+// Implementation of cell (and flat) renderer components.
+// This file contains definitions which is only valid AFTER defining render strategies for each types.
+
 import React from 'react';
 import { createContext, useContext } from 'react';
 
 import { CellType, Cell, CellTypeMap, Flat } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
-import { CellComponentProps, CellFragment, CellRenderStrategy } from './componentTypes';
+import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
 import RootCellStrategy from './strategies/Root';
 import TextCellStrategy from './strategies/Text';
@@ -11,10 +14,6 @@ import MathCellStrategy from './strategies/Math';
 import CodeCellStrategy from './strategies/Code';
 
 import InterCell from './aux/InterCell';
-
-const FlatStateContext = createContext<FlatState | undefined>(undefined);
-const FlatStateDispatchContext = createContext<React.Dispatch<FlatStateAction> | undefined>(undefined);
-
 
 const cellRenderStrategyMap : CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
@@ -24,11 +23,7 @@ const cellRenderStrategyMap : CellTypeMap<CellRenderStrategy> = {
 };
 
 function CellRenderer(props: CellComponentProps){
-    const state = useContext(FlatStateContext);
-    const dispatch = useContext(FlatStateDispatchContext);
-    if(!state || !dispatch){
-        throw new Error('Cannot find Flat ContextProvider(state, dispatch)');
-    }
+    const { state, dispatch } = useContext(FlatContext);
 
     const cell = state.flat[props.cellId];
     const mode = props.editMode ? (
@@ -42,10 +37,7 @@ function CellRenderer(props: CellComponentProps){
 
         return <>
             { mode === 'display' &&
-                <Strategy {...props}
-                    getState = { () => state }
-                    dispatch = { dispatch }
-                />
+                <Strategy {...props} />
             }
             { mode === 'preview' &&
                 <>
@@ -55,10 +47,7 @@ function CellRenderer(props: CellComponentProps){
                         <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
                     }
 
-                    <Strategy {...props}
-                        getState = { () => state }
-                        dispatch = { dispatch }
-                    />
+                    <Strategy {...props} />
                 </>
             }
             { mode === 'editor' &&
@@ -75,15 +64,9 @@ function CellRenderer(props: CellComponentProps){
                         </>
                     }
 
-                    <Strategy {...props}
-                        style={ { width: '50%' } }
-                        getState = { () => state }
-                        dispatch = { dispatch }
-                    />
+                    <Strategy {...props} />
                     <PreviewStrategy {...props}
                         style={ {width: '50%' } }
-                        getState = { () => state }
-                        dispatch = { dispatch }
                     />
                 </div>
             }
@@ -97,13 +80,11 @@ function CellRenderer(props: CellComponentProps){
                             <InterCell
                                 parentId = { props.cellId }
                                 pos = { idx + 1 }
-                                dispatch = { dispatch }
                             />
                         ), [
                             <InterCell
                                 parentId = { props.cellId }
                                 pos = { 0 }
-                                dispatch = { dispatch }
                             />
                         ])
                     }
@@ -136,19 +117,13 @@ function FlatComponent(props: FlatComponentProps){
         }
     };
 
-    const [state, dispatch] = React.useReducer(reducer, {
-        flat : props.initialFlat || emptyFlat,
-        focusId : initialFocusId,
-        history : []
-    });
+    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId) );
 
     return (
-        <FlatStateContext.Provider value={ state }>
-            <FlatStateDispatchContext.Provider value={ dispatch }>
-                <CellRenderer {...others} />
-            </FlatStateDispatchContext.Provider>
-        </FlatStateContext.Provider>
+        <FlatContext.Provider value={ {state, dispatch} } >
+            <CellRenderer {...others} />
+        </FlatContext.Provider>
     )   
 }
 
-export { FlatComponent };
+export { FlatContext, FlatComponent };

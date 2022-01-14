@@ -1,14 +1,14 @@
 import React from 'react';
 import { Flat, CellType } from '../flat';
-import { FlatStateAction } from '../reducer';
+import {  FlatContext } from '../componentTypes';
 
 interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     parentId : string,
     pos : number,
-    dispatch : React.Dispatch<FlatStateAction>
 }
 
-function AddCellButton({ parentId, pos, dispatch, ...others }: AddCellButtonProps){
+function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
+    const { state, dispatch } = React.useContext(FlatContext);
 
     const addCellHandler = (e: any) => {
         let newType : CellType = 'text';

@@ -1,30 +1,37 @@
 
 // Declaration of cell renderer components.
-// The cell renderer will be fully implemented in ./renderer.tsx
+// This file contains definitions which should be defined BEFORE defining render strategies for each types.
 
 import { Dispatch } from 'react';
+import { createContext, useContext } from 'react';
+
+import { Flat } from './flat';
 import { FlatState, FlatStateAction } from './reducer';
 
 interface CellComponentProps extends React.HTMLAttributes<HTMLElement>{
     cellId : string;
     editMode? : boolean;
 }
-
-interface CellFragmentProps extends CellComponentProps{
-    getState : () => FlatState;
-    dispatch : Dispatch<FlatStateAction>;
-}
-
-// type CellFragment = React.Component<CellFragmentProps>;
-type CellFragment = (props: CellFragmentProps) => JSX.Element
+type CellComponent = (props: CellComponentProps) => JSX.Element
 
 type CellRenderStrategy = {
-    'display' : CellFragment;
-    'preview' : CellFragment;
-    'editor' : CellFragment;
+    'display' : CellComponent;
+    'preview' : CellComponent;
+    'editor' : CellComponent;
 }
 
-// the cell fragment type should match to the cell type,
+// the cell component type should match to the cell type,
 // but we won't strictly check that elsewhere.
 
-export type { CellComponentProps, CellFragmentProps, CellFragment, CellRenderStrategy };
+function makeInitialState(flat: Flat, initialFocusId?: string) : FlatState{
+    return { flat : flat, focusId : initialFocusId, history : [] };
+}
+
+const mockInitialState = makeInitialState({});
+const FlatContext = createContext({
+    state: mockInitialState,
+    dispatch: ( () => mockInitialState  ) as React.Dispatch<FlatStateAction>
+});
+
+export type { CellComponentProps, CellRenderStrategy };
+export { FlatContext, makeInitialState };
