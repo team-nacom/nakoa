@@ -19,12 +19,12 @@ function NotFound() {
         <>
             <Header/>
             <div id='content'>
-                <MarkdownRenderer isManual={true}>
+                <MarkdownRenderer isManual>
                     { message }
                 </MarkdownRenderer>
             </div>
             {/* for testing: */}
-            <FlatRenderer
+            <FlatRenderer editMode
                 cellId = 'c0'
                 initialFlat = { {
                     'c0' : {
@@ -36,6 +36,7 @@ function NotFound() {
                     'c1' : {
                         type: 'text',
                         id: 'c1',
+                        parentId: 'c0',
                         childIds: [],
                         value: `
 # 제목
@@ -54,6 +55,7 @@ $$
                     'c2' : {
                         type: 'text',
                         id: 'c2',
+                        parentId: 'c0',
                         childIds: ['c22','c23'],
                         value: `
 # 이건 또 뭘까요
@@ -67,6 +69,7 @@ $$
                     'c3' : {
                         type: 'text',
                         id: 'c3',
+                        parentId: 'c0',
                         childIds: [],
                         value: `
 # 세번째 제목
@@ -84,12 +87,14 @@ $$
                     'c22' : {
                         type: 'text',
                         id: 'c22',
+                        parentId: 'c2',
                         childIds: [],
                         value: `갸오오오오`
                     },
                     'c23' : {
                         type: 'text',
                         id: 'c23',
+                        parentId: 'c2',
                         childIds: [],
                         value: `그오오오오`
                     }

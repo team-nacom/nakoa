@@ -91,7 +91,7 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'createEmpty':
-        flat = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
+        [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'remove':
@@ -106,6 +106,9 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         focusId = undefined;
         break;
     }
+    
+    // console.log( Object.keys(flat), focusId );
+
     return { flat, focusId, history };
 }
 

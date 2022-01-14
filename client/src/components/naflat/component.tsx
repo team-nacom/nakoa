@@ -5,18 +5,22 @@ import { CellType, Cell, CellTypeMap, Flat } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellFragment, CellRenderStrategy } from './componentTypes';
 
-import RootStrategy from './cells/Root';
-import TextStrategy from './cells/Text';
+import RootCellStrategy from './strategies/Root';
+import TextCellStrategy from './strategies/Text';
+import MathCellStrategy from './strategies/Math';
+import CodeCellStrategy from './strategies/Code';
+
+import InterCell from './aux/InterCell';
 
 const FlatStateContext = createContext<FlatState | undefined>(undefined);
 const FlatStateDispatchContext = createContext<React.Dispatch<FlatStateAction> | undefined>(undefined);
 
 
 const cellRenderStrategyMap : CellTypeMap<CellRenderStrategy> = {
-    'root': RootStrategy,
-    'text': TextStrategy
-    // 'math':
-    // 'code':
+    'root': RootCellStrategy,
+    'text': TextCellStrategy,
+    'math': MathCellStrategy,
+    'code': CodeCellStrategy,
 };
 
 function CellRenderer(props: CellComponentProps){
@@ -32,30 +36,83 @@ function CellRenderer(props: CellComponentProps){
                 'edit' : 'preview'
         ) : 'display';
 
-    const Strategy = cellRenderStrategyMap[cell.type][mode];
+    try{
+        const Strategy = cellRenderStrategyMap[cell.type][mode];
+        const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
 
-    return <>
-        {
-            props.editMode &&
-            <button onClick = { () => dispatch({ type: 'focus', id: props.cellId }) }> Edit </button>
-        }
-        <Strategy {...props}
-            getState = { () => state }
-            dispatch = { dispatch } />
-        
-        { cell.childIds.length !== 0 &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}>
-                {
-                    cell.childIds.reduce((prev,childId,pos) => prev.concat(
-                        <CellRenderer {...props} cellId = { childId } />,
-                        <></>
-                    ), [
-                        <></>
-                    ])
-                }
-            </div>
-        }
-    </>;
+        return <>
+            {
+                mode === 'display' &&
+                <Strategy {...props}
+                    getState = { () => state }
+                    dispatch = { dispatch }
+                />
+            }
+            {
+                mode === 'preview' &&
+                <>
+                    { /* side cell */ }
+                    <button onClick = { () => dispatch({ type: 'focus', id: props.cellId }) }> Edit </button>
+                    <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
+
+                    <Strategy {...props}
+                        getState = { () => state }
+                        dispatch = { dispatch }
+                    />
+                </>
+            }
+            {
+                mode === 'edit' &&
+                <div className='editorCellContainer'>
+                    
+                    { /* side cell */ }
+                    <button onClick = { () => dispatch({ type: 'blur' }) }> Close </button>
+                    <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
+                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId }) }> As Text</button>
+                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId }) }> As Math</button>
+                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId }) }> As Code</button>
+
+                    <Strategy {...props}
+                        style={ { width: '50%' } }
+                        getState = { () => state }
+                        dispatch = { dispatch }
+                    />
+                    <PreviewStrategy {...props}
+                        style={ {width: '50%' } }
+                        getState = { () => state }
+                        dispatch = { dispatch }
+                    />
+                </div>
+            }
+            
+            { /* render children. */ }
+            { cell.childIds.length !== 0 &&
+                <div style={{ border: '1px solid gray', padding: '0 60px' }}>
+                    {
+                        cell.childIds.reduce((prev,childId,idx) => prev.concat(
+                            <CellRenderer {...props} cellId = { childId } />,
+                            <InterCell
+                                parentId = { props.cellId }
+                                pos = { idx + 1 }
+                                dispatch = { dispatch }
+                            />
+                        ), [
+                            <InterCell
+                                parentId = { props.cellId }
+                                pos = { 0 }
+                                dispatch = { dispatch }
+                            />
+                        ])
+                    }
+                </div>
+            }
+        </>;
+    }
+    catch(err){ //removed.
+        console.log('already removed:'+ props.cellId);
+
+        return <></>;
+    }
 }
 
 

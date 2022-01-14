@@ -7,7 +7,8 @@ import { Type } from 'unist-util-filter';
 
 type CellType = 'root' // only one root per flat should be allowed.
     | 'text'
-    // | 'math' | 'code'
+    | 'math'
+    | 'code'
 
 type CellTypeMap<T> = {
     [cellType in CellType]: T;
@@ -32,8 +33,8 @@ type Flat = Record<string, Cell>; // Just an alias
 const defaultValue : CellTypeMap<unknown> = {
     'root': '',
     'text': '',
-    // 'math': '',
-    // 'code': ''
+    'math': '',
+    'code': '',
 }
 
 // /**
@@ -86,8 +87,7 @@ const defaultValue : CellTypeMap<unknown> = {
     let mx = Math.max.apply(
         null,
         Object.keys(f)
-            .map( str => str.slice(1) )
-            .map(parseInt)
+            .map( str => parseInt(str.slice(1)) )
             .filter( isFinite )
             .concat(0)
     ) + 1;
@@ -212,14 +212,15 @@ function moveCell(f: Flat, id: string, parentId: string, pos?: number): Flat{
  * @param f flat.
  * @param parentId target parent cell id.
  * @param pos (optional) the position of the new cell as a child.
- * @returns new flat.
+ * @returns [new flat, generated id].
  */
-function createChildCell(f: Flat, parentId: string, type: CellType, pos?: number) : Flat{
+function createChildCell(f: Flat, parentId: string, type: CellType, pos?: number) : [Flat, string]{
     let id = generateId(f);
     let newf = createCell(f, id, type, defaultValue[type]);
-    if(newf === f) return f;
+
+    if(newf === f) return [f, parentId];
     newf = moveCell(newf, id, parentId, pos);
-    return newf;
+    return [newf, id];
 }
 
 /**
@@ -233,6 +234,8 @@ function removeCell(f: Flat, id: string) : Flat{
     if(!f[id] || f[id].type === 'root') return f;
 
     let newf = copyFlat(f);
+
+    console.log(f[id].parentId);
 
     // detach
     let oldParentId = f[id].parentId;
