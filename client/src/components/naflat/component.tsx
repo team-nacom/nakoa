@@ -124,7 +124,7 @@ interface FlatComponentProps extends CellComponentProps{
     initialFocusId?: string
 }
 
-function FlatRenderer(props: FlatComponentProps){
+function FlatComponent(props: FlatComponentProps){
     let { initialFlat, initialFocusId, ...others } = props;
 
     const emptyFlat : Flat = {
@@ -151,4 +151,4 @@ function FlatRenderer(props: FlatComponentProps){
     )   
 }
 
-export { FlatRenderer };
+export { FlatComponent };

@@ -3,7 +3,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
-import { FlatRenderer } from 'components/naflat/component';
+import { FlatComponent } from 'components/naflat/component';
 
 
 function NotFound() {
@@ -24,7 +24,7 @@ function NotFound() {
                 </MarkdownRenderer>
             </div>
             {/* for testing: */}
-            <FlatRenderer editMode
+            <FlatComponent editMode
                 cellId = 'c0'
                 initialFlat = { {
                     'c0' : {
