@@ -38,8 +38,8 @@ function NotFound() {
                         id: 'c1',
                         parentId: 'c0',
                         childIds: [],
-                        value: `
-# 제목
+                        value:
+`# 제목
 
 으아아아앙
 
@@ -48,21 +48,19 @@ function NotFound() {
 $$
 x^2 + y^2 = z^2
 $$
-수식입력도 좀 해보고
-
-                        `
+수식입력도 좀 해보고`
                     },
                     'c2' : {
                         type: 'text',
                         id: 'c2',
                         parentId: 'c0',
                         childIds: ['c22','c23'],
-                        value: `
-# 이건 또 뭘까요
+                        value:
+`# 또다른 제목
 
 꺄르르르륵
 
-## 부제목
+## 또다른 부제목
 
 > 아아, 이것은 인용구라는 것이다.`
                     },
@@ -71,8 +69,8 @@ $$
                         id: 'c3',
                         parentId: 'c0',
                         childIds: [],
-                        value: `
-# 세번째 제목
+                        value:
+`# 세번째 제목
 
 그롸롸롸롸
 
@@ -80,23 +78,21 @@ $$
 스표일려
 @@@
 
-나컴-exclusive한 것도 표시는 잘 되긴 하는데.
-
-`
+나컴-exclusive한 것도 표시는 잘 되긴 하는데.`
                     },
                     'c22' : {
-                        type: 'text',
+                        type: 'code',
                         id: 'c22',
                         parentId: 'c2',
                         childIds: [],
-                        value: `갸오오오오`
+                        value: `console.log('Hello, World!')`
                     },
                     'c23' : {
-                        type: 'text',
+                        type: 'math',
                         id: 'c23',
                         parentId: 'c2',
                         childIds: [],
-                        value: `그오오오오`
+                        value: `p_\\mu p^\\mu = -m^2 \\quad (-+++)`
                     }
                 } }
             />

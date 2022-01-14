@@ -107,7 +107,7 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break;
     }
     
-    // console.log( Object.keys(flat), focusId );
+    // console.log( JSON.stringify(flat) );
 
     return { flat, focusId, history };
 }
