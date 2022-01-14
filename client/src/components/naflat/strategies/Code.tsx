@@ -43,7 +43,7 @@ function PreviewCodeCell(props: CellFragmentProps){
 }
 
 
-function EditCodeCell(props: CellFragmentProps){
+function EditorCodeCell(props: CellFragmentProps){
     let cell = props.getState().flat[props.cellId];
     let contents = cell.value;
 
@@ -64,7 +64,7 @@ function EditCodeCell(props: CellFragmentProps){
 const CodeCellStrategy : CellRenderStrategy = {
     'display': DisplayCodeCell,
     'preview': PreviewCodeCell,
-    'edit' : EditCodeCell
+    'editor' : EditorCodeCell
 }
 
 export default CodeCellStrategy;

@@ -23,7 +23,7 @@ function PreviewRootCell(props: CellFragmentProps){
 }
 
 
-function EditRootCell(props: CellFragmentProps){
+function EditorRootCell(props: CellFragmentProps){
     let cell = props.getState().flat[props.cellId];
     let title = cell.value;
 
@@ -40,7 +40,7 @@ function EditRootCell(props: CellFragmentProps){
 const RootCellStrategy : CellRenderStrategy = {
     'display': DisplayRootCell,
     'preview': PreviewRootCell,
-    'edit' : EditRootCell
+    'editor' : EditorRootCell
 }
 
 export default RootCellStrategy;

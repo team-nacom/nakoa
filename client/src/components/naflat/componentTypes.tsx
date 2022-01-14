@@ -21,7 +21,7 @@ type CellFragment = (props: CellFragmentProps) => JSX.Element
 type CellRenderStrategy = {
     'display' : CellFragment;
     'preview' : CellFragment;
-    'edit' : CellFragment;
+    'editor' : CellFragment;
 }
 
 // the cell fragment type should match to the cell type,

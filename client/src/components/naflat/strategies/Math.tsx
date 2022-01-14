@@ -47,7 +47,7 @@ function PreviewMathCell(props: CellFragmentProps){
 }
 
 
-function EditMathCell(props: CellFragmentProps){
+function EditorMathCell(props: CellFragmentProps){
     let cell = props.getState().flat[props.cellId];
     let contents = cell.value;
 
@@ -68,7 +68,7 @@ function EditMathCell(props: CellFragmentProps){
 const MathCellStrategy : CellRenderStrategy = {
     'display': DisplayMathCell,
     'preview': PreviewMathCell,
-    'edit' : EditMathCell
+    'editor' : EditorMathCell
 }
 
 export default MathCellStrategy;

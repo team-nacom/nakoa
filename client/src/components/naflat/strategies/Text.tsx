@@ -44,7 +44,7 @@ function PreviewTextCell(props: CellFragmentProps){
 }
 
 
-function EditTextCell(props: CellFragmentProps){
+function EditorTextCell(props: CellFragmentProps){
     let cell = props.getState().flat[props.cellId];
     let contents = cell.value;
 
@@ -65,7 +65,7 @@ function EditTextCell(props: CellFragmentProps){
 const TextCellStrategy : CellRenderStrategy = {
     'display': DisplayTextCell,
     'preview': PreviewTextCell,
-    'edit' : EditTextCell
+    'editor' : EditorTextCell
 }
 
 export default TextCellStrategy;

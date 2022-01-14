@@ -33,7 +33,7 @@ function CellRenderer(props: CellComponentProps){
     const cell = state.flat[props.cellId];
     const mode = props.editMode ? (
             state.focusId === props.cellId ?
-                'edit' : 'preview'
+                'editor' : 'preview'
         ) : 'display';
 
     try{
@@ -61,7 +61,7 @@ function CellRenderer(props: CellComponentProps){
                     />
                 </>
             }
-            { mode === 'edit' &&
+            { mode === 'editor' &&
                 <div className='editorCellContainer'>
                     
                     { /* side cell */ }
