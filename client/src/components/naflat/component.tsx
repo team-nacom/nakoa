@@ -41,19 +41,19 @@ function CellRenderer(props: CellComponentProps){
         const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
 
         return <>
-            {
-                mode === 'display' &&
+            { mode === 'display' &&
                 <Strategy {...props}
                     getState = { () => state }
                     dispatch = { dispatch }
                 />
             }
-            {
-                mode === 'preview' &&
+            { mode === 'preview' &&
                 <>
                     { /* side cell */ }
                     <button onClick = { () => dispatch({ type: 'focus', id: props.cellId }) }> Edit </button>
-                    <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
+                    { cell.type !== 'root' &&
+                        <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
+                    }
 
                     <Strategy {...props}
                         getState = { () => state }
@@ -61,16 +61,19 @@ function CellRenderer(props: CellComponentProps){
                     />
                 </>
             }
-            {
-                mode === 'edit' &&
+            { mode === 'edit' &&
                 <div className='editorCellContainer'>
                     
                     { /* side cell */ }
                     <button onClick = { () => dispatch({ type: 'blur' }) }> Close </button>
-                    <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
-                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId }) }> As Text</button>
-                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId }) }> As Math</button>
-                    <button onClick = { () => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId }) }> As Code</button>
+                    { cell.type !== 'root' &&
+                        <>
+                            <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
+                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId }) }> As Text</button>
+                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId }) }> As Math</button>
+                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId }) }> As Code</button>
+                        </>
+                    }
 
                     <Strategy {...props}
                         style={ { width: '50%' } }
@@ -86,7 +89,7 @@ function CellRenderer(props: CellComponentProps){
             }
             
             { /* render children. */ }
-            { cell.childIds.length !== 0 &&
+            { (cell.type === 'root' || cell.childIds.length !== 0) &&
                 <div style={{ border: '1px solid gray', padding: '0 60px' }}>
                     {
                         cell.childIds.reduce((prev,childId,idx) => prev.concat(

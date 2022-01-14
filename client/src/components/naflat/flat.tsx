@@ -164,7 +164,7 @@ function changeCellType(f: Flat, id: string, type: CellType): Flat{
  * @returns new flat. cell id is detatched from any other cells.
  */
 function createCell(f: Flat, id: string, type: CellType, value: unknown): Flat{
-    if(f[id]) return f;
+    if(f[id] || type === 'root') return f;
     
     let newf = copyFlat(f);
     newf[id] = { id, type, value, childIds: [] };
