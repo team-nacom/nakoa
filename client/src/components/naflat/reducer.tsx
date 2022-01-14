@@ -14,55 +14,15 @@ interface FlatState{
     history : Flat[];
 }
 
-interface UpdateCellAction {
-    type : 'update';
-    id : string;
-    value : unknown;
-}
-
-interface ChangeCellTypeAction {
-    type : 'changeType';
-    id : string;
-    cellType : CellType;
-}
-
-interface MoveCellAction{
-    type : 'move';
-    id : string;
-    parentId : string;
-    pos? : number;
-}
-
-interface CreateEmptyCellAction {
-    type : 'createEmpty';
-    parentId : string;
-    cellType : CellType;
-    pos? : number;
-}
-
-interface RemoveCellAction{
-    type : 'remove';
-    id : string;
-}
-
-interface FocusAction{
-    type : 'focus';
-    id : string;
-}
-
-interface BlurAction{
-    type : 'blur';
-}
-
 type FlatStateAction
-    = UpdateCellAction
-    | ChangeCellTypeAction
-    | MoveCellAction
-    | CreateEmptyCellAction
-    | RemoveCellAction
+    = { type: 'update'; id: string; value: unknown; }
+    | { type: 'changeType'; id: string; cellType: CellType; }
+    | { type: 'move'; id: string; parentId: string; pos?: number; }
+    | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
+    | { type: 'remove'; id: string; }
 
-    | FocusAction
-    | BlurAction
+    | { type: 'focus'; id: string; }
+    | { type : 'blur'; }
 ;
 
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
