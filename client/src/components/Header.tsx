@@ -67,7 +67,7 @@ function Header() {
                         </Link>
                     </div>
                     <span className={'navitem menu' + (pathname.startsWith('/list') ? ' active' : '')}>
-                        <Link to='/search'>
+                        <Link to='/list'>
                             <div> { "글 검색" } </div>
                         </Link>
                     </span>
