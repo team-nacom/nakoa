@@ -7,7 +7,8 @@ import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 const apiAddress = config.apiAddress;
 
 export interface BubbleType {
-    name: string,
+    title: string,
+    author: string,
     index: number;
     content: string;
     createDate: number;
@@ -15,7 +16,7 @@ export interface BubbleType {
 }
 
 export interface BubblePost {
-    name: string,
+    title: string,
     author: string,
     content: string,
     tags: string[],

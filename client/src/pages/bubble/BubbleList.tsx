@@ -17,7 +17,7 @@ function BubbleList() {
     let params = useParams<Params>();
     let author = React.useMemo(() => params.author, [params]);
     let getBubbles = author ? (() => getBubblesByAuthor(author)) : getAllBubbles;
-    let [bubblesLoading, bubbles] = usePromise(getAllBubbles);
+    let [bubblesLoading, bubbles] = usePromise(getBubbles);
 
     if (bubblesLoading) return <Loading/>;
     else return (
@@ -38,12 +38,13 @@ function BubbleList() {
                     모든 버블 보기
                 </PageTitle>
                 <div className='bubbleFeedList'>
-                    {bubbles?.map((bubble) => <div key={bubble.name} className='bubbleFeed'>
+                    {bubbles?.map((bubble) => <div key={bubble.title} className='bubbleFeed'>
                         <Link to={`/view/${bubble.index}`}>
                             <div className='bubbleFeedContent'>
-                                <div className='title'> { bubble.name } </div>
+                                <div className='title'> { bubble.title ? bubble.title : "untitled" } </div>
+                                <div className='author'> by { bubble.author ?? "anonymous" } </div>
                                 <div className='tags'> { bubble.tags && bubble.tags.map((s) => `#${s} `) } </div> 
-                                <div className='content'> { bubble.content.substring(0, 100) } </div>
+                                {/* <div className='content'> { bubble.content.substring(0, 100) } </div> */}
                             </div>
                         </Link>
                     </div>)}
