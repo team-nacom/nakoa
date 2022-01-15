@@ -37,7 +37,7 @@ function App() {
       <Router history={history}>
         <Switch>
           <Redirect exact path='/' to='/write' />
-          <Route exact path='/list' component={BubbleList} />
+          <Route exact path='/list/:author?' component={BubbleList} />
           <Route exact path='/write' component={BubbleWrite} />
           <Route exact path='/view/:index' component={BubblePage} />
           <Route exact path='/about' component={About} />

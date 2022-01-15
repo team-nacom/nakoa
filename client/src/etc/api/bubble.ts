@@ -21,8 +21,16 @@ export interface BubblePost {
     tags: string[],
 }
 
-export const getBubbles = async () => {
+export const getAllBubbles = async () => {
     let response = await Axios.get(`${apiAddress}/bubble/debug`, {
+        validateStatus: authValidateStatus, 
+    });
+
+    return response.data as BubbleType[];
+}
+
+export const getBubblesByAuthor = async (author: string) => {
+    let response = await Axios.get(`${apiAddress}/bubble/author/${author}`, {
         validateStatus: authValidateStatus, 
     });
 

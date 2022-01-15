@@ -3,14 +3,21 @@ import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import { BubbleType } from "components/nabubble/types";
 import PageTitle from "components/PageTitle";
-import { getBubbles } from "etc/api/bubble";
+import { getAllBubbles, getBubblesByAuthor } from "etc/api/bubble";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link, useParams } from "react-router-dom";
 
+interface Params {
+    author: string;
+};
 
 function BubbleList() {
-    let [bubblesLoading, bubbles] = usePromise(getBubbles);
+    let params = useParams<Params>();
+    let author = React.useMemo(() => params.author, [params]);
+    let getBubbles = author ? (() => getBubblesByAuthor(author)) : getAllBubbles;
+    let [bubblesLoading, bubbles] = usePromise(getAllBubbles);
 
     if (bubblesLoading) return <Loading/>;
     else return (
