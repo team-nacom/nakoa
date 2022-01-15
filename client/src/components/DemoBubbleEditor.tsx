@@ -11,30 +11,7 @@ import { useTextEditorState } from 'components/editor/globals'; //states defined
 import BubbleEditor from './editor/BubbleEditor';
 import { useNaBubbleState, dispatchNaBubbleState as dispatch } from './editor/globals';
 import { inflate, Bubble } from './nabubble/bubble';
-
-
-interface AuthorInputProps {
-    author: string;
-    setAuthor: (author: string) => void;
-}
-
-function AuthorInput({ author, setAuthor } : AuthorInputProps) {
-    let intl = useIntl();
-
-    return (
-        <div className='writeForm'>
-            <label>
-                { intl.formatMessage({ id: 'editor.author' }) }
-            </label>
-            <div>
-                <input 
-                    value={ author }
-                    onChange={(e) => setAuthor(e.target.value)}
-                />
-            </div>
-        </div>
-    )
-}
+import AuthorInput from './AuthorInput';
 
 interface Props {
     initialBubble?: Partial<BubblePost>,

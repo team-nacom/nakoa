@@ -16,8 +16,7 @@ interface Params {
 function BubbleList() {
     let params = useParams<Params>();
     let author = React.useMemo(() => params.author, [params]);
-    let getBubbles = author ? (() => getBubblesByAuthor(author)) : getAllBubbles;
-    let [bubblesLoading, bubbles] = usePromise(getBubbles);
+    let [bubblesLoading, bubbles] = usePromise(() => getBubblesByAuthor(author));
 
     if (bubblesLoading) return <Loading/>;
     else return (
