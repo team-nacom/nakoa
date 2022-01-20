@@ -10,6 +10,8 @@ type CellType = 'root' // only one root per flat should be allowed.
     | 'math'
     | 'code'
 
+const defaultCellType : CellType = 'text';
+
 type CellTypeMap<T> = {
     [cellType in CellType]: T;
 };
@@ -256,5 +258,6 @@ function removeCell(f: Flat, id: string) : Flat{
 
 
 export type { CellType, CellTypeMap, Cell, Flat };
+export { defaultCellType };
 export { copyFlat };
 export { findSiblingId, changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };

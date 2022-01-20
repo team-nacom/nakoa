@@ -4,7 +4,7 @@
 import React from 'react';
 import { createContext, useContext } from 'react';
 
-import { CellType, Cell, CellTypeMap, Flat } from './flat';
+import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
@@ -45,6 +45,14 @@ function CellRenderer(props: CellComponentProps) {
 
                     <div className='cellWrapper' onClick={() => dispatch({ type: 'focus', id: props.cellId })}>
                         <div className='bubbleOptions'>
+                            {cell.childIds.length === 0 &&
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
+                                >
+                                    add
+                                </button>
+                            }
                             {cell.type !== 'root' &&
                                 <button
                                     className='material-icons bubbleOptionButton'

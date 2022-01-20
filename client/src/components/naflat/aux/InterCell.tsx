@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flat, CellType } from '../flat';
+import { Flat, CellType, defaultCellType } from '../flat';
 import {  FlatContext } from '../componentTypes';
 
 interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
@@ -11,12 +11,12 @@ function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
     const { state, dispatch } = React.useContext(FlatContext);
 
     const addCellHandler = (e: any) => {
-        let newType : CellType = 'text';
-        dispatch({ type: 'createEmpty', parentId, pos, cellType: newType});
+        dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType});
     }
 
     return (
-        <button className='addCellButton material-icons' onClick = { addCellHandler }>
+        <button className='addCellButton material-icons'
+            onClick = {() => { dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType})}}>
             add
         </button>
     )
