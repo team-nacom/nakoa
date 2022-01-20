@@ -15,76 +15,115 @@ import CodeCellStrategy from './strategies/Code';
 
 import InterCell from './aux/InterCell';
 
-const cellRenderStrategyMap : CellTypeMap<CellRenderStrategy> = {
+const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
     'text': TextCellStrategy,
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
 };
 
-function CellRenderer(props: CellComponentProps){
+function CellRenderer(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
 
     const cell = state.flat[props.cellId];
     const mode = props.editMode ? (
-            state.focusId === props.cellId ?
-                'editor' : 'preview'
-        ) : 'display';
+        state.focusId === props.cellId ?
+            'editor' : 'preview'
+    ) : 'display';
 
-    try{
+    try {
         const Strategy = cellRenderStrategyMap[cell.type][mode];
         const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
 
         return <>
-            { mode === 'display' &&
+            {mode === 'display' &&
                 <Strategy {...props} />
             }
-            { mode === 'preview' &&
+            {mode === 'preview' &&
                 <>
-                    { /* side cell */ }
-                    <button onClick = { () => dispatch({ type: 'focus', id: props.cellId }) }> Edit </button>
-                    { cell.type !== 'root' &&
-                        <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
-                    }
+                    { /* side cell */}
 
-                    <Strategy {...props} />
+                    <div className='cellWrapper' onClick={() => dispatch({ type: 'focus', id: props.cellId })}>
+                        <div className='bubbleOptions'>
+                            {cell.type !== 'root' &&
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                >
+                                    delete
+                                </button>
+                            }
+                        </div>
+                        <Strategy {...props} />
+                    </div>
                 </>
             }
-            { mode === 'editor' &&
+            {mode === 'editor' &&
                 <div className='editorCellContainer'>
-                    
-                    { /* side cell */ }
-                    <button onClick = { () => dispatch({ type: 'blur' }) }> Close </button>
-                    { cell.type !== 'root' &&
-                        <>
-                            <button onClick = { () => dispatch({ type: 'remove', id: props.cellId }) }> Delete </button>
-                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId }) }> As Text</button>
-                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId }) }> As Math</button>
-                            <button onClick = { () => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId }) }> As Code</button>
-                        </>
-                    }
 
-                    <Strategy {...props} />
-                    <PreviewStrategy {...props}
-                        style={ {width: '50%' } }
-                    />
+                    <div className='cellWrapper' style={{ display: 'flex' }} >
+                        { /* side cell */}
+                        <div className='bubbleOptions'>
+                            {cell.type !== 'root' &&
+                                <>
+                                    <button
+                                        className='material-icons bubbleOptionButton'
+                                        onClick={() => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId })}
+                                    >
+                                        article
+                                    </button>
+                                    <button
+                                        className='material-icons bubbleOptionButton'
+                                        onClick={() => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId })}
+                                    >
+                                        calculate
+                                    </button>
+                                    <button
+                                        className='material-icons bubbleOptionButton'
+                                        onClick={() => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId })}
+                                    >
+                                        code
+                                    </button>
+                                    <button
+                                        className='material-icons bubbleOptionButton'
+                                        onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                    >
+                                        delete
+                                    </button>
+                                </>
+                            }
+                            <button
+                                className='material-icons bubbleOptionButton'
+                                onClick={() => dispatch({ type: 'blur' })}
+                            >
+                                close
+                            </button>
+                        </div>
+
+                        <span style={{ flex: '50% 0 0' }}>
+                            <Strategy {...props} />
+                        </span>
+                        <span style={{ flex: '50% 0 0' }}>
+                            <PreviewStrategy {...props} />
+                        </span>
+                    </div>
                 </div>
             }
-            
-            { /* render children. */ }
-            { (cell.type === 'root' || cell.childIds.length !== 0) &&
+
+            { /* render children. */}
+            {(cell.type === 'root' || cell.childIds.length !== 0) &&
                 <div style={{ border: '1px solid gray', padding: '0 60px' }}>
                     {
-                        cell.childIds.reduce((prev,childId,idx) => prev.concat(
-                            <CellRenderer {...props} cellId = { childId } />,
+                        cell.childIds.reduce((prev, childId, idx) => prev.concat(
+                            <CellRenderer {...props} cellId={childId} />,
                             <InterCell
-                                parentId = { props.cellId }
-                                pos = { idx + 1 }
+                                parentId={props.cellId}
+                                pos={idx + 1}
                             />
                         ), [
                             <InterCell
-                                parentId = { props.cellId }
-                                pos = { 0 }
+                                parentId={props.cellId}
+                                pos={0}
                             />
                         ])
                     }
@@ -92,24 +131,24 @@ function CellRenderer(props: CellComponentProps){
             }
         </>;
     }
-    catch(err){ //removed.
-        console.log('already removed:'+ props.cellId);
+    catch (err) { //removed.
+        console.log('already removed:' + props.cellId);
 
         return <></>;
     }
 }
 
 
-interface FlatComponentProps extends CellComponentProps{
+interface FlatComponentProps extends CellComponentProps {
     initialFlat?: Flat
     initialFocusId?: string
 }
 
-function FlatComponent(props: FlatComponentProps){
+function FlatComponent(props: FlatComponentProps) {
     let { initialFlat, initialFocusId, ...others } = props;
 
-    const emptyFlat : Flat = {
-        'c0' : {
+    const emptyFlat: Flat = {
+        'c0': {
             type: 'root',
             id: 'c0',
             childIds: [],
@@ -117,13 +156,13 @@ function FlatComponent(props: FlatComponentProps){
         }
     };
 
-    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId) );
+    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
     return (
-        <FlatContext.Provider value={ {state, dispatch} } >
+        <FlatContext.Provider value={{ state, dispatch }} >
             <CellRenderer {...others} />
         </FlatContext.Provider>
-    )   
+    )
 }
 
 export { FlatContext, FlatComponent };

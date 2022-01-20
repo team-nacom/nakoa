@@ -3,50 +3,65 @@ import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componen
 
 import { handleChangeFactory } from './helpers/handlers';
 
-function DisplayRootCell(props: CellComponentProps){
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+const MemoizedRenderer = React.memo(MarkdownRenderer);
+
+function DisplayRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let contents = cell.value;
+    let contents = '# ' + cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
-    return <h1>{ contents }</h1>;
+    return (
+        <h1>
+            <MemoizedRenderer>
+                {contents}
+            </MemoizedRenderer>
+        </h1>
+    );
 }
 
 
-function PreviewRootCell(props: CellComponentProps){
+function PreviewRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let contents = cell.value;
+    let contents = '# ' + cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
-    return <h1>{ contents }</h1>;
+    return (
+        <h1>
+            <MemoizedRenderer>
+                {contents}
+            </MemoizedRenderer>
+        </h1>
+    );
 }
 
 
-function EditorRootCell(props: CellComponentProps){
+function EditorRootCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let title = cell.value;
+    let title = '# ' + cell.value;
 
-    if(typeof title !== 'string') return <></>;
+    if (typeof title !== 'string') return <></>;
 
     return <input
         className='title'
-        value={ title }
-        onChange={ handleChangeFactory(props.cellId, dispatch) }
+        value={title}
+        onChange={handleChangeFactory(props.cellId, dispatch)}
     />
 }
 
 
-const RootCellStrategy : CellRenderStrategy = {
+const RootCellStrategy: CellRenderStrategy = {
     'display': DisplayRootCell,
     'preview': PreviewRootCell,
-    'editor' : EditorRootCell
+    'editor': EditorRootCell
 }
 
 export default RootCellStrategy;
