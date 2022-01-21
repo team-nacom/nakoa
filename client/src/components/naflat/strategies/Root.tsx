@@ -12,8 +12,6 @@ function DisplayRootCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId];
     let contents = '# ' + cell.value;
 
-    if (typeof contents !== 'string') return <></>;
-
     return (
         <h1>
             <MemoizedRenderer>
@@ -30,8 +28,6 @@ function PreviewRootCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId];
     let contents = '# ' + cell.value;
 
-    if (typeof contents !== 'string') return <></>;
-
     return (
         <h1>
             <MemoizedRenderer>
@@ -46,15 +42,15 @@ function EditorRootCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let title = '# ' + cell.value;
+    let title = '' + cell.value;
 
-    if (typeof title !== 'string') return <></>;
-
-    return <input
-        className='title'
-        value={title}
-        onChange={handleChangeFactory(props.cellId, dispatch)}
-    />
+    return <div className='editorRootCell'>
+        <input
+            className='title'
+            value={title}
+            onChange={handleChangeFactory(props.cellId, dispatch)}
+        />
+    </div>
 }
 
 
