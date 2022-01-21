@@ -13,7 +13,7 @@ function DisplayRootCell(props: CellComponentProps) {
     let contents = '# ' + cell.value;
 
     return (
-        <h1>
+        <h1 className='rootCell'>
             <MemoizedRenderer>
                 {contents}
             </MemoizedRenderer>
@@ -29,7 +29,7 @@ function PreviewRootCell(props: CellComponentProps) {
     let contents = '# ' + cell.value;
 
     return (
-        <h1>
+        <h1 className='rootCell'>
             <MemoizedRenderer>
                 {contents}
             </MemoizedRenderer>
