@@ -9,10 +9,11 @@ const apiAddress = config.apiAddress;
 export interface BubbleType {
     title: string,
     author: string,
-    index: number;
+    index: string;
     content: string;
     createDate: number;
     tags: string[],
+    hidden: boolean,
 }
 
 export interface BubblePost {
@@ -71,7 +72,19 @@ export const postBubble = async (data: BubblePost) => {
 }
 
 export const removeBubble = async (index: string) => {
-    let response = await Axios.delete(`${apiAddress}/bubble/delete${index}`)
+    let response = await Axios.delete(`${apiAddress}/bubble/delete/${index}`)
+
+    return response.status < 300;
+}
+
+export const hideBubble = async (index: string) => {
+    let response = await Axios.put(`${apiAddress}/bubble/hide/${index}`)
+
+    return response.status < 300;
+}
+
+export const unhideBubble = async (index: string) => {
+    let response = await Axios.put(`${apiAddress}/bubble/unhide/${index}`)
 
     return response.status < 300;
 }

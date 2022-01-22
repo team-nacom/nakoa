@@ -19,7 +19,7 @@ router.post('/', async (ctx) => {
 
 router.get('/author/:author', async (ctx) => {
   const author: string = ctx.params.author;
-  const query = Bubble.find({author})
+  const query = Bubble.find({author, hidden: false})
     .sort({ createDate: -1 })
     .select('index title author tags createDate');
   const docs = await query.exec();
@@ -37,6 +37,20 @@ router.get('/debug', async (ctx) => {
   const query = Bubble.find({});
   const docs = await query.exec();
   ctx.body = docs;
+})
+
+router.put('/hide/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.updateOne({index}, {$set: {'hidden': true}});
+  const doc = await query.exec();
+  ctx.body = 'Success';
+})
+
+router.put('/unhide/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.updateOne({index}, {$set: {'hidden': false}});
+  const doc = await query.exec();
+  ctx.body = 'Success';
 })
 
 router.delete('/delete/:index', async (ctx) => {

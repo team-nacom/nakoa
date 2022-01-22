@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getBubble, removeBubble } from 'etc/api/bubble';
+import { getBubble, hideBubble, unhideBubble, BubbleType } from 'etc/api/bubble';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
@@ -20,43 +20,39 @@ interface Params {
 function BubblePage() {
     let params = useParams<Params>();
     let index = React.useMemo(() => params.index, [params]);
+    let [bubblePost, setbubblePost] = React.useState<BubbleType>();
+    let [bubbleLoading, _] = usePromise(() => getBubble(index).then(bubble => setbubblePost(bubble)), [index]);
     
     let [redirectToList, setRedirectToList] = React.useState(false);
-    let [bubbleLoading, bubblePost] = usePromise(() => getBubble(index), [index]);
 
-    let isEditable = false;
+    let [toggleBubble, icon, confirmMesg] = bubblePost?.hidden ? 
+        [unhideBubble, 'visibility', '정말 이 글을 공개하시겠습니까?'] :
+        [hideBubble, 'visibility_off', '정말 이 글을 숨기시겠습니까?'];
 
     if (redirectToList) return <Redirect to='/list' />;
     if (bubbleLoading) return <Loading/>;
     return (
         <>
             <Header />
-
-            <BubbleSidebar on='post'>
-                {/* { isEditable && 
+            { bubblePost && (
+                <BubbleSidebar on='post'>
                     <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
-                        if (window.confirm('정말 삭제하시겠습니까?') && await removeBubble(index)) {
-                            setRedirectToList(true);
+                        if (window.confirm(confirmMesg)) {
+                            await toggleBubble(index);
+                            setbubblePost(await getBubble(index));
                         }
-                    }}>
-                        delete
-                    </Button> 
-                }
+                    }}> {icon} </Button>
+                {/* <span>
+                    <Link to={`/bubble/${index}/edit`}>
+                        <button className='material-icons'>
+                            edit
+                        </button> 
+                    </Link>
+                </span> */}
 
-                TODO add hide
-
-                { isEditable && 
-                    <span>
-                        <Link to={`/bubble/${index}/edit`}>
-                            <button className='material-icons'>
-                                edit
-                            </button> 
-                        </Link>
-                    </span>
-                } */}
-
-            </BubbleSidebar>
+                </BubbleSidebar>
+            )}
 
             <div id='content'>
                 { bubblePost ? (

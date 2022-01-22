@@ -7,6 +7,7 @@ export interface BubbleDocument extends Document {
   author: string,
   content: string,
   tags: string[],
+  hidden: boolean,
   createDate: number
 }
 
@@ -18,6 +19,7 @@ const bubbleSchema = new Schema<BubbleDocument>({
   author: String,
   content: String,
   tags: [String],
+  hidden: { type: Boolean, default: false },
   createDate: { type: Number, default: Date.now },
 });
 
