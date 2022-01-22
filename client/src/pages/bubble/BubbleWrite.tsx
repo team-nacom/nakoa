@@ -3,22 +3,36 @@ import Header from 'components/Header';
 
 import { BubblePost, postBubble } from 'etc/api/bubble';
 import React, {useCallback, useEffect, useRef} from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import queryString from 'query-string';
 import DemoBubbleEditor from 'components/DemoBubbleEditor';
 
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble'
+import { Bubble } from 'components/nabubble/bubble';
+
+interface State {
+    copySourceBubble?: Partial<BubblePost>
+}
 
 function BubbleWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
+
+    let location = useLocation<State>();
+    let sourceBubble = location.state?.copySourceBubble;
+    let sourceContent: Bubble | string | undefined = sourceBubble?.content;
+
+    for (let _=0; _<3; _++){
+        if (typeof sourceContent !== 'string') break;
+        sourceContent = JSON.parse(sourceContent);
+    }
 
     // initialize
     useEffect(()=>{
         dispatch({
             type: 'init',
-            bubble: {
+            bubble: (sourceContent as Bubble) || {
                 type: 'parent',
                 children : [ {type: 'text', value: ''} ]
             }
@@ -40,7 +54,7 @@ function BubbleWrite() {
         <>
             <Header/>
             <div id='content'>
-                <DemoBubbleEditor upload={upload}/>
+                <DemoBubbleEditor initialBubble={sourceBubble} upload={upload}/>
             </div>
             <Footer/>
         </>

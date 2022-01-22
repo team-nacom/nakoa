@@ -44,19 +44,6 @@ export const getBubble = async (index: string) => {
         validateStatus: authValidateStatus, 
     });
 
-    let content = response.data.content;
-    while(typeof content === 'string'){
-        content = JSON.parse(content);
-    }
-
-    dispatch({
-        type: 'init',
-        bubble: content || {
-            type: 'parent',
-            children : [ {type: 'text', value: ''} ]
-        }
-    })
-
     return response.data as BubbleType;
 }
 
