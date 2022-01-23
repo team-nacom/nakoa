@@ -121,7 +121,7 @@ function CellRenderer(props: CellComponentProps) {
             { /* render children. */}
             {(cell.type === 'root' || cell.childIds.length !== 0) &&
                 <div style={{ border: '1px solid gray', padding: '0 60px' }}>
-                    {
+                    {mode === 'editor' &&
                         cell.childIds.reduce((prev, childId, idx) => prev.concat(
                             <CellRenderer {...props} cellId={childId} />,
                             <InterCell
@@ -134,6 +134,11 @@ function CellRenderer(props: CellComponentProps) {
                                 pos={0}
                             />
                         ])
+                    }
+                    {mode === 'display' &&
+                        cell.childIds.map((childId) => 
+                            <CellRenderer {...props} cellId={childId} />
+                        )
                     }
                 </div>
             }

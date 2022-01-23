@@ -24,7 +24,7 @@ function NotFound() {
                 </MarkdownRenderer>
             </div>
             {/* for testing: */}
-            <FlatComponent editMode
+            <FlatComponent //editMode
                 cellId = 'c0'
                 initialFlat = { {
                     'c0' : {
