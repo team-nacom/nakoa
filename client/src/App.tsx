@@ -4,6 +4,7 @@ import Main from 'pages/Main';
 import usePromise from 'etc/usePromise';
 import About from 'pages/About';
 import NotFound from 'pages/NotFound';
+import Hidden from 'pages/Hidden'; //Testing page
 import BubbleList from 'pages/bubble/BubbleList';
 import BubblePage from 'pages/bubble/BubblePage';
 
@@ -37,6 +38,7 @@ function App() {
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>
+          <Route exact path='/hidden' component={Hidden} />
           <Route exact path='/about' component={About} />
           <Route exact path='/bubble' component={BubbleList} />
           <Route exact path='/bubble/write' component={BubbleWrite} />

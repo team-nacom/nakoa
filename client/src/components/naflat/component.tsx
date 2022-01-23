@@ -145,8 +145,6 @@ function CellRenderer(props: CellComponentProps) {
         </>;
     }
     catch (err) { //removed.
-        console.log('already removed:' + props.cellId);
-
         return <></>;
     }
 }
@@ -171,9 +169,16 @@ function FlatComponent(props: FlatComponentProps) {
 
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
-    return (
+    function LogFlat(){
+        console.log(state.flat);
+    }
+
+    return ( //implement display / editor here
         <FlatContext.Provider value={{ state, dispatch }} >
             <CellRenderer {...others} />
+            {props.editMode &&
+                <button onClick = { LogFlat }>console.log 남기기</button>
+            }
         </FlatContext.Provider>
     )
 }
