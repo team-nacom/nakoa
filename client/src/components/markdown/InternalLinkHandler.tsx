@@ -13,7 +13,7 @@ const InternalLinkHandler : Plugin = () => {
             if(typeof node.url === 'string' && node.url.startsWith('guide:')){
                 var idStr = node.url.slice('guide:'.length)
 
-                console.log(idStr);
+                // console.log(idStr);
 
                 var id = Number(idStr)
 
