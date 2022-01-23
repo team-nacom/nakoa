@@ -1,9 +1,8 @@
 import Footer from "components/Footer";
 import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
-import { BubbleType } from "components/nabubble/types";
 import PageTitle from "components/PageTitle";
-import { getAllBubbles, getBubblesByAuthor } from "etc/api/bubble";
+import { getAllBubbles, getBubblesByAuthor, BubbleType } from "etc/api/bubble";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
@@ -17,18 +16,15 @@ interface Params {
 
 function BubbleList() {
     let params = useParams<Params>();
-    // let author = React.useMemo(() => params.author, [params]);
-
     let storedAuthor = localStorage.getItem('author');
     let [author, setAuthor] = React.useState<string>(storedAuthor ?? '');
     React.useEffect(() => {
         localStorage.setItem("author", author);
     }, [author]);
 
-    let [bubblesLoading, bubbles] = usePromise(() => getBubblesByAuthor(author));
-    const fetchBubble = async () => {
-        bubbles = await getBubblesByAuthor(author);
-    }
+    let [bubbles, setBubbles] = React.useState<BubbleType[]>([]);
+    let [bubblesLoading, _] = usePromise(() => 
+        getBubblesByAuthor(author).then(bubblesFetch => setBubbles(bubblesFetch)));
 
     return (
         <>
@@ -49,23 +45,26 @@ function BubbleList() {
                 </PageTitle>
                 
                 <div className='writeBox guide'>
-                    <form onSubmit={fetchBubble}>
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        setBubbles(await getBubblesByAuthor(author));
+                    }} id='authorForm'>
                         <div className='flexbox'>
                             <AuthorInput author={author} setAuthor={setAuthor} />
                             <input type="submit" style={{display: 'none'}} />
                         </div>
 
                         <div className='editorBottom'>
-                            <Button className='submit link' onClick={async () => fetchBubble()}>
+                            <Button className='submit link' onClick={async (e) => {
+                                setBubbles(await getBubblesByAuthor(author));
+                            }}>
                                 검색
                             </Button>
                         </div>
                     </form>
                 </div>
-                
-                { bubblesLoading && "불러오는 중..." }
 
-                { bubbles && bubbles.length > 0 && 
+                { !bubblesLoading && bubbles && bubbles.length > 0 && 
                     <div className='bubbleFeedList'>
                         {bubbles?.map((bubble) => <div key={bubble.title} className='bubbleFeed'>
                             <Link to={`/view/${bubble.index}`}>
