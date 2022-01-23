@@ -28,6 +28,11 @@ function BubbleWrite() {
         sourceContent = JSON.parse(sourceContent);
     }
 
+    let storedAuthor = localStorage.getItem('author');
+    if (!sourceBubble && storedAuthor) {
+        sourceBubble = {author: storedAuthor};
+    }
+
     // initialize
     useEffect(()=>{
         dispatch({
