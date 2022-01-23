@@ -237,7 +237,7 @@ function removeCell(f: Flat, id: string) : Flat{
 
     let newf = copyFlat(f);
 
-    console.log(f[id].parentId);
+    // console.log(f[id].parentId);
 
     // detach
     let oldParentId = f[id].parentId;
