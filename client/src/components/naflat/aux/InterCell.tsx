@@ -16,7 +16,7 @@ function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
 
     return (
         <button className='addCellButton material-icons'
-            onClick = {() => { dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType})}}>
+            onClick = {(ev) => { ev.stopPropagation(); dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType})}}>
             add
         </button>
     )

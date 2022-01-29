@@ -43,7 +43,9 @@ function CellRenderer(props: CellComponentProps) {
                 <>
                     { /* side cell */}
 
-                    <div className='cellWrapper' onClick={() => dispatch({ type: 'focus', id: props.cellId })}>
+                    <div className='cellWrapper'
+                        onClick={(ev) => {ev.stopPropagation();dispatch({ type: 'focus', id: props.cellId })} }
+                    >
                         <div className='bubbleOptions'>
                             {cell.childIds.length === 0 &&
                                 <button
@@ -69,7 +71,9 @@ function CellRenderer(props: CellComponentProps) {
             {mode === 'editor' &&
                 <div className='editorCellContainer'>
 
-                    <div className='cellWrapper' style={{ display: 'flex' }} >
+                    <div className='cellWrapper' style={ {display: 'flex'} }
+                        onClick={(ev) => {ev.stopPropagation()} }
+                    >
                         { /* side cell */}
                         <div className='bubbleOptions'>
                             {cell.type !== 'root' &&
@@ -92,12 +96,6 @@ function CellRenderer(props: CellComponentProps) {
                                     >
                                         code
                                     </button>
-                                    <button
-                                        className='material-icons bubbleOptionButton'
-                                        onClick={() => dispatch({ type: 'remove', id: props.cellId })}
-                                    >
-                                        delete
-                                    </button>
                                 </>
                             }
                             <button
@@ -106,6 +104,14 @@ function CellRenderer(props: CellComponentProps) {
                             >
                                 close
                             </button>
+                            {cell.type !== 'root' &&
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                >
+                                    delete
+                                </button>
+                            }
                         </div>
 
                         <span style={{ flex: '50% 0 0' }}>
@@ -120,7 +126,10 @@ function CellRenderer(props: CellComponentProps) {
 
             { /* render children. */}
             {(cell.type === 'root' || cell.childIds.length !== 0) &&
-                <div style={{ border: '1px solid gray', padding: '0 60px' }}>
+                <div style={{ border: '1px solid gray', padding: '0 60px' }}
+                    onClick={() => dispatch({ type: 'blur' }) }
+                >
+
                     {props.editMode &&
                         cell.childIds.reduce((prev, childId, idx) => prev.concat(
                             <CellRenderer {...props} cellId={childId} />,
@@ -172,15 +181,11 @@ function FlatComponent(props: FlatComponentProps) {
 
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
-    function LogFlat(){
-        console.log(state.flat);
-    }
-
     return ( //implement display / editor here
         <FlatContext.Provider value={{ state, dispatch }} >
             <CellRenderer {...others} />
             {props.editMode &&
-                <button onClick = { LogFlat }>console.log 남기기</button>
+                <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
             }
         </FlatContext.Provider>
     )
