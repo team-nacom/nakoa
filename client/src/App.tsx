@@ -4,6 +4,7 @@ import Main from 'pages/Main';
 import usePromise from 'etc/usePromise';
 import About from 'pages/About';
 import NotFound from 'pages/NotFound';
+import Hidden from 'pages/Hidden'; //Testing page
 import BubbleList from 'pages/bubble/BubbleList';
 import BubblePage from 'pages/bubble/BubblePage';
 
@@ -40,6 +41,7 @@ function App() {
           <Route exact path='/list/:author?' component={BubbleList} />
           <Route exact path='/write' component={BubbleWrite} />
           <Route exact path='/view/:index' component={BubblePage} />
+          <Route exact path='/hidden' component={Hidden} />
           <Route exact path='/about' component={About} />
           <Route component={NotFound}/>
         </Switch>
