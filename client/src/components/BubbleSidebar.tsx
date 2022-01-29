@@ -1,4 +1,4 @@
-import useScroll from 'etc/useScroll';
+import useScroll from 'utils/useScroll';
 import React from 'react';
 
 interface Props {

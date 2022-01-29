@@ -3,7 +3,7 @@ import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
 import { getAllBubbles, getBubblesByAuthor, BubbleType } from "api/bubble";
-import usePromise from "etc/usePromise";
+import usePromise from "utils/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
 import { Link, useParams } from "react-router-dom";

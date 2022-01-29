@@ -1,4 +1,4 @@
-import useSmoothValue from 'etc/useSmoothValue';
+import useSmoothValue from 'utils/useSmoothValue';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';

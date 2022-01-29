@@ -5,7 +5,7 @@ import App from 'App';
 import store from 'store';
 import { Provider } from 'react-redux';
 import ReactGA from 'react-ga';
-import config from './etc/config';
+import config from './config';
 
 ReactGA.initialize(config.googleAnalyticsTrackingId);
 

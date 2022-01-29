@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import Main from 'pages/Main';
-import usePromise from 'etc/usePromise';
 import About from 'pages/About';
 import NotFound from 'pages/NotFound';
 import Hidden from 'pages/Hidden'; //Testing page

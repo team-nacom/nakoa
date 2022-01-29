@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { authValidateStatus } from './common';
-import config from '../etc/config';
+import config from '../config';
 
 const apiAddress = config.apiAddress;
 
