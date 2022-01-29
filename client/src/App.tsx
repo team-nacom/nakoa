@@ -16,7 +16,6 @@ import { RootReducer } from 'store';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
-import BubbleEdit from 'pages/bubble/BubbleEdit';
 
 const localeMessages = {
   'en': messageEn,
@@ -38,14 +37,12 @@ function App() {
     <IntlProvider locale={locale} messages={localeMessages[locale]}>
       <Router history={history}>
         <Switch>
+          <Redirect exact path='/' to='/write' />
+          <Route exact path='/list/:author?' component={BubbleList} />
+          <Route exact path='/write' component={BubbleWrite} />
+          <Route exact path='/view/:index' component={BubblePage} />
           <Route exact path='/hidden' component={Hidden} />
           <Route exact path='/about' component={About} />
-          <Route exact path='/bubble' component={BubbleList} />
-          <Route exact path='/bubble/write' component={BubbleWrite} />
-          <Route exact path='/bubble/:index' component={BubblePage} />
-          <Route exact path='/bubble/:index/edit' component={BubbleEdit} />
-          <Redirect exact path='/' to='/bubble' />
-{/*          <Route path='/' component={Main} /> */}
           <Route component={NotFound}/>
         </Switch>
       </Router>

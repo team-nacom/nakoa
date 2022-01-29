@@ -7,44 +7,42 @@ import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 const apiAddress = config.apiAddress;
 
 export interface BubbleType {
-    name: string,
-    index: number;
+    title: string,
+    author: string,
+    index: string;
     content: string;
     createDate: number;
     tags: string[],
+    hidden: boolean,
 }
 
 export interface BubblePost {
-    name: string,
+    title: string,
+    author: string,
     content: string,
     tags: string[],
 }
 
-export const getBubbles = async () => {
-    let response = await Axios.get(`${apiAddress}/bubble`, {
+export const getAllBubbles = async () => {
+    let response = await Axios.get(`${apiAddress}/bubble/debug`, {
         validateStatus: authValidateStatus, 
     });
 
     return response.data as BubbleType[];
 }
 
-export const getBubble = async (id: string) => {
-    let response = await Axios.get(`${apiAddress}/bubble/${id}`, {
+export const getBubblesByAuthor = async (author: string) => {
+    let response = await Axios.get(`${apiAddress}/bubble/author/${author}`, {
         validateStatus: authValidateStatus, 
     });
 
-    let content = response.data.content;
-    while(typeof content === 'string'){
-        content = JSON.parse(content);
-    }
+    return response.data as BubbleType[];
+}
 
-    dispatch({
-        type: 'init',
-        bubble: content || {
-            type: 'parent',
-            children : [ {type: 'text', value: ''} ]
-        }
-    })
+export const getBubble = async (index: string) => {
+    let response = await Axios.get(`${apiAddress}/bubble/view/${index}`, {
+        validateStatus: authValidateStatus, 
+    });
 
     return response.data as BubbleType;
 }
@@ -60,17 +58,20 @@ export const postBubble = async (data: BubblePost) => {
     };
 }
 
-export const editBubble = async (index: string, data: BubblePost) => {
-    let response = await Axios.put(`${apiAddress}/bubble/${index}`, data, {
-        validateStatus: authValidateStatus, 
-        withCredentials: true 
-    });
+export const removeBubble = async (index: string) => {
+    let response = await Axios.delete(`${apiAddress}/bubble/delete/${index}`)
 
     return response.status < 300;
 }
 
-export const removeBubble = async (index: string) => {
-    let response = await Axios.delete(`${apiAddress}/bubble/${index}`)
+export const hideBubble = async (index: string) => {
+    let response = await Axios.put(`${apiAddress}/bubble/hide/${index}`)
+
+    return response.status < 300;
+}
+
+export const unhideBubble = async (index: string) => {
+    let response = await Axios.put(`${apiAddress}/bubble/unhide/${index}`)
 
     return response.status < 300;
 }

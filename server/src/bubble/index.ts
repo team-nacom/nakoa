@@ -1,59 +1,64 @@
 import Router from 'koa-router';
 import Bubble from '../models/bubble';
+import { logger } from '../utils';
 
 const router = new Router();
 
 // Post a guide (manual)
 router.post('/', async (ctx) => {
   const bubbleObj = ctx.request.body;
-  const contentString = JSON.stringify(bubbleObj.content);
-
   const bubble = new Bubble({
-    name: bubbleObj.name,
-    content: contentString,
+    title: bubbleObj.title,
+    author: bubbleObj.author,
+    content: bubbleObj.content,
     tags: bubbleObj.tags,
   });
   await bubble.save();
   ctx.body = bubble;
 });
 
-router.get('/', async (ctx) => {
-  const query = Bubble.find({})
+router.get('/author/:author', async (ctx) => {
+  const author: string = ctx.params.author;
+  const query = Bubble.find({author, hidden: false})
     .sort({ createDate: -1 })
-    .select('name index content tags createDate');
+    .select('index title author tags createDate');
+  const docs = await query.exec();
+  ctx.body = docs;
+})
 
-  await query.lean()
-    .catch((err) => ctx.throw(500, err))
-    .then((docs) => { ctx.body = docs; });
-});
+router.get('/view/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.findOne({index});
+  const doc = await query.exec();
+  ctx.body = doc;
+})
 
-router.get('/:index', async (ctx) => {
-  const { index } = ctx.params;
-  ctx.body = await Bubble.findOne({ index }).exec();
-});
+router.get('/debug', async (ctx) => {
+  const query = Bubble.find({});
+  const docs = await query.exec();
+  ctx.body = docs;
+})
 
-router.delete('/:index', async (ctx) => {
-  const { index } = ctx.params;
-  ctx.body = await Bubble.findOneAndDelete({ index }).exec();
-});
+router.put('/hide/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.updateOne({index}, {$set: {'hidden': true}});
+  const doc = await query.exec();
+  ctx.body = 'Success';
+})
 
-router.put('/:index', async (ctx) => {
-  const bubbleObj = ctx.request.body;
-  const contentString = JSON.stringify(bubbleObj.content);
-  const { index } = ctx.params;
+router.put('/unhide/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.updateOne({index}, {$set: {'hidden': false}});
+  const doc = await query.exec();
+  ctx.body = 'Success';
+})
 
-  try {
-    await Bubble.findOneAndUpdate({ index }, {
-      $set: {
-        name: bubbleObj.name,
-        content: contentString,
-        tags: bubbleObj.tags,
-      },
-    }).exec();
-    ctx.body = 'Success';
-  } catch (e) {
-    ctx.throw(400, 'Error while updating bubble');
-  }
-});
+router.delete('/delete/:index', async (ctx) => {
+  const index: string = ctx.params.index;
+  const query = Bubble.deleteOne({index});
+  const doc = await query.exec();
+  ctx.body = 'Success';
+})
+
 
 export default router;

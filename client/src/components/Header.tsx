@@ -66,6 +66,11 @@ function Header() {
                             />
                         </Link>
                     </div>
+                    <span className={'navitem menu' + (pathname.startsWith('/list') ? ' active' : '')}>
+                        <Link to='/list'>
+                            <div> { "글 검색" } </div>
+                        </Link>
+                    </span>
                     <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>
                         <Link to='/about'>
                             <div> { intl.formatMessage({id: 'header.about'})} </div>
