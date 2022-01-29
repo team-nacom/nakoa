@@ -1,3 +1,7 @@
+// Service worker setup: check https://developers.google.com/web/fundamentals/primers/service-workers
+// source : https://qiita.com/TakeshiNickOsanai/items/8d012a128827c9db980d
+// Currently not used; it is not registered
+
 const NAME = 'Team-NaCom';
 const VERSION = '1.0.0';
 const CACHE_NAME = `${ NAME } v${ VERSION }`;
@@ -9,7 +13,6 @@ const urlsToCache = [
   '/editor-manual.md',
 ];
 
-//service worker installation
 self.addEventListener('install', function (event) {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -19,20 +22,6 @@ self.addEventListener('install', function (event) {
         })
     );
 });
-
-// cache for fetch
-// self.addEventListener('fetch', function (event) {
-//     if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
-//     event.respondWith(
-//         caches.match(event.request)
-//             .then(function (response) {
-//                 if (response) {
-//                     return response;
-//                 }
-//                 return fetch(event.request);
-//             })
-//     );
-// });
 
 self.addEventListener('activate', event => {
     event.waitUntil(
@@ -47,6 +36,3 @@ self.addEventListener('activate', event => {
         })
     );
 });
-
-
-// source : https://qiita.com/TakeshiNickOsanai/items/8d012a128827c9db980d
