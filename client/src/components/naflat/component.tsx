@@ -136,9 +136,12 @@ function CellRenderer(props: CellComponentProps) {
                         ])
                     }
                     {!props.editMode &&
-                        cell.childIds.map((childId) => 
-                            <CellRenderer {...props} cellId={childId} />
-                        )
+                        cell.childIds.reduce((prev, childId, idx) => prev.concat(
+                            <CellRenderer {...props} cellId={childId} />,
+                            <div className='interBlockHelper' /> //Just for css.
+                        ), [
+                            <div className='interBlockHelper' />
+                        ])
                     }
                 </div>
             }
