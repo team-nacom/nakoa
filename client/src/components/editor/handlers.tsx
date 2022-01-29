@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fileUpload, imgUpload } from 'etc/FileUpload'
+import { fileUpload, imgUpload } from 'api/file'
 
 function insertText(text : string, elem? : HTMLTextAreaElement){
     const isSuccess = document.execCommand('insertText', false, text);

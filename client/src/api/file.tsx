@@ -1,4 +1,4 @@
-import { uploadFile } from "./api";
+import { uploadFile } from ".";
 
 async function fileUpload(file: File){
     let result = await uploadFile('guide', file);

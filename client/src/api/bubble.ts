@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { authValidateStatus } from '.';
-import config from '../config';
+import config from '../etc/config';
 
 import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 

@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getBubble, hideBubble, unhideBubble, BubbleType } from 'etc/api/bubble';
+import { getBubble, hideBubble, unhideBubble, BubbleType } from 'api/bubble';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect, useHistory, useParams } from 'react-router-dom';

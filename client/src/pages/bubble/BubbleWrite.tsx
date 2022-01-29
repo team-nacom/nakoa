@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { BubblePost, postBubble } from 'etc/api/bubble';
+import { BubblePost, postBubble } from 'api/bubble';
 import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';

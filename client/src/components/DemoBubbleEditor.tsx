@@ -1,6 +1,6 @@
 import PageTitle from 'components/PageTitle';
 
-import { BubblePost, postBubble } from 'etc/api/bubble';
+import { BubblePost, postBubble } from 'api/bubble';
 import React, {useCallback, useEffect, useRef} from 'react';
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import { FormattedMessage, useIntl } from 'react-intl';

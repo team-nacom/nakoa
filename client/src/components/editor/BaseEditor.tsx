@@ -12,7 +12,7 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 // import { readBuilderProgram } from 'typescript';
 import MarkdownManual from 'components/editor/MarkdownManual';
 
-import { fileUpload, imgUpload } from 'etc/FileUpload'
+import { fileUpload, imgUpload } from 'api/file'
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
