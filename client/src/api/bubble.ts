@@ -1,8 +1,6 @@
 import Axios from 'axios';
-import { authValidateStatus } from '.';
+import { authValidateStatus } from './common';
 import config from '../etc/config';
-
-import { dispatchNaBubbleState as dispatch } from 'components/nabubble';
 
 const apiAddress = config.apiAddress;
 
