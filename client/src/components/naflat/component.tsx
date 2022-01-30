@@ -8,6 +8,9 @@ import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
+import { HotKeys, IgnoreKeys, ObserveKeys } from 'react-hotkeys';
+import { handleShortcutFactory } from './strategies/helpers/handlers'
+
 import RootCellStrategy from './strategies/Root';
 import TextCellStrategy from './strategies/Text';
 import MathCellStrategy from './strategies/Math';
@@ -156,6 +159,8 @@ function CellEditor(props: CellComponentProps) {
 }
 
 
+//TODO : completely separate Display and Editor.
+
 interface FlatComponentProps extends CellComponentProps {
     initialFlat?: Flat;
     initialFocusId?: string;
@@ -176,16 +181,24 @@ function FlatComponent(props: FlatComponentProps) {
 
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
+    const [shortcutKeyMap, shortcutHandlers] = handleShortcutFactory(state, dispatch);
+
     return ( //implement display / editor here
         <FlatContext.Provider value={{ state, dispatch }} >
             {!editMode &&
                 <CellDisplay {...others} />
             }
             {editMode &&
-                <>
-                    <CellEditor {...others} />
-                    <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-                </>
+                <HotKeys keyMap={ shortcutKeyMap }
+                    handlers={ shortcutHandlers }
+                >
+                    <ObserveKeys only={ ['ctrl', 'escape'] }>
+                        <CellEditor {...others} />
+                        <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+                    </ObserveKeys>
+                    {/* <CellEditor {...others} />
+                    <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
+                </HotKeys>
             }
         </FlatContext.Provider>
     )

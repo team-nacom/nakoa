@@ -22,6 +22,7 @@ type FlatStateAction
     | { type: 'remove'; id: string; }
 
     | { type: 'focus'; id: string; }
+    | { type: 'focusAdj'; direction: number; }
     | { type : 'blur'; }
 ;
 
@@ -61,6 +62,9 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     
     case 'focus':
         focusId = action.id;
+        break;
+    case 'focusAdj':
+        focusId = F.findAdjacentId(flat, focusId, action.direction);
         break;
     case 'blur':
         focusId = undefined;
