@@ -10,7 +10,6 @@ import { FlatState, FlatStateAction } from './reducer';
 
 interface CellComponentProps extends React.HTMLAttributes<HTMLElement>{
     cellId : string;
-    editMode? : boolean;
 }
 type CellComponent = (props: CellComponentProps) => JSX.Element
 
