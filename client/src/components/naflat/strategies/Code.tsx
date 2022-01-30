@@ -1,9 +1,9 @@
 import React from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
 
 import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
+import SingletonTextArea from './helpers/singletonTextArea';
 
 function DisplayCodeCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
@@ -56,12 +56,12 @@ function EditorCodeCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <TextareaAutosize autoFocus style={ props.style as any }
+        <SingletonTextArea
+            style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorCodeCell editorCell'
             onChange={handleChangeFactory(props.cellId,dispatch)}
             value={contents}
-            spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     );
 }

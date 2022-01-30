@@ -1,9 +1,9 @@
 import React from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
 
 import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
+import SingletonTextArea from './helpers/singletonTextArea';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
@@ -57,12 +57,14 @@ function EditorTextCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <TextareaAutosize autoFocus style={ props.style as any }
+        <SingletonTextArea
+            // initialSelectionStart={ 1 }
+            // initialSelectionEnd={ 2 }
+            style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorTextCell editorCell'
             onChange={handleChangeFactory(props.cellId,dispatch)}
             value={contents}
-            spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     );
 }
