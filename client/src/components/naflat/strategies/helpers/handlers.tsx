@@ -9,6 +9,44 @@ function handleChangeFactory(id: string, dispatch: React.Dispatch<FlatStateActio
     }
 }
 
+interface IGlobalShortcut{
+    shortcut: string[];
+    description?: string;
+    handler: (ev?: React.KeyboardEvent<any>) => any;
+}
+
+function handleGlobalShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatStateAction>){
+    const globalShortcut: Record<string,IGlobalShortcut> = {
+        'goUp' : {
+            shortcut: ['control+arrowup'],
+            description: 'go to previous cell',
+            handler: (ev) => {
+                dispatch({ type: 'focusAdj', direction: -1});
+            }
+        },
+        'goDown' : {
+            shortcut: ['control+arrowdown'],
+            description: 'go to next cell',
+            handler: (ev) => {
+                dispatch({ type: 'focusAdj', direction: 1});
+            }
+        },
+        'blur': {
+            shortcut: ['escape'],
+            description: 'defocus',
+            handler: (ev) => {
+                if(state.focusId === undefined){
+                    console.log('not focusing anything!')
+                }
+
+                dispatch({ type: 'blur' });
+            }
+        }
+    }
+
+    return globalShortcut;
+}
+
 
 // function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, refs : React.MutableRefObject<Record<string,HTMLElement | null>> ){
 //     const record = flat.record;
@@ -121,5 +159,6 @@ function handleChangeFactory(id: string, dispatch: React.Dispatch<FlatStateActio
 // export { focusSibling };
 export {
     handleChangeFactory,
+    handleGlobalShortcutFactory
 };
 

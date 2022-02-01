@@ -1,14 +1,16 @@
 // Implementation of cell (and flat) renderer components.
 // This file contains definitions which is only valid AFTER defining render strategies for each types.
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { createContext, useContext } from 'react';
+
+import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
 
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
-import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
+import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
 
 
@@ -198,36 +200,31 @@ const FlatEditorComponentWithShortcut = withShortcut(
 
         const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
-        const goUp = useCallback((ev?: React.KeyboardEvent<any>) => {
-            dispatch({ type: 'focusAdj', direction: -1});
-            console.log('goUp fired')
-        }, []);
-
-        const goDown = useCallback((ev?: React.KeyboardEvent<any>) => {
-            dispatch({ type: 'focusAdj', direction: +1});
-            console.log('goDown fired')
-        }, []);
-
-        const blur = useCallback((ev?: React.KeyboardEvent<any>) => {
-            dispatch({ type: 'blur' });
-            console.log('blur fired')
-        }, []);
+        // useMemo for hooking multiple function
+        const gs = useMemo(() => (
+            handleGlobalShortcutFactory(state,dispatch)
+        ), [state,dispatch])
 
         useEffect(()=>{
             if(shortcut && shortcut.registerShortcut){
-                shortcut.registerShortcut(goUp, ['control+arrowup'],'Go Up','go to previous cell');
-                shortcut.registerShortcut(goDown, ['control+arrowdown'],'Go Down','go to previous cell');
-                shortcut.registerShortcut(blur, ['escape'],'Blur','defocus cells');
+                for(var name in gs){
+                    shortcut.registerShortcut(
+                        gs[name].handler,
+                        gs[name].shortcut,
+                        name,
+                        gs[name].description || ''
+                    );
+                }
                 return ()=>{
                     if(shortcut && shortcut.unregisterShortcut){
                         //unregister in reverse order
-                        shortcut.unregisterShortcut(['escape']);
-                        shortcut.unregisterShortcut(['control+arrowdown']);
-                        shortcut.unregisterShortcut(['control+arrowup']);
+                        for(var name in gs){
+                            shortcut.unregisterShortcut(gs[name].shortcut);
+                        }
                     }
                 }
             }
-        }, [goUp,goDown,blur]);
+        }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
             <CellEditor {...others}/>
