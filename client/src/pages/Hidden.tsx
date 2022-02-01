@@ -78,9 +78,9 @@ $$
 function Hidden() {
     // hidden bubble test page
 
-    for(var key in Object.keys(initialFlat)){
-        console.log(key, findAdjacentId(initialFlat,key,1), findAdjacentId(initialFlat,key,-1));
-    }
+    // for(var key of Object.keys(initialFlat)){
+    //     console.log(key, findAdjacentId(initialFlat,key,1), findAdjacentId(initialFlat,key,-1));
+    // }
 
     return (
         <>
