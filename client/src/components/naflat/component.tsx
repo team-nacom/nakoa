@@ -159,25 +159,35 @@ function CellEditor(props: CellComponentProps) {
 }
 
 
-//TODO : completely separate Display and Editor.
+
+const emptyFlat: Flat = {
+    'c0': {
+        type: 'root',
+        id: 'c0',
+        childIds: [],
+        value: ''
+    }
+};
 
 interface FlatComponentProps extends CellComponentProps {
     initialFlat?: Flat;
     initialFocusId?: string;
-    editMode?: boolean;
 }
 
-function FlatComponent(props: FlatComponentProps) {
-    let { initialFlat, initialFocusId, editMode, ...others } = props;
+function FlatDisplayComponent(props: FlatComponentProps) {
+    let { initialFlat, initialFocusId, ...others } = props;
 
-    const emptyFlat: Flat = {
-        'c0': {
-            type: 'root',
-            id: 'c0',
-            childIds: [],
-            value: ''
-        }
-    };
+    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+
+    return ( //implement display here
+        <FlatContext.Provider value={{ state, dispatch }} >
+            <CellDisplay {...others} />
+        </FlatContext.Provider>
+    );
+}
+
+function FlatEditorComponent(props: FlatComponentProps) {
+    let { initialFlat, initialFocusId, ...others } = props;
 
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
 
@@ -185,23 +195,20 @@ function FlatComponent(props: FlatComponentProps) {
 
     return ( //implement display / editor here
         <FlatContext.Provider value={{ state, dispatch }} >
-            {!editMode &&
-                <CellDisplay {...others} />
-            }
-            {editMode &&
-                <HotKeys keyMap={ shortcutKeyMap }
-                    handlers={ shortcutHandlers }
-                >
-                    <ObserveKeys only={ ['ctrl', 'escape'] }>
-                        <CellEditor {...others} />
-                        <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-                    </ObserveKeys>
-                    {/* <CellEditor {...others} />
-                    <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
-                </HotKeys>
-            }
+            <HotKeys keyMap={ shortcutKeyMap }
+                handlers={ shortcutHandlers }
+            >
+                <ObserveKeys only={ ['ctrl', 'escape'] }>
+                    <CellEditor {...others} />
+                    <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+                </ObserveKeys>
+            </HotKeys>
+            {/* <>
+                <CellEditor {...others} />
+                <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+            </> */}
         </FlatContext.Provider>
-    )
+    );
 }
 
-export { FlatContext, FlatComponent };
+export { FlatContext, FlatDisplayComponent, FlatEditorComponent };

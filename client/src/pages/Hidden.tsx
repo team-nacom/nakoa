@@ -2,7 +2,7 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
-import { FlatComponent } from 'components/naflat/component';
+import { FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
 
 
 function Hidden() {
@@ -10,7 +10,7 @@ function Hidden() {
     return (
         <>
             <Header/>
-            <FlatComponent editMode
+            <FlatEditorComponent
                 cellId = 'c0'
                 initialFlat = { {
                     'c0' : {
