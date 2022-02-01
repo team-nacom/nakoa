@@ -3,7 +3,8 @@
 
 // Issues :
 // (1 -- issued, patched) <input> is ignored
-// (2) other common abbreviations(e.g. escape -> esc, arrowup -> up, ...) is not supported in line 141-162
+// (2 -- patched) typeof `e` 
+// (3) other common abbreviations(e.g. escape -> esc, arrowup -> up, ...) is not supported in line 141-162
 
 /**
  * Shortcut Enhancer
