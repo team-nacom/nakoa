@@ -96,32 +96,60 @@ function handlePasteFactory(id: string, dispatch: React.Dispatch<FlatStateAction
     }
 }
 
-// Global Shortcut Handlers
+/////////////////
 
-interface IGlobalShortcut{
-    shortcut: string[];
+interface IShortcut<T = any>{
+    keymap: string[];
     description?: string;
-    handler: (ev?: React.KeyboardEvent<any>) => any;
+    handler: (ev?: React.KeyboardEvent<T>) => any;
 }
 
+// Local Shortcut Handlers(dependent on cellId)
+function handleTextShortcutFactory(state: FlatState, cellId: string, dispatch: React.Dispatch<FlatStateAction>){
+    const textShortcut: Record<string,IShortcut<HTMLTextAreaElement>> = {
+        'bold' : {
+            keymap: ['control+b'],
+            description: 'boldface text',
+            handler: (ev) => {
+                dispatch({
+                    type: 'updateSelected',
+                    id: cellId,
+                    start: ev?.currentTarget?.selectionStart,
+                    end: ev?.currentTarget?.selectionEnd,
+                    cursorOption: 'wrap',
+                    func: (str) => {
+                        if(str.slice(0,2) === '**' && str.slice(-2) === '**' ){
+                            return str.slice(2,-2);
+                        }
+                        return '**' + str + '**';
+                    }
+                });
+            }
+        },
+    }
+
+    return textShortcut;
+}
+
+// Global Shortcut Handlers(independent on cellId)
 function handleGlobalShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatStateAction>){
-    const globalShortcut: Record<string,IGlobalShortcut> = {
+    const localShortcut: Record<string, IShortcut> = {
         'goUp' : {
-            shortcut: ['control+arrowup'],
+            keymap: ['control+arrowup'],
             description: 'go to previous cell',
             handler: (ev) => {
                 dispatch({ type: 'focusAdj', direction: -1});
             }
         },
         'goDown' : {
-            shortcut: ['control+arrowdown'],
+            keymap: ['control+arrowdown'],
             description: 'go to next cell',
             handler: (ev) => {
                 dispatch({ type: 'focusAdj', direction: 1});
             }
         },
         'blur': {
-            shortcut: ['escape'],
+            keymap: ['escape'],
             description: 'defocus',
             handler: (ev) => {
                 if(state.focusId === undefined){
@@ -133,7 +161,7 @@ function handleGlobalShortcutFactory(state: FlatState, dispatch: React.Dispatch<
         }
     }
 
-    return globalShortcut;
+    return localShortcut;
 }
 
 // TODO : cell separation by enter, merge by backsp or del
@@ -141,6 +169,8 @@ function handleGlobalShortcutFactory(state: FlatState, dispatch: React.Dispatch<
 export {
     handleChangeFactory,
     handlePasteFactory,
+
+    handleTextShortcutFactory,
     handleGlobalShortcutFactory
 };
 export {

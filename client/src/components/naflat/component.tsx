@@ -212,7 +212,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
                 for(var name in gs){
                     shortcut.registerShortcut(
                         gs[name].handler,
-                        gs[name].shortcut,
+                        gs[name].keymap,
                         name,
                         gs[name].description || ''
                     );
@@ -221,7 +221,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
                     if(shortcut && shortcut.unregisterShortcut){
                         //unregister in reverse order
                         for(var name in gs){
-                            shortcut.unregisterShortcut(gs[name].shortcut);
+                            shortcut.unregisterShortcut(gs[name].keymap);
                         }
                     }
                 }
