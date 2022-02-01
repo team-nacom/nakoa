@@ -192,6 +192,8 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 
 //Editor implementation
 
+//TODO : 에디터 자체도 다른 파일로 빼기
+
 //attempt 2: use forked 'react-keybind'
 //https://github.com/UnicornHeartClub/react-keybind
 const FlatEditorComponentWithShortcut = withShortcut(
