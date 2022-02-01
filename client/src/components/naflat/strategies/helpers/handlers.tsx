@@ -2,42 +2,12 @@ import React from 'react';
 import { Flat } from '../../flat';
 import { FlatState, FlatStateAction } from '../../reducer';
 
-import { HotKeys } from 'react-hotkeys';
-
 function handleChangeFactory(id: string, dispatch: React.Dispatch<FlatStateAction>){
     return (e : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         let str : string = e.target.value;
         dispatch({ type: 'update', id, value : str });
     }
 }
-
-// reference for https://www.notion.so/Keyset-25b2498e97c54782806089a2b02994ee
-// https://github.com/greena13/react-hotkeys
-// https://craig.is/killing/mice for key string.
-function handleShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatStateAction>){
-    const shortcutKeyMap = {
-        goUp: 'ctrl+up',
-        goDown: 'ctrl+down',
-        blur: 'escape'
-    };
-    const shortcutHandlers = {
-        goUp: (ev?: KeyboardEvent)=>{
-            dispatch({ type: 'focusAdj', direction: -1});
-            console.log('goUp fired')
-        },
-        goDown: (ev?: KeyboardEvent)=>{
-            dispatch({ type: 'focusAdj', direction: 1});
-            console.log('goDown fired')
-        },
-        blur: (ev?: KeyboardEvent)=>{
-            dispatch({ type: 'blur'});
-            console.log('blur fired');
-        },
-    }
-
-    return [shortcutKeyMap, shortcutHandlers] as const;
-}
-
 
 
 // function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, refs : React.MutableRefObject<Record<string,HTMLElement | null>> ){
@@ -151,7 +121,5 @@ function handleShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatSt
 // export { focusSibling };
 export {
     handleChangeFactory,
-    handleShortcutFactory
-    // handleKeyDownFactory
 };
 

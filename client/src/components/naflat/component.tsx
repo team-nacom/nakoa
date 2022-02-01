@@ -1,15 +1,16 @@
 // Implementation of cell (and flat) renderer components.
 // This file contains definitions which is only valid AFTER defining render strategies for each types.
 
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { createContext, useContext } from 'react';
 
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
-import { HotKeys, IgnoreKeys, ObserveKeys } from 'react-hotkeys';
-import { handleShortcutFactory } from './strategies/helpers/handlers'
+import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
+
+
 
 import RootCellStrategy from './strategies/Root';
 import TextCellStrategy from './strategies/Text';
@@ -186,29 +187,58 @@ function FlatDisplayComponent(props: FlatComponentProps) {
     );
 }
 
-function FlatEditorComponent(props: FlatComponentProps) {
-    let { initialFlat, initialFocusId, ...others } = props;
 
-    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+//Editor implementation
 
-    const [shortcutKeyMap, shortcutHandlers] = handleShortcutFactory(state, dispatch);
+//attempt 2: use forked 'react-keybind'
+//https://github.com/UnicornHeartClub/react-keybind
+const FlatEditorComponentWithShortcut = withShortcut(
+    function (props: FlatComponentProps & IWithShortcut){
+        const { initialFlat, initialFocusId, shortcut, ...others } = props;
 
-    return ( //implement display / editor here
-        <FlatContext.Provider value={{ state, dispatch }} >
-            <HotKeys keyMap={ shortcutKeyMap }
-                handlers={ shortcutHandlers }
-            >
-                <ObserveKeys only={ ['ctrl', 'escape'] }>
-                    <CellEditor {...others} />
-                    <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-                </ObserveKeys>
-            </HotKeys>
-            {/* <>
-                <CellEditor {...others} />
-                <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-            </> */}
-        </FlatContext.Provider>
-    );
+        const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+
+        const goUp = useCallback((ev?: React.KeyboardEvent<any>) => {
+            dispatch({ type: 'focusAdj', direction: -1});
+            console.log('goUp fired')
+        }, []);
+
+        const goDown = useCallback((ev?: React.KeyboardEvent<any>) => {
+            dispatch({ type: 'focusAdj', direction: +1});
+            console.log('goDown fired')
+        }, []);
+
+        const blur = useCallback((ev?: React.KeyboardEvent<any>) => {
+            dispatch({ type: 'blur' });
+            console.log('blur fired')
+        }, []);
+
+        useEffect(()=>{
+            if(shortcut && shortcut.registerShortcut){
+                shortcut.registerShortcut(goUp, ['control+arrowup'],'Go Up','go to previous cell');
+                shortcut.registerShortcut(goDown, ['control+arrowdown'],'Go Down','go to previous cell');
+                shortcut.registerShortcut(blur, ['escape'],'Blur','defocus cells');
+                return ()=>{
+                    if(shortcut && shortcut.unregisterShortcut){
+                        //unregister in reverse order
+                        shortcut.unregisterShortcut(['escape']);
+                        shortcut.unregisterShortcut(['control+arrowdown']);
+                        shortcut.unregisterShortcut(['control+arrowup']);
+                    }
+                }
+            }
+        }, [goUp,goDown,blur]);
+
+        return (<FlatContext.Provider value={{ state, dispatch }} >
+            <CellEditor {...others}/>
+            <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+        </FlatContext.Provider>);
+    }
+)
+function FlatEditorComponent(props: FlatComponentProps){
+    return (<ShortcutProvider ignoreTagNames={ [] }>
+        <FlatEditorComponentWithShortcut {...props} />
+    </ShortcutProvider>);
 }
 
 export { FlatContext, FlatDisplayComponent, FlatEditorComponent };
