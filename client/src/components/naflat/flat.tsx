@@ -108,7 +108,7 @@ function findSiblingId(f: Flat, id: string, delta: number) : string{
     let pid = f[id].parentId;
     if( pid === undefined ) return id;
 
-    let siblingIds = f[pid].childIds || [];
+    let siblingIds = f[pid].childIds;
     let n = siblingIds.indexOf(id);
     if( n === -1 ) return id; // something went wrong here, but no handling
 
@@ -116,6 +116,68 @@ function findSiblingId(f: Flat, id: string, delta: number) : string{
 .length ) return id;
 
     return siblingIds[n + delta];
+}
+
+/**
+ * given the cell id, find next(direction >= 0) or previous(direction<0) cell id of it.
+ * cells are preordered.
+ * if id is undefined, then find last or first(root) cell id based on direction.
+ * 
+ * @param f 
+ * @param id 
+ * @param direction if positive, find next cell. otherwise find previous cell.
+ * @returns previous cell id.
+ */
+function findAdjacentId(f: Flat, id: string | undefined, direction: number){
+    if(id === undefined){
+        let currentId = Object.keys(f)[0];
+        while(currentId){
+            let pid = f[currentId].parentId;
+            if(pid === undefined) break;
+
+            currentId = pid;
+        }
+        if(direction >= 0){
+            while(currentId && f[currentId].childIds.length > 0){
+                currentId = f[currentId].childIds[ f[currentId].childIds.length - 1];
+            }
+        }
+        return currentId;
+    }
+    else if(direction>=0){ //find next : direct children, or 
+        if(f[id].childIds.length > 0){
+            return f[id].childIds[0]; //direct children
+        }
+        //if leaf node.
+        let currentId = id;
+        while(true){
+            let parentId = f[currentId].parentId;
+            if(parentId === undefined) return id; //this is when id is the last descendant.
+
+            let siblingIds = f[parentId].childIds;
+            let n = siblingIds.indexOf(currentId);
+            if( n + 1 < siblingIds.length ){
+                // not the last sibling;
+                return siblingIds[n+1];
+            }
+            //the last sibling; this level is exhausted.
+            currentId = parentId;
+        }
+    }
+    else{ //find previous : the last descendant of prev sibling, or its parent.
+        let parentId = f[id].parentId;
+        if(parentId === undefined) return id; //this is when id is root.
+
+        let siblingIds = f[parentId].childIds;
+        let n = siblingIds.indexOf(id);
+        if( n === 0 ) return parentId;
+
+        let currentId = siblingIds[n-1];
+        while(f[currentId].childIds.length){
+            currentId = f[currentId].childIds[ f[currentId].childIds.length - 1 ];
+        }
+        return currentId;
+    }
 }
 
 ///// Manipulations for reducer.
@@ -136,6 +198,48 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
     newf[id].value = value;
     // newf[id].value = lodash.cloneDeep(value);
     return newf;
+}
+
+/**
+ * update selected part of cell value.
+ * use only when value is text.
+ * 
+ * @param f flat.
+ * @param id cell id.
+ * @param start cursor start
+ * @param end cursor end
+ * @param cursorOption new cursor option 'start' / 'wrap' / 'end'
+ * @param func function applied to the selected area
+ * @returns [new flat, new cursor start, new cursor end].
+ */
+type CursorOption = 'start' | 'wrap' | 'end';
+function updateSelected(f: Flat, id: string, start: number, end: number, cursorOption : CursorOption, func: (str: string) => string): [Flat, number, number] {
+    if(!f[id] || typeof f[id].value !== 'string') return [f, start, end];
+    
+    let newf = {...f};
+    // let newf = copyFlat(f);
+    let oldStr = f[id].value as string;
+
+    let prefix = oldStr.slice(0,start);
+    let target = func( oldStr.slice(start,end) );
+    let postfix = oldStr.slice(end);
+
+    newf[id].value = prefix + target + postfix;
+    // newf[id].value = lodash.cloneDeep(value);
+    let newStart : number, newEnd : number;
+    switch(cursorOption){
+        case 'start':
+            newStart = newEnd = prefix.length;
+            break;
+        case 'wrap':
+            newStart = prefix.length;
+            newEnd = prefix.length + target.length;
+            break;
+        case 'end':
+            newStart = newEnd = prefix.length + target.length;
+            break;
+    }
+    return [newf, newStart, newEnd];
 }
 
 /**
@@ -257,7 +361,9 @@ function removeCell(f: Flat, id: string) : Flat{
 }
 
 
-export type { CellType, CellTypeMap, Cell, Flat };
+export type { CellType, CellTypeMap, Cell, Flat, CursorOption };
 export { defaultCellType };
+
 export { copyFlat };
-export { findSiblingId, changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };
+export { findSiblingId, findAdjacentId };
+export { changeCellType, updateCell, updateSelected, createCell, moveCell, createChildCell, removeCell };

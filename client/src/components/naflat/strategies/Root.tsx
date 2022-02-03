@@ -45,7 +45,7 @@ function EditorRootCell(props: CellComponentProps) {
     let title = '' + cell.value;
 
     return <div className='editorRootCell'>
-        <input
+        <input autoFocus
             className='title'
             value={title}
             onChange={handleChangeFactory(props.cellId, dispatch)}
