@@ -18,6 +18,7 @@
     "@types/koa-session": "^5.10.3",
     "@types/koa__cors": "^3.0.2",
     "@types/nanoid": "^2.1.0",
+    "@types/pdfkit": "^0.12.3",
     "adm-zip": "^0.5.3",
     "dotenv": "^8.2.0",
     "http-errors": "^1.8.0",
@@ -31,6 +32,7 @@
     "nanoid": "^3.1.22",
     "nodemon": "^2.0.6",
     "path": "^0.12.7",
+    "pdfkit": "^0.13.0",
     "pino": "^7.6.2",
     "pino-pretty": "^7.3.0",
     "ts-node": "^10.2.1",
@@ -42,8 +44,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.6.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^16.1.0",
