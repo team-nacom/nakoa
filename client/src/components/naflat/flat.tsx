@@ -201,48 +201,6 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
 }
 
 /**
- * update selected part of cell value.
- * use only when value is text.
- * 
- * @param f flat.
- * @param id cell id.
- * @param start cursor start
- * @param end cursor end
- * @param cursorOption new cursor option 'start' / 'wrap' / 'end'
- * @param func function applied to the selected area
- * @returns [new flat, new cursor start, new cursor end].
- */
-type CursorOption = 'start' | 'wrap' | 'end';
-function updateSelected(f: Flat, id: string, start: number, end: number, cursorOption : CursorOption, func: (str: string) => string): [Flat, number, number] {
-    if(!f[id] || typeof f[id].value !== 'string') return [f, start, end];
-    
-    let newf = {...f};
-    // let newf = copyFlat(f);
-    let oldStr = f[id].value as string;
-
-    let prefix = oldStr.slice(0,start);
-    let target = func( oldStr.slice(start,end) );
-    let postfix = oldStr.slice(end);
-
-    newf[id].value = prefix + target + postfix;
-    // newf[id].value = lodash.cloneDeep(value);
-    let newStart : number, newEnd : number;
-    switch(cursorOption){
-        case 'start':
-            newStart = newEnd = prefix.length;
-            break;
-        case 'wrap':
-            newStart = prefix.length;
-            newEnd = prefix.length + target.length;
-            break;
-        case 'end':
-            newStart = newEnd = prefix.length + target.length;
-            break;
-    }
-    return [newf, newStart, newEnd];
-}
-
-/**
  * change cell type.
  * @todo conversion between uncompatible types.
  * 
@@ -361,9 +319,9 @@ function removeCell(f: Flat, id: string) : Flat{
 }
 
 
-export type { CellType, CellTypeMap, Cell, Flat, CursorOption };
+export type { CellType, CellTypeMap, Cell, Flat };
 export { defaultCellType };
 
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
-export { changeCellType, updateCell, updateSelected, createCell, moveCell, createChildCell, removeCell };
+export { changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };

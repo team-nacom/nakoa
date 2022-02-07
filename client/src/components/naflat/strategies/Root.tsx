@@ -48,7 +48,7 @@ function EditorRootCell(props: CellComponentProps) {
         <input autoFocus
             className='title'
             value={title}
-            onChange={handleChangeFactory(props.cellId, dispatch)}
+            onChange={handleChangeFactory(dispatch,props.cellId)}
         />
     </div>
 }

@@ -64,7 +64,7 @@ function EditorMathCell(props: CellComponentProps){
             style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorMathCell editorCell'
-            onChange={handleChangeFactory(props.cellId,dispatch)}
+            onChange={handleChangeFactory(dispatch,props.cellId)}
             value={contents}
         />
     );
