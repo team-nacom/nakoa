@@ -25,6 +25,8 @@ function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
 function InterCell(props: AddCellButtonProps) {
     return (
         <div className='interBlockHelper'>
+            <div className='interBlockLine'></div>
+            <div className='addCellMask'></div>
             <AddCellButton {...props} />
         </div>
     )

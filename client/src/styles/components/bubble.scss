@@ -32,7 +32,7 @@
 }
 
 .textCell {
-    @include cell(rgba(gray, 0.06));
+    @include cell(none);
 }
 
 .mathCell {
@@ -55,35 +55,54 @@ summary.codeCellPreview {
 }
 
 @mixin controlButton {
-    height: 40px;
-    width: 40px;
-    flex-basis: 40px;
-    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    flex-basis: 20px;
     font-size: 20px;
-    border: 2px solid grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: white;
 }
 
 .interBlockHelper {
     width: 100%;
-    height: 26px;
+    height: 50px;
     margin: 0px 0px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
 
+    .interBlockLine {
+        width: 100%;
+        height: 6px;
+        background: white;
+        border-radius: 3px;
+    }
+
     .addCellButton {
         @include controlButton();
+        border-radius: 50%;
+        position: absolute;
         flex-grow: 0;
         opacity: 0;
         z-index: 2;
+    }
+    .addCellMask {
+        @include controlButton();
+        border-radius: 50%;
+        position: absolute;
+        z-index: -1;
     }
 
     &:hover {
         .addCellButton {
             opacity: 1;
             transition: 0.3s;
+        }
+        .interBlockLine, .addCellMask {
+            box-shadow: 0px 0px 10px #00000056;
         }
     }
 }
@@ -252,24 +271,38 @@ summary.codeCellPreview {
 }
 
 .bubbleOptions {
-    right: 0px;
+    right: 10px;
     position: absolute;
     width: fit-content;
+    display: flex;
+    flex-direction: row;
+    transform: translateY(-50%);
     z-index: 1;
+    padding: 0px 3px;
+    border-radius: 5px;
+    background-color: white;
 }
 
 .bubbleOptionButton {
     @include controlButton;
-    margin: 6px;
+    margin: 2px;
 }
 
 .cellWrapper {
     position: relative;
     border-radius: 4px;
     width: 100%;
+    background-color: white;
 
     &:hover {
         box-shadow: 0px 0px 15px #00000056;
+
+        .bubbleOptions {
+            box-shadow: 0px 0px 10px #00000056;
+        }
+        .editorTextCell {
+            outline: none;
+        }
     }
 }
 

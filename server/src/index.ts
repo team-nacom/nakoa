@@ -31,7 +31,7 @@ router.use('/file', fileRouter.routes());
 router.use('/bubble', bubbleRouter.routes());
 
 // local / production config
-const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
+const origin = (isProduction ? 'https://team-na.com' : '*');
 const port = (isProduction ? 3884 : 3885);
 
 // Koa app
