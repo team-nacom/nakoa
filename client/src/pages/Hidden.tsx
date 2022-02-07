@@ -9,7 +9,7 @@ const initialFlat : Flat = {
     'c0' : {
         type: 'root',
         id: 'c0',
-        childIds: ['c1','c2','c3'],
+        childIds: ['c1','c2','c3','c4'],
         value: '똑떨'
     },
     'c1' : {
@@ -72,6 +72,13 @@ $$
         parentId: 'c2',
         childIds: [],
         value: `p_\\mu p^\\mu = -m^2 \\quad (-+++)`
+    },
+    'c4' : {
+        type: 'image',
+        id: 'c4',
+        parentId: 'c0',
+        childIds: [],
+        value: { src: 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg', caption: '무~야~호~~' }
     }
 }
 

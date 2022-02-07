@@ -62,7 +62,6 @@ function EditorMathCell(props: CellComponentProps){
     return (
         <SingletonTextArea
             style={ props.style as any }
-            name={'cell' + props.cellId}
             className='editorMathCell editorCell'
             onChange={handleChangeFactory(dispatch,props.cellId)}
             value={contents}

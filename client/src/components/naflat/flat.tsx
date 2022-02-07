@@ -9,6 +9,7 @@ type CellType = 'root' // only one root per flat should be allowed.
     | 'text'
     | 'math'
     | 'code'
+    | 'image'
 
 const defaultCellType : CellType = 'text';
 
@@ -37,6 +38,7 @@ const defaultValue : CellTypeMap<unknown> = {
     'text': '',
     'math': '',
     'code': '',
+    'image': { src: '', caption: '' },
 }
 
 // /**

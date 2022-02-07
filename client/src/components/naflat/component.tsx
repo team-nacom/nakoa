@@ -18,6 +18,7 @@ import RootCellStrategy from './strategies/Root';
 import TextCellStrategy from './strategies/Text';
 import MathCellStrategy from './strategies/Math';
 import CodeCellStrategy from './strategies/Code';
+import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
 
@@ -26,6 +27,7 @@ const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'text': TextCellStrategy,
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
+    'image': ImageCellStrategy
 };
 
 function CellDisplay(props: CellComponentProps) {

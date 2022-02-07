@@ -131,8 +131,9 @@ function EditorTextCell(props: CellComponentProps){
                         str => str,
                         () => { console.log('이미지 업로드 실패') }
                     )}
-                    message={ '이미지 업로드' }
-                />
+                >
+                    { '이미지 업로드' }
+                </FileDropzone>
                 <FileDropzone
                     handleDrop={ (files) => fileUploadHelper(
                         dispatch, props.cellId, files[0],
@@ -141,8 +142,9 @@ function EditorTextCell(props: CellComponentProps){
                         str => str,
                         () => { console.log('파일 업로드 실패') }
                     )}
-                    message={ '파일 업로드' }
-                />
+                >
+                    { '파일 업로드' }
+                </FileDropzone>
             </div>
         </>
     );
