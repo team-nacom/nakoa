@@ -9,11 +9,11 @@ import {
 } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
 
-import { useDropzone } from 'react-dropzone';
 import {
     imgUploadHelper,
     fileUploadHelper
 } from './helpers/handlers';
+import { FileDropzone } from './helpers/FileDropzone';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
@@ -116,7 +116,6 @@ function EditorTextCell(props: CellComponentProps){
                 initialSelectionStart={ state.cursorStart }
                 initialSelectionEnd={ state.cursorEnd }
                 style={ props.style as any }
-                name={'cell' + props.cellId}
                 className='editorTextCell editorCell'
                 onChange={handleChangeFactory(dispatch, props.cellId)}
                 onPaste={handlePasteFactory(dispatch, props.cellId)}
@@ -148,26 +147,6 @@ function EditorTextCell(props: CellComponentProps){
         </>
     );
 }
-
-//TODO : dropzone은 별개 파일로 빼기
-
-interface FileDropzoneProps {
-    handleDrop: (acceptedFiles: File[]) => void;
-    message?: string;
-};
-
-function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
-    const onDrop = React.useCallback(handleDrop, []);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
-  
-    return (
-        <>
-            <label {...getRootProps()}>{ message }</label>
-            <input {...getInputProps()} />
-        </>
-    )
-}
-
 
 const TextCellStrategy : CellRenderStrategy = {
     'display': DisplayTextCell,
