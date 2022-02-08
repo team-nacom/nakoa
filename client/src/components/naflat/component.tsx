@@ -64,10 +64,11 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                { /* side cell */}
-
                 <div className='cellWrapper'
-                    onClick={(ev) => {ev.stopPropagation();dispatch({ type: 'focus', id: props.cellId })} }
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        dispatch({ type: 'focus', id: props.cellId })
+                    }}
                 >
                     <div className='bubbleOptions'>
                         {cell.childIds.length === 0 &&
@@ -94,7 +95,7 @@ function CellEditor(props: CellComponentProps) {
         {isFocused &&
             <div className='editorCellContainer'>
 
-                <div className='cellWrapper' style={ {display: 'flex'} }
+                <div className='cellWrapper'
                     onClick={(ev) => {ev.stopPropagation()} }
                 >
                     { /* side cell */}
@@ -137,12 +138,7 @@ function CellEditor(props: CellComponentProps) {
                         }
                     </div>
 
-                    <span style={{ flex: '50% 0 0' }}>
-                        <EditorStrategy {...props} />
-                    </span>
-                    <span style={{ flex: '50% 0 0' }}>
-                        <PreviewStrategy {...props} />
-                    </span>
+                    <EditorStrategy {...props} />
                 </div>
             </div>
         }
