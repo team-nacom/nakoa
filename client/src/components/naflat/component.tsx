@@ -6,7 +6,8 @@ import { createContext, useContext } from 'react';
 
 import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
 
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
+import lodash from 'lodash';
+import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
@@ -61,6 +62,17 @@ function CellEditor(props: CellComponentProps) {
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
 
+    function cellTypeButtonHandlerFactory(type : CellType){
+        return () => {
+            if(cell.type === type) return;
+            if(lodash.isEqual(cell.value, defaultValue[cell.type])
+                || window.confirm('셀 타입을 변경하면 내용이 초기화됩니다. 변경하시겠습니까?')
+            ){ //either the value is default OR it is confirmed to reset the value
+                dispatch({ type: 'changeType', cellType: type, id: props.cellId });
+            }
+        }
+    }
+
     return <>
         {!isFocused &&
             <>
@@ -104,21 +116,27 @@ function CellEditor(props: CellComponentProps) {
                             <>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('text') }
                                 >
                                     article
                                 </button>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('math') }
                                 >
                                     calculate
                                 </button>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('code') }
                                 >
                                     code
+                                </button>
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('image') }
+                                >
+                                    image
                                 </button>
                             </>
                         }

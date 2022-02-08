@@ -38,7 +38,7 @@ const defaultValue : CellTypeMap<unknown> = {
     'text': '',
     'math': '',
     'code': '',
-    'image': { src: '', caption: '' },
+    'image': { src: '/altImg.png', caption: '' },
 }
 
 // /**
@@ -204,7 +204,7 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
 
 /**
  * change cell type.
- * @todo conversion between uncompatible types.
+ * WARNING: new cell is set to default value.
  * 
  * @param f flat.
  * @param id cell id.
@@ -212,10 +212,11 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
  * @returns new flat.
  */
 function changeCellType(f: Flat, id: string, type: CellType): Flat{
-    if(!f[id] || f[id].type === 'root' || type === 'root') return f;
+    if(!f[id] || f[id].type === 'root' || f[id].type === type || type === 'root') return f;
 
     let newf = {...f};
     newf[id].type = type;
+    newf[id].value = defaultValue[type];
 
     return newf;
 }
@@ -322,7 +323,7 @@ function removeCell(f: Flat, id: string) : Flat{
 
 
 export type { CellType, CellTypeMap, Cell, Flat };
-export { defaultCellType };
+export { defaultValue, defaultCellType };
 
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
