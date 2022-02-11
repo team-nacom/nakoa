@@ -4,6 +4,7 @@
 import lodash from 'lodash';
 
 type CellType = 'root' // only one root per flat should be allowed.
+    | 'section'
     | 'text'
     | 'math'
     | 'code'
@@ -33,6 +34,7 @@ type Flat = Record<string, Cell>; // Just an alias
 
 const defaultValue : CellTypeMap<unknown> = {
     'root': '',
+    'section': '',
     'text': '',
     'math': '',
     'code': '',

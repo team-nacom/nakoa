@@ -16,6 +16,7 @@ import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
 
 import RootCellStrategy from './strategies/Root';
+import SectionCellStrategy from './strategies/Section';
 import TextCellStrategy from './strategies/Text';
 import MathCellStrategy from './strategies/Math';
 import CodeCellStrategy from './strategies/Code';
@@ -25,6 +26,7 @@ import InterCell from './aux/InterCell';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
+    'section': SectionCellStrategy,
     'text': TextCellStrategy,
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
@@ -121,6 +123,12 @@ function CellEditor(props: CellComponentProps) {
                         </span>
                         {cell.type !== 'root' &&
                             <>
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('section') }
+                                >
+                                    topic
+                                </button>
                                 <button
                                     className='material-icons bubbleOptionButton'
                                     onClick={ cellTypeButtonHandlerFactory('text') }
