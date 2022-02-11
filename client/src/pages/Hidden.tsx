@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
@@ -93,10 +93,12 @@ function Hidden() {
     //     console.log(key, findAdjacentId(initialFlat,key,1), findAdjacentId(initialFlat,key,-1));
     // }
 
+    const [displayMode,setDisplayMode] = React.useState(false);
+
     return (
         <>
             <Header/>
-            <FlatDisplayComponent //FlatDisplayComponent
+            <FlatEditorComponent //FlatDisplayComponent
                 cellId = 'c0'
                 initialFlat = { initialFlat }
             />

@@ -204,7 +204,6 @@ interface FlatComponentProps extends CellComponentProps {
 function FlatDisplayComponent(props: FlatComponentProps) {
     let { initialFlat, initialFocusId, ...others } = props;
 
-    // use auto numbering on display mode.
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
 
     return ( //implement display here
@@ -225,7 +224,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
     function (props: FlatComponentProps & IWithShortcut){
         const { initialFlat, initialFocusId, shortcut, ...others } = props;
 
-        const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+        const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
 
         // useMemo for hooking multiple function
         const gs = useMemo(() => (
@@ -256,6 +255,12 @@ const FlatEditorComponentWithShortcut = withShortcut(
         return (<FlatContext.Provider value={{ state, dispatch }} >
             <CellEditor {...others}/>
             <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+
+            { /* for debug */ }
+            <details>
+                <summary>프리뷰 보기</summary>
+                <CellDisplay {...others} />
+            </details>
         </FlatContext.Provider>);
     }
 )
