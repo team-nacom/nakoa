@@ -58,8 +58,9 @@ function CellEditor(props: CellComponentProps) {
 
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
-
+    
     return <>
+
         {!isFocused &&
             <>
                 { /* side cell */}
@@ -134,20 +135,29 @@ function CellEditor(props: CellComponentProps) {
                             </button>
                         }
                     </div>
-
-                    <span style={{ flex: '50% 0 0' }}>
-                        <EditorStrategy {...props} />
-                    </span>
-                    <span style={{ flex: '50% 0 0' }}>
-                        <PreviewStrategy {...props} />
-                    </span>
+                    
+                    {cell.type === 'root' &&
+                        <>
+                            <EditorStrategy {...props} />
+                        </>
+                    }
+                    {cell.type !== 'root' &&
+                        <>
+                            <span style={{ flex: '50% 0 0' }}>
+                                <EditorStrategy {...props} />
+                            </span>
+                            <span style={{ flex: '50% 0 0' }}>
+                                <PreviewStrategy {...props} />
+                            </span>
+                        </>
+                    }
                 </div>
             </div>
         }
 
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}
+            <div className='childWrapper'
                 onClick={() => dispatch({ type: 'blur' }) }
             >
                 {
@@ -158,6 +168,7 @@ function CellEditor(props: CellComponentProps) {
                 }
             </div>
         }
+
     </>;
 }
 
