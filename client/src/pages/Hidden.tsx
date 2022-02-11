@@ -53,6 +53,10 @@ $$
 
 그롸롸롸롸
 
+다른 셀을 이제 레퍼런싱 해보자구요. §%c2%같이.
+
+§%c77%는 바뀌면 안됨.
+
 @@@expand[스포일러]
 스표일려
 @@@
@@ -92,7 +96,7 @@ function Hidden() {
     return (
         <>
             <Header/>
-            <FlatEditorComponent
+            <FlatDisplayComponent //FlatDisplayComponent
                 cellId = 'c0'
                 initialFlat = { initialFlat }
             />

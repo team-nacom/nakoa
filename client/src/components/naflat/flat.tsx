@@ -2,8 +2,6 @@
 ////// Definition of data types Cell and Flat, and its basic functions.
 
 import lodash from 'lodash';
-import { bindActionCreators } from 'redux';
-import { Type } from 'unist-util-filter';
 
 type CellType = 'root' // only one root per flat should be allowed.
     | 'text'
@@ -203,6 +201,24 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
 }
 
 /**
+ * update cell value.
+ * 
+ * @param f flat.
+ * @param id cell id.
+ * @param context
+ * @returns new flat.
+ */
+function updateContext(f: Flat, id: string, context: Data): Flat {
+    if(!f[id]) return f;
+    
+    let newf = {...f};
+    // let newf = copyFlat(f);
+    // newf[id].context = { ...context };
+    newf[id].context = lodash.cloneDeep(context);
+    return newf;
+}
+
+/**
  * change cell type.
  * WARNING: new cell is set to default value.
  * 
@@ -322,9 +338,9 @@ function removeCell(f: Flat, id: string) : Flat{
 }
 
 
-export type { CellType, CellTypeMap, Cell, Flat };
+export type { Data, CellType, CellTypeMap, Cell, Flat };
 export { defaultValue, defaultCellType };
 
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
-export { changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };
+export { changeCellType, updateCell, updateContext, createCell, moveCell, createChildCell, removeCell };

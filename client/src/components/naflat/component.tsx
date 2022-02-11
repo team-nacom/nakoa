@@ -38,6 +38,7 @@ function CellDisplay(props: CellComponentProps) {
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
     return <>
+        {/* <span>{ state.renderInfo.label[props.cellId].auto.join('.') }</span> */}
         <Strategy {...props} />
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
@@ -83,6 +84,9 @@ function CellEditor(props: CellComponentProps) {
                     }}
                 >
                     <div className='bubbleOptions'>
+                        <span className='cellId'>
+                            ID: { props.cellId }
+                        </span>
                         {cell.childIds.length === 0 &&
                             <button
                                 className='material-icons bubbleOptionButton'
@@ -112,6 +116,9 @@ function CellEditor(props: CellComponentProps) {
                 >
                     { /* side cell */}
                     <div className='bubbleOptions'>
+                        <span className='cellId'>
+                            ID: { props.cellId }
+                        </span>
                         {cell.type !== 'root' &&
                             <>
                                 <button
@@ -189,6 +196,7 @@ const emptyFlat: Flat = {
 };
 
 interface FlatComponentProps extends CellComponentProps {
+    // id: string // rootId.
     initialFlat?: Flat;
     initialFocusId?: string;
 }
@@ -196,7 +204,8 @@ interface FlatComponentProps extends CellComponentProps {
 function FlatDisplayComponent(props: FlatComponentProps) {
     let { initialFlat, initialFocusId, ...others } = props;
 
-    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+    // use auto numbering on display mode.
+    const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
