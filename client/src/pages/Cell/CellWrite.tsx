@@ -26,7 +26,7 @@ function CellWrite() {
         <>
             <Header/>
             <div id='content'>
-                <FlatEditorComponent cellId='c0'/>
+                <FlatEditorComponent cellId='c0' upload={upload}/>
             </div>
             <Footer/>
         </>

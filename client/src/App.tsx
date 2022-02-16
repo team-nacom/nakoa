@@ -17,6 +17,7 @@ import { RootReducer } from 'store';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
+import CellPage from 'pages/Cell/CellPage';
 
 const localeMessages = {
   'en': messageEn,
@@ -46,6 +47,7 @@ function App() {
           <Route exact path='/about' component={About} />
 
           <Route exact path='/cell/write' component={CellWrite} />
+          <Route exact path='/cell/view/:index' component={CellPage} />
           <Route component={NotFound}/>
         </Switch>
       </Router>
