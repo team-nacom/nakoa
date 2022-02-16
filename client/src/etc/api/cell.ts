@@ -53,13 +53,13 @@ export const postCell = async (flat: Flat) => {
     };
 }
 
-export const hideBubble = async (index: string) => {
+export const hideCell = async (index: string) => {
     let response = await Axios.put(`${apiAddress}/cell/hide/${index}`)
 
     return response.status < 300;
 }
 
-export const unhideBubble = async (index: string) => {
+export const unhideCell = async (index: string) => {
     let response = await Axios.put(`${apiAddress}/cell/unhide/${index}`)
 
     return response.status < 300;
@@ -67,7 +67,7 @@ export const unhideBubble = async (index: string) => {
 
 // Internal APIs
 
-export const getAllBubbles = async () => {
+export const getAllCells = async () => {
     let response = await Axios.get(`${apiAddress}/cell/debug`, {
         validateStatus: authValidateStatus, 
     });
@@ -75,7 +75,7 @@ export const getAllBubbles = async () => {
     return response.data as CellType[];
 }
 
-export const removeBubble = async (index: string) => {
+export const removeCell = async (index: string) => {
     let response = await Axios.delete(`${apiAddress}/cell/delete/${index}`)
 
     return response.status < 300;

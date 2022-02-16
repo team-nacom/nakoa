@@ -7,6 +7,7 @@ import NotFound from 'pages/NotFound';
 import Hidden from 'pages/Hidden'; //Testing page
 import BubbleList from 'pages/bubble/BubbleList';
 import BubblePage from 'pages/bubble/BubblePage';
+import CellWrite from 'pages/Cell/CellWrite';
 
 import messageEn from './locale/en.json';
 import messageKo from './locale/ko.json';
@@ -43,6 +44,8 @@ function App() {
           <Route exact path='/view/:index' component={BubblePage} />
           <Route exact path='/hidden' component={Hidden} />
           <Route exact path='/about' component={About} />
+
+          <Route exact path='/cell/write' component={CellWrite} />
           <Route component={NotFound}/>
         </Switch>
       </Router>
