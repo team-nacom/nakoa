@@ -7,7 +7,6 @@ import NotFound from 'pages/NotFound';
 import Hidden from 'pages/Hidden'; //Testing page
 import BubbleList from 'pages/bubble/BubbleList';
 import BubblePage from 'pages/bubble/BubblePage';
-import CellWrite from 'pages/Cell/CellWrite';
 
 import messageEn from './locale/en.json';
 import messageKo from './locale/ko.json';
@@ -18,6 +17,8 @@ import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 import BubbleWrite from 'pages/bubble/BubbleWrite';
 import CellPage from 'pages/Cell/CellPage';
+import CellList from 'pages/Cell/CellList';
+import CellWrite from 'pages/Cell/CellWrite';
 
 const localeMessages = {
   'en': messageEn,
@@ -48,6 +49,7 @@ function App() {
 
           <Route exact path='/cell/write' component={CellWrite} />
           <Route exact path='/cell/view/:index' component={CellPage} />
+          <Route exact path='/cell/list/:author?' component={CellList} />
           <Route component={NotFound}/>
         </Switch>
       </Router>
