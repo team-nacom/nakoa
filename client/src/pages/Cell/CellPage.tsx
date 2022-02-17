@@ -10,7 +10,7 @@ import { RootReducer } from 'store';
 import BubbleSidebar from 'components/BubbleSidebar';
 import Button from 'components/Button';
 import { Flat } from 'components/naflat/flat';
-import { FlatEditorComponent } from 'components/naflat/component';
+import { FlatDisplayComponent } from 'components/naflat/component';
 
 
 interface Params {
@@ -66,7 +66,7 @@ function CellPage() {
                     <>
                         <h1 className='title' style={{lineHeight: '100px'}}> { cell.title } </h1>
                         <h2 className='author'> { cell.author } </h2>
-                        <FlatEditorComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
+                        <FlatDisplayComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
                     </>
                 ) : (
                     <p> 존재하지 않는 버블입니다. </p>

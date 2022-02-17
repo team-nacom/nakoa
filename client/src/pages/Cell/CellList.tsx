@@ -11,13 +11,13 @@ import AuthorInput from '../../components/AuthorInput';
 import Button from '../../components/Button';
 
 interface Params {
-    author: string;
+    author?: string;
 };
 
 function CellList() {
-    let params = useParams<Params>();
+    let { author: paramAuthor } = useParams<Params>();
     let storedAuthor = localStorage.getItem('author');
-    let [author, setAuthor] = React.useState<string>(storedAuthor ?? '');
+    let [author, setAuthor] = React.useState<string>(paramAuthor ?? (storedAuthor ?? ''));
     React.useEffect(() => {
         localStorage.setItem("author", author);
     }, [author]);
