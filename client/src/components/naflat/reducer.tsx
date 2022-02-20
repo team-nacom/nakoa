@@ -11,14 +11,13 @@ const MAX_HISTORY = 5;
 interface FlatState{
     flat : Flat;
     focusId? : string;
-    cursorStart? : number;
-    cursorEnd? : number;
+    cursorStart? : number; //for text cell purpose
+    cursorEnd? : number; //for text cell purpose
     history : Flat[];
 }
 
 type FlatStateAction
-    = { type: 'update'; id: string; value: unknown; }
-    | { type: 'updateSelected'; id: string; start?: number; end?: number; cursorOption: F.CursorOption, func: (str: string) => string; }
+    = { type: 'update'; id: string; value: unknown; cursorStart?: number, cursorEnd?: number }
     | { type: 'changeType'; id: string; cellType: CellType; }
     | { type: 'move'; id: string; parentId: string; pos?: number; }
     | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
@@ -46,18 +45,9 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     switch (action.type){
     case 'update':
         flat = F.updateCell(flat, action.id, action.value);
+        cursorStart = action.cursorStart;
+        cursorEnd = action.cursorEnd;
         break; //not saved in history
-    case 'updateSelected':
-        if(action.start !== undefined && action.end !== undefined){
-            [flat, cursorStart, cursorEnd] = F.updateSelected(flat, action.id, action.start, action.end, action.cursorOption, action.func);
-        }
-        else{
-            console.log(action.id);
-            if(!flat[action.id]) break;
-            let len = String(flat[action.id].value).length;
-            [flat, cursorStart, cursorEnd] = F.updateSelected(flat, action.id, len, len, action.cursorOption, action.func);
-        }
-        break;
     case 'changeType':
         flat = F.changeCellType(flat, action.id, action.cellType);
         // if(state.flat !== flat) pushHistory(state.flat);

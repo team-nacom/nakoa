@@ -60,13 +60,19 @@ function EditorMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <SingletonTextArea
-            style={ props.style as any }
-            name={'cell' + props.cellId}
-            className='editorMathCell editorCell'
-            onChange={handleChangeFactory(props.cellId,dispatch)}
-            value={contents}
-        />
+        <>
+            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+                <SingletonTextArea
+                    style={ props.style as any }
+                    className='editorMathCell editorCell'
+                    onChange={handleChangeFactory(dispatch,props.cellId)}
+                    value={contents}
+                />
+            </div>
+            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+                <PreviewMathCell {...props} />
+            </div>
+        </>
     );
 }
 

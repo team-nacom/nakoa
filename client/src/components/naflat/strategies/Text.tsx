@@ -9,11 +9,11 @@ import {
 } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
 
-import { useDropzone } from 'react-dropzone';
 import {
-    imgUploadHelperFactory,
-    fileUploadHelperFactory
+    imgUploadHelper,
+    fileUploadHelper
 } from './helpers/handlers';
+import { FileDropzone } from './helpers/FileDropzone';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 const MemoizedRenderer = React.memo(MarkdownRenderer);
@@ -27,7 +27,7 @@ function DisplayTextCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <div className='textCell renderedTextCell'
+        <div className='textCell'
             style={ props.style }
         >
             <MemoizedRenderer>
@@ -47,7 +47,7 @@ function PreviewTextCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <div className='textCell renderedTextCell'
+        <div className='textCell'
             style={ props.style }
         >
             <MemoizedRenderer openDetails>
@@ -64,7 +64,7 @@ function EditorTextCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const shortcuts = handleTextShortcutFactory(state, props.cellId, dispatch);
+    const shortcuts = handleTextShortcutFactory(state, dispatch, props.cellId);
 
     //bind keys. (todo: do something better, or integrate to react-keybind.)
     function onKeyDown(ev: React.KeyboardEvent<HTMLTextAreaElement>){
@@ -73,27 +73,27 @@ function EditorTextCell(props: CellComponentProps){
         for(let sc in shortcuts){
             for(let cfg of shortcuts[sc].keymap){
                 let arr = cfg.split('+');
-                let flag = false;
+                let flag = true;
                 for(let key of arr){
                     if( key === 'control' || key === 'ctrl'){
-                        if(!ev.ctrlKey){ flag = true; break; }
+                        if(!ev.ctrlKey){ flag = false; break; }
                     }
                     else if(key === 'alt'){
-                        if(!ev.altKey){ flag = true; break; }
+                        if(!ev.altKey){ flag = false; break; }
                     }
                     else if(key === 'shift'){
-                        if(!ev.shiftKey){ flag = true; break; }
+                        if(!ev.shiftKey){ flag = false; break; }
                     }
                     else if(key === 'meta' || key === 'cmd'){
-                        if(!ev.metaKey){ flag = true; break; }
+                        if(!ev.metaKey){ flag = false; break; }
                     }
                     else{
                         if(key !== pressed){
-                            flag = true; break;
+                            flag = false; break;
                         }
                     }
                 }
-                if(!flag){
+                if(flag){
                     shortcuts[sc].handler(ev);
                     break;
                 }
@@ -112,50 +112,48 @@ function EditorTextCell(props: CellComponentProps){
 
     return (
         <>
-            <SingletonTextArea
-                initialSelectionStart={ state.cursorStart }
-                initialSelectionEnd={ state.cursorEnd }
-                style={ props.style as any }
-                name={'cell' + props.cellId}
-                className='editorTextCell editorCell'
-                onChange={handleChangeFactory(props.cellId,dispatch)}
-                onPaste={handlePasteFactory(props.cellId,dispatch)}
-                onKeyDown={ onKeyDown }
-                value={contents}
-            />
-            <div className='dropzone'>
-                <FileDropzone
-                    handleDrop={ (files) => imgUploadHelperFactory(props.cellId, dispatch)(files[0], -1, -1, () => { console.log('이미지 업로드 실패') }) }
-                    message={ '이미지 업로드' }
+            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+                <SingletonTextArea
+                    initialSelectionStart={ state.cursorStart }
+                    initialSelectionEnd={ state.cursorEnd }
+                    // style={ props.style as any }
+                    className='editorTextCell editorCell'
+                    onChange={handleChangeFactory(dispatch, props.cellId)}
+                    onPaste={handlePasteFactory(dispatch, props.cellId)}
+                    onKeyDown={ onKeyDown }
+                    value={contents}
                 />
-                <FileDropzone
-                    handleDrop={ (files) => fileUploadHelperFactory(props.cellId, dispatch)(files[0], -1, -1, () => { console.log('파일 업로드 실패') }) }
-                    message={ '파일 업로드' }
-                />
+                <div className='dropzone'>
+                    <FileDropzone
+                        handleDrop={ (files) => imgUploadHelper(
+                            dispatch, props.cellId, files[0],
+                            state.flat[props.cellId].value as string,
+                            undefined, undefined,
+                            str => str,
+                            () => { console.log('이미지 업로드 실패') }
+                        )}
+                    >
+                        { '이미지 업로드' }
+                    </FileDropzone>
+                    <FileDropzone
+                        handleDrop={ (files) => fileUploadHelper(
+                            dispatch, props.cellId, files[0],
+                            state.flat[props.cellId].value as string,
+                            undefined, undefined,
+                            str => str,
+                            () => { console.log('파일 업로드 실패') }
+                        )}
+                    >
+                        { '파일 업로드' }
+                    </FileDropzone>
+                </div>
+            </div>
+            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+                <PreviewTextCell {...props} />
             </div>
         </>
     );
 }
-
-//TODO : dropzone은 별개 파일로 빼기
-
-interface FileDropzoneProps {
-    handleDrop: (acceptedFiles: File[]) => void;
-    message?: string;
-};
-
-function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
-    const onDrop = React.useCallback(handleDrop, []);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
-  
-    return (
-        <>
-            <label {...getRootProps()}>{ message }</label>
-            <input {...getInputProps()} />
-        </>
-    )
-}
-
 
 const TextCellStrategy : CellRenderStrategy = {
     'display': DisplayTextCell,

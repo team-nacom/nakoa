@@ -6,7 +6,8 @@ import { createContext, useContext } from 'react';
 
 import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
 
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType } from './flat';
+import lodash from 'lodash';
+import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
@@ -18,14 +19,17 @@ import RootCellStrategy from './strategies/Root';
 import TextCellStrategy from './strategies/Text';
 import MathCellStrategy from './strategies/Math';
 import CodeCellStrategy from './strategies/Code';
+import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
+import AuthorInput from 'components/AuthorInput';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
     'text': TextCellStrategy,
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
+    'image': ImageCellStrategy
 };
 
 function CellDisplay(props: CellComponentProps) {
@@ -58,15 +62,27 @@ function CellEditor(props: CellComponentProps) {
 
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
-    
+
+    function cellTypeButtonHandlerFactory(type : CellType){
+        return () => {
+            if(cell.type === type) return;
+            if(lodash.isEqual(cell.value, defaultValue[cell.type])
+                || window.confirm('셀 타입을 변경하면 내용이 초기화됩니다. 변경하시겠습니까?')
+            ){ //either the value is default OR it is confirmed to reset the value
+                dispatch({ type: 'changeType', cellType: type, id: props.cellId });
+            }
+        }
+    }
+
     return <>
 
         {!isFocused &&
             <>
-                { /* side cell */}
-
                 <div className='cellWrapper'
-                    onClick={(ev) => {ev.stopPropagation();dispatch({ type: 'focus', id: props.cellId })} }
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        dispatch({ type: 'focus', id: props.cellId })
+                    }}
                 >
                     <div className='bubbleOptions'>
                         {cell.childIds.length === 0 &&
@@ -93,7 +109,7 @@ function CellEditor(props: CellComponentProps) {
         {isFocused &&
             <div className='editorCellContainer'>
 
-                <div className='cellWrapper' style={ {display: 'flex'} }
+                <div className='cellWrapper'
                     onClick={(ev) => {ev.stopPropagation()} }
                 >
                     { /* side cell */}
@@ -102,21 +118,27 @@ function CellEditor(props: CellComponentProps) {
                             <>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'text', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('text') }
                                 >
                                     article
                                 </button>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'math', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('math') }
                                 >
                                     calculate
                                 </button>
                                 <button
                                     className='material-icons bubbleOptionButton'
-                                    onClick={() => dispatch({ type: 'changeType', cellType: 'code', id: props.cellId })}
+                                    onClick={ cellTypeButtonHandlerFactory('code') }
                                 >
                                     code
+                                </button>
+                                <button
+                                    className='material-icons bubbleOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('image') }
+                                >
+                                    image
                                 </button>
                             </>
                         }
@@ -186,6 +208,7 @@ const emptyFlat: Flat = {
 interface FlatComponentProps extends CellComponentProps {
     initialFlat?: Flat;
     initialFocusId?: string;
+    uploadFlat?: (flat: Flat) => void;
 }
 
 function FlatDisplayComponent(props: FlatComponentProps) {
@@ -216,7 +239,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
         // useMemo for hooking multiple function
         const gs = useMemo(() => (
             handleGlobalShortcutFactory(state,dispatch)
-        ), [state,dispatch])
+        ), [state,dispatch]);
 
         useEffect(()=>{
             if(shortcut && shortcut.registerShortcut){
@@ -242,12 +265,52 @@ const FlatEditorComponentWithShortcut = withShortcut(
         return (<FlatContext.Provider value={{ state, dispatch }} >
             <CellEditor {...others}/>
             <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+            { props.uploadFlat && 
+                <button onClick = { () => { props.uploadFlat!(state.flat) } }>업로드</button>
+            }
         </FlatContext.Provider>);
     }
 )
-function FlatEditorComponent(props: FlatComponentProps){
+
+
+interface FlatEditorProps extends FlatComponentProps {
+    // initialFlat?: Flat;
+    // initialFocusId?: string;
+    // uploadFlat?: (flat: Flat) => void;
+    title?: string;
+    setTitle?: (value: string) => void;
+    author?: string;
+    setAuthor?: (value: string) => void;
+    upload?: (title: string, author: string, flat: Flat) => void;
+}
+
+function FlatEditorComponent(props: FlatEditorProps){
+    let title = props.title ?? 'untitled';
+    let setTitle = props.setTitle ?? ((value: string) => {});
+
+    let author = props.author ?? 'unknown';
+    let setAuthor = props.setAuthor ?? ((value: string) => {});
+
+    let uploadFlat = (flat: Flat) => {};
+    if (props.upload !== undefined){
+        uploadFlat = (flat: Flat) => {
+            props.upload!(title, author, flat);
+        }
+    }
+
     return (<ShortcutProvider ignoreTagNames={ [] }>
-        <FlatEditorComponentWithShortcut {...props} />
+
+        <div className='titleEditor'>
+            <label>
+                제목
+            </label>
+            <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+        </div>
+
+        <div className='flexbox'>
+            <AuthorInput author={author} setAuthor={setAuthor} />                
+        </div>
+        <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
     </ShortcutProvider>);
 }
 
