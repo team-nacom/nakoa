@@ -11,9 +11,11 @@ import { FlatEditorComponent } from 'components/naflat/component';
 
 function CellWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
+    let [title, setTitle] = React.useState<string>();
+    let [author, setAuthor] = React.useState<string>();
 
-    let upload = (flat: Flat) => {
-        postCell(flat).then(({success, index}) => {
+    let upload = (title: string, author: string, flat: Flat) => {
+        postCell(title, author, flat).then(({success, index}) => {
             if (success) {
                 setRedirectTo(`/cell/view/${index}`);
             }
@@ -26,7 +28,13 @@ function CellWrite() {
         <>
             <Header/>
             <div id='content'>
-                <FlatEditorComponent cellId='c0' upload={upload}/>
+                <FlatEditorComponent
+                    title={title}
+                    setTitle={setTitle}
+                    author={author}
+                    setAuthor={setAuthor}
+                    cellId='c0'
+                    upload={upload}/>
             </div>
             <Footer/>
         </>

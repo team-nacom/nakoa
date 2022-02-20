@@ -37,10 +37,10 @@ export const getCell = async (index: string) => {
     return response.data as CellType;
 }
 
-export const postCell = async (flat: Flat) => {
+export const postCell = async (title: string, author: string, flat: Flat) => {
     const data: CellUploadType = {
-        title: "untitled",
-        author: "unknown",
+        title: title,
+        author: author,
         content: JSON.stringify(flat),
     };
     let response = await Axios.post(`${apiAddress}/cell`, data, {
