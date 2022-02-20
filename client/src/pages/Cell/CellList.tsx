@@ -67,7 +67,7 @@ function CellList() {
                 { !cellLoading && cell && cell.length > 0 && 
                     <div className='bubbleFeedList'>
                         {cell?.map((cell) => <div key={cell.title} className='bubbleFeed'>
-                            <Link to={`/cell/view/${cell.index}`}>
+                            <Link to={`/view/${cell.index}`}>
                                 <div className='bubbleFeedContent'>
                                     <div className='title'> { cell.title ? cell.title : "untitled" } </div>
                                     <div className='author'> by { cell.author ?? "anonymous" } </div>

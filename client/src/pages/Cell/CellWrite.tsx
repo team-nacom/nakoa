@@ -4,7 +4,6 @@ import Header from 'components/Header';
 import { postCell, CellUploadType } from 'etc/api/cell';
 import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
-import DemoBubbleEditor from 'components/DemoBubbleEditor';
 import { Flat } from 'components/naflat/flat';
 import { FlatEditorComponent } from 'components/naflat/component';
 
@@ -17,7 +16,7 @@ function CellWrite() {
     let upload = (title: string, author: string, flat: Flat) => {
         postCell(title, author, flat).then(({success, index}) => {
             if (success) {
-                setRedirectTo(`/cell/view/${index}`);
+                setRedirectTo(`/view/${index}`);
             }
             else alert('업로드에 실패했습니다...');
         })
