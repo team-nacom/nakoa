@@ -21,16 +21,18 @@ function DisplayImageCell(props: CellComponentProps){
     let { src, caption } = cell.value as ImageCellValue;
 
     return (
-        <>
-            <img src={ src } alt=''
+        <div className='imageCell'>
+            <img 
+                className='imageCellImage'
+                src={ src } alt=''
                 onError = { (ev) =>{
                     if(ev.currentTarget.src !== '/altImg.png'){
                         ev.currentTarget.src = '/altImg.png';
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
-        </>
+            <p className='imageCellCaption'>{ caption }</p>
+        </div>
     );
 }
 
@@ -42,8 +44,10 @@ function PreviewImageCell(props: CellComponentProps){
     let { src, caption } = cell.value as ImageCellValue;
 
     return (
-        <>
-            <img src={ src } alt=''
+        <div className='imageCell'>
+            <img
+                className='imageCellImage'
+                src={ src } alt=''
                 onError = { (ev) =>{
                     ev.preventDefault();
                     if(ev.currentTarget.src !== '/altImg.png'){
@@ -51,8 +55,8 @@ function PreviewImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
-        </>
+            <p className='imageCellCaption'>{ caption }</p>
+        </div>
     );
 }
 
@@ -64,7 +68,7 @@ function EditorImageCell(props: CellComponentProps){
     let { src, caption } = cell.value as ImageCellValue;
 
     return (
-        <>
+        <div className='imageCellWrapper'>
             <FileDropzone
                 handleDrop={ async (files) =>{
                     // fileUploadHelper(
@@ -87,7 +91,10 @@ function EditorImageCell(props: CellComponentProps){
 
                 } }
             >
-                <img src={ src } alt=''
+                <img 
+                    className='imageCellImage'
+                    src={ src }
+                    alt=''
                     onError = { (ev) =>{
                         ev.preventDefault();
                         if(ev.currentTarget.src !== '/altImg.png'){
@@ -99,7 +106,7 @@ function EditorImageCell(props: CellComponentProps){
             </FileDropzone>
             <input
                 style={ props.style as any }
-                className=''
+                className='imageCellCaptionInput'
                 onChange={
                     handleChangeFactory(
                         dispatch,
@@ -109,7 +116,7 @@ function EditorImageCell(props: CellComponentProps){
                 }
                 value={ caption }
             />
-        </>
+        </div>
     );
 }
 

@@ -23,6 +23,7 @@ import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
 import AuthorInput from 'components/AuthorInput';
+import Button from 'components/Button';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
@@ -39,10 +40,12 @@ function CellDisplay(props: CellComponentProps) {
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
     return <>
-        <Strategy {...props} />
+        <div className='cellContentWrapper'>
+            <Strategy {...props} />
+        </div>
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}>
+            <div className='cellChildrenWrapper'>
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -77,16 +80,16 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                <div className='cellWrapper'
+                <div className='cellContentWrapper'
                     onClick={(ev) => {
                         ev.stopPropagation();
                         dispatch({ type: 'focus', id: props.cellId })
                     }}
                 >
-                    <div className='bubbleOptions'>
+                    <div className='cellOptions'>
                         {cell.childIds.length === 0 &&
                             <button
-                                className='material-icons bubbleOptionButton'
+                                className='material-icons cellOptionButton'
                                 onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
                             >
                                 add
@@ -94,7 +97,7 @@ function CellEditor(props: CellComponentProps) {
                         }
                         {cell.type !== 'root' &&
                             <button
-                                className='material-icons bubbleOptionButton'
+                                className='material-icons cellOptionButton'
                                 onClick={() => dispatch({ type: 'remove', id: props.cellId })}
                             >
                                 delete
@@ -106,65 +109,62 @@ function CellEditor(props: CellComponentProps) {
             </>
         }
         {isFocused &&
-            <div className='editorCellContainer'>
-
-                <div className='cellWrapper'
-                    onClick={(ev) => {ev.stopPropagation()} }
-                >
-                    { /* side cell */}
-                    <div className='bubbleOptions'>
-                        {cell.type !== 'root' &&
-                            <>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('text') }
-                                >
-                                    article
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('math') }
-                                >
-                                    calculate
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('code') }
-                                >
-                                    code
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('image') }
-                                >
-                                    image
-                                </button>
-                            </>
-                        }
-                        <button
-                            className='material-icons bubbleOptionButton'
-                            onClick={() => dispatch({ type: 'blur' })}
-                        >
-                            close
-                        </button>
-                        {cell.type !== 'root' &&
+            <div className='cellContentWrapper editingCellWrapper'
+                onClick={(ev) => {ev.stopPropagation()} }
+            >
+                { /* side cell */}
+                <div className='cellOptions'>
+                    {cell.type !== 'root' &&
+                        <>
                             <button
-                                className='material-icons bubbleOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('text') }
                             >
-                                delete
+                                article
                             </button>
-                        }
-                    </div>
-
-                    <EditorStrategy {...props} />
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('math') }
+                            >
+                                calculate
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('code') }
+                            >
+                                code
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('image') }
+                            >
+                                image
+                            </button>
+                        </>
+                    }
+                    <button
+                        className='material-icons cellOptionButton'
+                        onClick={() => dispatch({ type: 'blur' })}
+                    >
+                        close
+                    </button>
+                    {cell.type !== 'root' &&
+                        <button
+                            className='material-icons cellOptionButton'
+                            onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                        >
+                            delete
+                        </button>
+                    }
                 </div>
+
+                <EditorStrategy {...props} />
             </div>
         }
 
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}
+            <div className='cellChildrenWrapper'
                 onClick={() => dispatch({ type: 'blur' }) }
             >
                 {
@@ -202,7 +202,9 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
-            <CellDisplay {...others} />
+            <div className='allCellsWrapper'>
+                <CellDisplay {...others} />
+            </div>
         </FlatContext.Provider>
     );
 }
@@ -247,10 +249,12 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <CellEditor {...others}/>
-            <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
+            <div className='allCellsWrapper'>
+                <CellEditor {...others}/>
+            </div>
+            {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
             { props.uploadFlat && 
-                <button onClick = { () => { props.uploadFlat!(state.flat) } }>업로드</button>
+                <Button className='uploadButton' onClick = { async () => props.uploadFlat!(state.flat) }>업로드</Button>
             }
         </FlatContext.Provider>);
     }
@@ -283,18 +287,19 @@ function FlatEditorComponent(props: FlatEditorProps){
     }
 
     return (<ShortcutProvider ignoreTagNames={ [] }>
+        <div className='cellEditorWrapper'>
+            <div className='editorTextInput'>
+                <div className='titleInput'>
+                    <label>
+                        제목
+                    </label>
+                    <input value={title} onChange={(e) => setTitle(e.target.value)}/>
+                </div>
+                <AuthorInput author={author} setAuthor={setAuthor} />
+            </div>
 
-        <div className='titleEditor'>
-            <label>
-                제목
-            </label>
-            <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+            <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
         </div>
-
-        <div className='flexbox'>
-            <AuthorInput author={author} setAuthor={setAuthor} />                
-        </div>
-        <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
     </ShortcutProvider>);
 }
 

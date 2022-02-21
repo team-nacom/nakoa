@@ -14,14 +14,14 @@ function DisplayCodeCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
+        <div className='codeCell'>
             <summary className='codeCellPreview'>
                 코드
             </summary>
             <pre className='codeCell renderedCodeCell'>
                 <code>{contents}</code>
             </pre>
-        </>
+        </div>
     );
 }
 
@@ -35,14 +35,14 @@ function PreviewCodeCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
+        <div className='codeCell'>
             <summary className='codeCellPreview'>
                 코드
             </summary>
             <pre className='codeCell previewCodeCell'>
                 <code>{contents}</code>
             </pre>
-        </>
+        </div>
     );
 }
 
@@ -56,13 +56,16 @@ function EditorCodeCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <SingletonTextArea
-            style={ props.style as any }
-            name={'cell' + props.cellId}
-            className='editorCodeCell editorCell'
-            onChange={handleChangeFactory(dispatch,props.cellId)}
-            value={contents}
-        />
+        <div className='editorCodeCellWrapper'>
+            <SingletonTextArea
+                style={ props.style as any }
+                name={'cell' + props.cellId}
+                className='editorCodeCell editorCell'
+                onChange={handleChangeFactory(dispatch,props.cellId)}
+                value={contents}
+            />
+            <PreviewCodeCell {...props}/>
+        </div>
     );
 }
 

@@ -5,7 +5,7 @@ import Footer from 'components/Footer';
 import { Flat, findAdjacentId } from 'components/naflat/flat'
 import { FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
 
-const initialFlat : Flat = {
+export const initialFlat : Flat = {
     'c0' : {
         type: 'root',
         id: 'c0',
@@ -78,7 +78,7 @@ $$
         id: 'c4',
         parentId: 'c0',
         childIds: [],
-        value: { src: 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg', caption: '무~야~호~~' }
+        value: { src: 'https://w.namu.la/s/6e0ab03a951028847afab3ca88b1e0f790998d61d4f4daa61a5b24c6c96deab4e2761211a6372c3b1a53a883f81a03a8133f015b178339d7fccdaa9c695613401034cd1d2e6f89ddc7fa79cb533164c9', caption: 'Kris' }
     }
 }
 

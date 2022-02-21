@@ -6,6 +6,7 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
 import { Flat } from 'components/naflat/flat';
 import { FlatEditorComponent } from 'components/naflat/component';
+import {initialFlat} from 'pages/Hidden';
 
 
 function CellWrite() {
@@ -28,6 +29,7 @@ function CellWrite() {
             <Header/>
             <div id='content'>
                 <FlatEditorComponent
+                    initialFlat={initialFlat}
                     title={title}
                     setTitle={setTitle}
                     author={author}

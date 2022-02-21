@@ -18,14 +18,14 @@ function DisplayMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
+        <div className='mathCell'>
             <summary className='mathCellPreview'>
                 수식
             </summary>
             <div className='mathCell renderedMathCell' >
                 <MemoizedTeX block math = { contents } />
             </div>
-        </>
+        </div>
     );
 }
 
@@ -39,14 +39,14 @@ function PreviewMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
+        <div className='mathCell'>
             <summary className='mathCellPreview'>
                 수식
             </summary>
             <div className='mathCell previewMathCell' >
                 <MemoizedTeX block math = { contents } />
             </div>
-        </>
+        </div>
     );
 }
 
@@ -60,19 +60,15 @@ function EditorMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
-                <SingletonTextArea
-                    style={ props.style as any }
-                    className='editorMathCell editorCell'
-                    onChange={handleChangeFactory(dispatch,props.cellId)}
-                    value={contents}
-                />
-            </div>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
-                <PreviewMathCell {...props} />
-            </div>
-        </>
+        <div className='editorMathCellWrapper'>
+            <SingletonTextArea
+                style={ props.style as any }
+                className='editorMathCell editorCell'
+                onChange={handleChangeFactory(dispatch,props.cellId)}
+                value={contents}
+            />
+            <PreviewMathCell {...props} />
+        </div>
     );
 }
 
