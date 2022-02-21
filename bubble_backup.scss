@@ -1,0 +1,305 @@
+@import '../consts.scss';
+
+@mixin cell($color) {
+    padding: 1px 10px;
+    box-sizing: border-box;
+    min-height: 54px;
+    overflow: scroll;
+    background: $color;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+@mixin celllabel($background-color: gray, $color: white) {
+    width: fit-content;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 15px;
+    margin-bottom: -28px;
+    margin-left: 5px;
+
+    background-color: $background-color;
+    color: $color;
+}
+
+.textCell {
+    @include cell(rgba(gray, 0.06));
+}
+
+.mathCell {
+    @include cell(rgba($main-color, 0.06));
+}
+
+summary.mathCellPreview {
+    @include celllabel(rgba($main-color, 0.8), white);
+}
+
+.codeCell {
+    @include cell(rgba(gray, 0.16));
+    padding-top: 30px;
+    padding-bottom: 10px;
+    font-size: 13.33px;
+}
+
+summary.codeCellPreview {
+    @include celllabel(rgba(gray, 0.8), white);
+}
+
+@mixin controlButton {
+    height: 40px;
+    width: 40px;
+    flex-basis: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    border: 2px solid grey;
+    background: white;
+}
+
+.interBlockHelper {
+    width: 100%;
+    height: 26px;
+    margin: 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+
+    .addCellButton {
+        @include controlButton();
+        flex-grow: 0;
+        opacity: 0;
+        z-index: 2;
+    }
+
+    &:hover {
+        .addCellButton {
+            opacity: 1;
+            transition: 0.3s;
+        }
+    }
+}
+
+.editorCellContainer {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    @mixin editorCell($color) {
+        display: inline-block;
+        width: 100%; //calc(100% - 6px);
+        // margin: 2px 0;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+        resize: none;
+        background: $color;
+        border: none;
+        // min-height: 54px;
+        // max-height: 250px;
+        line-height: 20px;
+        vertical-align: middle;
+        overflow-y: hidden;
+
+        //height is intended to be auto-adjusted by react-textarea-autosize package.
+        //do not specify min- or max-height and leave `overflow-y:hidden` as it is.
+    }
+
+    .editorRootCell {
+        // from '../write.scss'
+        @include editorCell(rgba(white,0));
+
+        input.title {
+            padding: 15px;
+            // margin: 10px 0px;
+
+            font-size: 16px;
+            font-weight: 300;
+            width: 100%; // calc(100% - 30px);
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: #A5AAC0 1px solid;
+
+            box-sizing: border-box;
+        }
+    }
+
+    .editorTextCell {
+        @include editorCell(rgba(gray, 0.06));
+    }
+
+    .editorMathCell {
+        @include editorCell(rgba($main-color, 0.06));
+    }
+
+    .editorCodeCell {
+        @include editorCell(rgba(gray, 0.16));
+    }
+
+    .sideBlockHelper {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 4px;
+        height: inherit;
+        top: 0;
+        opacity: 0;
+        background-color: grey;
+
+        >* {
+            transform: translate(10px, 10px);
+        }
+
+        .cellOptionButton {
+            @include controlButton();
+            z-index: 2;
+            transition: 0.3s;
+            margin: 3px;
+        }
+    }
+
+    &:hover {
+        .sideBlockHelper {
+            opacity: 1;
+            transition: 0.3s;
+        }
+    }
+}
+
+.bubbleFeedList {
+    margin: auto;
+    max-width: 1350px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .bubbleFeed {
+        margin: 25px;
+        flex: 0 0 283px;
+
+        @media (max-width: $max-mobile-width) {
+            flex: 1 0 51%;
+        }
+
+        .bubbleFeedContent {
+            border-radius: 3.5px;
+            background: white;
+            border-top: 10px $primary-color solid;
+            box-shadow: 0px 5px 15px #00000056;
+            padding-top: 5px;
+            min-height: 245px;
+
+
+            background-image: linear-gradient(120deg, #f3f3f3 0%, #fafafa 100%);
+
+
+
+            .author {
+                font-size: 14px;
+                line-height: 14px;
+                padding: 5px 15px;
+                padding-bottom: 10px;
+                bottom: 0;
+            }
+
+            .tags {
+                font-size: 11px;
+                line-height: 20px;
+                padding: 15px 15px;
+                bottom: 0;
+                max-height: 15px;
+                overflow: hidden;
+            }
+
+            .title {
+                font-size: 20px;
+                line-height: 26px;
+                text-shadow: 0px 1px 8px #ffffff88;
+                padding: 3px 15px;
+                max-height: 26px;
+                overflow: hidden;
+            }
+
+            .content {
+                //                background: #ffffff88;
+                padding: 4px 15px;
+                font-size: 11px;
+                line-height: 22px;
+                height: 132px;
+                overflow: hidden;
+            }
+
+            .metadata {
+                font-size: 12px;
+                line-height: 20px;
+                margin: 10px 15px;
+                bottom: 0;
+            }
+        }
+    }
+}
+
+.bubbleOptions {
+    right: 0px;
+    position: absolute;
+    width: fit-content;
+    z-index: 1;
+}
+
+.bubbleOptionButton {
+    @include controlButton;
+    margin: 6px;
+}
+
+.cellWrapper {
+    position: relative;
+    border-radius: 4px;
+    width: 100%;
+
+    &:hover {
+        box-shadow: 0px 0px 15px #00000056;
+    }
+}
+
+.bubbleSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3;
+
+    button {
+        @include sidebarButton;
+    }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: -140px;
+        top: -220px;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 2px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004D;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
+}
