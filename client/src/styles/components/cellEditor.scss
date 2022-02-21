@@ -1,5 +1,10 @@
 @import '../consts.scss';
 
+
+@mixin shadow-template {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
 #content {
     background-color: #f5f6fa;
     margin: 0;
@@ -8,53 +13,61 @@
 .cellEditorWrapper, .cellDisplayWrapper {
     background-color: white;
     border-radius: 7px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     width: min(800px, calc(100vw - 20px));
     margin: 20px auto;
     padding: 20px;
-}
+    @include shadow-template();
+    
+    .allCellsWrapper {
+        border-top: solid 1px #c9c9c9;
+        border-bottom: solid 1px #c9c9c9;
+        
+        .editingCellWrapper {
+            @include shadow-template();
+            .cellOptions {
+                @include shadow-template();
+            }
+        }
 
-.allCellsWrapper {
-    border-top: solid 1px #c9c9c9;
-    border-bottom: solid 1px #c9c9c9;
-}
+        .cellContentWrapper {
+            position: relative;
+            background-color: white;
+            border-radius: 7px;
+            padding: 10px;
 
-.cellContentWrapper {
-    position: relative;
-}
-
-.cellOptions {
-    background-color: white;
-    border-radius: 7px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-
-    right: 5px;
-    top: -11px;
-    position: absolute;
-    width: fit-content;
-    z-index: 1;
-    display: flex;
-    flex-direction: row;
-    padding: 2px 4px;
-
-    button {
-        background-color: transparent;
-        font-size: 18px;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+            &:hover{
+                @include shadow-template();
+                .cellOptions {
+                    @include shadow-template();
+                }
+            }
+            
+            .cellOptions {
+                background-color: white;
+                border-radius: 7px;
+            
+                right: 5px;
+                top: -11px;
+                position: absolute;
+                width: fit-content;
+                z-index: 1;
+                display: flex;
+                flex-direction: row;
+                padding: 2px 4px;
+            
+                button {
+                    background-color: transparent;
+                    font-size: 18px;
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
     }
 }
-
-// .bubbleSidebar {
-//     right: 0px;
-//     bottom: 0px;
-//     position: absolute;
-//     width: fit-content;
-//     z-index: 1;
-// }
 
 .title {
     line-height: 1.6;
@@ -63,3 +76,13 @@
 .author {
     line-height: 1.6;
 }
+
+
+
+// .bubbleSidebar {
+//     right: 0px;
+//     bottom: 0px;
+//     position: absolute;
+//     width: fit-content;
+//     z-index: 1;
+// }
