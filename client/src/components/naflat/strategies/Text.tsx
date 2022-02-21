@@ -53,12 +53,20 @@ function PreviewTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
+    const label = state.renderInfo.label;
+    let renderString = contents;
+    for(var keyId in label){
+        var replace = label[keyId].custom || label[keyId].auto.join('.');
+        renderString = renderString.replaceAll(`%${ keyId }%`,replace);
+    }
+
     return (
         <div className='textCell'
             style={ props.style }
         >
             <MemoizedRenderer openDetails>
-                {contents}
+                {/* {contents} */}
+                { renderString }
             </MemoizedRenderer>
         </div>
     );

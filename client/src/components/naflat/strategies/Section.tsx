@@ -31,9 +31,13 @@ function PreviewSectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId];
     let contents = '# ' + cell.value;
 
+    contents = '' + cell.value;
+
+    const label = state.renderInfo.label;
+
     return (
         <h1 className='sectionCell'>
-            { '§##.' }
+            { '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '.' }
             <MemoizedRenderer>
                 {contents}
             </MemoizedRenderer>

@@ -178,7 +178,7 @@ function CellEditor(props: CellComponentProps) {
 
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}
+            <div className='childrenContainer' style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >
                 {
@@ -210,7 +210,7 @@ interface FlatComponentProps extends CellComponentProps {
 }
 
 function FlatDisplayComponent(props: FlatComponentProps) {
-    let { initialFlat, initialFocusId, ...others } = props;
+    const { initialFlat, initialFocusId, ...others } = props;
 
     const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
 
@@ -234,7 +234,8 @@ const FlatEditorComponentWithShortcut = withShortcut(
 
         const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
 
-        // useMemo for hooking multiple function
+        // attach global shortcuts
+        // useMemo for hooking multiple functions
         const gs = useMemo(() => (
             handleGlobalShortcutFactory(state,dispatch)
         ), [state,dispatch])
@@ -265,10 +266,10 @@ const FlatEditorComponentWithShortcut = withShortcut(
             <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
 
             { /* for debug */ }
-            <details>
+            {/* <details>
                 <summary>프리뷰 보기</summary>
                 <CellDisplay {...others} />
-            </details>
+            </details> */}
         </FlatContext.Provider>);
     }
 )
