@@ -17,54 +17,115 @@
     margin: 20px auto;
     padding: 20px;
     @include shadow-template();
+
+    > hr {
+        border: 0;
+        height: 1px;
+        // background: #333;
+        background-image: linear-gradient(to right, #ccc, #333, #ccc);
+    }
+}
+
+.cellContentWrapper {
+    position: relative;
+    background-color: white;
+    border-radius: 7px;
+    padding: 10px;
     
-    .allCellsWrapper {
-        border-top: solid 1px #c9c9c9;
-        border-bottom: solid 1px #c9c9c9;
-        
-        .editingCellWrapper {
+    &:hover{
+        transition: all ease 0.2s 0s;
+        @include shadow-template();
+        .cellOptions {
+            transition: inherit;
+            opacity: 1;
             @include shadow-template();
-            .cellOptions {
-                @include shadow-template();
-            }
         }
+    }    
+}
 
-        .cellContentWrapper {
-            position: relative;
+.cellOptions {
+    background-color: white;
+    border-radius: 7px;
+    opacity: 0;
+
+    right: 5px;
+    top: -11px;
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    padding: 2px 4px;
+
+    button {
+        background-color: transparent;
+        font-size: 18px;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.editingCellWrapper {
+    @include shadow-template();
+    .cellOptions {
+        @include shadow-template();
+    }
+}
+
+.interBlockHelper {
+    opacity: 0;
+    height: 25px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    hr {
+        border: none;
+        height: 6px;
+        background-color: white;
+        border-radius: 3px;
+        width: 0;
+        &:before, &:after {
+            display: inline-block;
             background-color: white;
-            border-radius: 7px;
-            padding: 10px;
+            border-radius: 3px;
+            width: 50px;
+            height: 20px;
+            position: absolute;
+            margin: auto;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            content:'';
+        }
+        &:after {
+            @include shadow-template();
+            z-index: -1;
+        }
+    }
 
-            &:hover{
-                @include shadow-template();
-                .cellOptions {
-                    @include shadow-template();
-                }
-            }
-            
-            .cellOptions {
-                background-color: white;
-                border-radius: 7px;
-            
-                right: 5px;
-                top: -11px;
-                position: absolute;
-                width: fit-content;
-                z-index: 1;
-                display: flex;
-                flex-direction: row;
-                padding: 2px 4px;
-            
-                button {
-                    background-color: transparent;
-                    font-size: 18px;
-                    width: 20px;
-                    height: 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
+    button {
+        position: absolute;
+        background-color: transparent;
+        width: 50px;
+        height: 20px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &:hover {
+        opacity: 1;
+        transition: all ease 0.1s 0s;
+        hr {
+            @include shadow-template();
+            width: 100%;
+            transition: inherit;
         }
     }
 }

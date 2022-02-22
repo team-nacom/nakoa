@@ -297,7 +297,7 @@ function FlatEditorComponent(props: FlatEditorProps){
                 </div>
                 <AuthorInput author={author} setAuthor={setAuthor} />
             </div>
-
+            <hr/>
             <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
         </div>
     </ShortcutProvider>);
