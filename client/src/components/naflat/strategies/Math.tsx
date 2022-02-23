@@ -67,6 +67,7 @@ function EditorMathCell(props: CellComponentProps){
                 onChange={handleChangeFactory(dispatch,props.cellId)}
                 value={contents}
             />
+            <div className='editorCellDividor'></div> {/* only for css */}
             <PreviewMathCell {...props} />
         </div>
     );

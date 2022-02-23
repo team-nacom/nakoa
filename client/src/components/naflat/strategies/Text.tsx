@@ -116,6 +116,7 @@ function EditorTextCell(props: CellComponentProps){
                 onKeyDown={ onKeyDown }
                 value={contents}
             />
+            <div className='editorCellDividor'></div> {/* only for css */}
             <PreviewTextCell {...props} />
         </div>
     );
