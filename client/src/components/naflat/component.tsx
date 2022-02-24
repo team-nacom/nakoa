@@ -86,24 +86,24 @@ function CellEditor(props: CellComponentProps) {
                         dispatch({ type: 'focus', id: props.cellId })
                     }}
                 >
-                    <div className='cellOptions'>
-                        {cell.childIds.length === 0 &&
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
-                            >
-                                add
-                            </button>
-                        }
-                        {cell.type !== 'root' &&
+                    {cell.type !== 'root' &&
+                        <div className='cellOptions'>
+                            {cell.childIds.length === 0 &&
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
+                                >
+                                    add
+                                </button>
+                            }
                             <button
                                 className='material-icons cellOptionButton'
                                 onClick={() => dispatch({ type: 'remove', id: props.cellId })}
                             >
                                 delete
                             </button>
-                        }
-                    </div>
+                        </div>
+                    }
                     <PreviewStrategy {...props} />
                 </div>
             </>

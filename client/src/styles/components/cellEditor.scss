@@ -5,6 +5,10 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
+@mixin input-template {
+
+}
+
 #content {
     background-color: #f5f6fa;
     margin: 0;
@@ -26,11 +30,13 @@
     }
 }
 
+.allCellsWrapper {
+    padding: 0px 20px;
+}
+
 .cellContentWrapper {
     position: relative;
     background-color: white;
-    border-radius: 7px;
-    padding: 10px;
     min-height: 54px;
     
     &:hover{
@@ -41,7 +47,36 @@
             opacity: 1;
             @include shadow-template();
         }
-    }    
+    }
+
+    .allCellsWrapper > & {
+        margin: 30px 0px;
+        display: flex;
+        align-items: stretch;
+        text-align: center;
+        .rootCell, .editorRootCell { flex: 1 1; }
+    }
+}
+
+.editorRootCell input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border: none;
+    padding: 0;
+    &:focus {
+        outline: none;
+    }
+}
+
+.cellChildrenWrapper {
+    border: solid #888 1px;
+    padding: 10px 20px;
+
+    .allCellsWrapper > & {
+        border: none;
+        padding: 0px;
+    }
 }
 
 .cellOptions {
@@ -49,8 +84,9 @@
     border-radius: 7px;
     opacity: 0;
 
-    right: 5px;
-    top: -11px;
+    right: 10px;
+    top: 0px;
+    transform: translateY(-50%);
     position: absolute;
     z-index: 1;
     display: flex;
@@ -142,17 +178,22 @@
     }
     .editorCellDividor {
         flex: 0 0 1px;
-        margin: 10px;
+        // margin: 10px;
         background: #ddd;
     }
 }
 
+.textCell {
+    padding: 7px 10px;
+}
+
 .editorCell {
-    border-radius: 7px;
+    box-sizing: border-box;
     border: none;
-    padding: 10px;
+    padding: 7px 10px;
     min-height: fit-content; 
     background-color: #f5f6fa;
+
     &:focus {
         outline: none;
     }
@@ -168,21 +209,3 @@
     scrollbar-width: none;
     /* Firefox */
 }
-
-.title {
-    line-height: 1.6;
-}
-
-.author {
-    line-height: 1.6;
-}
-
-
-
-// .bubbleSidebar {
-//     right: 0px;
-//     bottom: 0px;
-//     position: absolute;
-//     width: fit-content;
-//     z-index: 1;
-// }
