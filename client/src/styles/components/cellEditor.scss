@@ -6,7 +6,22 @@
 }
 
 @mixin input-template {
+    box-sizing: border-box;
+    background-color: #f5f6fa;
+    border: solid 1px transparent;
+    border-radius: 3px;
+    padding: 7px 10px;
+    transition: all ease 0.2s 0s;
 
+    &:hover {
+        background-color: white;
+        box-shadow: 0 0 5px $primary-color;
+    }
+    &:focus {
+        background-color: white;
+        border-color: $primary-color;
+        outline: none;
+    }
 }
 
 #content {
@@ -16,17 +31,35 @@
 
 .cellEditorWrapper, .cellDisplayWrapper {
     background-color: white;
-    border-radius: 7px;
-    width: min(800px, calc(100vw - 20px));
     margin: 20px auto;
     padding: 20px;
+    @media(min-width: 768px) {
+        border-radius: 7px;
+        width: 768px;
+    }
     @include shadow-template();
 
     > hr {
         border: 0;
         height: 1px;
-        // background: #333;
-        background-image: linear-gradient(to right, #ccc, #333, #ccc);
+        background: #ddd;
+    }
+}
+
+.editorTextInput {
+    display: flex;
+    margin: 20px;
+}
+.titleInput, .authorInput {
+    flex: 1;
+    input {
+        @include input-template();
+    }
+    &:focus-within {
+        label {
+            color: $primary-color;
+            font-weight: 600;
+        }
     }
 }
 
@@ -38,9 +71,9 @@
     position: relative;
     background-color: white;
     min-height: 54px;
+    transition: all ease 0.1s 0s;
     
     &:hover{
-        transition: all ease 0.2s 0s;
         @include shadow-template();
         .cellOptions {
             transition: inherit;
@@ -70,7 +103,7 @@
 }
 
 .cellChildrenWrapper {
-    border: solid #888 1px;
+    border: solid #84878d 1px;
     padding: 10px 20px;
 
     .allCellsWrapper > & {
@@ -119,6 +152,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all ease 0.1s 0s;
     
     hr {
         border: none;
@@ -126,14 +160,13 @@
         background-color: white;
         border-radius: 3px;
         width: 0;
+        transition: inherit;
         &:before, &:after {
             position: absolute;
-            display: inline-block;
             background-color: white;
             border-radius: 3px;
             width: 50px;
             height: 20px;
-            margin: auto;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -158,11 +191,9 @@
 
     &:hover {
         opacity: 1;
-        transition: all ease 0.1s 0s;
         hr {
             @include shadow-template();
             width: 100%;
-            transition: inherit;
         }
     }
 }
@@ -170,15 +201,16 @@
 .editorTextCellWrapper, .editorCodeCellWrapper, .editorMathCellWrapper {
     display: flex;
     align-items: stretch;
-    .editorCell {
-        flex: 1 1 0;
+    @media(max-width: 768px) {
+        flex-direction: column;
     }
-    .textCell, .mathCell, .codeCell{
-        flex: 1 1 20px;
+    @media(min-width: 786px) {
+        .editorCell, .textCell, .mathCell, .codeCell{
+            flex: 1;
+        }
     }
     .editorCellDividor {
         flex: 0 0 1px;
-        // margin: 10px;
         background: #ddd;
     }
 }
@@ -191,7 +223,6 @@
     box-sizing: border-box;
     border: none;
     padding: 7px 10px;
-    min-height: fit-content; 
     background-color: #f5f6fa;
 
     &:focus {
