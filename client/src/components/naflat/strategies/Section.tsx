@@ -8,40 +8,34 @@ const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 function DisplaySectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-
-    let cell = state.flat[props.cellId];
-    let contents = '# ' + cell.value;
-
     const label = state.renderInfo.label;
 
+    let cell = state.flat[props.cellId];
+    let depth = label[props.cellId].auto.length;
+
     return (
-        <h1 className='sectionCell'>
-            { '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '.' }
-            <MemoizedRenderer>
-                {contents}
-            </MemoizedRenderer>
-        </h1>
+        <MemoizedRenderer inlineRenderClassName='sectionCell' inlineRenderPrefix={
+            '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+        }>
+            { '#'.repeat(depth) + ' ' + cell.value }
+        </MemoizedRenderer>
     );
 }
 
 
 function PreviewSectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-
-    let cell = state.flat[props.cellId];
-    let contents = '# ' + cell.value;
-
-    contents = '' + cell.value;
-
     const label = state.renderInfo.label;
 
+    let cell = state.flat[props.cellId];
+    let depth = label[props.cellId].auto.length;
+
     return (
-        <h1 className='sectionCell'>
-            { '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '.' }
-            <MemoizedRenderer>
-                {contents}
-            </MemoizedRenderer>
-        </h1>
+        <MemoizedRenderer inlineRenderClassName='sectionCell' inlineRenderPrefix={
+            '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+        }>
+            { '#'.repeat(depth) + ' ' + cell.value }
+        </MemoizedRenderer>
     );
 }
 

@@ -4,6 +4,8 @@ import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
 import { PluggableList } from 'unified';
 import { Node, Parent } from 'unist';
 import { u } from 'unist-builder';
+import { remove } from 'unist-util-remove';
+
 import { Root as MdastRoot, Parent as MdastParent } from 'mdast';
 import { H, Handler, Handlers, all } from 'mdast-util-to-hast';
 
@@ -40,7 +42,10 @@ interface RendererOptionProps{
     isManual?: boolean,
     usePriority?: boolean,
     useTOC?: boolean,
-    openDetails?: boolean
+    openDetails?: boolean,
+
+    inlineRenderPrefix?: string, // if rendered inline, set prefix before it.
+    inlineRenderClassName?: string
 }
 
 function MarkdownRenderer(props : Options & RendererOptionProps) {
@@ -64,7 +69,29 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         // ...( props.useTOC ? [SectionEnumerator] : [] ),
         // FootnoteEnumerator,
 
-        // (settings) => ( (tree,file) => {console.log(tree)} )
+        // Inline Render
+        // discard parent cell except one.
+        () => ( (tree, file) => {
+            if(props.inlineRenderPrefix === undefined) return;
+
+            let root = tree as Parent;
+            if(root.children && Array.isArray(root.children) && root.children.length > 0){
+                let child = root.children[0] as Parent;
+
+                if(props.inlineRenderClassName){
+                    child.data = child.data || {};
+                    child.data['hClassName'] = props.inlineRenderClassName;
+                }
+
+                if(child.children && Array.isArray(child.children)){
+                    child.children.unshift(u('text',props.inlineRenderPrefix));
+                }
+
+                root.children = [child];
+            }
+        })
+
+        // () => ( (tree,file) => {console.log(tree)} )
     ];
 
     //remark -> rehype handlers (previously renderers)
@@ -79,6 +106,9 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
 
     //rehype plugins(manipulating hast)
     const rehypePlugins : PluggableList = [
+        () => ( (tree,file) => {
+            remove(tree, (node)=>( node.type === 'text' && node.value === '\n' ))
+        } ), //remove unnecessary linefeed(`\n`) wrappers.
         [RehypeKatex, {
             macros: {},
             globalGroup: true
@@ -88,7 +118,8 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
     //HTML components.
     const components : {[nodeType: string]: ((p: Node) => JSX.Element)} = {
         details: (p: any) => {
-            return <details open={props.openDetails}>
+            let { node, children, ...others } = p;
+            return <details {...others} open={props.openDetails}>
                 { p.children }
             </details>;
         }
@@ -102,7 +133,8 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         ) } onError = {
             (error: Error) => { console.log(error) } // may do some error handling
         } resetKeys={[props.children]} >
-            <ReactMarkdown {...props} className='markdown'
+            <ReactMarkdown {...props}
+                className={ props.inlineRenderPrefix === undefined ? 'markdown' : undefined } //if inlineRenderPrefix is set ('' included) then render as react.fragment.
                 remarkPlugins = { remarkPlugins }
                 remarkRehypeOptions = { {
                     handlers: remarkRehypeHandlers

@@ -8,6 +8,9 @@ import SingletonTextArea from './helpers/singletonTextArea';
 import { fileUpload, imgUpload } from 'etc/FileUpload';
 import { FileDropzone } from './helpers/FileDropzone';
 
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+const MemoizedRenderer = React.memo(MarkdownRenderer);
+
 // Image cell value type
 interface ImageCellValue{
     src: string, //default value ''
@@ -22,14 +25,16 @@ function DisplayImageCell(props: CellComponentProps){
 
     return (
         <>
-            <img src={ src } alt=''
+            <img className='imgCell' src={ src } alt=''
                 onError = { (ev) =>{
                     if(ev.currentTarget.src !== '/altImg.png'){
                         ev.currentTarget.src = '/altImg.png';
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
+            <MarkdownRenderer inlineRenderClassName='imgCellCaption' inlineRenderPrefix=''>
+                { caption }
+            </MarkdownRenderer>
         </>
     );
 }
@@ -43,7 +48,7 @@ function PreviewImageCell(props: CellComponentProps){
 
     return (
         <>
-            <img src={ src } alt=''
+            <img className='imgCell' src={ src } alt=''
                 onError = { (ev) =>{
                     ev.preventDefault();
                     if(ev.currentTarget.src !== '/altImg.png'){
@@ -51,7 +56,9 @@ function PreviewImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
+            <MarkdownRenderer inlineRenderClassName='imgCellCaption' inlineRenderPrefix=''>
+                { caption }
+            </MarkdownRenderer>
         </>
     );
 }
