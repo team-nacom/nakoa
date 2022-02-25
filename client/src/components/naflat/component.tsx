@@ -39,12 +39,12 @@ function CellDisplay(props: CellComponentProps) {
     const cell = state.flat[props.cellId];
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
-    return <>
+    return <div className='cellWrapper' id={ props.cellId }>
         {/* <span>{ state.renderInfo.label[props.cellId].auto.join('.') }</span> */}
         <Strategy {...props} />
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div style={{ border: '1px solid gray', padding: '0 60px' }}>
+            <div className='childrenContainer' id={ props.cellId }>
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -53,7 +53,7 @@ function CellDisplay(props: CellComponentProps) {
                 }
             </div>
         }
-    </>;
+    </div>;
 }
 
 function CellEditor(props: CellComponentProps) {
@@ -79,7 +79,7 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                <div className='cellWrapper'
+                <div className='cellWrapper' id={ props.cellId }
                     onClick={(ev) => {
                         ev.stopPropagation();
                         dispatch({ type: 'focus', id: props.cellId })
@@ -113,7 +113,7 @@ function CellEditor(props: CellComponentProps) {
         {isFocused &&
             <div className='editorCellContainer'>
 
-                <div className='cellWrapper'
+                <div className='cellWrapper' id={ props.cellId }
                     onClick={(ev) => {ev.stopPropagation()} }
                 >
                     { /* side cell */}
@@ -178,7 +178,8 @@ function CellEditor(props: CellComponentProps) {
 
         { /* render children. */}
         {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div className='childrenContainer' style={{ border: '1px solid gray', padding: '0 60px' }}
+            <div className='childrenContainer'
+                // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >
                 {

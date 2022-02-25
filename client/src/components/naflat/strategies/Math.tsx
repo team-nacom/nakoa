@@ -61,15 +61,14 @@ function EditorMathCell(props: CellComponentProps){
 
     return (
         <>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+            <div className='editorMathCellWrapper'>
                 <SingletonTextArea
-                    style={ props.style as any }
                     className='editorMathCell editorCell'
                     onChange={handleChangeFactory(dispatch,props.cellId)}
                     value={contents}
                 />
             </div>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+            <div className='previewMathCellWrapper'>
                 <PreviewMathCell {...props} />
             </div>
         </>

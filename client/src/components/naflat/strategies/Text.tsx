@@ -34,9 +34,7 @@ function DisplayTextCell(props: CellComponentProps){
     }
 
     return (
-        <div className='textCell'
-            style={ props.style }
-        >
+        <div className='textCell'>
             <MemoizedRenderer>
                 {renderString}
             </MemoizedRenderer>
@@ -61,9 +59,7 @@ function PreviewTextCell(props: CellComponentProps){
     }
 
     return (
-        <div className='textCell'
-            style={ props.style }
-        >
+        <div className='textCell'>
             <MemoizedRenderer openDetails>
                 {/* {contents} */}
                 { renderString }
@@ -127,18 +123,17 @@ function EditorTextCell(props: CellComponentProps){
 
     return (
         <>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+            <div className='editorTextCellWrapper'>
                 <SingletonTextArea
                     initialSelectionStart={ state.cursorStart }
                     initialSelectionEnd={ state.cursorEnd }
-                    // style={ props.style as any }
                     className='editorTextCell editorCell'
                     onChange={handleChangeFactory(dispatch, props.cellId)}
                     onPaste={handlePasteFactory(dispatch, props.cellId)}
                     onKeyDown={ onKeyDown }
                     value={contents}
                 />
-                <div className='dropzone'>
+                <div className='dropzone textCellDropzone'>
                     <FileDropzone
                         handleDrop={ (files) => imgUploadHelper(
                             dispatch, props.cellId, files[0],
@@ -163,7 +158,7 @@ function EditorTextCell(props: CellComponentProps){
                     </FileDropzone>
                 </div>
             </div>
-            <div style={ {width:'50%', display:'inline-block', verticalAlign:'top'} }>
+            <div className='previewTextCellWrapper'>
                 <PreviewTextCell {...props} />
             </div>
         </>
