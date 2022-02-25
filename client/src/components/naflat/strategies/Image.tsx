@@ -32,7 +32,11 @@ function DisplayImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <MarkdownRenderer inlineRenderClassName='imgCellCaption' inlineRenderPrefix=''>
+            <MarkdownRenderer
+                inlineRenderClassName='imgCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+            >
                 { caption }
             </MarkdownRenderer>
         </>
@@ -56,7 +60,11 @@ function PreviewImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <MarkdownRenderer inlineRenderClassName='imgCellCaption' inlineRenderPrefix=''>
+            <MarkdownRenderer
+                inlineRenderClassName='imgCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+            >
                 { caption }
             </MarkdownRenderer>
         </>

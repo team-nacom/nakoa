@@ -17,7 +17,7 @@ interface RenderInfo{
     }
 }
 
-//autoLabel every cell
+//update autoLabel of every cell
 function autoLabel(flat: Flat, id?: string, preLabel?: Record<string, LabelInfo>, prefix?: number[]) : Record<string, LabelInfo>{
     if(id === undefined) return {};
 

@@ -30,6 +30,8 @@ type FlatStateAction
     | { type: 'focusAdj'; direction: number; }
     | { type: 'blur'; }
     | { type: 'resetCursor'; }
+
+    | { type: 'updateMacro', mathMacro?: Object, textMacro?: Object }
 ;
 
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
@@ -82,6 +84,15 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break;
     case 'resetCursor':
         cursorStart = cursorEnd = undefined;
+        break;
+
+    case 'updateMacro':
+        if(action.mathMacro){
+            renderInfo.macros.math = action.mathMacro;
+        }
+        if(action.textMacro){
+            renderInfo.macros.text = action.textMacro;
+        }
         break;
     }
     

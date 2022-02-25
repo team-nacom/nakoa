@@ -35,7 +35,9 @@ function DisplayTextCell(props: CellComponentProps){
 
     return (
         <div className='textCell'>
-            <MemoizedRenderer>
+            <MemoizedRenderer
+                mathMacros = { state.renderInfo.macros.math }
+            >
                 {renderString}
             </MemoizedRenderer>
         </div>
@@ -60,7 +62,9 @@ function PreviewTextCell(props: CellComponentProps){
 
     return (
         <div className='textCell'>
-            <MemoizedRenderer openDetails>
+            <MemoizedRenderer openDetails
+                mathMacros = { state.renderInfo.macros.math }
+            >
                 {/* {contents} */}
                 { renderString }
             </MemoizedRenderer>

@@ -45,7 +45,9 @@ interface RendererOptionProps{
     openDetails?: boolean,
 
     inlineRenderPrefix?: string, // if rendered inline, set prefix before it.
-    inlineRenderClassName?: string
+    inlineRenderClassName?: string,
+
+    mathMacros?: Object
 }
 
 function MarkdownRenderer(props : Options & RendererOptionProps) {
@@ -109,8 +111,9 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         () => ( (tree,file) => {
             remove(tree, (node)=>( node.type === 'text' && node.value === '\n' ))
         } ), //remove unnecessary linefeed(`\n`) wrappers.
+        
         [RehypeKatex, {
-            macros: {},
+            macros: props.mathMacros,
             globalGroup: true
         }]
     ];

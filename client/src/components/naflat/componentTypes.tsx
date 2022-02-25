@@ -31,7 +31,7 @@ function makeInitialState(flat: Flat, rootId?: string, initialFocusId?: string) 
         renderInfo: {
             label: autoLabel(flat, rootId, {}),
             refs: {},
-            macros: { math: {}, text: {} }
+            macros: { math: { '*': '\\cdot' }, text: {} }
         },
         focusId: initialFocusId,
         history: []
