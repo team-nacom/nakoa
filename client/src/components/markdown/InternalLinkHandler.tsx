@@ -3,7 +3,7 @@ import React, { Children } from 'react';
 
 import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
-import visit from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 
 const InternalLinkHandler : Plugin = () => {
     const internalLinkHandler : Transformer = (tree, file) => {
@@ -13,14 +13,14 @@ const InternalLinkHandler : Plugin = () => {
             if(typeof node.url === 'string' && node.url.startsWith('guide:')){
                 var idStr = node.url.slice('guide:'.length)
 
-                // console.log(idStr);
-
-                var id = Number(idStr)
-
-                if(!isNaN(id)){
+                var id = Number(idStr);
+                if(!isNaN(id) && id > 0){
                     node.type = 'intLink';
                     node.for = 'guide';
                     node.target = id;
+                }
+                else{
+                    node.url = '#';
                 }
             }
         })

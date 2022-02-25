@@ -15,9 +15,9 @@ function Exercise({ id, title, content, answer } : Props) {
                 { `Exercise ${id}` }
             </div>
             <h1> 
-                { title && <MarkdownRenderer source={title} />}
+                { title && <MarkdownRenderer>{ content }</MarkdownRenderer>}
             </h1>
-            <div> <MarkdownRenderer usePriority useTOC source={content}/> </div>
+            <div> <MarkdownRenderer usePriority useTOC>{ content }</MarkdownRenderer> </div>
         </div>
     )
 }
