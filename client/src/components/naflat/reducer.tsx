@@ -55,12 +55,13 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break; //not saved in history
     case 'changeType':
         flat = F.changeCellType(flat, action.id, action.cellType);
+        renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'move':
         flat = F.moveCell(flat,action.id,action.parentId,action.pos);
-        // if(state.flat !== flat) pushHistory(state.flat);
         renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
+        // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'createEmpty':
         [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);

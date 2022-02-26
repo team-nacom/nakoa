@@ -29,7 +29,7 @@ function DisplayTextCell(props: CellComponentProps){
     const label = state.renderInfo.label;
     let renderString = contents;
     for(var keyId in label){
-        var replace = label[keyId].custom || label[keyId].auto.join('.');
+        var replace = label[keyId].custom || label[keyId].autoType.join('.');
         renderString = renderString.replaceAll(`%${ keyId }%`,replace);
     }
 
@@ -56,7 +56,7 @@ function PreviewTextCell(props: CellComponentProps){
     const label = state.renderInfo.label;
     let renderString = contents;
     for(var keyId in label){
-        var replace = label[keyId].custom || label[keyId].auto.join('.');
+        var replace = label[keyId].custom || label[keyId].autoType.join('.');
         renderString = renderString.replaceAll(`%${ keyId }%`,replace);
     }
 

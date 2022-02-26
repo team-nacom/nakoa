@@ -16,7 +16,7 @@ function DisplayMathCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].auto.join('.'));
+    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
 
     if(typeof contents !== 'string') return <></>;
 
@@ -44,7 +44,7 @@ function PreviewMathCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].auto.join('.'));
+    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
 
     if(typeof contents !== 'string') return <></>;
 
