@@ -90,7 +90,9 @@ $$
         childIds: [],
         value: { src: 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg', caption: '무~야~호~~' }
     }
-}
+};
+
+const pfaffianFlat : Flat = require('./pfaffian.json');
 
 function Hidden() {
     // hidden bubble test page
@@ -106,7 +108,7 @@ function Hidden() {
             <Header/>
             <FlatEditorComponent //FlatDisplayComponent
                 cellId = 'c0'
-                initialFlat = { initialFlat }
+                initialFlat = { pfaffianFlat }
             />
 
             <Footer/>
