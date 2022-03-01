@@ -42,9 +42,14 @@ function autoLabel(flat: Flat, id?: string, preLabel?: Record<string, LabelInfo>
         }
     };
 
-    flat[id].childIds.reduce((acc : Partial<Record<CellType, number>>, childId, idx)=>{
+    flat[id].childIds.reduce((acc : Record<string, number>, childId, idx)=>{
         const cell = flat[childId];
-        const typedIdx = acc[cell.type] = (acc[cell.type] || 0) + 1;
+        let countType = cell.type;
+        // may have additional if statements, like...
+        // if ( cell.type === 'block' && cell.value.blockType === 'theorem' ){
+        //      countType = 'block-theorem';
+        // }
+        const typedIdx = acc[countType] = (acc[countType] || 0) + 1;
         
         let result = autoLabel(
             flat, childId, pLabel,
