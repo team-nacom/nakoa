@@ -8,7 +8,7 @@ import { Flat } from 'components/naflat/flat';
 import { FlatEditorComponent } from 'components/naflat/component';
 
 
-function CellWrite() {
+function FlatWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
     let [title, setTitle] = React.useState<string>();
     let [author, setAuthor] = React.useState<string>();
@@ -41,4 +41,4 @@ function CellWrite() {
 }
 
 
-export default CellWrite;
+export default FlatWrite;

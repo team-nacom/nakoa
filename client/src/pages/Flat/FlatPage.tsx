@@ -17,55 +17,55 @@ interface Params {
     index: string;
 };
 
-function CellPage() {
+function FlatPage() {
     let params = useParams<Params>();
     let history = useHistory();
     let index = React.useMemo(() => params.index, [params]);
 
-    let [cell, setCell] = React.useState<FlatItem>();
-    let [cellLoading, _] = usePromise(() => {
-        return getFlat(index).then(cell => setCell(cell));
+    let [flat, setFlat] = React.useState<FlatItem>();
+    let [flatLoading, _] = usePromise(() => {
+        return getFlat(index).then(flat => setFlat(flat));
     }, [index]);
     let parsedFlatRef = React.useRef<Flat>({});
 
     React.useEffect(() => {
-        let content = cell?.content;
+        let content = flat?.content;
         if (!content) return;
 
         parsedFlatRef.current = JSON.parse(content) as Flat
         console.log(parsedFlatRef.current);
-    }, [cell]);
+    }, [flat]);
 
-    let [toggleCell, icon, confirmMesg] = cell?.hidden ? 
+    let [toggleFlat, icon, confirmMesg] = flat?.hidden ? 
         [unhideFlat, 'visibility', '정말 이 글을 공개하시겠습니까?'] :
         [hideFlat, 'visibility_off', '정말 이 글을 숨기시겠습니까?'];
     
 
-    if (cellLoading) return <Loading/>;
+    if (flatLoading) return <Loading/>;
     return (
         <>
             <Header />
-            { cell && (
+            { flat && (
                 <BubbleSidebar on='post'>
                     <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
                         if (window.confirm(confirmMesg)) {
-                            await toggleCell(index);
-                            setCell(await getFlat(index));
+                            await toggleFlat(index);
+                            setFlat(await getFlat(index));
                         }
                     }}> {icon} </Button>
                     <Button className='material-icons' onClick={async (e) => {
                         e.preventDefault();
-                        history.push('/write', {copySourceCell: cell});
+                        history.push('/write', {copySourceFlat: flat});
                     }}> content_copy </Button>
                 </BubbleSidebar>
             )}
 
             <div id='content'>
-                { cell && parsedFlatRef.current ? (
+                { flat && parsedFlatRef.current ? (
                     <>
-                        <h1 className='title' style={{lineHeight: '100px'}}> { cell.title } </h1>
-                        <h2 className='author'> { cell.author } </h2>
+                        <h1 className='title' style={{lineHeight: '100px'}}> { flat.title } </h1>
+                        <h2 className='author'> { flat.author } </h2>
                         <FlatDisplayComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
                     </>
                 ) : (
@@ -77,4 +77,4 @@ function CellPage() {
     );
 }
 
-export default CellPage;
+export default FlatPage;
