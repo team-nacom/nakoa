@@ -6,13 +6,13 @@ import { Flat } from 'components/naflat/flat';
 
 const apiAddress = config.apiAddress;
 
-export interface CellUploadType {
+export interface FlatUploadItem {
     title: string,
     author: string,
     content: string,
 }
 
-export interface CellType extends CellUploadType {
+export interface FlatItem extends FlatUploadItem {
     // title: string,
     // author: string,
     // content: string,
@@ -21,24 +21,24 @@ export interface CellType extends CellUploadType {
     hidden: boolean,
 }
 
-export const getCellsByAuthor = async (author: string) => {
+export const getFlatsByAuthor = async (author: string) => {
     let response = await Axios.get(`${apiAddress}/flat/author/${author}`, {
         validateStatus: authValidateStatus,
     });
 
-    return response.data as CellType[];
+    return response.data as FlatItem[];
 }
 
-export const getCell = async (index: string) => {
+export const getFlat = async (index: string) => {
     let response = await Axios.get(`${apiAddress}/flat/view/${index}`, {
         validateStatus: authValidateStatus, 
     });
 
-    return response.data as CellType;
+    return response.data as FlatItem;
 }
 
-export const postCell = async (title: string, author: string, flat: Flat) => {
-    const data: CellUploadType = {
+export const postFlat = async (title: string, author: string, flat: Flat) => {
+    const data: FlatUploadItem = {
         title: title,
         author: author,
         content: JSON.stringify(flat),
@@ -53,13 +53,13 @@ export const postCell = async (title: string, author: string, flat: Flat) => {
     };
 }
 
-export const hideCell = async (index: string) => {
+export const hideFlat = async (index: string) => {
     let response = await Axios.put(`${apiAddress}/flat/hide/${index}`)
 
     return response.status < 300;
 }
 
-export const unhideCell = async (index: string) => {
+export const unhideFlat = async (index: string) => {
     let response = await Axios.put(`${apiAddress}/flat/unhide/${index}`)
 
     return response.status < 300;
@@ -72,10 +72,10 @@ export const getAllCells = async () => {
         validateStatus: authValidateStatus, 
     });
 
-    return response.data as CellType[];
+    return response.data as FlatItem[];
 }
 
-export const removeCell = async (index: string) => {
+export const removeFlat = async (index: string) => {
     let response = await Axios.delete(`${apiAddress}/flat/delete/${index}`)
 
     return response.status < 300;

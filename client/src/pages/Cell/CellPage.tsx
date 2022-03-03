@@ -1,6 +1,6 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import { getCell, hideCell, unhideCell, CellType } from 'etc/api/cell';
+import { getFlat, hideFlat, unhideFlat, FlatItem } from 'etc/api/flat';
 import usePromise from 'etc/usePromise';
 import React from 'react';
 import { Link, Redirect, useHistory, useParams } from 'react-router-dom';
@@ -22,9 +22,9 @@ function CellPage() {
     let history = useHistory();
     let index = React.useMemo(() => params.index, [params]);
 
-    let [cell, setCell] = React.useState<CellType>();
+    let [cell, setCell] = React.useState<FlatItem>();
     let [cellLoading, _] = usePromise(() => {
-        return getCell(index).then(cell => setCell(cell));
+        return getFlat(index).then(cell => setCell(cell));
     }, [index]);
     let parsedFlatRef = React.useRef<Flat>({});
 
@@ -37,8 +37,8 @@ function CellPage() {
     }, [cell]);
 
     let [toggleCell, icon, confirmMesg] = cell?.hidden ? 
-        [unhideCell, 'visibility', '정말 이 글을 공개하시겠습니까?'] :
-        [hideCell, 'visibility_off', '정말 이 글을 숨기시겠습니까?'];
+        [unhideFlat, 'visibility', '정말 이 글을 공개하시겠습니까?'] :
+        [hideFlat, 'visibility_off', '정말 이 글을 숨기시겠습니까?'];
     
 
     if (cellLoading) return <Loading/>;
@@ -51,7 +51,7 @@ function CellPage() {
                         e.preventDefault();
                         if (window.confirm(confirmMesg)) {
                             await toggleCell(index);
-                            setCell(await getCell(index));
+                            setCell(await getFlat(index));
                         }
                     }}> {icon} </Button>
                     <Button className='material-icons' onClick={async (e) => {

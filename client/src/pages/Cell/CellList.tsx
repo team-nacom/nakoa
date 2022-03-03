@@ -2,7 +2,7 @@ import Footer from "components/Footer";
 import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
-import { getCellsByAuthor, CellType } from "etc/api/cell";
+import { getFlatsByAuthor, FlatItem } from "etc/api/flat";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
@@ -22,9 +22,9 @@ function CellList() {
         localStorage.setItem("author", author);
     }, [author]);
 
-    let [cell, setCells] = React.useState<CellType[]>([]);
+    let [cell, setCells] = React.useState<FlatItem[]>([]);
     let [cellLoading, _] = usePromise(() => 
-        getCellsByAuthor(author).then(cellFetch => setCells(cellFetch)));
+        getFlatsByAuthor(author).then(cellFetch => setCells(cellFetch)));
 
     return (
         <>
@@ -47,7 +47,7 @@ function CellList() {
                 <div className='writeBox guide'>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
-                        setCells(await getCellsByAuthor(author));
+                        setCells(await getFlatsByAuthor(author));
                     }} id='authorForm'>
                         <div className='flexbox'>
                             <AuthorInput author={author} setAuthor={setAuthor} />
@@ -56,7 +56,7 @@ function CellList() {
 
                         <div className='editorBottom'>
                             <Button className='submit link' onClick={async (e) => {
-                                setCells(await getCellsByAuthor(author));
+                                setCells(await getFlatsByAuthor(author));
                             }}>
                                 검색
                             </Button>

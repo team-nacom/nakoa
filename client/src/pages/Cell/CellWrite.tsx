@@ -1,7 +1,7 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { postCell, CellUploadType } from 'etc/api/cell';
+import { postFlat, FlatUploadItem } from 'etc/api/flat';
 import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
 import { Flat } from 'components/naflat/flat';
@@ -14,7 +14,7 @@ function CellWrite() {
     let [author, setAuthor] = React.useState<string>();
 
     let upload = (title: string, author: string, flat: Flat) => {
-        postCell(title, author, flat).then(({success, index}) => {
+        postFlat(title, author, flat).then(({success, index}) => {
             if (success) {
                 setRedirectTo(`/view/${index}`);
             }
