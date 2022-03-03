@@ -1,7 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
 import { baseid } from '../utils';
 
-export interface CellDocument extends Document {
+export interface FlatDocument extends Document {
   index: string,
   title: string,
   author: string,
@@ -10,7 +10,7 @@ export interface CellDocument extends Document {
   createDate: number
 }
 
-const cellSchema = new Schema<CellDocument>({
+const flatSchema = new Schema<FlatDocument>({
   index: {
     type: String, index: true, unique: true, default: () => baseid(8),
   },
@@ -21,4 +21,4 @@ const cellSchema = new Schema<CellDocument>({
   createDate: { type: Number, default: Date.now },
 });
 
-export default model<CellDocument>('Cell', cellSchema, 'cells');
+export default model<FlatDocument>('Flat', flatSchema, 'flats');

@@ -22,7 +22,7 @@ export interface CellType extends CellUploadType {
 }
 
 export const getCellsByAuthor = async (author: string) => {
-    let response = await Axios.get(`${apiAddress}/cell/author/${author}`, {
+    let response = await Axios.get(`${apiAddress}/flat/author/${author}`, {
         validateStatus: authValidateStatus,
     });
 
@@ -30,7 +30,7 @@ export const getCellsByAuthor = async (author: string) => {
 }
 
 export const getCell = async (index: string) => {
-    let response = await Axios.get(`${apiAddress}/cell/view/${index}`, {
+    let response = await Axios.get(`${apiAddress}/flat/view/${index}`, {
         validateStatus: authValidateStatus, 
     });
 
@@ -43,7 +43,7 @@ export const postCell = async (title: string, author: string, flat: Flat) => {
         author: author,
         content: JSON.stringify(flat),
     };
-    let response = await Axios.post(`${apiAddress}/cell`, data, {
+    let response = await Axios.post(`${apiAddress}/flat`, data, {
         validateStatus: authValidateStatus, 
     });
 
@@ -54,13 +54,13 @@ export const postCell = async (title: string, author: string, flat: Flat) => {
 }
 
 export const hideCell = async (index: string) => {
-    let response = await Axios.put(`${apiAddress}/cell/hide/${index}`)
+    let response = await Axios.put(`${apiAddress}/flat/hide/${index}`)
 
     return response.status < 300;
 }
 
 export const unhideCell = async (index: string) => {
-    let response = await Axios.put(`${apiAddress}/cell/unhide/${index}`)
+    let response = await Axios.put(`${apiAddress}/flat/unhide/${index}`)
 
     return response.status < 300;
 }
@@ -68,7 +68,7 @@ export const unhideCell = async (index: string) => {
 // Internal APIs
 
 export const getAllCells = async () => {
-    let response = await Axios.get(`${apiAddress}/cell/debug`, {
+    let response = await Axios.get(`${apiAddress}/flat/debug`, {
         validateStatus: authValidateStatus, 
     });
 
@@ -76,7 +76,7 @@ export const getAllCells = async () => {
 }
 
 export const removeCell = async (index: string) => {
-    let response = await Axios.delete(`${apiAddress}/cell/delete/${index}`)
+    let response = await Axios.delete(`${apiAddress}/flat/delete/${index}`)
 
     return response.status < 300;
 }
