@@ -104,52 +104,52 @@ function Hidden() {
     //     console.log(key, findAdjacentId(initialFlat,key,1), findAdjacentId(initialFlat,key,-1));
     // }
 
-    const tikzStr = `\\begin{tikzpicture}
-    \\draw (0,0) circle (1in);
-    \\draw (0,0) circle (2in);
-\\end{tikzpicture}`;
+//     const tikzStr = `\\begin{tikzpicture}
+//     \\draw (0,0) circle (1in);
+//     \\draw (0,0) circle (2in);
+// \\end{tikzpicture}`;
 
-    const [rendered, setRendered] = useState(<div />);
+//     const [rendered, setRendered] = useState(<div />);
 
-    useEffect(()=>{
-        compileTex(tikzStr).then(({html, style, svgAttributes})=>{
-            function replaceDiv(node : any){
-                if(node.name === 'div'){
-                    var attrs = node.attribs;
-                    attrs.className = attrs.class;
-                    delete attrs.class;
+//     useEffect(()=>{
+//         compileTex(tikzStr).then(({html, style, svgAttributes})=>{
+//             function replaceDiv(node : any){
+//                 if(node.name === 'div'){
+//                     var attrs = node.attribs;
+//                     attrs.className = attrs.class;
+//                     delete attrs.class;
 
-                    var divStyle = {...(node.style || {}), ...style }
-                    return <div {...attrs} style = { divStyle } >
-                        { domToReact(node.children, { replace: replaceSvg }) }
-                    </div>;
-                }
+//                     var divStyle = {...(node.style || {}), ...style }
+//                     return <div {...attrs} style = { divStyle } >
+//                         { domToReact(node.children, { replace: replaceSvg }) }
+//                     </div>;
+//                 }
                 
-            }
+//             }
 
-            function replaceSvg(node: any){
-                if(node.name === 'svg'){
-                    return <svg {...(node.attribs )} {...svgAttributes}>
-                        { domToReact(node.children) }
-                    </svg>
-                }
-            }
+//             function replaceSvg(node: any){
+//                 if(node.name === 'svg'){
+//                     return <svg {...(node.attribs )} {...svgAttributes}>
+//                         { domToReact(node.children) }
+//                     </svg>
+//                 }
+//             }
 
-            var elem = HTMLParser(html, { replace: replaceDiv });
-            if(Array.isArray(elem)){
-                elem = elem[0];
-            }
-            if(typeof elem === 'string'){
-                elem = <div>{ elem }</div>;
-            }
-            setRendered(elem);
-        })
-    }, [])
+//             var elem = HTMLParser(html, { replace: replaceDiv });
+//             if(Array.isArray(elem)){
+//                 elem = elem[0];
+//             }
+//             if(typeof elem === 'string'){
+//                 elem = <div>{ elem }</div>;
+//             }
+//             setRendered(elem);
+//         })
+//     }, [])
 
     return (
         <>
             <Header/>
-            { rendered }
+            {/* { rendered } */}
             <FlatEditorComponent //FlatDisplayComponent
                 cellId = 'c0'
                 initialFlat = { pfaffianFlat }
