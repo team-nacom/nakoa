@@ -23,6 +23,7 @@ import CodeCellStrategy from './strategies/Code';
 import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
+import AuthorInput from 'components/AuthorInput';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
@@ -208,6 +209,7 @@ interface FlatComponentProps extends CellComponentProps {
     // id: string // rootId.
     initialFlat?: Flat;
     initialFocusId?: string;
+    uploadFlat?: (flat: Flat) => void;
 }
 
 function FlatDisplayComponent(props: FlatComponentProps) {
@@ -239,7 +241,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
         // useMemo for hooking multiple functions
         const gs = useMemo(() => (
             handleGlobalShortcutFactory(state,dispatch)
-        ), [state,dispatch])
+        ), [state,dispatch]);
 
         useEffect(()=>{
             if(shortcut && shortcut.registerShortcut){
@@ -265,18 +267,52 @@ const FlatEditorComponentWithShortcut = withShortcut(
         return (<FlatContext.Provider value={{ state, dispatch }} >
             <CellEditor {...others}/>
             <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-
-            { /* for debug */ }
-            {/* <details>
-                <summary>프리뷰 보기</summary>
-                <CellDisplay {...others} />
-            </details> */}
+            { props.uploadFlat && 
+                <button onClick = { () => { props.uploadFlat!(state.flat) } }>업로드</button>
+            }
         </FlatContext.Provider>);
     }
 )
-function FlatEditorComponent(props: FlatComponentProps){
+
+
+interface FlatEditorProps extends FlatComponentProps {
+    // initialFlat?: Flat;
+    // initialFocusId?: string;
+    // uploadFlat?: (flat: Flat) => void;
+    title?: string;
+    setTitle?: (value: string) => void;
+    author?: string;
+    setAuthor?: (value: string) => void;
+    upload?: (title: string, author: string, flat: Flat) => void;
+}
+
+function FlatEditorComponent(props: FlatEditorProps){
+    let title = props.title ?? 'untitled';
+    let setTitle = props.setTitle ?? ((value: string) => {});
+
+    let author = props.author ?? 'unknown';
+    let setAuthor = props.setAuthor ?? ((value: string) => {});
+
+    let uploadFlat = (flat: Flat) => {};
+    if (props.upload !== undefined){
+        uploadFlat = (flat: Flat) => {
+            props.upload!(title, author, flat);
+        }
+    }
+
     return (<ShortcutProvider ignoreTagNames={ [] }>
-        <FlatEditorComponentWithShortcut {...props} />
+
+        <div className='titleEditor'>
+            <label>
+                제목
+            </label>
+            <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+        </div>
+
+        <div className='flexbox'>
+            <AuthorInput author={author} setAuthor={setAuthor} />                
+        </div>
+        <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
     </ShortcutProvider>);
 }
 
