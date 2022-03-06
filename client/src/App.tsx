@@ -13,9 +13,9 @@ import { useSelector } from 'react-redux';
 import { RootReducer } from 'store';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
-import CellPage from 'pages/Cell/CellPage';
-import CellList from 'pages/Cell/CellList';
-import CellWrite from 'pages/Cell/CellWrite';
+import FlatPage from 'pages/Flat/FlatPage';
+import FlatList from 'pages/Flat/FlatList';
+import FlatWrite from 'pages/Flat/FlatWrite';
 
 const localeMessages = {
   'en': messageEn,
@@ -41,9 +41,9 @@ function App() {
           <Route exact path='/hidden' component={Hidden} />
           <Route exact path='/about' component={About} />
 
-          <Route exact path='/write' component={CellWrite} />
-          <Route exact path='/view/:index' component={CellPage} />
-          <Route exact path='/list/:author?' component={CellList} />
+          <Route exact path='/write' component={FlatWrite} />
+          <Route exact path='/view/:index' component={FlatPage} />
+          <Route exact path='/list/:author?' component={FlatList} />
           <Route component={NotFound}/>
         </Switch>
       </Router>

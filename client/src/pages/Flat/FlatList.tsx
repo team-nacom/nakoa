@@ -2,7 +2,7 @@ import Footer from "components/Footer";
 import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
-import { getCellsByAuthor, CellType } from "etc/api/cell";
+import { getFlatsByAuthor, FlatItem } from "etc/api/flat";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
@@ -14,7 +14,7 @@ interface Params {
     author?: string;
 };
 
-function CellList() {
+function FlatList() {
     let { author: paramAuthor } = useParams<Params>();
     let storedAuthor = localStorage.getItem('author');
     let [author, setAuthor] = React.useState<string>(paramAuthor ?? (storedAuthor ?? ''));
@@ -22,9 +22,9 @@ function CellList() {
         localStorage.setItem("author", author);
     }, [author]);
 
-    let [cell, setCells] = React.useState<CellType[]>([]);
-    let [cellLoading, _] = usePromise(() => 
-        getCellsByAuthor(author).then(cellFetch => setCells(cellFetch)));
+    let [flat, setFlats] = React.useState<FlatItem[]>([]);
+    let [flatLoading, _] = usePromise(() => 
+        getFlatsByAuthor(author).then(fetchedFlat => setFlats(fetchedFlat)));
 
     return (
         <>
@@ -47,7 +47,7 @@ function CellList() {
                 <div className='writeBox guide'>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
-                        setCells(await getCellsByAuthor(author));
+                        setFlats(await getFlatsByAuthor(author));
                     }} id='authorForm'>
                         <div className='flexbox'>
                             <AuthorInput author={author} setAuthor={setAuthor} />
@@ -56,7 +56,7 @@ function CellList() {
 
                         <div className='editorBottom'>
                             <Button className='submit link' onClick={async (e) => {
-                                setCells(await getCellsByAuthor(author));
+                                setFlats(await getFlatsByAuthor(author));
                             }}>
                                 검색
                             </Button>
@@ -64,14 +64,14 @@ function CellList() {
                     </form>
                 </div>
 
-                { !cellLoading && cell && cell.length > 0 && 
+                { !flatLoading && flat && flat.length > 0 && 
                     <div className='bubbleFeedList'>
-                        {cell?.map((cell) => <div key={cell.title} className='bubbleFeed'>
-                            <Link to={`/view/${cell.index}`}>
+                        {flat?.map((flat) => <div key={flat.title} className='bubbleFeed'>
+                            <Link to={`/view/${flat.index}`}>
                                 <div className='bubbleFeedContent'>
-                                    <div className='title'> { cell.title ? cell.title : "untitled" } </div>
-                                    <div className='author'> by { cell.author ?? "anonymous" } </div>
-                                    {/* <div className='content'> { cell.content.substring(0, 100) } </div> */}
+                                    <div className='title'> { flat.title ? flat.title : "untitled" } </div>
+                                    <div className='author'> by { flat.author ?? "anonymous" } </div>
+                                    {/* <div className='content'> { flat.content.substring(0, 100) } </div> */}
                                 </div>
                             </Link>
                         </div>)}
@@ -84,4 +84,4 @@ function CellList() {
     );
 }
 
-export default CellList;
+export default FlatList;

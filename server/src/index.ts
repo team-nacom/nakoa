@@ -11,7 +11,7 @@ import './setup/aws'; // connect aws S3
 
 import fileRouter from './file';
 import bubbleRouter from './bubble';
-import cellRouter from './cell';
+import flatRouter from './flat';
 
 import {
   handleErrorMiddleware, isProduction, logger, logStreams,
@@ -30,8 +30,8 @@ router.get('/', async (ctx, next) => {
 router.use('/file', fileRouter.routes());
 // Bubble (for demo)
 router.use('/bubble', bubbleRouter.routes());
-// Cell (main product)
-router.use('/cell', cellRouter.routes());
+// flat (main product)
+router.use('/flat', flatRouter.routes());
 
 // local / production config
 const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
