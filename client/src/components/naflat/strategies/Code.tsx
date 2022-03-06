@@ -15,10 +15,10 @@ function DisplayCodeCell(props: CellComponentProps){
 
     return (
         <div className='codeCell'>
-            <summary className='codeCellPreview'>
+            <summary className='codeCellLabel'>
                 코드
             </summary>
-            <pre className='codeCell renderedCodeCell'>
+            <pre className='codeCellPreview'>
                 <code>{contents}</code>
             </pre>
         </div>
@@ -36,10 +36,10 @@ function PreviewCodeCell(props: CellComponentProps){
 
     return (
         <div className='codeCell'>
-            <summary className='codeCellPreview'>
+            <summary className='codeCellLabel'>
                 코드
             </summary>
-            <pre className='codeCell previewCodeCell'>
+            <pre className='codeCellPreview'>
                 <code>{contents}</code>
             </pre>
         </div>
@@ -64,7 +64,6 @@ function EditorCodeCell(props: CellComponentProps){
                 onChange={handleChangeFactory(dispatch,props.cellId)}
                 value={contents}
             />
-            <div className='editorCellDividor'></div> {/* only for css */}
             <PreviewCodeCell {...props}/>
         </div>
     );

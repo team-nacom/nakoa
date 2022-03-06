@@ -19,10 +19,10 @@ function DisplayMathCell(props: CellComponentProps){
 
     return (
         <div className='mathCell'>
-            <summary className='mathCellPreview'>
+            <summary className='mathCellLabel'>
                 수식
             </summary>
-            <div className='mathCell renderedMathCell' >
+            <div className='mathCellPreview' >
                 <MemoizedTeX block math = { contents } />
             </div>
         </div>
@@ -40,10 +40,10 @@ function PreviewMathCell(props: CellComponentProps){
 
     return (
         <div className='mathCell'>
-            <summary className='mathCellPreview'>
+            <summary className='mathCellLabel'>
                 수식
             </summary>
-            <div className='mathCell previewMathCell' >
+            <div className='mathCellPreview' >
                 <MemoizedTeX block math = { contents } />
             </div>
         </div>
@@ -67,7 +67,6 @@ function EditorMathCell(props: CellComponentProps){
                 onChange={handleChangeFactory(dispatch,props.cellId)}
                 value={contents}
             />
-            <div className='editorCellDividor'></div> {/* only for css */}
             <PreviewMathCell {...props} />
         </div>
     );

@@ -252,10 +252,13 @@ const FlatEditorComponentWithShortcut = withShortcut(
             <div className='allCellsWrapper'>
                 <CellEditor {...others}/>
             </div>
+            <hr/> {/* only for css */}
             {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
-            { props.uploadFlat && 
-                <Button className='uploadButton' onClick = { async () => props.uploadFlat!(state.flat) }>업로드</Button>
-            }
+            <div className='buttonsWrapper'>
+                { props.uploadFlat && 
+                    <Button className='uploadButton' onClick = { async () => props.uploadFlat!(state.flat) }>업로드</Button>
+                }
+            </div>
         </FlatContext.Provider>);
     }
 )
@@ -297,7 +300,7 @@ function FlatEditorComponent(props: FlatEditorProps){
                 </div>
                 <AuthorInput author={author} setAuthor={setAuthor} />
             </div>
-            <hr/>
+            <hr/> {/* only for css */}
             <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
         </div>
     </ShortcutProvider>);
