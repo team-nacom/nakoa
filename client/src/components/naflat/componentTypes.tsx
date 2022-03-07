@@ -5,6 +5,8 @@
 import { Dispatch } from 'react';
 import { createContext, useContext } from 'react';
 
+import katex from 'katex';
+
 import { Flat } from './flat';
 import { FlatState, FlatStateAction } from './reducer';
 
@@ -28,13 +30,26 @@ type CellRenderStrategy = {
 // but we won't strictly check that elsewhere.
 
 function makeInitialState(flat: Flat, rootId?: string, initialFocusId?: string) : FlatState{
+    //fake root rendering
+    //TODO : unify 'initial state rendering' and real root state renmdering logic
+
+    let macroPass = {};
+    if(rootId){
+        var mathMacro = (flat[rootId]?.value as any)?.mathMacro;
+        katex.renderToString(mathMacro,{
+            throwOnError: false,
+            globalGroup: true,
+            macros : macroPass
+        }); //render once and discard the result!
+    }
+
     return {
         flat: flat,
         rootId: rootId || '',
         renderInfo: {
             label: autoLabel(flat, rootId, {}),
             refs: {},
-            macros: { math: { '*': '\\cdot' }, text: {} }
+            macros: { math: macroPass, text: {} }
         },
         focusId: initialFocusId,
         history: []
