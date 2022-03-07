@@ -1,10 +1,9 @@
 // Implementation of cell (and flat) renderer components.
 // This file contains definitions which is only valid AFTER defining render strategies for each types.
 
-import React, { useEffect, useCallback, useMemo } from 'react';
-import { createContext, useContext } from 'react';
+import React, { useEffect, useCallback, useMemo, useReducer, createContext, useContext } from 'react';
 
-import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
+import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'; // 'react-keybind';
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from './flat';
@@ -23,7 +22,6 @@ import CodeCellStrategy from './strategies/Code';
 import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
-import AuthorInput from 'components/AuthorInput';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
@@ -209,13 +207,20 @@ interface FlatComponentProps extends CellComponentProps {
     // id: string // rootId.
     initialFlat?: Flat;
     initialFocusId?: string;
-    uploadFlat?: (flat: Flat) => void;
 }
 
+// display component implementation
 function FlatDisplayComponent(props: FlatComponentProps) {
     const { initialFlat, initialFocusId, ...others } = props;
 
-    const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
@@ -225,95 +230,26 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 }
 
 
-//Editor implementation
+// editor component implementation
+// DO NOT INHERIT THIS COMPONENT: if there are some metadata, rewrite the entire component based on this simple implementation.
+function FlatEditorComponent(props: FlatComponentProps){
+    const { initialFlat, initialFocusId, ...others } = props;
 
-//TODO : 에디터 자체도 다른 파일로 빼기
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
 
-//attempt 2: use forked 'react-keybind'
-//https://github.com/UnicornHeartClub/react-keybind
-const FlatEditorComponentWithShortcut = withShortcut(
-    function (props: FlatComponentProps & IWithShortcut){
-        const { initialFlat, initialFocusId, shortcut, ...others } = props;
-
-        const [state, dispatch] = React.useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
-
-        // attach global shortcuts
-        // useMemo for hooking multiple functions
-        const gs = useMemo(() => (
-            handleGlobalShortcutFactory(state,dispatch)
-        ), [state,dispatch]);
-
-        useEffect(()=>{
-            if(shortcut && shortcut.registerShortcut){
-                for(var name in gs){
-                    shortcut.registerShortcut(
-                        gs[name].handler,
-                        gs[name].keymap,
-                        name,
-                        gs[name].description || ''
-                    );
-                }
-                return ()=>{
-                    if(shortcut && shortcut.unregisterShortcut){
-                        //unregister in reverse order
-                        for(var name in gs){
-                            shortcut.unregisterShortcut(gs[name].keymap);
-                        }
-                    }
-                }
-            }
-        }, [ gs ]);
-
-        return (<FlatContext.Provider value={{ state, dispatch }} >
-            <CellEditor {...others}/>
-            <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button>
-            { props.uploadFlat && 
-                <button onClick = { () => { props.uploadFlat!(state.flat) } }>업로드</button>
-            }
-        </FlatContext.Provider>);
-    }
-)
-
-
-interface FlatEditorProps extends FlatComponentProps {
-    // initialFlat?: Flat;
-    // initialFocusId?: string;
-    // uploadFlat?: (flat: Flat) => void;
-    title?: string;
-    setTitle?: (value: string) => void;
-    author?: string;
-    setAuthor?: (value: string) => void;
-    upload?: (title: string, author: string, flat: Flat) => void;
+    return (<FlatContext.Provider value={{ state, dispatch }} >
+        <CellEditor {...others}/> { /* root cell */ }
+    </FlatContext.Provider>);
 }
 
-function FlatEditorComponent(props: FlatEditorProps){
-    let title = props.title ?? 'untitled';
-    let setTitle = props.setTitle ?? ((value: string) => {});
-
-    let author = props.author ?? 'unknown';
-    let setAuthor = props.setAuthor ?? ((value: string) => {});
-
-    let uploadFlat = (flat: Flat) => {};
-    if (props.upload !== undefined){
-        uploadFlat = (flat: Flat) => {
-            props.upload!(title, author, flat);
-        }
-    }
-
-    return (<ShortcutProvider ignoreTagNames={ [] }>
-
-        <div className='titleEditor'>
-            <label>
-                제목
-            </label>
-            <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-        </div>
-
-        <div className='flexbox'>
-            <AuthorInput author={author} setAuthor={setAuthor} />                
-        </div>
-        <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
-    </ShortcutProvider>);
-}
-
+export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
+export { makeInitialState };
+export { CellDisplay, CellEditor };
 export { FlatContext, FlatDisplayComponent, FlatEditorComponent };

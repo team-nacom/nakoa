@@ -10,7 +10,10 @@ import { FlatState, FlatStateAction } from './reducer';
 
 import { RenderInfo, autoLabel } from './renderInfo';
 
-interface CellComponentProps extends React.HTMLAttributes<HTMLElement>{
+interface CellComponentProps{
+    className?: string;
+    style?: React.CSSProperties;
+
     cellId : string;
 }
 type CellComponent = (props: CellComponentProps) => JSX.Element

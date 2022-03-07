@@ -9,7 +9,7 @@ const apiAddress = config.apiAddress;
 export interface FlatUploadItem {
     title: string,
     author: string,
-    content: string,
+    content: string, //dumped -> stringified flat object
 }
 
 export interface FlatItem extends FlatUploadItem {
@@ -67,7 +67,7 @@ export const unhideFlat = async (index: string) => {
 
 // Internal APIs
 
-export const getAllCells = async () => {
+export const getAllFlats = async () => {
     let response = await Axios.get(`${apiAddress}/flat/debug`, {
         validateStatus: authValidateStatus, 
     });

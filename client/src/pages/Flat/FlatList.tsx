@@ -7,8 +7,8 @@ import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
 import { Link, useParams } from "react-router-dom";
-import AuthorInput from '../../components/AuthorInput';
-import Button from '../../components/Button';
+import AuthorInput from 'components/editor/AuthorInput';
+import Button from 'components/Button';
 
 interface Params {
     author?: string;

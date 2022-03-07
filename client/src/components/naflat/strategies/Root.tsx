@@ -76,8 +76,6 @@ function EditorRootCell(props: CellComponentProps) {
                     macros : macroPass
                 }); //render once and discard the result!
 
-                console.log(macroPass);
-
                 dispatch({
                     type: 'updateMacro',
                     mathMacro: macroPass
