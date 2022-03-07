@@ -3,12 +3,11 @@ import { authValidateStatus } from '.';
 import config from '../config';
 
 import { Flat } from 'components/naflat/flat';
+import { FlatItemMetadata } from 'components/editor/FlatEditor';
 
 const apiAddress = config.apiAddress;
 
-export interface FlatUploadItem {
-    title: string,
-    author: string,
+export interface FlatUploadItem extends FlatItemMetadata {
     content: string, //dumped -> stringified flat object
 }
 
@@ -37,10 +36,9 @@ export const getFlat = async (index: string) => {
     return response.data as FlatItem;
 }
 
-export const postFlat = async (title: string, author: string, flat: Flat) => {
+export const postFlat = async (metadata: FlatItemMetadata, flat: Flat) => {
     const data: FlatUploadItem = {
-        title: title,
-        author: author,
+        ...metadata,
         content: JSON.stringify(flat),
     };
     let response = await Axios.post(`${apiAddress}/flat`, data, {

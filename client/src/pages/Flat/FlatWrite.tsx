@@ -12,7 +12,7 @@ function FlatWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
     let upload = (metadata: FlatItemMetadata, flat: Flat) => {
-        postFlat(metadata.title, metadata.author, flat).then(({success, index}) => {
+        postFlat(metadata, flat).then(({success, index}) => {
             if (success) {
                 setRedirectTo(`/view/${index}`);
             }
