@@ -2,63 +2,25 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { FlatComponent } from 'components/naflat/component';
-import jsPDF from 'jspdf';
-import axios from 'axios';
-
-const toBase64 = (blob: Blob) => new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = () => {
-        const result = reader.result;
-
-        if (typeof result !== 'string') {
-            console.log(result);
-            throw new Error('Font file reader returned non-string');
-        }
-
-        const prefix = 'data:font/ttf;base64,';
-        if (!result.startsWith(prefix)) {
-            throw new Error('Font file reader returned malformed string');
-        }
-
-        resolve(result.slice(prefix.length));
-    }
-    reader.onerror = error => reject(error);
-});
+import createPdf from 'components/naflat/createPdf';
 
 function Hidden() {
     // hidden bubble test page
-
-    const createPdf = async () => {
-        const pdf = new jsPDF('p', 'pt', 'a4');
-        const fontResponse = await fetch(process.env.PUBLIC_URL + '/SeoulNamsan.ttf');
-        if (fontResponse.status !== 200) {
-            throw new Error('Failed getting font');
-        }
-        const fontBlob = await fontResponse.blob();
-        const fontFile = await toBase64(fontBlob);
-        pdf.addFileToVFS('SeoulNamsan.ttf', fontFile);
-        pdf.addFont('SeoulNamsan.ttf', 'SeoulNamsan', 'normal');
-        pdf.setFont('SeoulNamsan');
-        const pdfElement = document.getElementById('pdf-wrapper');
-        if (!pdfElement) {
-            throw new Error('Element to export does not exists');
-        }
-        await pdf.html(pdfElement, {
-            margin: 10,
-            width: 575,
-            windowWidth: 900,
-            autoPaging: true
-        });
-
-        pdf.save('document.pdf');
-    }
+    const pdfElementRef = React.createRef<HTMLDivElement>();
+    const [isEditMode, setIsEditMode] = React.useState<boolean>(true);
 
     return (
         <>
             <Header />
-            <div id='pdf-wrapper' style={{ fontFamily: 'Montserrat, SeoulNamsan' }}>
-                <FlatComponent editMode
+            <form>
+                <label>
+                    <input type='checkbox' checked={isEditMode} onChange={(e) => setIsEditMode(e.target.checked)} />
+                    Is Edit mode?
+                </label>
+            </form>
+
+            <div ref={pdfElementRef}>
+                <FlatComponent editMode={isEditMode}
                     cellId='c0'
                     initialFlat={{
                         'c0': {
@@ -132,7 +94,14 @@ $$
                 />
             </div>
 
-            <button onClick={createPdf}>
+            <button onClick={async () => {
+                const pdfElement = pdfElementRef.current;
+                if (!pdfElement) {
+                    alert('인쇄할 문서가 없습니다.');
+                    return;
+                }
+                await createPdf(pdfElement, 'document.pdf');
+            }}>
                 Create PDF File
             </button>
 
