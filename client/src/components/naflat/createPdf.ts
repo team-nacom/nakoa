@@ -44,6 +44,8 @@ async function createPdf(element: HTMLElement, fileName: string) {
     loadFont(pdf, 'SeoulNamsan.ttf', 'SeoulNamsan', 'normal'),
     loadFont(pdf, 'KaTeX_Main-Regular.ttf', 'KaTeX_Main', 'normal', 400),
     loadFont(pdf, 'KaTeX_Math-Italic.ttf', 'KaTeX_Math', 'italic', 400),
+    // You might need to load more fonts in public/fonts ...
+    // Uploading the fonts in CDN rather than the public folder of the project may be helpful
   ])
 
   await pdf.html(element, {

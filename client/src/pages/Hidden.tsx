@@ -2,7 +2,7 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { FlatComponent } from 'components/naflat/component';
-import createPdf from 'components/naflat/createPdf';
+import CreatePdfButton from 'components/naflat/CreatePdfButton';
 
 function Hidden() {
     // hidden bubble test page
@@ -94,16 +94,7 @@ $$
                 />
             </div>
 
-            <button onClick={async () => {
-                const pdfElement = pdfElementRef.current;
-                if (!pdfElement) {
-                    alert('인쇄할 문서가 없습니다.');
-                    return;
-                }
-                await createPdf(pdfElement, 'document.pdf');
-            }}>
-                Create PDF File
-            </button>
+            <CreatePdfButton pdfElementRef={pdfElementRef} />
 
             <Footer />
         </>
