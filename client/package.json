@@ -28,6 +28,8 @@
     "axios": "^0.21.1",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
+    "jspdf": "^2.5.1",
+    "jspdf-html2canvas": "^1.4.9",
     "katex": "^0.13.0",
     "lodash": "^4.17.21",
     "mdast-util-from-markdown": "^1.0.0",
