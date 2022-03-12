@@ -103,7 +103,7 @@
     "c22": {
         "id": "c22",
         "type": "text",
-        "value": "수식 $%c11%$의 분모에 있는 $n! \\cdot 2^{n}$을 먼저 제거해줍시다.\r\n\r\n순열 $\\sigma \\in S_{2n}$을 정점이 $[2n] = \\{1, \\cdots, 2n\\}$인 완전그래프 $K_{2n}$의 완전 매칭으로 생각합시다. $\\sigma(1)$과 $\\sigma(2)$를 간선 $e_{1}$으로, $\\sigma(3)$과 $\\sigma(4)$를 간선 $e_{2}$로, ... , $\\sigma(2n-1)$과 $\\sigma(2n)$을 간선 $e_{n}$으로 이어주었다고 생각합니다. 이 때 간선은 방향이 있고, 방향은 $\\sigma(2k-1)$에서 $\\sigma(2k)$로 가는 쪽입니다. 즉, 길이 $2n$의 순열은 하나의 oriented-labeled perfect matching으로 생각할 수 있습니다.\r\n한편, $\\sigma \\in S_{2n}$에 대해 $\\sgn(\\sigma) a_{\\sigma(1)\\sigma(2)} \\cdots a_{\\sigma(2n-1)\\sigma(2n)}$을 $P(\\sigma)$라고 정의합시다. 즉, $%c11%$를 다시 쓰면 아래와 같습니다.",
+        "value": "수식(%c11%)의 분모에 있는 $n! \\cdot 2^{n}$을 먼저 제거해줍시다.\r\n\r\n순열 $\\sigma \\in S_{2n}$을 정점이 $[2n] = \\{1, \\cdots, 2n\\}$인 완전그래프 $K_{2n}$의 완전 매칭으로 생각합시다. $\\sigma(1)$과 $\\sigma(2)$를 간선 $e_{1}$으로, $\\sigma(3)$과 $\\sigma(4)$를 간선 $e_{2}$로, ... , $\\sigma(2n-1)$과 $\\sigma(2n)$을 간선 $e_{n}$으로 이어주었다고 생각합니다. 이 때 간선은 방향이 있고, 방향은 $\\sigma(2k-1)$에서 $\\sigma(2k)$로 가는 쪽입니다. 즉, 길이 $2n$의 순열은 하나의 oriented-labeled perfect matching으로 생각할 수 있습니다.\r\n한편, $\\sigma \\in S_{2n}$에 대해 $\\sgn(\\sigma) a_{\\sigma(1)\\sigma(2)} \\cdots a_{\\sigma(2n-1)\\sigma(2n)}$을 $P(\\sigma)$라고 정의합시다. 즉, (%c11%)를 다시 쓰면 아래와 같습니다.",
         "childIds": [],
         "parentId": "c21"
     },
@@ -131,7 +131,7 @@
     "c26": {
         "id": "c26",
         "type": "text",
-        "value": "$P(\\sigma)$는 equivalence class에 대해 보존되므로, 추출된 perfect matching $M$에 대해 $P(M)$을 자연스럽게 정의할 수 있습니다. 편의상 $K_{2n}$의 완전 매칭들을 모아둔 집합을 $\\mathcal{M}[2n]$으로 정의합시다. 그렇다면 이제 $%c11%, %c23%$을 다음과 같이 다시 쓸 수 있습니다.",
+        "value": "$P(\\sigma)$는 equivalence class에 대해 보존되므로, 추출된 perfect matching $M$에 대해 $P(M)$을 자연스럽게 정의할 수 있습니다. 편의상 $K_{2n}$의 완전 매칭들을 모아둔 집합을 $\\mathcal{M}[2n]$으로 정의합시다. 그렇다면 이제 (%c11%), (%c23%)을 다음과 같이 다시 쓸 수 있습니다.",
         "childIds": [],
         "parentId": "c21"
     },
@@ -253,7 +253,7 @@
     "c42": {
         "id": "c42",
         "type": "text",
-        "value": "이로부터, 바로 $%c13%$을 증명할 수 있습니다.",
+        "value": "이로부터, 바로 (%c13%)을 증명할 수 있습니다.",
         "childIds": [],
         "parentId": "c39"
     },

@@ -16,7 +16,6 @@ import {
 import { FileDropzone } from './helpers/FileDropzone';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 function DisplayTextCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
@@ -35,12 +34,12 @@ function DisplayTextCell(props: CellComponentProps){
 
     return (
         <div className='textCell'>
-            <MemoizedRenderer
+            <MarkdownRenderer
                 mathMacros = { state.renderInfo.macros.math }
                 perrefMap = { perrefMap }
             >
                 { contents }
-            </MemoizedRenderer>
+            </MarkdownRenderer>
         </div>
     );
 }
@@ -62,12 +61,12 @@ function PreviewTextCell(props: CellComponentProps){
 
     return (
         <div className='textCell'>
-            <MemoizedRenderer openDetails
+            <MarkdownRenderer openDetails
                 mathMacros = { state.renderInfo.macros.math }
                 perrefMap = { perrefMap }
             >
                 { contents }
-            </MemoizedRenderer>
+            </MarkdownRenderer>
         </div>
     );
 }

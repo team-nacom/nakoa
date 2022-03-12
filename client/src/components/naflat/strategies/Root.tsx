@@ -9,7 +9,6 @@ import TeX from '@matejmazur/react-katex';
 import SingletonTextArea from './helpers/singletonTextArea';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 // Root cell value type
 interface RootCellValue{

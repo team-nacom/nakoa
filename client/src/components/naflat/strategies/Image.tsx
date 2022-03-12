@@ -9,7 +9,6 @@ import { fileUpload, imgUpload } from 'etc/FileUpload';
 import { FileDropzone } from './helpers/FileDropzone';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 // Image cell value type
 interface ImageCellValue{

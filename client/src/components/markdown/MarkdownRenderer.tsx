@@ -1,6 +1,8 @@
 import React from 'react';
 import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
 
+import lodash from 'lodash';
+
 import { PluggableList } from 'unified';
 import { Node, Parent } from 'unist';
 import { u } from 'unist-builder';
@@ -150,4 +152,7 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
     );
 }
 
-export default MarkdownRenderer;
+//memoize by default.
+const MemoizedRenderer = React.memo(MarkdownRenderer, lodash.isEqual);
+
+export default MemoizedRenderer;

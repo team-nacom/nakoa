@@ -4,7 +4,6 @@ import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componen
 import { handleChangeFactory } from './helpers/handlers';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 function DisplaySectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
@@ -21,14 +20,14 @@ function DisplaySectionCell(props: CellComponentProps) {
     }
 
     return (
-        <MemoizedRenderer
+        <MarkdownRenderer
             inlineRenderClassName='sectionCell'
             inlineRenderPrefix={ prefix }
             mathMacros = { state.renderInfo.macros.math }
             perrefMap = { perrefMap }
         >
             { '#'.repeat(depth) + ' ' + cell.value }
-        </MemoizedRenderer>
+        </MarkdownRenderer>
     );
 }
 
@@ -48,14 +47,14 @@ function PreviewSectionCell(props: CellComponentProps) {
     }
 
     return (
-        <MemoizedRenderer
+        <MarkdownRenderer
             inlineRenderClassName='sectionCell'
             inlineRenderPrefix={ prefix }
             mathMacros = { state.renderInfo.macros.math }
             perrefMap = { perrefMap }
         >
             { '#'.repeat(depth) + ' ' + cell.value }
-        </MemoizedRenderer>
+        </MarkdownRenderer>
     );
 }
 
