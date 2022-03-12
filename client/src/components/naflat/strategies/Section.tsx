@@ -13,10 +13,20 @@ function DisplaySectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId];
     let depth = label[props.cellId].auto.length;
 
+    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
-        <MemoizedRenderer inlineRenderClassName='sectionCell' inlineRenderPrefix={
-            '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
-        }>
+        <MemoizedRenderer
+            inlineRenderClassName='sectionCell'
+            inlineRenderPrefix={ prefix }
+            mathMacros = { state.renderInfo.macros.math }
+            perrefMap = { perrefMap }
+        >
             { '#'.repeat(depth) + ' ' + cell.value }
         </MemoizedRenderer>
     );
@@ -30,10 +40,20 @@ function PreviewSectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId];
     let depth = label[props.cellId].auto.length;
 
+    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
-        <MemoizedRenderer inlineRenderClassName='sectionCell' inlineRenderPrefix={
-            '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
-        }>
+        <MemoizedRenderer
+            inlineRenderClassName='sectionCell'
+            inlineRenderPrefix={ prefix }
+            mathMacros = { state.renderInfo.macros.math }
+            perrefMap = { perrefMap }
+        >
             { '#'.repeat(depth) + ' ' + cell.value }
         </MemoizedRenderer>
     );
@@ -48,7 +68,7 @@ function EditorSectionCell(props: CellComponentProps) {
 
     return <div className='editorSectionCell'>
         <input autoFocus
-            className='title'
+            className='editorSectionCellInput'
             value={title}
             onChange={handleChangeFactory(dispatch,props.cellId)}
         />

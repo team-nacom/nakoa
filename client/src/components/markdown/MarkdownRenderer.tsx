@@ -28,9 +28,8 @@ import 'highlight.js/styles/github.css';
 
 // import SectionEnumerator, { TocRendererFactory, TocHeadingRendererFactory, SectionRendererFactory, SectionHeadingRendererFactory } from './SectionEnumerator';
 import InternalLinkHandler from './InternalLinkHandler';
-
 // import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
-
+import NamarkPerref from './perref';
 import { NamarkTextbox, NamarkTextboxToHast } from './textbox';
 import namarkNaHeading from './heading';
 
@@ -47,7 +46,8 @@ interface RendererOptionProps{
     inlineRenderPrefix?: string, // if rendered inline, set prefix before it.
     inlineRenderClassName?: string,
 
-    mathMacros?: Object
+    mathMacros?: Object,
+    perrefMap?: Record<string,string>
 }
 
 function MarkdownRenderer(props : Options & RendererOptionProps) {
@@ -67,6 +67,7 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         namarkNaHeading,
 
         /////// manipulations
+        [NamarkPerref, { map: props.perrefMap }],
         InternalLinkHandler,
         // ...( props.useTOC ? [SectionEnumerator] : [] ),
         // FootnoteEnumerator,

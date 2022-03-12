@@ -23,6 +23,12 @@ function DisplayImageCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
         <>
             <img className='imgCell' src={ src } alt=''
@@ -36,6 +42,7 @@ function DisplayImageCell(props: CellComponentProps){
                 inlineRenderClassName='imgCellCaption'
                 inlineRenderPrefix=''
                 mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
             >
                 { caption }
             </MarkdownRenderer>
@@ -49,6 +56,12 @@ function PreviewImageCell(props: CellComponentProps){
 
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
+
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
 
     return (
         <>
@@ -64,6 +77,7 @@ function PreviewImageCell(props: CellComponentProps){
                 inlineRenderClassName='imgCellCaption'
                 inlineRenderPrefix=''
                 mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
             >
                 { caption }
             </MarkdownRenderer>

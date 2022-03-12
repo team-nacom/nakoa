@@ -26,19 +26,20 @@ function DisplayTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
+    //TODO : make perrefMap DRY
     const label = state.renderInfo.label;
-    let renderString = contents;
+    var perrefMap : Record<string,string> = {};
     for(var keyId in label){
-        var replace = label[keyId].custom || label[keyId].autoType.join('.');
-        renderString = renderString.replaceAll(`%${ keyId }%`,replace);
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
     }
 
     return (
         <div className='textCell'>
             <MemoizedRenderer
                 mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
             >
-                {renderString}
+                { contents }
             </MemoizedRenderer>
         </div>
     );
@@ -54,19 +55,18 @@ function PreviewTextCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     const label = state.renderInfo.label;
-    let renderString = contents;
+    var perrefMap : Record<string,string> = {};
     for(var keyId in label){
-        var replace = label[keyId].custom || label[keyId].autoType.join('.');
-        renderString = renderString.replaceAll(`%${ keyId }%`,replace);
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
     }
 
     return (
         <div className='textCell'>
             <MemoizedRenderer openDetails
                 mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
             >
-                {/* {contents} */}
-                { renderString }
+                { contents }
             </MemoizedRenderer>
         </div>
     );
