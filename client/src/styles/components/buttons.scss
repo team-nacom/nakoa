@@ -97,3 +97,35 @@ div.buttonContainer {
     width: fit-content;
     margin: 0px auto;
 }
+
+// 임시
+.bubbleSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3;
+
+    button {
+        @include sidebarButton;
+    }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: -140px;
+        top: -220px;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 2px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004D;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
+}

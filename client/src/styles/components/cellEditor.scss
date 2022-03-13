@@ -1,6 +1,5 @@
 @import '../consts.scss';
 
-
 @mixin shadow-template {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
@@ -55,9 +54,9 @@
     background-color: white;
     box-sizing: border-box;
     padding: 10px 20px;
-    @media(min-width: 768px) {
+    @media(min-width: 720px) {
         border-radius: 7px;
-        width: 768px;
+        width: min(1200px, 80%);
         margin: 20px auto;
         @include shadow-template();
     }
@@ -72,7 +71,7 @@
 .editorTextInput {
     display: flex;
     margin: 20px;
-    @media(max-width: 768px) {
+    @media(max-width: 900px) {
         flex-direction: column;
         input {
             width: 100%;
@@ -230,15 +229,16 @@
 .editorTextCellWrapper, .editorCodeCellWrapper, .editorMathCellWrapper {
     display: flex;
     align-items: stretch;
-    @media(max-width: 768px) {
-        flex-direction: column;
+    @media(max-width: 900px) {
+        flex-direction: column-reverse;
         .editorCell {
-            border-bottom: solid 1px #ddd;
+            border-top: solid 1px #ddd;
         }
     }
-    @media(min-width: 786px) {
+    @media(min-width: 900px) {
         .editorCell {
             border-right: solid 1px #ddd;
+            flex: 0 0 50%;
         }
         > div {
             flex: 0 0 50%;

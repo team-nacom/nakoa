@@ -125,12 +125,11 @@ label {
     }
 }
 
-@import './write.scss';
-
 @import './layout/footer.scss';
 @import './layout/header.scss';
 
 @import './components/cellEditor.scss';
+@import './components/cellList.scss';
 @import './components/buttons.scss';
 @import './components/guide.scss';
 @import './components/markdown.scss';
