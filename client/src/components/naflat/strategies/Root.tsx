@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
@@ -52,36 +52,41 @@ function EditorRootCell(props: CellComponentProps) {
     let value = cell.value as RootCellValue;
     let macroText = value.mathMacro;
 
+    let [mathMacro, setMathMacro] = useState(value.mathMacro);
 
     return <div className='editorRootCellWrapper'>
         설정 편집
         <label>수식 매크로 정의</label>
         <SingletonTextArea
+            className='editorRootCellTextArea'
             initialSelectionStart={ state.cursorStart }
             initialSelectionEnd={ state.cursorEnd }
-            onChange={(ev)=>{
-                dispatch({
-                    type: 'update',
-                    id: props.cellId,
-                    value: {
-                        mathMacro: ev.target.value
-                    } as RootCellValue
-                });
-
-                let macroPass = {};
-                katex.renderToString(ev.target.value,{
-                    throwOnError: false,
-                    globalGroup: true,
-                    macros : macroPass
-                }); //render once and discard the result!
-
-                dispatch({
-                    type: 'updateMacro',
-                    mathMacro: macroPass
-                });
-            }}
-            value={ macroText }
+            value={ mathMacro }
+            onChange={(ev)=>{ setMathMacro(ev.target.value) }}
         />
+        <button onClick={(ev)=>{
+            dispatch({
+                type: 'update',
+                id: props.cellId,
+                value: {
+                    mathMacro: mathMacro
+                } as RootCellValue
+            });
+
+            let macroPass = {};
+            katex.renderToString(mathMacro,{
+                throwOnError: false,
+                globalGroup: true,
+                macros : macroPass
+            }); //render once and discard the result!
+
+            dispatch({
+                type: 'updateMacro',
+                mathMacro: macroPass
+            });
+        }}>
+            업데이트
+        </button>
     </div>
 }
 
