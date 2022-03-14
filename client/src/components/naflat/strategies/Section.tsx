@@ -10,9 +10,9 @@ function DisplaySectionCell(props: CellComponentProps) {
     const label = state.renderInfo.label;
 
     let cell = state.flat[props.cellId];
-    let depth = label[props.cellId].auto.length;
+    let depth = label[props.cellId].autoType.length;
 
-    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].autoType.join('.')) + '. '
 
     var perrefMap : Record<string,string> = {};
     for(var keyId in label){
@@ -37,9 +37,9 @@ function PreviewSectionCell(props: CellComponentProps) {
     const label = state.renderInfo.label;
 
     let cell = state.flat[props.cellId];
-    let depth = label[props.cellId].auto.length;
+    let depth = label[props.cellId].autoType.length;
 
-    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].auto.join('.')) + '. '
+    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].autoType.join('.')) + '. '
 
     var perrefMap : Record<string,string> = {};
     for(var keyId in label){

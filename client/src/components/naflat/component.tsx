@@ -6,7 +6,7 @@ import React, { useEffect, useCallback, useMemo, useReducer, createContext, useC
 import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'; // 'react-keybind';
 
 import lodash from 'lodash';
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from './flat';
+import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue, isChildAllowed } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
@@ -32,18 +32,20 @@ const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'image': ImageCellStrategy
 };
 
+const maxDepth = 4;
+
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
 
-    const cell = state.flat[props.cellId];
+    const cell = state.flat[cellId];
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
-    return <div className='cellWrapper' id={ props.cellId }>
-        {/* <span>{ state.renderInfo.label[props.cellId].auto.join('.') }</span> */}
+    return <div className='cellWrapper' id={ cellId }>
         <Strategy {...props} />
         { /* render children. */}
-        {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div className='childrenContainer' id={ props.cellId }>
+        { isChildAllowed(cell.type) &&
+            <div className='childrenContainer' id={ cellId }>
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -57,9 +59,14 @@ function CellDisplay(props: CellComponentProps) {
 
 function CellEditor(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
+    const cellLabel = state.renderInfo.label[cellId];
 
-    const cell = state.flat[props.cellId];
-    const isFocused = (state.focusId === props.cellId);
+    const cell = state.flat[cellId];
+    const isFocused = (state.focusId === cellId);
+
+    let depth = cellLabel.autoType.length;
+    let pos = cellLabel.custom || cellLabel.autoType.join('.');
 
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
@@ -67,39 +74,56 @@ function CellEditor(props: CellComponentProps) {
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
             if(cell.type === type) return;
-            if(lodash.isEqual(cell.value, defaultValue[cell.type])
-                || window.confirm('셀 타입을 변경하면 내용이 초기화됩니다. 변경하시겠습니까?')
+            if((
+                    lodash.isEqual(cell.value, defaultValue[cell.type])
+                    && !(isChildAllowed(cell.type) && cell.childIds.length > 0)
+                )
+                || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 셀 타입을 변경하시겠습니까?')
             ){ //either the value is default OR it is confirmed to reset the value
-                dispatch({ type: 'changeType', cellType: type, id: props.cellId });
+                dispatch({ type: 'changeType', cellType: type, id: cellId });
             }
+        }
+    }
+
+    function deleteButtonHandler(){
+        if((
+                lodash.isEqual(cell.value, defaultValue[cell.type])
+                && !(isChildAllowed(cell.type) && cell.childIds.length > 0)
+            )
+            || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
+        ){ //either the value is default OR it is confirmed
+            dispatch({ type: 'remove', id: cellId })
         }
     }
 
     return <>
         {!isFocused &&
             <>
-                <div className='cellWrapper' id={ props.cellId }
+                <div className='cellWrapper' id={ cellId }
                     onClick={(ev) => {
                         ev.stopPropagation();
-                        dispatch({ type: 'focus', id: props.cellId })
+                        dispatch({ type: 'focus', id: cellId })
                     }}
                 >
                     <div className='bubbleOptions'>
                         <span className='cellId'>
-                            ID: { props.cellId }
+                            ID: { cellId } | 
                         </span>
-                        {cell.childIds.length === 0 &&
+                        <span className='cellPos'>
+                            pos: { pos }
+                        </span>
+                        {/* {isChildAllowed(cell.type) && depth <= maxDepth && cell.childIds.length === 0 &&
                             <button
                                 className='material-icons bubbleOptionButton'
-                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
+                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: cellId, pos : 0, cellType: defaultCellType}) } }
                             >
                                 add
                             </button>
-                        }
+                        } */}
                         {cell.type !== 'root' &&
                             <button
                                 className='material-icons bubbleOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                onClick={ deleteButtonHandler }
                             >
                                 delete
                             </button>
@@ -112,13 +136,16 @@ function CellEditor(props: CellComponentProps) {
         {isFocused &&
             <div className='editorCellContainer'>
 
-                <div className='cellWrapper' id={ props.cellId }
+                <div className='cellWrapper' id={ cellId }
                     onClick={(ev) => {ev.stopPropagation()} }
                 >
                     { /* side cell */}
                     <div className='bubbleOptions'>
                         <span className='cellId'>
-                            ID: { props.cellId }
+                            ID: { cellId } | 
+                        </span>
+                        <span className='cellPos'>
+                            pos: { pos }
                         </span>
                         {cell.type !== 'root' &&
                             <>
@@ -163,7 +190,7 @@ function CellEditor(props: CellComponentProps) {
                         {cell.type !== 'root' &&
                             <button
                                 className='material-icons bubbleOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                onClick={() => dispatch({ type: 'remove', id: cellId })}
                             >
                                 delete
                             </button>
@@ -176,7 +203,7 @@ function CellEditor(props: CellComponentProps) {
         }
 
         { /* render children. */}
-        {(cell.type === 'root' || cell.childIds.length !== 0) &&
+        { isChildAllowed(cell.type) && depth <= maxDepth &&
             <div className='childrenContainer'
                 // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
@@ -184,8 +211,8 @@ function CellEditor(props: CellComponentProps) {
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellEditor {...props} cellId={childId} />,
-                        <InterCell parentId={props.cellId} pos={idx + 1} />
-                    ), [ <InterCell parentId={props.cellId} pos={0} /> ])
+                        <InterCell parentId={cellId} pos={idx + 1} />
+                    ), [ <InterCell parentId={cellId} pos={0} /> ])
                 }
             </div>
         }

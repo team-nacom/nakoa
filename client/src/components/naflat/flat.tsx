@@ -41,6 +41,11 @@ const defaultValue : CellTypeMap<unknown> = {
     'image': { src: '/altImg.png', caption: '' },
 }
 
+const isChildAllowed = (type: CellType) => {
+    return (type === 'root' || type === 'section');
+}
+
+
 // /**
 //  * Transform flat into a nested object(bubble), which can be serialized into JSON string.
 //  * 
@@ -236,6 +241,15 @@ function changeCellType(f: Flat, id: string, type: CellType): Flat{
     newf[id].type = type;
     newf[id].value = defaultValue[type];
 
+    // cascade children
+    (function cascadeChidren(cellId: string){
+        for(let childId of newf[cellId].childIds){
+            cascadeChidren(childId);
+            delete newf[childId];
+        }
+    })(id);
+    newf[id].childIds = [];
+
     return newf;
 }
 
@@ -329,19 +343,20 @@ function removeCell(f: Flat, id: string) : Flat{
     }
 
     // cascade children
-    (function cascade(cellId: string){
+    (function cascadeChidren(cellId: string){
         for(let childId of newf[cellId].childIds){
-            cascade(childId);
+            cascadeChidren(childId);
+            delete newf[childId];
         }
-        delete newf[cellId];
     })(id);
+    delete newf[id];
 
     return newf;
 }
 
 
 export type { Data, CellType, CellTypeMap, Cell, Flat };
-export { defaultValue, defaultCellType };
+export { defaultValue, defaultCellType, isChildAllowed };
 
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
