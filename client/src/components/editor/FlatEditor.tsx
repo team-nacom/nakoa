@@ -31,9 +31,7 @@ const emptyFlat: Flat = {
         type: 'root',
         id: 'c0',
         childIds: [],
-        value: {
-            mathMacro: ''
-        }
+        value: defaultValue['root']
     }
 };
 

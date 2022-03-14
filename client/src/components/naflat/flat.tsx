@@ -33,7 +33,7 @@ interface Cell{
 type Flat = Record<string, Cell>; // Just an alias
 
 const defaultValue : CellTypeMap<unknown> = {
-    'root': '',
+    'root': { mathMacro: '' },
     'section': '',
     'text': '',
     'math': '',
