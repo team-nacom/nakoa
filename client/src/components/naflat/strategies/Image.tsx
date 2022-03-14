@@ -30,7 +30,7 @@ function DisplayImageCell(props: CellComponentProps){
 
     return (
         <>
-            <img className='imgCell' src={ src } alt=''
+            <img className='imageCell' src={ src } alt=''
                 onError = { (ev) =>{
                     if(ev.currentTarget.src !== '/altImg.png'){
                         ev.currentTarget.src = '/altImg.png';
@@ -38,7 +38,7 @@ function DisplayImageCell(props: CellComponentProps){
                 } }
             />
             <MarkdownRenderer
-                inlineRenderClassName='imgCellCaption'
+                inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
                 mathMacros = { state.renderInfo.macros.math }
                 perrefMap = { perrefMap }
@@ -64,7 +64,7 @@ function PreviewImageCell(props: CellComponentProps){
 
     return (
         <>
-            <img className='imgCell' src={ src } alt=''
+            <img className='imageCell' src={ src } alt=''
                 onError = { (ev) =>{
                     ev.preventDefault();
                     if(ev.currentTarget.src !== '/altImg.png'){
@@ -73,7 +73,7 @@ function PreviewImageCell(props: CellComponentProps){
                 } }
             />
             <MarkdownRenderer
-                inlineRenderClassName='imgCellCaption'
+                inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
                 mathMacros = { state.renderInfo.macros.math }
                 perrefMap = { perrefMap }
@@ -127,7 +127,7 @@ function EditorImageCell(props: CellComponentProps){
             </FileDropzone>
             <input
                 style={ props.style as any }
-                className=''
+                className='imageCellCaptionForm'
                 onChange={
                     handleChangeFactory(
                         dispatch,
