@@ -88,6 +88,11 @@ summary.codeCellPreview {
     }
 }
 
+.childrenContainer{
+    border: 1px solid gray;
+    padding: 10px;
+}
+
 .editorCellContainer {
     display: flex;
     align-items: stretch;

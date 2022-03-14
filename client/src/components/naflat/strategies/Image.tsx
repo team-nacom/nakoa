@@ -8,6 +8,8 @@ import SingletonTextArea from './helpers/singletonTextArea';
 import { fileUpload, imgUpload } from 'etc/FileUpload';
 import { FileDropzone } from './helpers/FileDropzone';
 
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+
 // Image cell value type
 interface ImageCellValue{
     src: string, //default value ''
@@ -20,16 +22,29 @@ function DisplayImageCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
         <>
-            <img src={ src } alt=''
+            <img className='imgCell' src={ src } alt=''
                 onError = { (ev) =>{
                     if(ev.currentTarget.src !== '/altImg.png'){
                         ev.currentTarget.src = '/altImg.png';
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
+            <MarkdownRenderer
+                inlineRenderClassName='imgCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { caption }
+            </MarkdownRenderer>
         </>
     );
 }
@@ -41,9 +56,15 @@ function PreviewImageCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
         <>
-            <img src={ src } alt=''
+            <img className='imgCell' src={ src } alt=''
                 onError = { (ev) =>{
                     ev.preventDefault();
                     if(ev.currentTarget.src !== '/altImg.png'){
@@ -51,7 +72,14 @@ function PreviewImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <p style={ {textAlign: 'center'} }>{ caption }</p>
+            <MarkdownRenderer
+                inlineRenderClassName='imgCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { caption }
+            </MarkdownRenderer>
         </>
     );
 }

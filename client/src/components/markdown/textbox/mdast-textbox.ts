@@ -18,16 +18,17 @@ import {
     Context
 } from 'mdast-util-to-markdown';
 
-import { visitParents, Visitor } from 'unist-util-visit-parents'
-import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
-import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
+import { visitParents, Visitor } from 'unist-util-visit-parents';
+import { containerFlow } from 'mdast-util-to-markdown/lib/util/container-flow.js';
+import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js';
+import { track } from 'mdast-util-to-markdown/lib/util/track.js';
 
 interface Textbox extends Parent{
     type: 'textbox';
     // children: PhrasingContent[];
 }
 
-const namedTextboxes = [
+export const namedTextboxes = [
     'exercise',
     'expand'
 ] as const;
@@ -77,42 +78,47 @@ const exitTextbox : FromMarkdownHandle = function(token){
     this.exit(token);
 }
 
-const handleTextbox : ToMarkdownHandle = function(node, _, context){
+const handleTextbox : ToMarkdownHandle = function(node, _, context, safeOptions){
+    const tracker = track(safeOptions);
     const prefix = fence(node);
     const exit = context.enter('textbox');
-    let value =
-        prefix +
-        (node.data.name || '') +
-        label(node, context);
+    // let value =
+    //     prefix +
+    //     (node.data.name || '') +
+    //     label(node, context);
 
-    const subvalue = content(node, context);
-    if (subvalue) value += '\n' + subvalue;
-    value += '\n' + prefix;
+    let value = tracker.move(prefix + (node.data.name || ''));
+    
+    let shallow = node;
+    let head : Node | undefined = (node.children || [])[0];
+    head = inlineTextboxLabel(head) ? head : undefined;
+    if (head && Array.isArray(head.children) && head.children.length > 0){
+        const exit1 = context.enter('label');
+        const exit2 = context.enter(node.type + 'Label');
+
+        value += tracker.move('[');
+        value += tracker.move(
+            containerPhrasing(head as any, context, {
+                ...tracker.current(),
+                before: value, after: ']'
+            })
+        );
+        value += tracker.move(']');
+        exit2();
+        exit1();
+
+        shallow = Object.assign({}, node, {children: node.children.slice(1)});
+    }
+
+    if(shallow && Array.isArray(shallow.children) && shallow.children.length > 0){
+        value += tracker.move('\n');
+        value += tracker.move(containerFlow(shallow, context, tracker.current()));
+    }
+
+    value += tracker.move('\n' + prefix);
 
     exit();
     return value;
-}
-
-const label = function(node : Textbox, context : Context){
-    const head = (node.children || [])[0];
-    if(!inlineTextboxLabel(head as Node)) return '';
-
-    const exit = context.enter('label');
-    const subexit = context.enter(node.type + 'Label');
-    const value = containerPhrasing(head as any, context, {before: '[', after: ']'});
-    subexit();
-    exit();
-    return value ? '[' + value + ']' : '';
-}
-
-function content(node : Textbox, context : Context) : string{
-    const head = (node.children || [])[0];
-
-    if (inlineTextboxLabel(head as Node)){
-        node = Object.assign({}, node, {children: node.children.slice(1)});
-    }
-
-    return containerFlow(node as any, context);
 }
 
 function inlineTextboxLabel(node? : Node) : boolean{
@@ -124,7 +130,7 @@ function inlineTextboxLabel(node? : Node) : boolean{
 function fence(node : Textbox) : string{
     let size = 0;
 
-    const onvisit : Visitor<Textbox> = function(_, parents){
+    const onvisit : Visitor = function(_, parents){
         let nesting = 0;
         for(var parent of parents){
             if(parent.type === 'textbox') nesting++;

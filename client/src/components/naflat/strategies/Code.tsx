@@ -57,7 +57,6 @@ function EditorCodeCell(props: CellComponentProps){
 
     return (
         <SingletonTextArea
-            style={ props.style as any }
             name={'cell' + props.cellId}
             className='editorCodeCell editorCell'
             onChange={handleChangeFactory(dispatch,props.cellId)}

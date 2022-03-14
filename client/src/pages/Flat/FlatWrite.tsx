@@ -5,16 +5,14 @@ import { postFlat, FlatUploadItem } from 'etc/api/flat';
 import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
 import { Flat } from 'components/naflat/flat';
-import { FlatEditorComponent } from 'components/naflat/component';
+import { FlatItemMetadata, FlatEditor } from 'components/editor/FlatEditor';
 
 
 function FlatWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
-    let [title, setTitle] = React.useState<string>();
-    let [author, setAuthor] = React.useState<string>();
 
-    let upload = (title: string, author: string, flat: Flat) => {
-        postFlat(title, author, flat).then(({success, index}) => {
+    let upload = (metadata: FlatItemMetadata, flat: Flat) => {
+        postFlat(metadata, flat).then(({success, index}) => {
             if (success) {
                 setRedirectTo(`/view/${index}`);
             }
@@ -27,13 +25,11 @@ function FlatWrite() {
         <>
             <Header/>
             <div id='content'>
-                <FlatEditorComponent
-                    title={title}
-                    setTitle={setTitle}
-                    author={author}
-                    setAuthor={setAuthor}
+                <FlatEditor
                     cellId='c0'
-                    upload={upload}/>
+                    metadata={ { title: '', author: '' } }
+                    upload={upload}
+                />
             </div>
             <Footer/>
         </>
