@@ -37,7 +37,7 @@ const defaultValue : CellTypeMap<unknown> = {
     'section': '',
     'text': '',
     'math': '',
-    'code': '',
+    'code': { language: '', contents: '' },
     'image': { src: '/altImg.png', caption: '' },
 }
 
