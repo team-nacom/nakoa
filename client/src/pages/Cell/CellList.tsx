@@ -44,7 +44,7 @@ function CellList() {
                     글 검색
                 </PageTitle>
                 
-                <div className='writeBox guide'>
+                <div className='cellListWrapper'>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
                         setCells(await getCellsByAuthor(author));
