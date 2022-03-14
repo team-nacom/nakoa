@@ -149,12 +149,14 @@ function CellEditor(props: CellComponentProps) {
                         </span>
                         {cell.type !== 'root' &&
                             <>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('section') }
-                                >
-                                    topic
-                                </button>
+                                {depth <= maxDepth &&
+                                    <button
+                                        className='material-icons bubbleOptionButton'
+                                        onClick={ cellTypeButtonHandlerFactory('section') }
+                                    >
+                                        topic
+                                    </button>
+                                }
                                 <button
                                     className='material-icons bubbleOptionButton'
                                     onClick={ cellTypeButtonHandlerFactory('text') }
