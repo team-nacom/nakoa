@@ -63,13 +63,15 @@ function CellPage() {
 
             <div id='content'>
                 { cell && parsedFlatRef.current ? (
-                    <div className='cellDisplayWrapper'>
+                    <>
                         <div className='displayText'>
                             <h1 className='title'> { cell.title } </h1>
                             <h2 className='author'> { cell.author } </h2>
                         </div>
-                    <FlatDisplayComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
-                    </div>
+                        <div className='cellDisplayWrapper'>
+                        <FlatDisplayComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
+                        </div>
+                    </>
                 ) : (
                     <p> 존재하지 않는 버블입니다. </p>
                 )}

@@ -2,6 +2,10 @@
     background-color: white;
     box-sizing: border-box;
     
+    @media(max-width: 720px) {
+        border-top: solid 1px #ddd;
+        border-bottom: solid 1px #ddd;
+    }
     @media(min-width: 720px) {
         border-radius: 7px;
         width: min(1200px, 80%);
