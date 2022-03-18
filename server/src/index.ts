@@ -11,7 +11,6 @@ import './setup/aws'; // connect aws S3
 
 import fileRouter from './file';
 import bubbleRouter from './bubble';
-import pdfRouter from './pdf';
 
 import {
   handleErrorMiddleware, isProduction, logger, logStreams,
@@ -30,8 +29,6 @@ router.get('/', async (ctx, next) => {
 router.use('/file', fileRouter.routes());
 // Bubble (for demo)
 router.use('/bubble', bubbleRouter.routes());
-
-router.use('/pdf', pdfRouter.routes());
 
 // local / production config
 const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
