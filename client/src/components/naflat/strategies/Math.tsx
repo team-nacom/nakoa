@@ -9,61 +9,61 @@ import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 const MemoizedTeX = React.memo(TeX);
 
-function DisplayMathCell(props: CellComponentProps){
+function DisplayMathCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
         <>
-            <summary className='mathCellPreview'>
-                수식
-            </summary>
             <div className='mathCell renderedMathCell' >
-                <MemoizedTeX block math = { contents } />
+                <summary className='mathCellPreview'>
+                    수식
+                </summary>
+                <MemoizedTeX block math={contents} />
             </div>
         </>
     );
 }
 
 
-function PreviewMathCell(props: CellComponentProps){
+function PreviewMathCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
         <>
-            <summary className='mathCellPreview'>
-                수식
-            </summary>
             <div className='mathCell previewMathCell' >
-                <MemoizedTeX block math = { contents } />
+                <summary className='mathCellPreview'>
+                    수식
+                </summary>
+                <MemoizedTeX block math={contents} />
             </div>
         </>
     );
 }
 
 
-function EditorMathCell(props: CellComponentProps){
+function EditorMathCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
-        <TextareaAutosize autoFocus style={ props.style as any }
+        <TextareaAutosize autoFocus style={props.style as any}
             name={'cell' + props.cellId}
             className='editorMathCell editorCell'
-            onChange={handleChangeFactory(props.cellId,dispatch)}
+            onChange={handleChangeFactory(props.cellId, dispatch)}
             value={contents}
             spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
@@ -71,10 +71,10 @@ function EditorMathCell(props: CellComponentProps){
 }
 
 
-const MathCellStrategy : CellRenderStrategy = {
+const MathCellStrategy: CellRenderStrategy = {
     'display': DisplayMathCell,
     'preview': PreviewMathCell,
-    'editor' : EditorMathCell
+    'editor': EditorMathCell
 }
 
 export default MathCellStrategy;

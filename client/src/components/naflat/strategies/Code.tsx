@@ -5,61 +5,61 @@ import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componen
 
 import { handleChangeFactory } from './helpers/handlers';
 
-function DisplayCodeCell(props: CellComponentProps){
+function DisplayCodeCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
         <>
-            <summary className='codeCellPreview'>
-                코드
-            </summary>
-            <pre className='codeCell renderedCodeCell'>
+            <div className='codeCell renderedCodeCell'>
+                <summary className='codeCellPreview'>
+                    코드
+                </summary>
                 <code>{contents}</code>
-            </pre>
+            </div>
         </>
     );
 }
 
 
-function PreviewCodeCell(props: CellComponentProps){
+function PreviewCodeCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
         <>
-            <summary className='codeCellPreview'>
-                코드
-            </summary>
-            <pre className='codeCell previewCodeCell'>
+            <div className='codeCell previewCodeCell'>
+                <summary className='codeCellPreview'>
+                    코드
+                </summary>
                 <code>{contents}</code>
-            </pre>
+            </div>
         </>
     );
 }
 
 
-function EditorCodeCell(props: CellComponentProps){
+function EditorCodeCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    if(typeof contents !== 'string') return <></>;
+    if (typeof contents !== 'string') return <></>;
 
     return (
-        <TextareaAutosize autoFocus style={ props.style as any }
+        <TextareaAutosize autoFocus style={props.style as any}
             name={'cell' + props.cellId}
             className='editorCodeCell editorCell'
-            onChange={handleChangeFactory(props.cellId,dispatch)}
+            onChange={handleChangeFactory(props.cellId, dispatch)}
             value={contents}
             spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
@@ -67,10 +67,10 @@ function EditorCodeCell(props: CellComponentProps){
 }
 
 
-const CodeCellStrategy : CellRenderStrategy = {
+const CodeCellStrategy: CellRenderStrategy = {
     'display': DisplayCodeCell,
     'preview': PreviewCodeCell,
-    'editor' : EditorCodeCell
+    'editor': EditorCodeCell
 }
 
 export default CodeCellStrategy;

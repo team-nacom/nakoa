@@ -24,34 +24,33 @@
     padding: 4px 8px;
     font-size: 13px;
     line-height: 15px;
-    margin-bottom: -28px;
-    margin-left: 5px;
+    margin-bottom: 4px;
 
     background-color: $background-color;
     color: $color;
 }
 
 .textCell {
-    @include cell(rgba(gray, 0.06));
+    @include cell(rgb(247, 247, 247));
 }
 
 .mathCell {
-    @include cell(rgba($main-color, 0.06));
+    @include cell(rgb(253, 246, 251));
 }
 
 summary.mathCellPreview {
-    @include celllabel(rgba($main-color, 0.8), white);
+    @include celllabel($main-color, white);
+    margin-bottom: -23px;
 }
 
 .codeCell {
-    @include cell(rgba(gray, 0.16));
-    padding-top: 30px;
+    @include cell(rgb(235, 235, 235));
     padding-bottom: 10px;
     font-size: 13.33px;
 }
 
 summary.codeCellPreview {
-    @include celllabel(rgba(gray, 0.8), white);
+    @include celllabel(rgb(149, 149, 149), white);
 }
 
 @mixin controlButton {
@@ -118,7 +117,7 @@ summary.codeCellPreview {
 
     .editorRootCell {
         // from '../write.scss'
-        @include editorCell(rgba(white,0));
+        @include editorCell(rgba(white, 0));
 
         input.title {
             padding: 15px;
@@ -137,15 +136,15 @@ summary.codeCellPreview {
     }
 
     .editorTextCell {
-        @include editorCell(rgba(gray, 0.06));
+        @include editorCell(rgb(247, 247, 247));
     }
 
     .editorMathCell {
-        @include editorCell(rgba($main-color, 0.06));
+        @include editorCell(rgb(253, 246, 251));
     }
 
     .editorCodeCell {
-        @include editorCell(rgba(gray, 0.16));
+        @include editorCell(rgb(235, 235, 235));
     }
 
     .sideBlockHelper {
