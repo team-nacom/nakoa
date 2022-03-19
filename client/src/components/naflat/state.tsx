@@ -10,9 +10,14 @@ import { RenderInfo, autoLabel } from './renderInfo';
 const MAX_HISTORY = 5;
 
 interface FlatState{
+    //basic info
     flat : Flat;
     rootId : string;
+
+    //context-specific info
     renderInfo : RenderInfo;
+
+    //editor info
     focusId? : string;
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose

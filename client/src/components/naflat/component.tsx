@@ -7,7 +7,7 @@ import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue, isChildAllowed } from './flat';
-import { FlatState, FlatStateAction, reducer } from './reducer';
+import { FlatState, FlatStateAction, reducer } from './state';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';

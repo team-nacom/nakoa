@@ -4,7 +4,7 @@ import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from 'components/naflat/flat';
-import { FlatState, FlatStateAction, reducer } from 'components/naflat/reducer';
+import { FlatState, FlatStateAction, reducer } from 'components/naflat/state';
 
 import {
     CellComponentProps, FlatComponentProps,

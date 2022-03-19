@@ -8,7 +8,7 @@ import { createContext, useContext } from 'react';
 import katex from 'katex';
 
 import { Flat } from './flat';
-import { FlatState, FlatStateAction } from './reducer';
+import { FlatState, FlatStateAction } from './state';
 
 import { RenderInfo, autoLabel } from './renderInfo';
 
