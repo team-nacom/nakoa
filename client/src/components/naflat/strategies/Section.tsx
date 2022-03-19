@@ -7,24 +7,19 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
 function DisplaySectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
+    const label = state.typedLabel;
 
     let cell = state.flat[props.cellId];
-    let depth = label[props.cellId].autoType.length;
+    let depth = label[props.cellId].length;
 
-    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].autoType.join('.')) + '. '
-
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
         <MarkdownRenderer
             inlineRenderClassName='sectionCell'
             inlineRenderPrefix={ prefix }
-            mathMacros = { state.renderInfo.macros.math }
-            perrefMap = { perrefMap }
+            mathMacroObj = { state.mathMacroObj }
+            perrefMap = { state.typedLabel }
         >
             { '#'.repeat(depth) + ' ' + cell.value }
         </MarkdownRenderer>
@@ -34,24 +29,19 @@ function DisplaySectionCell(props: CellComponentProps) {
 
 function PreviewSectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
+    const label = state.typedLabel;
 
     let cell = state.flat[props.cellId];
-    let depth = label[props.cellId].autoType.length;
+    let depth = label[props.cellId].length;
 
-    let prefix = '§' + (label[props.cellId].custom || label[props.cellId].autoType.join('.')) + '. '
-
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
         <MarkdownRenderer
             inlineRenderClassName='sectionCell'
             inlineRenderPrefix={ prefix }
-            mathMacros = { state.renderInfo.macros.math }
-            perrefMap = { perrefMap }
+            mathMacroObj = { state.mathMacroObj }
+            perrefMap = { state.typedLabel }
         >
             { '#'.repeat(depth) + ' ' + cell.value }
         </MarkdownRenderer>

@@ -7,10 +7,8 @@ import { createContext, useContext } from 'react';
 
 import katex from 'katex';
 
-import { Flat } from './flat';
+import { Flat, generateAllLabel, generateTypedLabel } from './flat';
 import { FlatState, FlatStateAction } from './state';
-
-import { RenderInfo, autoLabel } from './renderInfo';
 
 interface CellComponentProps{
     className?: string;
@@ -28,15 +26,16 @@ type CellRenderStrategy = {
 
 // the cell component type should match to the cell type,
 // but we won't strictly check that elsewhere.
-
 function makeInitialState(flat: Flat, rootId?: string, initialFocusId?: string) : FlatState{
     //fake root rendering
     //TODO : unify 'initial state rendering' and real root state renmdering logic
 
+    rootId = rootId || '';
+
     let macroPass = {};
     if(rootId){
-        var mathMacro = (flat[rootId]?.value as any)?.mathMacro;
-        katex.renderToString(mathMacro,{
+        var mathMacroText = (flat[rootId]?.value as any)?.mathMacro;
+        katex.renderToString(mathMacroText,{
             throwOnError: false,
             globalGroup: true,
             macros : macroPass
@@ -46,11 +45,9 @@ function makeInitialState(flat: Flat, rootId?: string, initialFocusId?: string) 
     return {
         flat: flat,
         rootId: rootId || '',
-        renderInfo: {
-            label: autoLabel(flat, rootId, {}),
-            refs: {},
-            macros: { math: macroPass, text: {} }
-        },
+        allLabel: generateAllLabel(flat, rootId),
+        typedLabel: generateTypedLabel(flat, rootId),
+        mathMacroObj: macroPass,
         focusId: initialFocusId,
         history: []
     };

@@ -18,15 +18,12 @@ interface ImageCellValue{
 
 function DisplayImageCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
-
+    
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     return (
         <>
@@ -40,8 +37,8 @@ function DisplayImageCell(props: CellComponentProps){
             <MarkdownRenderer
                 inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { label }
             >
                 { caption }
             </MarkdownRenderer>
@@ -56,11 +53,8 @@ function PreviewImageCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     return (
         <>
@@ -75,8 +69,8 @@ function PreviewImageCell(props: CellComponentProps){
             <MarkdownRenderer
                 inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { label }
             >
                 { caption }
             </MarkdownRenderer>

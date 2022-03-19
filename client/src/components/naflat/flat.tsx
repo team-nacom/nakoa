@@ -187,6 +187,61 @@ function findAdjacentId(f: Flat, id: string | undefined, direction: number){
     }
 }
 
+///// auto label generator.
+
+/**
+ * generate label, counted for all cell types.
+ * @param flat reference flat.
+ * @param id root id to start with.
+ * @returns generated string -> number[] object.
+ */
+function generateAllLabel(flat: Flat, id: string): Record<string, number[]>{
+    let obj : Record<string, number[]> = {};
+    _generateAllLabel(flat, id, obj, []);
+    return obj;
+
+    // flat[id].childIds.reduce((acc: Record<string, number>, childId, idx)=>{
+    //     const cell = flat[childId];
+    //     const result = autoLabelAll(flat, childId, [...pfix, idx+1])
+    //     return acc;
+    // }, {})
+}
+function _generateAllLabel(flat: Flat, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+    flat[id].childIds.forEach((childId,idx)=>{
+        _generateAllLabel(flat, childId, obj, [...prefix, idx + 1]);
+    });
+}
+
+/**
+ * generate label, counted for specific cell types.
+ * @param flat reference flat.
+ * @param id root id to start with.
+ * @returns generated string -> number[] object.
+ */
+function generateTypedLabel(flat: Flat, id: string): Record<string, number[]>{
+    let obj: Record<string, number[]> = {};
+    _generateTypedLabel(flat, id, obj, []);
+    return obj;
+}
+function _generateTypedLabel(flat: Flat, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+
+    const idxObj : Record<string, number> = {};
+    flat[id].childIds.forEach((childId,idx)=>{
+        const cell = flat[childId];
+        let currentType : string = cell.type;
+        // may have additional if statements, like...
+        // if(cell.type === 'block' && cell.value.blockType === 'theorem'){
+        //     currentType = 'block-theorem'
+        // }
+        const currentTypeNextIdx = idxObj[currentType] = (idxObj[currentType] || 0) + 1;
+
+        _generateTypedLabel(flat, childId, obj, [...prefix, currentTypeNextIdx]);
+    });
+}
+
+
 ///// Manipulations for reducer.
 
 /**
@@ -360,4 +415,5 @@ export { defaultValue, defaultCellType, isChildAllowed };
 
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
+export { generateAllLabel, generateTypedLabel };
 export { changeCellType, updateCell, updateContext, createCell, moveCell, createChildCell, removeCell };

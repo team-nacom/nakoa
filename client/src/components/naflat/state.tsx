@@ -5,19 +5,20 @@ import React from 'react';
 import * as F from './flat';
 import { CellType, Flat } from './flat';
 
-import { RenderInfo, autoLabel } from './renderInfo';
-
 const MAX_HISTORY = 5;
 
 interface FlatState{
-    //basic info
+    //////basic info
     flat : Flat;
     rootId : string;
 
-    //context-specific info
-    renderInfo : RenderInfo;
+    //////context-specific info
+    allLabel : Record<string, number[]>;
+    typedLabel : Record<string, number[]>;
+    mathMacroObj : Object;
+    // textMacro: Object;
 
-    //editor info
+    //////editor info
     focusId? : string;
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose
@@ -36,11 +37,15 @@ type FlatStateAction
     | { type: 'blur'; }
     | { type: 'resetCursor'; }
 
-    | { type: 'updateMacro', mathMacro?: Object, textMacro?: Object }
+    | { type: 'updateMacro', mathMacroObj: Object }
 ;
 
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
-    let { flat, rootId, renderInfo, focusId, cursorStart, cursorEnd, history } = state;
+    let {
+        flat, rootId,
+        allLabel, typedLabel, mathMacroObj,
+        focusId, cursorStart, cursorEnd, history
+    } = state;
 
     function pushHistory(f : Flat){
         history.push(f);
@@ -60,22 +65,26 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break; //not saved in history
     case 'changeType':
         flat = F.changeCellType(flat, action.id, action.cellType);
-        renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
+        allLabel = F.generateAllLabel(flat, rootId);
+        typedLabel = F.generateTypedLabel(flat, rootId);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'move':
         flat = F.moveCell(flat,action.id,action.parentId,action.pos);
-        renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
+        allLabel = F.generateAllLabel(flat, rootId);
+        typedLabel = F.generateTypedLabel(flat, rootId);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'createEmpty':
         [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
-        renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
+        allLabel = F.generateAllLabel(flat, rootId);
+        typedLabel = F.generateTypedLabel(flat, rootId);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'remove':
         flat = F.removeCell(flat, action.id);
-        renderInfo.label = autoLabel(flat, rootId, renderInfo.label);
+        allLabel = F.generateAllLabel(flat, rootId);
+        typedLabel = F.generateTypedLabel(flat, rootId);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     
@@ -93,18 +102,17 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break;
 
     case 'updateMacro':
-        if(action.mathMacro){
-            renderInfo.macros.math = action.mathMacro;
-        }
-        if(action.textMacro){
-            renderInfo.macros.text = action.textMacro;
-        }
+        mathMacroObj = action.mathMacroObj;
         break;
     }
     
     // console.log( JSON.stringify(flat) );
 
-    return { flat, rootId, renderInfo, focusId, cursorStart, cursorEnd, history };
+    return {
+        flat, rootId,
+        allLabel, typedLabel, mathMacroObj,
+        focusId, cursorStart, cursorEnd, history
+    };
 }
 
 export type { FlatState, FlatStateAction };

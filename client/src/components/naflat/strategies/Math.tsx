@@ -11,12 +11,12 @@ const MemoizedTeX = React.memo(TeX);
 
 function DisplayMathCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
 
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     if(typeof contents !== 'string') return <></>;
 
@@ -27,7 +27,7 @@ function DisplayMathCell(props: CellComponentProps){
             </summary>
             <div className='mathCell renderedMathCell' >
                 <MemoizedTeX block
-                    settings={ { macros: state.renderInfo.macros.math } }
+                    settings={ { macros: state.mathMacroObj } }
                 >
                     { `\\tag{${ labelStr }}` + contents }
                 </MemoizedTeX>
@@ -39,12 +39,12 @@ function DisplayMathCell(props: CellComponentProps){
 
 function PreviewMathCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
-
+    
     let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     if(typeof contents !== 'string') return <></>;
 
@@ -55,7 +55,7 @@ function PreviewMathCell(props: CellComponentProps){
             </summary>
             <div className='mathCell previewMathCell' >
                 <MemoizedTeX block
-                    settings={ { macros: state.renderInfo.macros.math } }
+                    settings={ { macros: state.mathMacroObj } }
                 >
                     { `\\tag{${ labelStr }}` + contents }
                 </MemoizedTeX>

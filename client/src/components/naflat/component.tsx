@@ -60,13 +60,13 @@ function CellDisplay(props: CellComponentProps) {
 function CellEditor(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
     const cellId = props.cellId;
-    const cellLabel = state.renderInfo.label[cellId];
+    const cellLabel = state.typedLabel[cellId];
 
     const cell = state.flat[cellId];
     const isFocused = (state.focusId === cellId);
 
-    let depth = cellLabel.autoType.length;
-    let pos = cellLabel.custom || cellLabel.autoType.join('.');
+    let depth = cellLabel.length;
+    let pos = cellLabel.join('.');
 
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];

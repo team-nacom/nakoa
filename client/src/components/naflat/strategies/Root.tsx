@@ -82,7 +82,7 @@ function EditorRootCell(props: CellComponentProps) {
 
             dispatch({
                 type: 'updateMacro',
-                mathMacro: macroPass
+                mathMacroObj: macroPass
             });
         }}>
             업데이트

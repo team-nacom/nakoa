@@ -25,18 +25,11 @@ function DisplayTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
-    //TODO : make perrefMap DRY
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
-
     return (
         <div className='textCell'>
             <MarkdownRenderer
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { state.typedLabel }
             >
                 { contents }
             </MarkdownRenderer>
@@ -53,17 +46,11 @@ function PreviewTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
-
     return (
         <div className='textCell'>
             <MarkdownRenderer openDetails
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { state.typedLabel }
             >
                 { contents }
             </MarkdownRenderer>
