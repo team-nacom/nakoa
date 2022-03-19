@@ -4,11 +4,14 @@ import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from 'components/naflat/flat';
-import { FlatState, FlatStateAction, reducer } from 'components/naflat/state';
-
+import {
+    FlatState, FlatStateAction,
+    reducer, makeInitialState, FlatContext,
+    emptyFlat, defaultRootId
+} from 'components/naflat/state';
 import {
     CellComponentProps, FlatComponentProps,
-    CellRenderStrategy, FlatContext, makeInitialState,
+    CellRenderStrategy,
     CellEditor
 } from 'components/naflat/component';
 
@@ -26,15 +29,6 @@ interface FlatEditorProps extends FlatComponentProps{
     upload: (metadata: FlatItemMetadata, flat: Flat) => any;
 }
 
-const emptyFlat: Flat = {
-    'c0': {
-        type: 'root',
-        id: 'c0',
-        childIds: [],
-        value: defaultValue['root']
-    }
-};
-
 //attempt 2: use forked 'react-keybind'
 //https://github.com/UnicornHeartClub/react-keybind
 const FlatEditorComponentWithShortcut = withShortcut(
@@ -46,7 +40,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
             ...others
         } = props;
 
-        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
+        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId || defaultRootId, initialFocusId));
 
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);

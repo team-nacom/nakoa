@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
@@ -11,8 +13,8 @@ const MemoizedTeX = React.memo(TeX);
 
 function DisplayMathCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'math'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     const label = state.typedLabel;
@@ -39,8 +41,8 @@ function DisplayMathCell(props: CellComponentProps){
 
 function PreviewMathCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
-    
-    let cell = state.flat[props.cellId];
+    let cell = state.flat[props.cellId] as TCell<'math'>;
+
     let contents = cell.value;
 
     const label = state.typedLabel;
@@ -67,8 +69,8 @@ function PreviewMathCell(props: CellComponentProps){
 
 function EditorMathCell(props: CellComponentProps){
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'math'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;

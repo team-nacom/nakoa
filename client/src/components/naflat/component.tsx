@@ -6,9 +6,16 @@ import React, { useEffect, useCallback, useMemo, useReducer, createContext, useC
 import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'; // 'react-keybind';
 
 import lodash from 'lodash';
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue, isChildAllowed } from './flat';
-import { FlatState, FlatStateAction, reducer } from './state';
-import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
+import {
+    CellType, Cell, CellTypeMap, defaultCellType, defaultValue, isChildAllowed,
+    Flat
+} from './flat';
+import {
+    FlatState, FlatStateAction,
+    reducer, makeInitialState, FlatContext,
+    emptyFlat, defaultRootId
+} from './state';
+import { CellComponentProps, CellRenderStrategy } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
@@ -221,17 +228,6 @@ function CellEditor(props: CellComponentProps) {
     </>;
 }
 
-
-
-const emptyFlat: Flat = {
-    'c0': {
-        type: 'root',
-        id: 'c0',
-        childIds: [],
-        value: ''
-    }
-};
-
 interface FlatComponentProps extends CellComponentProps {
     // id: string // rootId.
     initialFlat?: Flat;
@@ -279,6 +275,5 @@ function FlatEditorComponent(props: FlatComponentProps){
 }
 
 export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
-export { makeInitialState };
 export { CellDisplay, CellEditor };
-export { FlatContext, FlatDisplayComponent, FlatEditorComponent };
+export { FlatDisplayComponent, FlatEditorComponent };

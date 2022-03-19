@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
@@ -18,9 +20,9 @@ interface ImageCellValue{
 
 function DisplayImageCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
-    
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let cell = state.flat[props.cellId] as TCell<'image'>;
+
+    let { src, caption } = cell.value;
 
     const label = state.typedLabel;
     const labelStr = label[props.cellId].join('.');
@@ -49,9 +51,9 @@ function DisplayImageCell(props: CellComponentProps){
 
 function PreviewImageCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'image'>;
 
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let { src, caption } = cell.value;
 
     const label = state.typedLabel;
     const labelStr = label[props.cellId].join('.');
@@ -81,9 +83,9 @@ function PreviewImageCell(props: CellComponentProps){
 
 function EditorImageCell(props: CellComponentProps){
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'image'>;
 
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let { src, caption } = cell.value;
 
     return (
         <>

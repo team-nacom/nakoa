@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import {
     handleChangeFactory,
@@ -19,8 +21,8 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
 function DisplayTextCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'text'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -40,8 +42,8 @@ function DisplayTextCell(props: CellComponentProps){
 
 function PreviewTextCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'text'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if(typeof contents !== 'string') return <></>;
@@ -61,8 +63,8 @@ function PreviewTextCell(props: CellComponentProps){
 
 function EditorTextCell(props: CellComponentProps){
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'text'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     const shortcuts = handleTextShortcutFactory(state, dispatch, props.cellId);

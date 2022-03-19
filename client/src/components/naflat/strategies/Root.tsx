@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
+
 
 import { handleChangeFactory } from './helpers/handlers';
 
@@ -17,8 +21,7 @@ interface RootCellValue{
 
 function DisplayRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-
-    let cell = state.flat[props.cellId];
+    let cell = state.flat[props.cellId] as TCell<'root'>;
 
     return (
         <></> // 뭐 넣지??
@@ -28,17 +31,16 @@ function DisplayRootCell(props: CellComponentProps) {
 
 function PreviewRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-
-    let cell = state.flat[props.cellId];
-    let value = cell.value as RootCellValue;
-    let macroText = value.mathMacro;
+    let cell = state.flat[props.cellId] as TCell<'root'>;
+    
+    let { mathMacro } = cell.value;
 
     return (
         <div className='rootCell'>
             설정 편집
             <label>수식 매크로 정의</label>
             <code>
-                { macroText }
+                { mathMacro }
             </code>
         </div> // 뭐 넣지?? 제목 같은 거 전부 여기다 넣는 편이 좋을수도?
     );
@@ -47,12 +49,11 @@ function PreviewRootCell(props: CellComponentProps) {
 
 function EditorRootCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'root'>;
 
-    let cell = state.flat[props.cellId];
-    let value = cell.value as RootCellValue;
-    let macroText = value.mathMacro;
+    let { mathMacro } = cell.value;
 
-    let [mathMacro, setMathMacro] = useState(value.mathMacro);
+    let [mathMacroText, setMathMacro] = useState(mathMacro);
 
     return <div className='editorRootCellWrapper'>
         설정 편집
@@ -61,7 +62,7 @@ function EditorRootCell(props: CellComponentProps) {
             className='editorRootCellTextArea'
             initialSelectionStart={ state.cursorStart }
             initialSelectionEnd={ state.cursorEnd }
-            value={ mathMacro }
+            value={ mathMacroText }
             onChange={(ev)=>{ setMathMacro(ev.target.value) }}
         />
         <button onClick={(ev)=>{
@@ -69,12 +70,12 @@ function EditorRootCell(props: CellComponentProps) {
                 type: 'update',
                 id: props.cellId,
                 value: {
-                    mathMacro: mathMacro
+                    mathMacro: mathMacroText
                 } as RootCellValue
             });
 
             let macroPass = {};
-            katex.renderToString(mathMacro,{
+            katex.renderToString(mathMacroText,{
                 throwOnError: false,
                 globalGroup: true,
                 macros : macroPass

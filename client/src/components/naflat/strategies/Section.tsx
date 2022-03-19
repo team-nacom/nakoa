@@ -1,5 +1,8 @@
 import React from 'react';
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 
@@ -7,11 +10,11 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
 function DisplaySectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'section'>;
+    
     const label = state.typedLabel;
 
-    let cell = state.flat[props.cellId];
     let depth = label[props.cellId].length;
-
     let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
@@ -29,11 +32,10 @@ function DisplaySectionCell(props: CellComponentProps) {
 
 function PreviewSectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'section'>;
+
     const label = state.typedLabel;
-
-    let cell = state.flat[props.cellId];
     let depth = label[props.cellId].length;
-
     let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
@@ -51,8 +53,8 @@ function PreviewSectionCell(props: CellComponentProps) {
 
 function EditorSectionCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'section'>;
 
-    let cell = state.flat[props.cellId];
     let title = '' + cell.value;
 
     return <div className='editorSectionCell'>

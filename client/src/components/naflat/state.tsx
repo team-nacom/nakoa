@@ -3,7 +3,9 @@
 
 import React from 'react';
 import * as F from './flat';
-import { CellType, Flat } from './flat';
+import { CellType, CellValueType, Flat } from './flat';
+
+import katex from 'katex';
 
 const MAX_HISTORY = 5;
 
@@ -115,5 +117,50 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     };
 }
 
+// the cell component type should match to the cell type,
+// but we won't strictly check that elsewhere.
+function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) : FlatState{
+    //fake root rendering
+    //TODO : unify 'initial state rendering' and real root state renmdering logic
+
+    let macroPass = {};
+    if(rootId){
+        var mathMacroText = (flat[rootId]?.value as any)?.mathMacro;
+        katex.renderToString(mathMacroText,{
+            throwOnError: false,
+            globalGroup: true,
+            macros : macroPass
+        }); //render once and discard the result!
+    }
+
+    return {
+        flat: flat,
+        rootId: rootId,
+        allLabel: F.generateAllLabel(flat, rootId),
+        typedLabel: F.generateTypedLabel(flat, rootId),
+        mathMacroObj: macroPass,
+        focusId: initialFocusId,
+        history: []
+    };
+}
+
+
+const defaultRootId = 'c0';
+const emptyFlat: Flat = {
+    [defaultRootId]: {
+        type: 'root',
+        id: defaultRootId,
+        childIds: [],
+        value: F.defaultValue['root']
+    }
+};
+
+const mockInitialState = makeInitialState(emptyFlat, defaultRootId);
+const FlatContext = React.createContext({
+    state: mockInitialState,
+    dispatch: ( () => mockInitialState  ) as React.Dispatch<FlatStateAction>
+});
+
 export type { FlatState, FlatStateAction };
-export { reducer };
+export { reducer, makeInitialState, FlatContext };
+export { defaultRootId, emptyFlat }
