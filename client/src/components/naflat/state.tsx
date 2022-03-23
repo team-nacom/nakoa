@@ -3,7 +3,7 @@
 
 import React from 'react';
 import * as F from './flat';
-import { CellType, CellValueType, Flat } from './flat';
+import { CellType, CellValueType, isChildAllowed, Flat } from './flat';
 
 import katex from 'katex';
 
@@ -17,6 +17,7 @@ interface FlatState{
     //////context-specific info
     allLabel : Record<string, number[]>;
     typedLabel : Record<string, number[]>;
+    hideChildren : Record<string, boolean>;
     mathMacroObj : Object;
     // textMacro: Object;
 
@@ -34,18 +35,19 @@ type FlatStateAction
     | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
     | { type: 'remove'; id: string; }
 
+    | { type: 'toggleHideChildren'; id: string; }
+    | { type: 'updateMacro', mathMacroObj: Object }
+
     | { type: 'focus'; id: string; }
     | { type: 'focusAdj'; direction: number; }
     | { type: 'blur'; }
     | { type: 'resetCursor'; }
-
-    | { type: 'updateMacro', mathMacroObj: Object }
 ;
 
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
     let {
         flat, rootId,
-        allLabel, typedLabel, mathMacroObj,
+        allLabel, typedLabel, hideChildren, mathMacroObj,
         focusId, cursorStart, cursorEnd, history
     } = state;
 
@@ -81,15 +83,25 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
+        hideChildren = {...hideChildren, [focusId]: false};
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'remove':
         flat = F.removeCell(flat, action.id);
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
+        hideChildren = {...hideChildren, [action.id]: false}; //reset show/hide status default to show
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     
+    case 'toggleHideChildren':
+        hideChildren = {...hideChildren, [action.id]: !hideChildren[action.id] };
+        break;
+
+    case 'updateMacro':
+        mathMacroObj = action.mathMacroObj;
+        break;
+
     case 'focus':
         focusId = action.id;
         break;
@@ -102,17 +114,13 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     case 'resetCursor':
         cursorStart = cursorEnd = undefined;
         break;
-
-    case 'updateMacro':
-        mathMacroObj = action.mathMacroObj;
-        break;
     }
     
     // console.log( JSON.stringify(flat) );
 
     return {
         flat, rootId,
-        allLabel, typedLabel, mathMacroObj,
+        allLabel, typedLabel, hideChildren, mathMacroObj,
         focusId, cursorStart, cursorEnd, history
     };
 }
@@ -122,7 +130,6 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
 function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) : FlatState{
     //fake root rendering
     //TODO : unify 'initial state rendering' and real root state renmdering logic
-
     let macroPass = {};
     if(rootId){
         var mathMacroText = (flat[rootId]?.value as any)?.mathMacro;
@@ -133,12 +140,26 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
         }); //render once and discard the result!
     }
 
+    //mark whether show children or not
+    let hideChildren = {} as Record<string,boolean>;
+    for(let cell of Object.values(flat)){
+        // if(isChildAllowed(cell.type)){
+        //     hideChildren[cell.id] = false;
+        // }
+        if(cell.type === 'section' && cell.value.hideChildren){
+            hideChildren[cell.id] = true;
+        }
+    }
+
     return {
         flat: flat,
         rootId: rootId,
+
         allLabel: F.generateAllLabel(flat, rootId),
         typedLabel: F.generateTypedLabel(flat, rootId),
+        hideChildren: hideChildren,
         mathMacroObj: macroPass,
+
         focusId: initialFocusId,
         history: []
     };

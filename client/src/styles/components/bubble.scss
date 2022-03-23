@@ -93,6 +93,20 @@ summary.codeCellPreview {
     padding: 10px;
 }
 
+.childrenContainerHidden, .childrenContainerHiddenEditor{
+    background-color: antiquewhite;
+}
+
+.childrenContainerHidden > :not(.toggleHideChildren){
+    display: none;
+}
+
+.toggleHideChildren{
+    cursor: pointer;
+    user-select: none;
+}
+
+
 .editorCellContainer {
     display: flex;
     align-items: stretch;

@@ -52,7 +52,25 @@ function CellDisplay(props: CellComponentProps) {
         <Strategy {...props} />
         { /* render children. */}
         { isChildAllowed(cell.type) &&
-            <div className='childrenContainer' id={ cellId }>
+            <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
+                id={ cellId }
+            >
+                { cell.type === 'section' &&
+                    <div className='toggleHideChildren'
+                        onClick = { () => {
+                            dispatch({
+                                type: 'toggleHideChildren',
+                                id: props.cellId
+                            });
+                        } }
+                    >
+                        {
+                            state.hideChildren[cellId]
+                            ? '▶' + '펼치기'
+                            : '▼' + '접기'
+                        }
+                    </div>
+                }
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -199,7 +217,7 @@ function CellEditor(props: CellComponentProps) {
                         {cell.type !== 'root' &&
                             <button
                                 className='material-icons bubbleOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: cellId })}
+                                onClick={ deleteButtonHandler }
                             >
                                 delete
                             </button>
@@ -213,7 +231,7 @@ function CellEditor(props: CellComponentProps) {
 
         { /* render children. */}
         { isChildAllowed(cell.type) && depth <= maxDepth &&
-            <div className='childrenContainer'
+            <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHiddenEditor' : '') }
                 // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >

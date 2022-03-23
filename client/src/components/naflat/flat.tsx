@@ -48,7 +48,7 @@ type Flat = Record<string, Cell>; // Just an alias
  * returns next available cell id.
  * to be called when a new cell is created.
  * 
- * current implementation : object ids are numeral string and new id is max + 1.
+ * current implementation : object ids are numeral string starts with 'c' and new id is max + 1.
  * 
  * @param f the flat.
  * @returns an available cell id.

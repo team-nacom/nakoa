@@ -12,6 +12,7 @@ type CellValueType = {
     },
     'section': {
         heading: string,
+        role?: string,
         hideChildren: boolean
     },
     'text': string,

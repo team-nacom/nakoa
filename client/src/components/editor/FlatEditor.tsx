@@ -84,7 +84,9 @@ const FlatEditorComponentWithShortcut = withShortcut(
                 <AuthorInput author={author} setAuthor={setAuthor} />
             </div>
             <CellEditor {...others}/> { /* root cell */ }
-            <button onClick = { () => { upload({ title, author }, state.flat) } }>업로드</button>
+            <button onClick = { () => {
+                upload({ title, author }, state.flat);
+            } }>업로드</button>
         </FlatContext.Provider>);
     }
 )

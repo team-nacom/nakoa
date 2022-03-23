@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
 import { Flat, findAdjacentId } from 'components/naflat/flat'
-import { FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
+import { FlatContext, defaultRootId, reducer, makeInitialState } from 'components/naflat/state'
+import { CellDisplay, CellEditor, FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
 
 import { compileTex } from 'components/tex';
 import HTMLParser, { Element, DOMNode, domToReact } from 'html-react-parser';
@@ -60,27 +61,32 @@ function Hidden() {
 //     }, [])
 
     const [display, setDisplay] = useState(false);
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            pfaffianFlat,
+            defaultRootId
+        )
+    );
 
     return (
         <>
             <Header/>
             
-            {/* { rendered } */}
-            <button onClick = { ()=>{ setDisplay(!display) } }>
+            <button onClick = { ()=>{
+                setDisplay(!display);
+                for(let cell of Object.values(state.flat)){
+                    if(cell.type === 'section' && (cell.value.hideChildren !== !!state.hideChildren[cell.id] )){
+                        dispatch({ type: 'toggleHideChildren', id: cell.id });
+                    }
+                }
+            } }>
                 Toggle to { display ? 'editor' : 'display' }
             </button>
-            {display &&
-                <FlatDisplayComponent
-                    cellId = 'c0'
-                    initialFlat = { pfaffianFlat }
-                />
-            }
-            {!display &&
-                <FlatEditorComponent
-                    cellId = 'c0'
-                    initialFlat = { pfaffianFlat }
-                />
-            }
+            <FlatContext.Provider value={{ state, dispatch }}>
+                {display && <CellDisplay cellId = { defaultRootId } /> }
+                {!display && <CellEditor cellId = { defaultRootId } /> }
+            </FlatContext.Provider>
 
             <Footer/>
         </>
