@@ -26,7 +26,6 @@ function FlatWrite() {
             <Header/>
             <div id='content'>
                 <FlatEditor
-                    cellId='c0'
                     metadata={ { title: '', author: '' } }
                     upload={upload}
                 />

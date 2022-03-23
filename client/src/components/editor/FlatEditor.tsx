@@ -24,7 +24,7 @@ interface FlatItemMetadata{
     author: string;
 }
 
-interface FlatEditorProps extends FlatComponentProps{
+interface FlatEditorProps extends Omit<FlatComponentProps, 'cellId'>{
     metadata: FlatItemMetadata;
     upload: (metadata: FlatItemMetadata, flat: Flat) => any;
 }
@@ -40,7 +40,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
             ...others
         } = props;
 
-        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId || defaultRootId, initialFocusId));
+        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, defaultRootId, initialFocusId));
 
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);
@@ -83,7 +83,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
             <div className='flexbox'>
                 <AuthorInput author={author} setAuthor={setAuthor} />
             </div>
-            <CellEditor {...others}/> { /* root cell */ }
+            <CellEditor cellId = { defaultRootId } {...others} /> { /* root cell */ }
             <button onClick = { () => {
                 upload({ title, author }, state.flat);
             } }>업로드</button>
