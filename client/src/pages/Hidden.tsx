@@ -75,6 +75,8 @@ function Hidden() {
             
             <button onClick = { ()=>{
                 setDisplay(!display);
+
+                dispatch({ type: 'blur' });
                 for(let cell of Object.values(state.flat)){
                     if(cell.type === 'section' && (cell.value.hideChildren !== !!state.hideChildren[cell.id] )){
                         dispatch({ type: 'toggleHideChildren', id: cell.id });
