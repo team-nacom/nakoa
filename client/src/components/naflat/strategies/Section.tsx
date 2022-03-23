@@ -11,6 +11,15 @@ import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 function DisplaySectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
     let cell = state.flat[props.cellId] as TCell<'section'>;
+
+    let val = cell.value;
+    if(typeof (val as any) === 'string'){ //backward compatability
+        val = {
+            heading: (val as any),
+            hideChildren: false
+        };
+    }
+    let { heading, hideChildren } = val;
     
     const label = state.typedLabel;
 
@@ -24,7 +33,7 @@ function DisplaySectionCell(props: CellComponentProps) {
             mathMacroObj = { state.mathMacroObj }
             perrefMap = { state.typedLabel }
         >
-            { '#'.repeat(depth) + ' ' + cell.value }
+            { '#'.repeat(depth) + ' ' + heading }
         </MarkdownRenderer>
     );
 }
@@ -33,6 +42,15 @@ function DisplaySectionCell(props: CellComponentProps) {
 function PreviewSectionCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
     let cell = state.flat[props.cellId] as TCell<'section'>;
+
+    let val = cell.value;
+    if(typeof (val as any) === 'string'){ //backward compatability
+        val = {
+            heading: (val as any),
+            hideChildren: false
+        };
+    }
+    let { heading, hideChildren } = val;
 
     const label = state.typedLabel;
     let depth = label[props.cellId].length;
@@ -45,7 +63,7 @@ function PreviewSectionCell(props: CellComponentProps) {
             mathMacroObj = { state.mathMacroObj }
             perrefMap = { state.typedLabel }
         >
-            { '#'.repeat(depth) + ' ' + cell.value }
+            { '#'.repeat(depth) + ' ' + heading }
         </MarkdownRenderer>
     );
 }
@@ -54,14 +72,27 @@ function PreviewSectionCell(props: CellComponentProps) {
 function EditorSectionCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
     let cell = state.flat[props.cellId] as TCell<'section'>;
-
-    let title = '' + cell.value;
+    
+    let val = cell.value;
+    if(typeof (val as any) === 'string'){ //backward compatability
+        val = {
+            heading: (val as any),
+            hideChildren: false
+        };
+    }
+    let { heading, hideChildren } = val;
 
     return <div className='editorSectionCell'>
         <input autoFocus
             className='editorSectionCellInput'
-            value={title}
-            onChange={handleChangeFactory(dispatch,props.cellId)}
+            value={ heading }
+            onChange={
+                handleChangeFactory(
+                    dispatch,
+                    props.cellId,
+                    (str)=>({heading: str, hideChildren})
+                )
+            }
         />
     </div>
 }

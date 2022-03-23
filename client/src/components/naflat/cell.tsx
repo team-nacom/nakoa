@@ -8,9 +8,12 @@ interface CellBase{
 
 type CellValueType = {
     'root': {
-        mathMacro: string;
+        mathMacro: string
     },
-    'section': string,
+    'section': {
+        heading: string,
+        hideChildren: boolean
+    },
     'text': string,
     'math': string,
     'code': {
@@ -28,7 +31,7 @@ const defaultCellType : CellType = 'text';
 
 const defaultValue : { [cellType in CellType]: CellValueType[cellType] } = {
     'root': { mathMacro: '' },
-    'section': '',
+    'section': { heading: '', hideChildren: false },
     'text': '',
     'math': '',
     'code': { language: '', contents: '' },
