@@ -67,42 +67,42 @@ function EditorTextCell(props: CellComponentProps){
 
     let contents = cell.value;
 
-    const shortcuts = handleTextShortcutFactory(state, dispatch, props.cellId);
+    // const shortcuts = handleTextShortcutFactory(state, dispatch, props.cellId);
 
     //bind keys. (todo: do something better, or integrate to react-keybind.)
-    function onKeyDown(ev: React.KeyboardEvent<HTMLTextAreaElement>){
-        let pressed = ev.key.toLowerCase();
+    // function onKeyDown(ev: React.KeyboardEvent<HTMLTextAreaElement>){
+    //     let pressed = ev.key.toLowerCase();
 
-        for(let sc in shortcuts){
-            for(let cfg of shortcuts[sc].keymap){
-                let arr = cfg.split('+');
-                let flag = true;
-                for(let key of arr){
-                    if( key === 'control' || key === 'ctrl'){
-                        if(!ev.ctrlKey){ flag = false; break; }
-                    }
-                    else if(key === 'alt'){
-                        if(!ev.altKey){ flag = false; break; }
-                    }
-                    else if(key === 'shift'){
-                        if(!ev.shiftKey){ flag = false; break; }
-                    }
-                    else if(key === 'meta' || key === 'cmd'){
-                        if(!ev.metaKey){ flag = false; break; }
-                    }
-                    else{
-                        if(key !== pressed){
-                            flag = false; break;
-                        }
-                    }
-                }
-                if(flag){
-                    shortcuts[sc].handler(ev);
-                    break;
-                }
-            }
-        }
-    }
+    //     for(let sc in shortcuts){
+    //         for(let cfg of shortcuts[sc].keymap){
+    //             let arr = cfg.split('+');
+    //             let flag = true;
+    //             for(let key of arr){
+    //                 if( key === 'control' || key === 'ctrl'){
+    //                     if(!ev.ctrlKey){ flag = false; break; }
+    //                 }
+    //                 else if(key === 'alt'){
+    //                     if(!ev.altKey){ flag = false; break; }
+    //                 }
+    //                 else if(key === 'shift'){
+    //                     if(!ev.shiftKey){ flag = false; break; }
+    //                 }
+    //                 else if(key === 'meta' || key === 'cmd'){
+    //                     if(!ev.metaKey){ flag = false; break; }
+    //                 }
+    //                 else{
+    //                     if(key !== pressed){
+    //                         flag = false; break;
+    //                     }
+    //                 }
+    //             }
+    //             if(flag){
+    //                 shortcuts[sc].handler(ev);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
 
     //reset cursor after render.
     useEffect(()=>{
@@ -122,7 +122,7 @@ function EditorTextCell(props: CellComponentProps){
                     className='editorTextCell editorCell'
                     onChange={handleChangeFactory(dispatch, props.cellId)}
                     onPaste={handlePasteFactory(dispatch, props.cellId)}
-                    onKeyDown={ onKeyDown }
+                    // onKeyDown={ onKeyDown }
                     value={contents}
                 />
                 <div className='dropzone textCellDropzone'>
