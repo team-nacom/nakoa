@@ -187,7 +187,7 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
     //initialize timestamps
     let currentTimestamp = Date.now();
     let editedTimestamps = {} as Record<string, number>;
-    for(let cellId in Object.keys(flat)){
+    for(let cellId of Object.keys(flat)){
         editedTimestamps[cellId] = currentTimestamp;
     }
 
