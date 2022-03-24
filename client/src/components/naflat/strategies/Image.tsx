@@ -122,7 +122,6 @@ function EditorImageCell(props: CellComponentProps){
                 { '이미지 드랍 혹은 클릭해서 업로드' }
             </FileDropzone>
             <input
-                style={ props.style as any }
                 className='imageCellCaptionForm'
                 onChange={
                     handleChangeFactory(

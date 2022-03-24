@@ -66,7 +66,6 @@ function EditorCodeCell(props: CellComponentProps){
     return (
         <>
             <input
-                style={ props.style as any }
                 className='codeCellCaptionForm'
                 onChange={
                     handleChangeFactory(

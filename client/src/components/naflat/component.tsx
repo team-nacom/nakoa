@@ -15,7 +15,7 @@ import {
     reducer, makeInitialState, FlatContext,
     emptyFlat, defaultRootId
 } from './state';
-import { CellComponentProps, CellRenderStrategy } from './componentTypes';
+import { CellComponentProps, CellRenderStrategy, CachedCellComponentProps, applyCache } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
@@ -30,26 +30,31 @@ import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
 
-const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
-    'root': RootCellStrategy,
-    'section': SectionCellStrategy,
-    'text': TextCellStrategy,
-    'math': MathCellStrategy,
-    'code': CodeCellStrategy,
-    'image': ImageCellStrategy
+const maxDepth = 4;
+
+const cachedStrategyMap: CellTypeMap<CellRenderStrategy<CachedCellComponentProps>> = {
+    'root': applyCache(RootCellStrategy),
+    'section': applyCache(SectionCellStrategy),
+    'text': applyCache(TextCellStrategy),
+    'math': applyCache(MathCellStrategy),
+    'code': applyCache(CodeCellStrategy),
+    'image': applyCache(ImageCellStrategy)
 };
 
-const maxDepth = 4;
 
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
     const cellId = props.cellId;
 
     const cell = state.flat[cellId];
-    const Strategy = cellRenderStrategyMap[cell.type]['display'];
+    const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
     return <div className='cellWrapper' id={ cellId }>
-        <Strategy {...props} />
+        <DisplayCached //feed cache informations.
+            cellId = {cellId}
+            editedTimestamp = { state.editedTimestamps[cellId] }
+            contextTimestamp = { state.contextTimestamp }
+        />
         { /* render children. */}
         { isChildAllowed(cell.type) &&
             <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
@@ -58,10 +63,7 @@ function CellDisplay(props: CellComponentProps) {
                 { cell.type === 'section' &&
                     <div className='toggleHideChildren'
                         onClick = { () => {
-                            dispatch({
-                                type: 'toggleHideChildren',
-                                id: props.cellId
-                            });
+                            dispatch({ type: 'toggleHideChildren', id: cellId });
                         } }
                     >
                         {
@@ -93,8 +95,8 @@ function CellEditor(props: CellComponentProps) {
     let depth = cellLabel.length;
     let pos = cellLabel.join('.');
 
-    const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
-    const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
+    const PreviewCached = cachedStrategyMap[cell.type]['preview'];
+    const EditorCached = cachedStrategyMap[cell.type]['editor'];
 
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
@@ -154,7 +156,11 @@ function CellEditor(props: CellComponentProps) {
                             </button>
                         }
                     </div>
-                    <PreviewStrategy {...props} />
+                    <PreviewCached //feed cache informations.
+                        cellId = {cellId}
+                        editedTimestamp = { state.editedTimestamps[cellId] }
+                        contextTimestamp = { state.contextTimestamp }
+                    />
                 </div>
             </>
         }
@@ -224,7 +230,11 @@ function CellEditor(props: CellComponentProps) {
                         }
                     </div>
 
-                    <EditorStrategy {...props} />
+                    <EditorCached //feed cache informations.
+                        cellId = {cellId}
+                        editedTimestamp = { state.editedTimestamps[cellId] }
+                        contextTimestamp = { state.contextTimestamp }
+                    />
                 </div>
             </div>
         }

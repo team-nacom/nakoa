@@ -15,6 +15,8 @@ interface FlatState{
     rootId : string;
 
     //////context-specific info
+    editedTimestamps: Record<string, number>;
+    contextTimestamp: number;
     allLabel : Record<string, number[]>;
     typedLabel : Record<string, number[]>;
     hideChildren : Record<string, boolean>;
@@ -25,6 +27,7 @@ interface FlatState{
     focusId? : string;
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose
+
     history : Flat[];
 }
 
@@ -44,10 +47,18 @@ type FlatStateAction
     | { type: 'resetCursor'; }
 ;
 
+function getNonDuplicateTimestamp(baseTimestamp: number){
+    let now = Date.now();
+    while(now <= baseTimestamp){
+        now += 0.01; //may have 100 different timestamps in 1ms.
+    }
+    return now;
+}
+
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
     let {
         flat, rootId,
-        allLabel, typedLabel, hideChildren, mathMacroObj,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
         focusId, cursorStart, cursorEnd, history
     } = state;
 
@@ -64,6 +75,12 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     switch (action.type){
     case 'update':
         flat = F.updateCell(flat, action.id, action.value);
+        
+        editedTimestamps = {
+            ...editedTimestamps,
+            [action.id]: getNonDuplicateTimestamp(editedTimestamps[action.id])
+        };
+
         cursorStart = action.cursorStart;
         cursorEnd = action.cursorEnd;
         break; //not saved in history
@@ -71,12 +88,21 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         flat = F.changeCellType(flat, action.id, action.cellType);
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
+
+        editedTimestamps = {
+            ...editedTimestamps,
+            [action.id]: getNonDuplicateTimestamp(editedTimestamps[action.id])
+        };
+        contextTimestamp = editedTimestamps[action.id];
+        
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'move':
         flat = F.moveCell(flat,action.id,action.parentId,action.pos);
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
+
+        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'createEmpty':
@@ -84,6 +110,9 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
         hideChildren = {...hideChildren, [focusId]: false};
+
+        editedTimestamps = {...editedTimestamps, [focusId]: getNonDuplicateTimestamp(0)}
+        contextTimestamp = editedTimestamps[focusId];
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     case 'remove':
@@ -91,6 +120,8 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
         hideChildren = {...hideChildren, [action.id]: false}; //reset show/hide status default to show
+
+        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
         // if(state.flat !== flat) pushHistory(state.flat);
         break;
     
@@ -100,6 +131,8 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
 
     case 'updateMacro':
         mathMacroObj = action.mathMacroObj;
+
+        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
         break;
 
     case 'focus':
@@ -120,7 +153,7 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
 
     return {
         flat, rootId,
-        allLabel, typedLabel, hideChildren, mathMacroObj,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
         focusId, cursorStart, cursorEnd, history
     };
 }
@@ -151,9 +184,19 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
         }
     }
 
+    //initialize timestamps
+    let currentTimestamp = Date.now();
+    let editedTimestamps = {} as Record<string, number>;
+    for(let cellId in Object.keys(flat)){
+        editedTimestamps[cellId] = currentTimestamp;
+    }
+
     return {
         flat: flat,
         rootId: rootId,
+
+        editedTimestamps: editedTimestamps,
+        contextTimestamp: currentTimestamp,
 
         allLabel: F.generateAllLabel(flat, rootId),
         typedLabel: F.generateTypedLabel(flat, rootId),
