@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
-import visit from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 
 function nodeDeepCopy(node: Node, copyPosition?: boolean, depth?: number) {

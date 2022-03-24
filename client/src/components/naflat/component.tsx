@@ -1,13 +1,12 @@
 // Implementation of cell (and flat) renderer components.
 // This file contains definitions which is only valid AFTER defining render strategies for each types.
 
-import React, { useEffect, useCallback, useMemo } from 'react';
-import { createContext, useContext } from 'react';
+import React, { useEffect, useCallback, useMemo, useReducer, createContext, useContext } from 'react';
 
-import { ShortcutProvider, withShortcut, IWithShortcut} from './react-keybind'; // 'react-keybind';
+import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'; // 'react-keybind';
 
 import lodash from 'lodash';
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from './flat';
+import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue, isChildAllowed } from './flat';
 import { FlatState, FlatStateAction, reducer } from './reducer';
 import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
 
@@ -16,36 +15,37 @@ import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
 
 import RootCellStrategy from './strategies/Root';
+import SectionCellStrategy from './strategies/Section';
 import TextCellStrategy from './strategies/Text';
 import MathCellStrategy from './strategies/Math';
 import CodeCellStrategy from './strategies/Code';
 import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
-import AuthorInput from 'components/AuthorInput';
-import Button from 'components/Button';
 
 const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
     'root': RootCellStrategy,
+    'section': SectionCellStrategy,
     'text': TextCellStrategy,
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
     'image': ImageCellStrategy
 };
 
+const maxDepth = 4;
+
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
 
-    const cell = state.flat[props.cellId];
+    const cell = state.flat[cellId];
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
-    return <>
-        <div className='cellContentWrapper'>
-            <Strategy {...props} />
-        </div>
+    return <div className='cellContentWrapper' id={ cellId }>
+        <Strategy {...props} />
         { /* render children. */}
-        {(cell.type === 'root' || cell.childIds.length !== 0) &&
-            <div className='cellChildrenWrapper'>
+        { isChildAllowed(cell.type) &&
+            <div className='cellChildrenWrapper' id={ cellId }>
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -54,14 +54,19 @@ function CellDisplay(props: CellComponentProps) {
                 }
             </div>
         }
-    </>;
+    </div>;
 }
 
 function CellEditor(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
+    const cellLabel = state.renderInfo.label[cellId];
 
-    const cell = state.flat[props.cellId];
-    const isFocused = (state.focusId === props.cellId);
+    const cell = state.flat[cellId];
+    const isFocused = (state.focusId === cellId);
+
+    let depth = cellLabel.autoType.length;
+    let pos = cellLabel.custom || cellLabel.autoType.join('.');
 
     const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
     const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
@@ -69,41 +74,61 @@ function CellEditor(props: CellComponentProps) {
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
             if(cell.type === type) return;
-            if(lodash.isEqual(cell.value, defaultValue[cell.type])
-                || window.confirm('셀 타입을 변경하면 내용이 초기화됩니다. 변경하시겠습니까?')
+            if((
+                    lodash.isEqual(cell.value, defaultValue[cell.type])
+                    && !(isChildAllowed(cell.type) && cell.childIds.length > 0)
+                )
+                || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 셀 타입을 변경하시겠습니까?')
             ){ //either the value is default OR it is confirmed to reset the value
-                dispatch({ type: 'changeType', cellType: type, id: props.cellId });
+                dispatch({ type: 'changeType', cellType: type, id: cellId });
             }
+        }
+    }
+
+    function deleteButtonHandler(){
+        if((
+                lodash.isEqual(cell.value, defaultValue[cell.type])
+                && !(isChildAllowed(cell.type) && cell.childIds.length > 0)
+            )
+            || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
+        ){ //either the value is default OR it is confirmed
+            dispatch({ type: 'remove', id: cellId })
         }
     }
 
     return <>
         {!isFocused &&
             <>
-                <div className='cellContentWrapper'
+                <div className='cellContentWrapper' id={ cellId }
                     onClick={(ev) => {
                         ev.stopPropagation();
-                        dispatch({ type: 'focus', id: props.cellId })
+                        dispatch({ type: 'focus', id: cellId })
                     }}
                 >
-                    {cell.type !== 'root' &&
                         <div className='cellOptions'>
-                            {cell.childIds.length === 0 &&
+                            <span className='cellId'>
+                                ID: { cellId } | 
+                            </span>
+                            <span className='cellPos'>
+                                pos: { pos }
+                            </span>
+                            { isChildAllowed(cell.type) && depth <= maxDepth && cell.childIds.length === 0 &&
                                 <button
                                     className='material-icons cellOptionButton'
                                     onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: props.cellId, pos : 0, cellType: defaultCellType}) } }
                                 >
-                                    add
+                                add
                                 </button>
                             }
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: props.cellId })}
-                            >
-                                delete
-                            </button>
+                            {cell.type !== 'root' &&
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={() => dispatch({ type: 'remove', id: props.cellId })}
+                                >
+                                    delete
+                                </button>
+                            }
                         </div>
-                    }
                     <PreviewStrategy {...props} />
                 </div>
             </>
@@ -114,8 +139,23 @@ function CellEditor(props: CellComponentProps) {
             >
                 { /* side cell */}
                 <div className='cellOptions'>
+                    <span className='cellId'>
+                        ID: { cellId } | 
+                    </span>
+                    <span className='cellPos'>
+                        pos: { pos }
+                    </span>
                     {cell.type !== 'root' &&
                         <>
+
+                            {depth <= maxDepth &&
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('section') }
+                                >
+                                    topic
+                                </button>
+                            }
                             <button
                                 className='material-icons cellOptionButton'
                                 onClick={ cellTypeButtonHandlerFactory('text') }
@@ -163,15 +203,16 @@ function CellEditor(props: CellComponentProps) {
         }
 
         { /* render children. */}
-        {(cell.type === 'root' || cell.childIds.length !== 0) &&
+        { isChildAllowed(cell.type) && depth <= maxDepth &&
             <div className='cellChildrenWrapper'
+                // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellEditor {...props} cellId={childId} />,
-                        <InterCell parentId={props.cellId} pos={idx + 1} />
-                    ), [ <InterCell parentId={props.cellId} pos={0} /> ])
+                        <InterCell parentId={cellId} pos={idx + 1} />
+                    ), [ <InterCell parentId={cellId} pos={0} /> ])
                 }
             </div>
         }
@@ -190,15 +231,23 @@ const emptyFlat: Flat = {
 };
 
 interface FlatComponentProps extends CellComponentProps {
+    // id: string // rootId.
     initialFlat?: Flat;
     initialFocusId?: string;
-    uploadFlat?: (flat: Flat) => void;
 }
 
+// display component implementation
 function FlatDisplayComponent(props: FlatComponentProps) {
-    let { initialFlat, initialFocusId, ...others } = props;
+    const { initialFlat, initialFocusId, ...others } = props;
 
-    const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
@@ -210,100 +259,26 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 }
 
 
-//Editor implementation
+// editor component implementation
+// DO NOT INHERIT THIS COMPONENT: if there are some metadata, rewrite the entire component based on this simple implementation.
+function FlatEditorComponent(props: FlatComponentProps){
+    const { initialFlat, initialFocusId, ...others } = props;
 
-//TODO : 에디터 자체도 다른 파일로 빼기
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
 
-//attempt 2: use forked 'react-keybind'
-//https://github.com/UnicornHeartClub/react-keybind
-const FlatEditorComponentWithShortcut = withShortcut(
-    function (props: FlatComponentProps & IWithShortcut){
-        const { initialFlat, initialFocusId, shortcut, ...others } = props;
-
-        const [state, dispatch] = React.useReducer(reducer, makeInitialState(props.initialFlat || emptyFlat, initialFocusId));
-
-        // useMemo for hooking multiple function
-        const gs = useMemo(() => (
-            handleGlobalShortcutFactory(state,dispatch)
-        ), [state,dispatch]);
-
-        useEffect(()=>{
-            if(shortcut && shortcut.registerShortcut){
-                for(var name in gs){
-                    shortcut.registerShortcut(
-                        gs[name].handler,
-                        gs[name].keymap,
-                        name,
-                        gs[name].description || ''
-                    );
-                }
-                return ()=>{
-                    if(shortcut && shortcut.unregisterShortcut){
-                        //unregister in reverse order
-                        for(var name in gs){
-                            shortcut.unregisterShortcut(gs[name].keymap);
-                        }
-                    }
-                }
-            }
-        }, [ gs ]);
-
-        return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='allCellsWrapper'>
-                <CellEditor {...others}/>
-            </div>
-            <hr/> {/* only for css */}
-            {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
-            <div className='buttonsWrapper'>
-                { props.uploadFlat && 
-                    <Button className='uploadButton' onClick = { async () => props.uploadFlat!(state.flat) }>업로드</Button>
-                }
-            </div>
-        </FlatContext.Provider>);
-    }
-)
-
-
-interface FlatEditorProps extends FlatComponentProps {
-    // initialFlat?: Flat;
-    // initialFocusId?: string;
-    // uploadFlat?: (flat: Flat) => void;
-    title?: string;
-    setTitle?: (value: string) => void;
-    author?: string;
-    setAuthor?: (value: string) => void;
-    upload?: (title: string, author: string, flat: Flat) => void;
+    return (<FlatContext.Provider value={{ state, dispatch }} >
+        <CellEditor {...others}/> { /* root cell */ }
+    </FlatContext.Provider>);
 }
 
-function FlatEditorComponent(props: FlatEditorProps){
-    let title = props.title ?? 'untitled';
-    let setTitle = props.setTitle ?? ((value: string) => {});
-
-    let author = props.author ?? 'unknown';
-    let setAuthor = props.setAuthor ?? ((value: string) => {});
-
-    let uploadFlat = (flat: Flat) => {};
-    if (props.upload !== undefined){
-        uploadFlat = (flat: Flat) => {
-            props.upload!(title, author, flat);
-        }
-    }
-
-    return (<ShortcutProvider ignoreTagNames={ [] }>
-        <div className='cellEditorWrapper'>
-            <div className='editorTextInput'>
-                <div className='titleInput'>
-                    <label>
-                        제목
-                    </label>
-                    <input value={title} onChange={(e) => setTitle(e.target.value)}/>
-                </div>
-                <AuthorInput author={author} setAuthor={setAuthor} />
-            </div>
-            <hr/> {/* only for css */}
-            <FlatEditorComponentWithShortcut {...props} uploadFlat={uploadFlat} />
-        </div>
-    </ShortcutProvider>);
-}
-
+export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
+export { makeInitialState };
+export { CellDisplay, CellEditor };
 export { FlatContext, FlatDisplayComponent, FlatEditorComponent };

@@ -10,7 +10,6 @@ import {
 import SingletonTextArea from './helpers/singletonTextArea';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
 
 function DisplayTextCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
@@ -20,13 +19,21 @@ function DisplayTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
+    //TODO : make perrefMap DRY
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
-        <div className='textCell'
-            style={ props.style }
-        >
-            <MemoizedRenderer>
-                {contents}
-            </MemoizedRenderer>
+        <div className='textCell'>
+            <MarkdownRenderer
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { contents }
+            </MarkdownRenderer>
         </div>
     );
 }
@@ -40,13 +47,20 @@ function PreviewTextCell(props: CellComponentProps){
 
     if(typeof contents !== 'string') return <></>;
 
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
-        <div className='textCell'
-            style={ props.style }
-        >
-            <MemoizedRenderer openDetails>
-                {contents}
-            </MemoizedRenderer>
+        <div className='textCell'>
+            <MarkdownRenderer openDetails
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { contents }
+            </MarkdownRenderer>
         </div>
     );
 }
@@ -109,7 +123,6 @@ function EditorTextCell(props: CellComponentProps){
             <SingletonTextArea
                 initialSelectionStart={ state.cursorStart }
                 initialSelectionEnd={ state.cursorEnd }
-                // style={ props.style as any }
                 className='editorTextCell editorCell'
                 onChange={handleChangeFactory(dispatch, props.cellId)}
                 onPaste={handlePasteFactory(dispatch, props.cellId)}

@@ -8,6 +8,8 @@ import SingletonTextArea from './helpers/singletonTextArea';
 import { fileUpload, imgUpload } from 'etc/FileUpload';
 import { FileDropzone } from './helpers/FileDropzone';
 
+import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+
 // Image cell value type
 interface ImageCellValue{
     src: string, //default value ''
@@ -20,6 +22,12 @@ function DisplayImageCell(props: CellComponentProps){
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
 
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
+
     return (
         <div className='imageCell'>
             <img 
@@ -31,7 +39,14 @@ function DisplayImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <p className='imageCellCaption'>{ caption }</p>
+            <MarkdownRenderer
+                inlineRenderClassName='imageCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { caption }
+            </MarkdownRenderer>
         </div>
     );
 }
@@ -42,6 +57,12 @@ function PreviewImageCell(props: CellComponentProps){
 
     let cell = state.flat[props.cellId];
     let { src, caption } = cell.value as ImageCellValue;
+
+    const label = state.renderInfo.label;
+    var perrefMap : Record<string,string> = {};
+    for(var keyId in label){
+        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
+    }
 
     return (
         <div className='imageCell'>
@@ -55,7 +76,14 @@ function PreviewImageCell(props: CellComponentProps){
                     }
                 } }
             />
-            <p className='imageCellCaption'>{ caption }</p>
+            <MarkdownRenderer
+                inlineRenderClassName='imageCellCaption'
+                inlineRenderPrefix=''
+                mathMacros = { state.renderInfo.macros.math }
+                perrefMap = { perrefMap }
+            >
+                { caption }
+            </MarkdownRenderer>
         </div>
     );
 }
