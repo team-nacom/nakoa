@@ -1,129 +1,261 @@
 import React from 'react';
 import { Flat } from '../../flat';
-import { FlatStateAction } from '../../reducer';
+import { FlatState, FlatStateAction } from '../../reducer';
 
-type refsType = React.MutableRefObject<Record<string,HTMLElement | null>>;
+import { fileUpload, imgUpload } from 'etc/FileUpload'
 
-function handleChangeFactory(id: string, dispatch: React.Dispatch<FlatStateAction>){
-    return (e : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        let str : string = e.target.value;
-        dispatch({ type: 'update', id, value : str });
+const stringAsIs = (value: unknown) => value as string; //default 'fromValue' argument (if necessary)
+const valueAsIs = (str: string) => str; // default 'toValue' argument.
+
+// Change handler(textarea & input)
+function handleChangeFactory(dispatch: React.Dispatch<FlatStateAction>, id: string, toValue? : (str: string) => unknown){
+    return (ev : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        dispatch({
+            type: 'update', id,
+            value: (toValue || valueAsIs)(ev.target.value)
+        });
     }
 }
 
+type CursorOption = 'start' | 'wrap' | 'end';
 
+// utility function to handle textarea selected element.
+// returns [updatedString, newCursorStart, newCursorEnd].
+function applyRange(
+    str : string,
+    fn: (str: string)=> string,
+    start?: number,
+    end?: number,
+    cursorOption? : CursorOption
+){
+    if(start === undefined || end === undefined){
+        start = str.length;
+        end = str.length;
+    }
 
-// function handleKeyDownFactory(flat: Flat, cid: string, dispatch: dispatchType, refs : React.MutableRefObject<Record<string,HTMLElement | null>> ){
-//     const record = flat.record;
+    let prefix = str.slice(0,start);
+    let target = fn( str.slice(start,end) );
+    let postfix = str.slice(end);
 
-//     return (e : React.KeyboardEvent<HTMLTextAreaElement>) => {
-//         //get sibling index.
-//         var pcid = record[cid].parentId;
-//         if(typeof pcid === 'undefined') return;
+    let newStr = prefix + target + postfix;
+    let newStart = str.length, newEnd = str.length;
+    switch(cursorOption || 'end'){
+        case 'start':
+            newStart = newEnd = prefix.length;
+            break;
+        case 'wrap':
+            newStart = prefix.length;
+            newEnd = prefix.length + target.length;
+            break;
+        case 'end':
+            newStart = newEnd = prefix.length + target.length;
+            break;
+    }
+    return [newStr, newStart, newEnd] as const;
+}
 
-//         // var siblingId = record[pcid].childrenId || [];
+// Paste helper : upload, dispatch, handle error and return markdown string
+// textarea value update should be handled externally.
 
-//         const evalSiblingId = () => {return record[pcid || '_'].childrenId || []};
-//         var siblingId = evalSiblingId();
+async function imgUploadHelper(dispatch: React.Dispatch<FlatStateAction>, id: string, file: File, str: string, start?: number, end?: number, toValue?: (str: string) => unknown, errorHandler?: (err: unknown) => any){
+    try{
+        const imgUrl = await imgUpload(file); //no catch
+        const text = `\n![](${ imgUrl })\n`;
 
-//         var idx = siblingId.indexOf(cid);
-//         if(idx === -1) idx = siblingId.length;
-    
-//         // console.log(cid);
-    
-//         //bubble splits.
-//         if(e.key === 'Enter'){
-//             const str : string = e.currentTarget.value;
+        const [newStr, cursorStart, cursorEnd] = applyRange( str, (() => text), start, end, 'end' );
 
-    
-//             const curStart : number = e.currentTarget.selectionStart;
-//             const curEnd : number = e.currentTarget.selectionEnd;
-//             if(e.ctrlKey){ //trigger 1 : ctrl + enter. text bubbles only
-//                 dispatch({ type: 'update', id: cid,
-//                     value : str[curStart] === '\n' ? str.slice(0,curStart-1) : str.slice(0, curStart)
-//                 });
-//                 dispatch({ type: 'add', parentId: pcid, idx: idx + 1, bubble: {
-//                     type : 'text',
-//                     value : str[curStart - 1] === '\n' ? str.slice(curStart + 1) : str.slice(curStart)
-//                 } });
+        dispatch({
+            type: 'update', id,
+            value: (toValue || valueAsIs)(newStr),
+            cursorStart, cursorEnd
+        })
 
-//                 // will be autofocused on newly created element
-//                 focusSibling(refs,evalSiblingId,idx+1,0);
-//             }
-//             else{ //trigger 2 : ;;; + enter
-//                 if(str[curStart] !== '\n' && curStart !== str.length) return;
-    
-//                 const lineStart : number = str.lastIndexOf('\n',curStart-1) + 1; //previous line.
-//                 //if '\n' not found, lineStart === 0.
-    
-//                 var result = str.slice(lineStart,curStart).match(/^(;{3,})([a-zA-Z0-9]*)(?:\[(.*)\])?$/);
-//                 if(!result) return;
+        return [newStr, cursorStart, cursorEnd] as const;
+    } catch(err){
+        if(errorHandler) errorHandler(err);
 
-//                 // create a new bubble based on type. for now we only support on text-behavior bubbles.
-//                 var [_, _, _type, label] = result;
-//                 var type = _type as BubbleType;
-//                 if(bubbleBehavior[type] !== 'text' ){
-//                     type = 'text';
-//                 }
-                
-//                 dispatch({ type: 'update', id: cid, value : str.slice(0, lineStart ? lineStart - 1 : 0) });
-//                 dispatch({ type: 'add', parentId: pcid, idx: idx+1, bubble: {
-//                     type : type,
-//                 //     value : ''
-//                 // } });
-//                 // dispatch({ type: 'add', parentId: pcid, idx: idx+2, bubble: {
-//                 //     type : 'text',
-//                     value : str.slice(curStart)
-//                 } });
+        return [str, start || str.length, end || str.length] as const;
+    }
+}
 
-//                 // will be autofocused on newly created element
-//                 focusSibling(refs,evalSiblingId,idx+1,0);
-//             }
-//         }
-    
-//         //bubble merge.
-//         if(e.key === 'Backspace'){
-//             const str : string = e.currentTarget.value;
-    
-//             const curStart : number = e.currentTarget.selectionStart;
-//             const curEnd : number = e.currentTarget.selectionEnd;
-    
-//             if(curStart !== 0 || curStart !== curEnd) return;
-//             if(idx === 0) return;
-    
-//             const targetcid = siblingId[idx-1];
-//             if( bubbleBehavior[ record[targetcid].type ] !== 'text') return; //can only merge with text node for now.
-    
-//             const targetStr = record[targetcid].value + '';
+async function fileUploadHelper(dispatch: React.Dispatch<FlatStateAction>, id: string, file: File, str: string, start?: number, end?: number, toValue?: (str: string) => unknown, errorHandler?: (err: unknown) => any){
+    try{
+        const fileUrl = await fileUpload(file);
+        const text = `[💾 ${ file.name }](${ fileUrl })`;
+
+        const [newStr, cursorStart, cursorEnd] = applyRange( str, (() => text), start, end, 'end' );
+
+        dispatch({
+            type: 'update', id,
+            value: (toValue || valueAsIs)(newStr),
+            cursorStart, cursorEnd
+        })
+
+        return [newStr, cursorStart, cursorEnd] as const;
+    } catch(err){
+        if(errorHandler) errorHandler(err);
+
+        return [str, start || str.length, end || str.length] as const;
+    }
+}
+
+function handlePasteFactory(dispatch: React.Dispatch<FlatStateAction>, id: string, toValue? : (str: string) => unknown){
+    return async (ev : React.ClipboardEvent<HTMLTextAreaElement>) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        //paste text.
+        let text = ev.clipboardData.getData('text/plain');
+        if(text){
+            let [newStr, cursorStart, cursorEnd] = applyRange(
+                ev.currentTarget.value, // state[id].value ??
+                () => text,
+                ev.currentTarget.selectionStart,
+                ev.currentTarget.selectionEnd,
+                'end'
+            );
+
+            dispatch({
+                type: 'update', id,
+                value: (toValue || valueAsIs)(newStr),
+                cursorStart, cursorEnd
+            })
+            return;
+        }
+
+        // paste image (in textarea)
+        for(const item of ev.clipboardData.items){
+            if(item.type.indexOf('image') === 0){ //image detected
+                const blob = item.getAsFile();
+                if(blob === null) continue;
+
+                const [newStr, newStart, newEnd] = await imgUploadHelper(
+                    dispatch, id,
+                    blob,
+                    ev.currentTarget.value,
+                    ev.currentTarget.selectionStart,
+                    ev.currentTarget.selectionEnd,
+                    toValue,
+                    (err) => { console.log('이미지 업로드 실패', err) }, //error handler
+                );
+
+                // ev.currentTarget.value = newStr;
+                // ev.currentTarget.selectionStart = newStart;
+                // ev.currentTarget.selectionEnd = newEnd;
+
+                // TODO : update ev.currentTarget BEFORE DISPATCH (to prevent DOM rerendering)
+            }
+        }
+    }
+}
+
+///////////////// Shortcut-related /////////////////////
+
+interface IShortcut<T = any>{
+    keymap: string[];
+    description?: string;
+    handler: (ev?: React.KeyboardEvent<T>) => any;
+}
+
+// Local Shortcut Handlers(dependent on cellId)
+function handleTextShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatStateAction>, cellId: string, toValue?: (str: string) => unknown){
+
+    function makeTextHandler(fn: (str: string) => string, cursorOption?: CursorOption){
+        return (ev?: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if(!ev) return;
             
-//             //first bubble remains.
-//             dispatch({ type: 'update', id: targetcid, value : targetStr + (str ? '\n' + str : '') });
-//             dispatch({ type: 'delete', id: cid });
-//             focusElem(refs,targetcid,targetStr.length);
-//         }
-//         if(e.key === 'Delete'){
-//             const str : string = e.currentTarget.value;
-    
-//             const curStart : number = e.currentTarget.selectionStart;
-//             const curEnd : number = e.currentTarget.selectionEnd;
-    
-//             if(curStart !== str.length || curStart !== curEnd) return;
-//             if(idx === siblingId.length - 1) return;
-    
-//             const targetcid = siblingId[idx+1];
-//             if( bubbleBehavior[ record[targetcid].type ] !== 'text') return; //can only merge with text node for now.
-            
-//             //first bubble remains.
-//             dispatch({ type: 'update', id: cid, value : (str ? str + '\n' : '') + record[targetcid].value });
-//             dispatch({ type: 'delete', id: targetcid });
-//             focusElem(refs,cid,str.length);
-//         }
-//     }
-// }
+            const [newStr, cursorStart, cursorEnd] = applyRange(
+                ev.currentTarget.value,
+                fn,
+                ev.currentTarget.selectionStart,
+                ev.currentTarget.selectionEnd,
+                cursorOption
+            );
 
-// export { focusSibling };
+            ev.currentTarget.value = newStr;
+            ev.currentTarget.selectionStart = cursorStart;
+            ev.currentTarget.selectionEnd = cursorEnd;
+
+            dispatch({
+                type: 'update', id: cellId,
+                value: (toValue || valueAsIs)(newStr),
+                cursorStart, cursorEnd
+            })
+        }
+    }
+
+    const textShortcut: Record<string,IShortcut<HTMLTextAreaElement>> = {
+        'bold' : {
+            keymap: ['control+b'],
+            description: 'boldface text',
+            handler: makeTextHandler((str: string)=>{
+                if(str.slice(0,2) === '**' && str.slice(-2) === '**' ){
+                    return str.slice(2,-2);
+                }
+                return '**' + str + '**';
+            }, 'wrap')
+        },
+        'italic' : {
+            keymap: ['control+i'],
+            description: 'italic text',
+            handler: makeTextHandler((str: string)=>{
+                if(str.slice(0,2) === '**' && str.slice(-2) === '**' ){
+                    return '*' + str + '*'; //bold already.
+                }
+                else if(str.slice(0,1) === '*' && str.slice(-1) === '*' ){
+                    return str.slice(1,-1);
+                }
+                return '*' + str + '*';
+            }, 'wrap')
+        },
+    }
+
+    return textShortcut;
+}
+
+// Global Shortcut Handlers(independent on cellId)
+function handleGlobalShortcutFactory(state: FlatState, dispatch: React.Dispatch<FlatStateAction>){
+    const localShortcut: Record<string, IShortcut> = {
+        'goUp' : {
+            keymap: ['control+arrowup'],
+            description: 'go to previous cell',
+            handler: (ev) => {
+                dispatch({ type: 'focusAdj', direction: -1});
+            }
+        },
+        'goDown' : {
+            keymap: ['control+arrowdown'],
+            description: 'go to next cell',
+            handler: (ev) => {
+                dispatch({ type: 'focusAdj', direction: 1});
+            }
+        },
+        'blur': {
+            keymap: ['escape'],
+            description: 'defocus',
+            handler: (ev) => {
+                if(state.focusId === undefined){
+                    console.log('not focusing anything!')
+                }
+
+                dispatch({ type: 'blur' });
+            }
+        }
+    }
+
+    return localShortcut;
+}
+
+// TODO : cell separation by enter, merge by backsp or del
+
 export {
     handleChangeFactory,
-    // handleKeyDownFactory
-};
+    handlePasteFactory,
 
+    handleTextShortcutFactory,
+    handleGlobalShortcutFactory
+};
+export {
+    imgUploadHelper,
+    fileUploadHelper
+}

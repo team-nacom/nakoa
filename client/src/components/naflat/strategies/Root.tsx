@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 
+import katex from 'katex';
+import TeX from '@matejmazur/react-katex';
+
+import SingletonTextArea from './helpers/singletonTextArea';
+
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-const MemoizedRenderer = React.memo(MarkdownRenderer);
+
+// Root cell value type
+interface RootCellValue{
+    mathMacro: string
+}
 
 function DisplayRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let contents = '# ' + cell.value;
 
     return (
-        <h1 className='rootCell'>
-            <MemoizedRenderer>
-                {contents}
-            </MemoizedRenderer>
-        </h1>
+        <></> // 뭐 넣지??
     );
 }
 
@@ -26,14 +30,17 @@ function PreviewRootCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let contents = '# ' + cell.value;
+    let value = cell.value as RootCellValue;
+    let macroText = value.mathMacro;
 
     return (
-        <h1 className='rootCell'>
-            <MemoizedRenderer>
-                {contents}
-            </MemoizedRenderer>
-        </h1>
+        <div className='rootCell'>
+            설정 편집
+            <label>수식 매크로 정의</label>
+            <code>
+                { macroText }
+            </code>
+        </div> // 뭐 넣지?? 제목 같은 거 전부 여기다 넣는 편이 좋을수도?
     );
 }
 
@@ -42,14 +49,44 @@ function EditorRootCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
     let cell = state.flat[props.cellId];
-    let title = '' + cell.value;
+    let value = cell.value as RootCellValue;
+    let macroText = value.mathMacro;
 
-    return <div className='editorRootCell'>
-        <input
-            className='title'
-            value={title}
-            onChange={handleChangeFactory(props.cellId, dispatch)}
+    let [mathMacro, setMathMacro] = useState(value.mathMacro);
+
+    return <div className='editorRootCellWrapper'>
+        설정 편집
+        <label>수식 매크로 정의</label>
+        <SingletonTextArea
+            className='editorRootCellTextArea'
+            initialSelectionStart={ state.cursorStart }
+            initialSelectionEnd={ state.cursorEnd }
+            value={ mathMacro }
+            onChange={(ev)=>{ setMathMacro(ev.target.value) }}
         />
+        <button onClick={(ev)=>{
+            dispatch({
+                type: 'update',
+                id: props.cellId,
+                value: {
+                    mathMacro: mathMacro
+                } as RootCellValue
+            });
+
+            let macroPass = {};
+            katex.renderToString(mathMacro,{
+                throwOnError: false,
+                globalGroup: true,
+                macros : macroPass
+            }); //render once and discard the result!
+
+            dispatch({
+                type: 'updateMacro',
+                mathMacro: macroPass
+            });
+        }}>
+            업데이트
+        </button>
     </div>
 }
 

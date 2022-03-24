@@ -2,13 +2,13 @@
 ////// Definition of data types Cell and Flat, and its basic functions.
 
 import lodash from 'lodash';
-import { bindActionCreators } from 'redux';
-import { Type } from 'unist-util-filter';
 
 type CellType = 'root' // only one root per flat should be allowed.
+    | 'section'
     | 'text'
     | 'math'
     | 'code'
+    | 'image'
 
 const defaultCellType : CellType = 'text';
 
@@ -33,11 +33,18 @@ interface Cell{
 type Flat = Record<string, Cell>; // Just an alias
 
 const defaultValue : CellTypeMap<unknown> = {
-    'root': '',
+    'root': { mathMacro: '' },
+    'section': '',
     'text': '',
     'math': '',
-    'code': '',
+    'code': { language: '', contents: '' },
+    'image': { src: '/altImg.png', caption: '' },
 }
+
+const isChildAllowed = (type: CellType) => {
+    return (type === 'root' || type === 'section');
+}
+
 
 // /**
 //  * Transform flat into a nested object(bubble), which can be serialized into JSON string.
@@ -108,7 +115,7 @@ function findSiblingId(f: Flat, id: string, delta: number) : string{
     let pid = f[id].parentId;
     if( pid === undefined ) return id;
 
-    let siblingIds = f[pid].childIds || [];
+    let siblingIds = f[pid].childIds;
     let n = siblingIds.indexOf(id);
     if( n === -1 ) return id; // something went wrong here, but no handling
 
@@ -116,6 +123,68 @@ function findSiblingId(f: Flat, id: string, delta: number) : string{
 .length ) return id;
 
     return siblingIds[n + delta];
+}
+
+/**
+ * given the cell id, find next(direction >= 0) or previous(direction<0) cell id of it.
+ * cells are preordered.
+ * if id is undefined, then find last or first(root) cell id based on direction.
+ * 
+ * @param f 
+ * @param id 
+ * @param direction if positive, find next cell. otherwise find previous cell.
+ * @returns previous cell id.
+ */
+function findAdjacentId(f: Flat, id: string | undefined, direction: number){
+    if(id === undefined){
+        let currentId = Object.keys(f)[0];
+        while(currentId){
+            let pid = f[currentId].parentId;
+            if(pid === undefined) break;
+
+            currentId = pid;
+        }
+        if(direction >= 0){
+            while(currentId && f[currentId].childIds.length > 0){
+                currentId = f[currentId].childIds[ f[currentId].childIds.length - 1];
+            }
+        }
+        return currentId;
+    }
+    else if(direction>=0){ //find next : direct children, or 
+        if(f[id].childIds.length > 0){
+            return f[id].childIds[0]; //direct children
+        }
+        //if leaf node.
+        let currentId = id;
+        while(true){
+            let parentId = f[currentId].parentId;
+            if(parentId === undefined) return id; //this is when id is the last descendant.
+
+            let siblingIds = f[parentId].childIds;
+            let n = siblingIds.indexOf(currentId);
+            if( n + 1 < siblingIds.length ){
+                // not the last sibling;
+                return siblingIds[n+1];
+            }
+            //the last sibling; this level is exhausted.
+            currentId = parentId;
+        }
+    }
+    else{ //find previous : the last descendant of prev sibling, or its parent.
+        let parentId = f[id].parentId;
+        if(parentId === undefined) return id; //this is when id is root.
+
+        let siblingIds = f[parentId].childIds;
+        let n = siblingIds.indexOf(id);
+        if( n === 0 ) return parentId;
+
+        let currentId = siblingIds[n-1];
+        while(f[currentId].childIds.length){
+            currentId = f[currentId].childIds[ f[currentId].childIds.length - 1 ];
+        }
+        return currentId;
+    }
 }
 
 ///// Manipulations for reducer.
@@ -139,8 +208,26 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
 }
 
 /**
+ * update cell value.
+ * 
+ * @param f flat.
+ * @param id cell id.
+ * @param context
+ * @returns new flat.
+ */
+function updateContext(f: Flat, id: string, context: Data): Flat {
+    if(!f[id]) return f;
+    
+    let newf = {...f};
+    // let newf = copyFlat(f);
+    // newf[id].context = { ...context };
+    newf[id].context = lodash.cloneDeep(context);
+    return newf;
+}
+
+/**
  * change cell type.
- * @todo conversion between uncompatible types.
+ * WARNING: new cell is set to default value.
  * 
  * @param f flat.
  * @param id cell id.
@@ -148,10 +235,20 @@ function updateCell(f: Flat, id: string, value: unknown): Flat {
  * @returns new flat.
  */
 function changeCellType(f: Flat, id: string, type: CellType): Flat{
-    if(!f[id] || f[id].type === 'root' || type === 'root') return f;
+    if(!f[id] || f[id].type === 'root' || f[id].type === type || type === 'root') return f;
 
     let newf = {...f};
     newf[id].type = type;
+    newf[id].value = defaultValue[type];
+
+    // cascade children
+    (function cascadeChidren(cellId: string){
+        for(let childId of newf[cellId].childIds){
+            cascadeChidren(childId);
+            delete newf[childId];
+        }
+    })(id);
+    newf[id].childIds = [];
 
     return newf;
 }
@@ -246,18 +343,21 @@ function removeCell(f: Flat, id: string) : Flat{
     }
 
     // cascade children
-    (function cascade(cellId: string){
+    (function cascadeChidren(cellId: string){
         for(let childId of newf[cellId].childIds){
-            cascade(childId);
+            cascadeChidren(childId);
+            delete newf[childId];
         }
-        delete newf[cellId];
     })(id);
+    delete newf[id];
 
     return newf;
 }
 
 
-export type { CellType, CellTypeMap, Cell, Flat };
-export { defaultCellType };
+export type { Data, CellType, CellTypeMap, Cell, Flat };
+export { defaultValue, defaultCellType, isChildAllowed };
+
 export { copyFlat };
-export { findSiblingId, changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };
+export { findSiblingId, findAdjacentId };
+export { changeCellType, updateCell, updateContext, createCell, moveCell, createChildCell, removeCell };

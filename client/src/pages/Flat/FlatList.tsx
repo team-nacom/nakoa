@@ -2,34 +2,34 @@ import Footer from "components/Footer";
 import BubbleSidebar from 'components/BubbleSidebar';
 import Header from "components/Header";
 import PageTitle from "components/PageTitle";
-import { getAllBubbles, getBubblesByAuthor, BubbleType } from "etc/api/bubble";
+import { getFlatsByAuthor, FlatItem } from "etc/api/flat";
 import usePromise from "etc/usePromise";
 import Loading from "pages/Loading";
 import React from 'react';
 import { Link, useParams } from "react-router-dom";
-import AuthorInput from '../../components/AuthorInput';
-import Button from '../../components/Button';
+import AuthorInput from 'components/editor/AuthorInput';
+import Button from 'components/Button';
 
 interface Params {
-    author: string;
+    author?: string;
 };
 
-function BubbleList() {
-    let params = useParams<Params>();
+function FlatList() {
+    let { author: paramAuthor } = useParams<Params>();
     let storedAuthor = localStorage.getItem('author');
-    let [author, setAuthor] = React.useState<string>(storedAuthor ?? '');
+    let [author, setAuthor] = React.useState<string>(paramAuthor ?? (storedAuthor ?? ''));
     React.useEffect(() => {
         localStorage.setItem("author", author);
     }, [author]);
 
-    let [bubbles, setBubbles] = React.useState<BubbleType[]>([]);
-    let [bubblesLoading, _] = usePromise(() => 
-        getBubblesByAuthor(author).then(bubblesFetch => setBubbles(bubblesFetch)));
+    let [flat, setFlats] = React.useState<FlatItem[]>([]);
+    let [flatLoading, _] = usePromise(() => 
+        getFlatsByAuthor(author).then(fetchedFlat => setFlats(fetchedFlat)));
 
     return (
         <>
             <Header/>
-            <div className='guideBackground' /> 
+            <div className='guideBackground' />
             <BubbleSidebar on='list'>
                 <span>
                     <Link to={'/write'}>
@@ -47,7 +47,7 @@ function BubbleList() {
                 <div className='writeBox guide'>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
-                        setBubbles(await getBubblesByAuthor(author));
+                        setFlats(await getFlatsByAuthor(author));
                     }} id='authorForm'>
                         <div className='flexbox'>
                             <AuthorInput author={author} setAuthor={setAuthor} />
@@ -56,7 +56,7 @@ function BubbleList() {
 
                         <div className='editorBottom'>
                             <Button className='submit link' onClick={async (e) => {
-                                setBubbles(await getBubblesByAuthor(author));
+                                setFlats(await getFlatsByAuthor(author));
                             }}>
                                 검색
                             </Button>
@@ -64,15 +64,14 @@ function BubbleList() {
                     </form>
                 </div>
 
-                { !bubblesLoading && bubbles && bubbles.length > 0 && 
+                { !flatLoading && flat && flat.length > 0 && 
                     <div className='bubbleFeedList'>
-                        {bubbles?.map((bubble) => <div key={bubble.title} className='bubbleFeed'>
-                            <Link to={`/view/${bubble.index}`}>
+                        {flat?.map((flat) => <div key={flat.title} className='bubbleFeed'>
+                            <Link to={`/view/${flat.index}`}>
                                 <div className='bubbleFeedContent'>
-                                    <div className='title'> { bubble.title ? bubble.title : "untitled" } </div>
-                                    <div className='author'> by { bubble.author ?? "anonymous" } </div>
-                                    <div className='tags'> { bubble.tags && bubble.tags.map((s) => `#${s} `) } </div> 
-                                    {/* <div className='content'> { bubble.content.substring(0, 100) } </div> */}
+                                    <div className='title'> { flat.title ? flat.title : "untitled" } </div>
+                                    <div className='author'> by { flat.author ?? "anonymous" } </div>
+                                    {/* <div className='content'> { flat.content.substring(0, 100) } </div> */}
                                 </div>
                             </Link>
                         </div>)}
@@ -85,4 +84,4 @@ function BubbleList() {
     );
 }
 
-export default BubbleList;
+export default FlatList;

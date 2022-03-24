@@ -3,8 +3,6 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
-import { FlatComponent } from 'components/naflat/component';
-
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
