@@ -62,10 +62,10 @@ function FlatList() {
                     </form>
                     
                     { !flatLoading && flat && flat.length > 0 && 
-                        <div className='bubbleFeedList'>
-                            {flat?.map((flat) => <div key={flat.title} className='bubbleFeed'>
+                        <div className='searchedFlatItemList'>
+                            {flat?.map((flat) => <div key={flat.title} className='searchedFlatItem'>
                                 <Link to={`/view/${flat.index}`}>
-                                    <div className='bubbleFeedContent'>
+                                    <div className='searchedFlatItemInfo'>
                                         <div className='title'> { flat.title ? flat.title : "untitled" } </div>
                                         <div className='author'> by { flat.author ?? "anonymous" } </div>
                                         {/* <div className='content'> { flat.content.substring(0, 100) } </div> */}

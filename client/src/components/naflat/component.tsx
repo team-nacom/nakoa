@@ -41,8 +41,10 @@ function CellDisplay(props: CellComponentProps) {
     const cell = state.flat[cellId];
     const Strategy = cellRenderStrategyMap[cell.type]['display'];
 
-    return <div className='cellContentWrapper' id={ cellId }>
-        <Strategy {...props} />
+    return <>
+        <div className='cellContentWrapper' id={ cellId }>
+            <Strategy {...props} />
+        </div>
         { /* render children. */}
         { isChildAllowed(cell.type) &&
             <div className='cellChildrenWrapper' id={ cellId }>
@@ -54,7 +56,7 @@ function CellDisplay(props: CellComponentProps) {
                 }
             </div>
         }
-    </div>;
+    </>;
 }
 
 function CellEditor(props: CellComponentProps) {

@@ -15,6 +15,7 @@ import {
 import { handleGlobalShortcutFactory } from 'components/naflat/strategies/helpers/handlers';
 
 import AuthorInput from './AuthorInput';
+import Button from 'components/Button';
 
 interface FlatItemMetadata{
     title: string;
@@ -79,18 +80,29 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='titleEditor'>
-                <label>
-                    제목
-                </label>
-                <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-            </div>
+            <div className='cellEditorWrapper'>
+                <div className='editorTextInput'>
+                    <div className='titleInput'>
+                        <label>
+                            제목
+                        </label>
+                        <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    </div>
+                    <AuthorInput author={author} setAuthor={setAuthor} />
+                </div>
+                <hr/> {/* only for css */}
 
-            <div className='flexbox'>
-                <AuthorInput author={author} setAuthor={setAuthor} />
-            </div>
-            <CellEditor {...others}/> { /* root cell */ }
-            <button onClick = { () => { upload({ title, author }, state.flat) } }>업로드</button>
+                <div className='allCellsWrapper'>
+                    <CellEditor {...others}/> { /* root cell */ }
+                </div>
+
+                <hr/> {/* only for css */}
+
+                {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
+                <div className='buttonsWrapper'>
+                    <Button className='uploadButton' onClick = { async () => { upload({ title, author }, state.flat) } }>업로드</Button>
+                </div>
+          </div>
         </FlatContext.Provider>);
     }
 )
