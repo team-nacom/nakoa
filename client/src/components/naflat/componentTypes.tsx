@@ -19,7 +19,6 @@ type CachedCellComponent = React.FC<CachedCellComponentProps>;
 
 function withCache(Comp: CellComponent): CachedCellComponent{
     return React.memo(({cellId, editedTimestamp, contextTimestamp}) => {
-        // console.log(cellId, editedTimestamp, contextTimestamp);
         //editedTimestamp and contextTimestamp is for caching.
         return <Comp cellId = { cellId } />;
     })

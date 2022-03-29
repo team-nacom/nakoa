@@ -23,6 +23,7 @@ type CellValueType = {
     },
     'image': {
         src: string,
+        width?: number,
         caption: string
     },
 };

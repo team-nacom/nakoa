@@ -54,6 +54,13 @@ summary.codeCellPreview {
     @include celllabel(rgba(gray, 0.8), white);
 }
 
+.imageCell {
+    text-align: center;
+    .imageCellImage{
+        max-width: max(100%, 720px);
+    }
+}
+
 @mixin controlButton {
     height: 40px;
     width: 40px;
