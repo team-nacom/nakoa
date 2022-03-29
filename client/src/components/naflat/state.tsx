@@ -38,8 +38,7 @@ type FlatStateAction
     | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
     | { type: 'remove'; id: string; }
 
-    | { type: 'toggleHideChildren'; id: string; }
-    | { type: 'updateMacro', mathMacroObj: Object }
+    | { type: 'toggleHideChildren'; id: string; } // only on display mode
 
     | { type: 'focus'; id: string; }
     | { type: 'focusAdj'; direction: number; }
@@ -83,6 +82,21 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
 
         cursorStart = action.cursorStart;
         cursorEnd = action.cursorEnd;
+
+        if(action.id === rootId){
+            let macroPass = {};
+            let mathMacroText = (action.value as any)?.mathMacro;
+            katex.renderToString(mathMacroText,{
+                throwOnError: false,
+                globalGroup: true,
+                macros : macroPass
+            }); //render once and discard the result!
+
+            mathMacroObj = macroPass;
+
+            contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
+        }
+
         break; //not saved in history
     case 'changeType':
         flat = F.changeCellType(flat, action.id, action.cellType);
@@ -127,12 +141,6 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     
     case 'toggleHideChildren':
         hideChildren = {...hideChildren, [action.id]: !hideChildren[action.id] };
-        break;
-
-    case 'updateMacro':
-        mathMacroObj = action.mathMacroObj;
-
-        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
         break;
 
     case 'focus':

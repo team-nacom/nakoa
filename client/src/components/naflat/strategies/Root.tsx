@@ -73,18 +73,6 @@ function EditorRootCell(props: CellComponentProps) {
                     mathMacro: mathMacroText
                 } as RootCellValue
             });
-
-            let macroPass = {};
-            katex.renderToString(mathMacroText,{
-                throwOnError: false,
-                globalGroup: true,
-                macros : macroPass
-            }); //render once and discard the result!
-
-            dispatch({
-                type: 'updateMacro',
-                mathMacroObj: macroPass
-            });
         }}>
             업데이트
         </button>
