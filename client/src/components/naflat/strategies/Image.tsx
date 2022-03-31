@@ -116,8 +116,8 @@ function EditorImageCell(props: CellComponentProps){
                     catch(err){
                         console.log('이미지 업로드 실패')
                     }
-
                 } }
+                accept='image/jpeg,/image/png,image/gif,image/svg+xml,image/webp'
             >
                 <img 
                     className='imageCellImage'
