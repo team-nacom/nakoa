@@ -336,3 +336,18 @@
         @include button-template($primary-color);
     }
 }
+
+
+//is here nice place for below?
+.childrenContainerHidden, .childrenContainerHiddenEditor{
+    background-color: antiquewhite;
+}
+
+.childrenContainerHidden > :not(.toggleHideChildren){
+    display: none;
+}
+
+.toggleHideChildren{
+    cursor: pointer;
+    user-select: none;
+}
