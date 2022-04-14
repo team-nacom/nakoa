@@ -20,6 +20,8 @@ function FlatWrite() {
     let upload = (metadata: FlatItemMetadata, flat: Flat) => {
         postFlat(metadata, flat).then(({success, index}) => {
             if (success) {
+                localStorage.removeItem(localStorageKeys.flatDraft);
+                localStorage.removeItem(localStorageKeys.metadataDraft);
                 setRedirectTo(`/view/${index}`);
             }
             else alert('업로드에 실패했습니다...');
