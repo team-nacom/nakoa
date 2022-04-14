@@ -65,6 +65,22 @@ type Flat = Record<string, Cell>; // Just an alias
 }
 
 /**
+ * returns subflat which root is id.
+ * the subflat is not necessarily a flat since f[id] need not to be type root.
+ * 
+ * @param f the flat.
+ * @param id the id.
+ * @returns the subflat.
+ */
+function getSubflat(f: Flat, id: string){
+    let sf : Flat = { [id]: f[id] };
+    for(let childId of f[id].childIds){
+        sf = {...sf, ...getSubflat(f, childId) };
+    }
+    return sf;
+}
+
+/**
  * given the cell id, find the next(delta === 1) or previous (delta === -1) sibling id of it.
  * 
  * @param f the flat.
@@ -206,6 +222,25 @@ function _generateTypedLabel(flat: Flat, id: string, obj: Record<string, number[
 ///// Manipulations for reducer.
 
 /**
+ * delete children of id in given flat, excluding id itself.
+ * this modifies the flat and do not return the copy.
+ * @param f the flat to be modified.
+ * @param id cell id.
+ * @returns the modified flat.
+ */
+function cascadeChildren(f: Flat, id: string): Flat{
+    if(!f[id]) return f;
+
+    for(let childId of f[id].childIds){
+        cascadeChildren(f, childId);
+        delete f[childId];
+    }
+    f[id].childIds = [];
+
+    return f;
+}
+
+/**
  * update cell value.
  * 
  * @param f flat.
@@ -238,15 +273,7 @@ function changeCellType(f: Flat, id: string, type: CellType): Flat{
     let newf = {...f};
     newf[id].type = type;
     newf[id].value = defaultValue[type];
-
-    // cascade children
-    (function cascadeChidren(cellId: string){
-        for(let childId of newf[cellId].childIds){
-            cascadeChidren(childId);
-            delete newf[childId];
-        }
-    })(id);
-    newf[id].childIds = [];
+    cascadeChildren(newf, id);
 
     return newf;
 }
@@ -341,12 +368,7 @@ function removeCell(f: Flat, id: string) : Flat{
     }
 
     // cascade children
-    (function cascadeChidren(cellId: string){
-        for(let childId of newf[cellId].childIds){
-            cascadeChidren(childId);
-            delete newf[childId];
-        }
-    })(id);
+    cascadeChildren(newf, id);
     delete newf[id];
 
     return newf;
@@ -358,7 +380,8 @@ export type { Cell, TCell, CellValueType, CellType, CellTypeMap };
 export { defaultCellType, defaultValue, isChildAllowed };
 
 export type { Flat };
-export { copyFlat };
+export { copyFlat, getSubflat };
 export { findSiblingId, findAdjacentId };
 export { generateAllLabel, generateTypedLabel };
+export { cascadeChildren };
 export { changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };

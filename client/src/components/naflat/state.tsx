@@ -3,7 +3,7 @@
 
 import React from 'react';
 import * as F from './flat';
-import { CellType, CellValueType, isChildAllowed, Flat } from './flat';
+import { CellType, CellValueType, isChildAllowed, Flat, defaultValue } from './flat';
 
 import katex from 'katex';
 
@@ -28,11 +28,31 @@ interface FlatState{
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose
 
-    history : Flat[];
+    history : FlatHistoryAction[];
+}
+
+interface FlatHistoryAction {
+    id: string;
+    subflat: Flat; //the subflat to overwrite.
+    timestamp: number;
+
+    // cascadeChildren?: boolean; // if true, cascade flat[id] children before mergeing subflat. also recalculate hideChildren object.
+    // relabel?: boolean; //if true, update label objects.
+    // useCellTimestamp?: boolean; //if true, editTimestamp[id] = timestamp is executed.
+
+    description: 'update' | 'changeType' | 'move' | 'create' | 'delete';
+}
+
+const historyActionPolicy = {
+    'update' : { cascadeChildren: false, relabel: false, useCellTimestamp: true },
+    'changeType' : { cascadeChildren: true, relabel: true, useCellTimestamp: true },
+    'move' : { cascadeChildren: false, relabel: true, useCellTimestamp: false },
+    'create' : { cascadeChildren: false, relabel: true, useCellTimestamp: true },
+    'delete' : { cascadeChildren: true, relabel: true, useCellTimestamp: false }
 }
 
 type FlatStateAction
-    = { type: 'update'; id: string; value: unknown; cursorStart?: number, cursorEnd?: number }
+    = { type: 'update'; id: string; value: any; cursorStart?: number, cursorEnd?: number }
     | { type: 'changeType'; id: string; cellType: CellType; }
     | { type: 'move'; id: string; parentId: string; pos?: number; }
     | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
@@ -54,6 +74,80 @@ function getNonDuplicateTimestamp(baseTimestamp: number){
     return now;
 }
 
+function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
+    let {
+        flat, rootId,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        ...others
+    } = state;
+
+    let {
+        id, subflat, timestamp, description
+    } = history;
+
+
+    if(historyActionPolicy[description].relabel){
+        if(historyActionPolicy[description].cascadeChildren){
+            flat = F.cascadeChildren(flat, id);
+        }
+
+        flat = {...flat, ...subflat};
+
+        allLabel = F.generateAllLabel(flat, rootId);
+        typedLabel = F.generateTypedLabel(flat, rootId);
+
+        contextTimestamp = timestamp;
+    }
+    else{
+        flat = {...flat, ...subflat};
+    }
+
+    if(historyActionPolicy[description].useCellTimestamp){
+        editedTimestamps = {
+            ...editedTimestamps,
+            [id]: timestamp || getNonDuplicateTimestamp(editedTimestamps[id])
+        };
+    }
+
+    // if root cell, and context changed?
+    if(id === rootId){
+        mathMacroObj = {};
+        let mathMacroText = (flat[rootId] as any)?.mathMacro;
+        katex.renderToString(mathMacroText,{
+            throwOnError: false,
+            globalGroup: true,
+            macros : mathMacroObj
+        }); //render once and discard the result!
+
+        contextTimestamp = editedTimestamps[id];
+    }
+
+    return {
+        flat, rootId,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        ...others
+    };
+}
+
+function reduceMove(state: FlatState, id: string, parentId: string, pos?: number, timestamp?: number): FlatState{
+    let {
+        flat, rootId,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        ...others
+    } = state;
+
+    flat = F.moveCell(flat, id, parentId, pos);
+    allLabel = F.generateAllLabel(flat, rootId);
+    typedLabel = F.generateTypedLabel(flat, rootId);
+    contextTimestamp = timestamp || getNonDuplicateTimestamp(editedTimestamps[id]);
+
+    return {
+        flat, rootId,
+        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        ...others
+    };
+}
+
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
     let {
         flat, rootId,
@@ -61,64 +155,54 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         focusId, cursorStart, cursorEnd, history
     } = state;
 
-    function pushHistory(f : Flat){
-        history.push(f);
-        if(history.length > MAX_HISTORY){
-            history.shift();
-        }
-    }
-    function popHistory(){
-        return history.pop();
-    }
+    let currentTimestamp = Date.now();
 
     switch (action.type){
     case 'update':
-        flat = F.updateCell(flat, action.id, action.value);
-        
-        editedTimestamps = {
-            ...editedTimestamps,
-            [action.id]: getNonDuplicateTimestamp(editedTimestamps[action.id])
-        };
+        state.cursorStart = action.cursorStart;
+        state.cursorEnd = action.cursorEnd;
 
-        cursorStart = action.cursorStart;
-        cursorEnd = action.cursorEnd;
-
-        if(action.id === rootId){
-            let macroPass = {};
-            let mathMacroText = (action.value as any)?.mathMacro;
-            katex.renderToString(mathMacroText,{
-                throwOnError: false,
-                globalGroup: true,
-                macros : macroPass
-            }); //render once and discard the result!
-
-            mathMacroObj = macroPass;
-
-            contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
-        }
-
-        break; //not saved in history
+        return reduceHistory(
+            state,
+            {
+                description: 'update',
+                id: action.id,
+                subflat: {[action.id]: {...state.flat[action.id], value: action.value} },
+                timestamp: currentTimestamp
+            }
+        );
     case 'changeType':
-        flat = F.changeCellType(flat, action.id, action.cellType);
-        allLabel = F.generateAllLabel(flat, rootId);
-        typedLabel = F.generateTypedLabel(flat, rootId);
-
-        editedTimestamps = {
-            ...editedTimestamps,
-            [action.id]: getNonDuplicateTimestamp(editedTimestamps[action.id])
-        };
-        contextTimestamp = editedTimestamps[action.id];
-        
-        // if(state.flat !== flat) pushHistory(state.flat);
-        break;
+        return reduceHistory(
+            state,
+            {
+                description: 'update',
+                id: action.id,
+                subflat: {[action.id]: {...state.flat[action.id], type: action.cellType, value: defaultValue[action.cellType] as any}},
+                timestamp: currentTimestamp
+            }
+        );
     case 'move':
-        flat = F.moveCell(flat,action.id,action.parentId,action.pos);
-        allLabel = F.generateAllLabel(flat, rootId);
-        typedLabel = F.generateTypedLabel(flat, rootId);
-
-        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
-        // if(state.flat !== flat) pushHistory(state.flat);
-        break;
+        // history
+        return reduceHistory(
+            state,
+            {
+                description: 'move',
+                id: action.id,
+                subflat: {
+                    [action.parentId]: {
+                        ...state.flat[action.parentId],
+                        childIds: [
+                            ...state.flat[action.parentId].childIds
+                        ]
+                    },
+                    [action.id]: {
+                        ...state.flat[action.id],
+                        parentId: action.parentId
+                    }
+                },
+                timestamp: currentTimestamp
+            }
+        )
     case 'createEmpty':
         [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
         allLabel = F.generateAllLabel(flat, rootId);
@@ -140,21 +224,22 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         break;
     
     case 'toggleHideChildren':
-        hideChildren = {...hideChildren, [action.id]: !hideChildren[action.id] };
-        break;
+        return {
+            ...state,
+            hideChildren: {...hideChildren, [action.id]: !hideChildren[action.id] }
+        };
 
     case 'focus':
-        focusId = action.id;
-        break;
+        return {...state, focusId: action.id};
     case 'focusAdj':
-        focusId = F.findAdjacentId(flat, focusId, action.direction);
-        break;
+        return {
+            ...state,
+            focusId: F.findAdjacentId(flat, focusId, action.direction)
+        };
     case 'blur':
-        focusId = undefined;
-        break;
+        return {...state, focusId: undefined};
     case 'resetCursor':
-        cursorStart = cursorEnd = undefined;
-        break;
+        return {...state, cursorStart: undefined, cursorEnd: undefined};
     }
     
     // console.log( JSON.stringify(flat) );
