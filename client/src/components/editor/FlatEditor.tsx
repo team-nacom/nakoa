@@ -95,7 +95,9 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='cellEditorWrapper'>
+            <div className='cellEditorWrapper'
+                onClick={() => dispatch({ type: 'blur' })}
+            >
                 <div className='editorTextInput'>
                     <div className='titleInput'>
                         <label>
