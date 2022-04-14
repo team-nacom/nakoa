@@ -11,6 +11,11 @@ import { FlatItemMetadata, FlatEditor } from 'components/editor/FlatEditor';
 function FlatWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
+    let storedFlatDraftString = localStorage.getItem('flatDraft');
+    let storedFlatDraft = storedFlatDraftString ? JSON.parse(storedFlatDraftString) : null;
+    let storedMetadataDraftString = localStorage.getItem('metadataDraft');
+    let storedMetadataDraft = storedMetadataDraftString ? JSON.parse(storedMetadataDraftString) : null;
+
     let upload = (metadata: FlatItemMetadata, flat: Flat) => {
         postFlat(metadata, flat).then(({success, index}) => {
             if (success) {
@@ -27,8 +32,9 @@ function FlatWrite() {
             <div id='content'>
                 <FlatEditor
                     cellId='c0'
-                    metadata={ { title: '', author: '' } }
+                    metadata={ storedMetadataDraft ?? { title: '', author: '' } }
                     upload={upload}
+                    initialFlat={storedFlatDraft ?? undefined}
                 />
             </div>
             <Footer/>

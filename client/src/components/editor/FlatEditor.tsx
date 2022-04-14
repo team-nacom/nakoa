@@ -52,6 +52,14 @@ const FlatEditorComponentWithShortcut = withShortcut(
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);
 
+        useEffect(() => {
+            localStorage.setItem("flatDraft", JSON.stringify(state.flat));
+        }, [state])
+        
+        useEffect(() => {
+            localStorage.setItem("metadataDraft", JSON.stringify({title: title, author: author}));
+        }, [title, author])
+
         // attach global shortcuts
         // useMemo for hooking multiple functions
         const gs = useMemo(() => (
