@@ -16,6 +16,7 @@ import { handleGlobalShortcutFactory } from 'components/naflat/strategies/helper
 
 import AuthorInput from './AuthorInput';
 import Button from 'components/Button';
+import { localStorageKeys } from 'etc/consts';
 
 interface FlatItemMetadata{
     title: string;
@@ -53,11 +54,11 @@ const FlatEditorComponentWithShortcut = withShortcut(
         const [author, setAuthor] = useState(metadata.author);
 
         useEffect(() => {
-            localStorage.setItem("flatDraft", JSON.stringify(state.flat));
+            localStorage.setItem(localStorageKeys.flatDraft, JSON.stringify(state.flat));
         }, [state])
-        
+
         useEffect(() => {
-            localStorage.setItem("metadataDraft", JSON.stringify({title: title, author: author}));
+            localStorage.setItem(localStorageKeys.metadataDraft, JSON.stringify({title: title, author: author}));
         }, [title, author])
 
         // attach global shortcuts

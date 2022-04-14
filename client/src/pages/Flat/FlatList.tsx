@@ -9,6 +9,7 @@ import React from 'react';
 import { Link, useParams } from "react-router-dom";
 import AuthorInput from 'components/editor/AuthorInput';
 import Button from 'components/Button';
+import { localStorageKeys } from "etc/consts";
 
 interface Params {
     author?: string;
@@ -16,10 +17,10 @@ interface Params {
 
 function FlatList() {
     let { author: paramAuthor } = useParams<Params>();
-    let storedAuthor = localStorage.getItem('author');
+    let storedAuthor = localStorage.getItem(localStorageKeys.authorSearchQuery);
     let [author, setAuthor] = React.useState<string>(paramAuthor ?? (storedAuthor ?? ''));
     React.useEffect(() => {
-        localStorage.setItem("author", author);
+        localStorage.setItem(localStorageKeys.authorSearchQuery, author);
     }, [author]);
 
     let [flat, setFlats] = React.useState<FlatItem[]>([]);

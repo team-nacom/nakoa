@@ -6,14 +6,15 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import { Redirect, useLocation } from 'react-router';
 import { Flat } from 'components/naflat/flat';
 import { FlatItemMetadata, FlatEditor } from 'components/editor/FlatEditor';
+import { localStorageKeys } from 'etc/consts';
 
 
 function FlatWrite() {
     let [redirectTo, setRedirectTo] = React.useState<string>();
 
-    let storedFlatDraftString = localStorage.getItem('flatDraft');
+    let storedFlatDraftString = localStorage.getItem(localStorageKeys.flatDraft);
     let storedFlatDraft = storedFlatDraftString ? JSON.parse(storedFlatDraftString) : null;
-    let storedMetadataDraftString = localStorage.getItem('metadataDraft');
+    let storedMetadataDraftString = localStorage.getItem(localStorageKeys.metadataDraft);
     let storedMetadataDraft = storedMetadataDraftString ? JSON.parse(storedMetadataDraftString) : null;
 
     let upload = (metadata: FlatItemMetadata, flat: Flat) => {
