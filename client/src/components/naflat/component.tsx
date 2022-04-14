@@ -41,6 +41,34 @@ const cachedStrategyMap: CellTypeMap<CellRenderStrategy<CachedCellComponentProps
     'image': applyCache(ImageCellStrategy)
 };
 
+function CellPublished(props: CellComponentProps) {
+    const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
+
+    const cell = state.flat[cellId];
+    const DisplayCached = cachedStrategyMap[cell.type]['display'];
+
+    return <div className='cellWrapper' id={ cellId }>
+        <DisplayCached //feed cache informations.
+            cellId = {cellId}
+            editedTimestamp = { state.editedTimestamps[cellId] }
+            contextTimestamp = { state.contextTimestamp }
+        />
+        { /* render children. */}
+        { isChildAllowed(cell.type) && // open all cells as default.
+            <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
+                id={ cellId }
+            >
+                {
+                    cell.childIds.reduce((prev, childId, idx) => prev.concat(
+                        <CellPublished {...props} cellId={childId} />,
+                        <div className='interBlockHelper' /> //Just for css.
+                    ), [ <div className='interBlockHelper' /> ])
+                }
+            </div>
+        }
+    </div>;
+}
 
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
@@ -262,6 +290,26 @@ interface FlatComponentProps extends CellComponentProps {
     initialFocusId?: string;
 }
 
+// published component implementation
+function FlatPublishedComponent(props: FlatComponentProps) {
+    const { initialFlat, initialFocusId, ...others } = props;
+
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
+
+    return ( //implement display here
+        <FlatContext.Provider value={{ state, dispatch }} >
+            <CellPublished {...others} />
+        </FlatContext.Provider>
+    );
+}
+
 // display component implementation
 function FlatDisplayComponent(props: FlatComponentProps) {
     const { initialFlat, initialFocusId, ...others } = props;
@@ -303,5 +351,5 @@ function FlatEditorComponent(props: FlatComponentProps){
 }
 
 export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
-export { CellDisplay, CellEditor };
-export { FlatDisplayComponent, FlatEditorComponent };
+export { CellPublished, CellDisplay, CellEditor };
+export { FlatPublishedComponent, FlatDisplayComponent, FlatEditorComponent };
