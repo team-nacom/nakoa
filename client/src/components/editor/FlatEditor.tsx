@@ -18,6 +18,8 @@ import {
 import { handleGlobalShortcutFactory } from 'components/naflat/strategies/helpers/handlers';
 
 import AuthorInput from './AuthorInput';
+import Button from 'components/Button';
+import { autoSaveIntervalMs, localStorageKeys } from 'etc/consts';
 
 interface FlatItemMetadata{
     title: string;
@@ -41,9 +43,29 @@ const FlatEditorComponentWithShortcut = withShortcut(
         } = props;
 
         const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, defaultRootId, initialFocusId));
+        const [autoSaveFlag, setFlag] = useState(0);
 
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);
+
+        useEffect(() => {
+            if (autoSaveFlag == 0) setFlag(1);
+        }, [state])
+
+        useEffect(() => {
+            if (autoSaveFlag == 1){
+                setFlag(-1);
+                setTimeout(() => {
+                    localStorage.setItem(localStorageKeys.flatDraft, JSON.stringify(state.flat));
+                    console.log('Autosaved');
+                    setFlag(0);
+                }, autoSaveIntervalMs)
+            }
+        }, [autoSaveFlag])
+
+        useEffect(() => {
+            localStorage.setItem(localStorageKeys.metadataDraft, JSON.stringify({title: title, author: author}));
+        }, [title, author])
 
         // attach global shortcuts
         // useMemo for hooking multiple functions
@@ -73,20 +95,29 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='titleEditor'>
-                <label>
-                    제목
-                </label>
-                <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-            </div>
+            <div className='cellEditorWrapper'>
+                <div className='editorTextInput'>
+                    <div className='titleInput'>
+                        <label>
+                            제목
+                        </label>
+                        <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    </div>
+                    <AuthorInput author={author} setAuthor={setAuthor} />
+                </div>
+                <hr/> {/* only for css */}
 
-            <div className='flexbox'>
-                <AuthorInput author={author} setAuthor={setAuthor} />
-            </div>
-            <CellEditor cellId = { defaultRootId } {...others} /> { /* root cell */ }
-            <button onClick = { () => {
-                upload({ title, author }, state.flat);
-            } }>업로드</button>
+                <div className='allCellsWrapper'>
+                    <CellEditor cellId = { defaultRootId } {...others}/> { /* root cell */ }
+                </div>
+
+                <hr/> {/* only for css */}
+
+                {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
+                <div className='buttonsWrapper'>
+                    <Button className='uploadButton' onClick = { async () => { upload({ title, author }, state.flat) } }>업로드</Button>
+                </div>
+          </div>
         </FlatContext.Provider>);
     }
 )

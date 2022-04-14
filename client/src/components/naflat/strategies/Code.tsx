@@ -16,19 +16,16 @@ function DisplayCodeCell(props: CellComponentProps){
     let { language, contents } = cell.value;
 
     return (
-        <>
-            <summary className='codeCellPreview'>
-                코드 { language }
+        <div className='codeCell'>
+            <summary className='codeCellLabel'>
+                코드
             </summary>
-            {/* <pre className='codeCell renderedCodeCell'>
-                <code>{contents}</code>
-            </pre> */}
-            <SyntaxHighlighter className='codeCell renderedCodeCell'
+            <SyntaxHighlighter className='codeCellPreview'
                 language = { language }
             >
                 { contents }
             </SyntaxHighlighter>
-        </>
+        </div>
     );
 }
 
@@ -40,19 +37,16 @@ function PreviewCodeCell(props: CellComponentProps){
     let { language, contents } = cell.value;
 
     return (
-        <>
-            <summary className='codeCellPreview'>
-                코드 { language }
+        <div className='codeCell'>
+            <summary className='codeCellLabel'>
+                코드
             </summary>
-            {/* <pre className='codeCell renderedCodeCell'>
-                <code>{contents}</code>
-            </pre> */}
-            <SyntaxHighlighter className='codeCell renderedCodeCell'
+            <SyntaxHighlighter className='codeCellPreview'
                 language = { language }
             >
                 { contents }
             </SyntaxHighlighter>
-        </>
+        </div>
     );
 }
 
@@ -64,7 +58,7 @@ function EditorCodeCell(props: CellComponentProps){
     let { language, contents } = cell.value;
 
     return (
-        <>
+        <div className='editorCodeCellWrapper'>
             <input
                 className='codeCellCaptionForm'
                 onChange={
@@ -88,7 +82,7 @@ function EditorCodeCell(props: CellComponentProps){
                 }
                 value={ contents }
             />
-        </>
+        </div>
     );
 }
 

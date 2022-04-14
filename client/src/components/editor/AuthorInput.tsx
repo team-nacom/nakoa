@@ -9,16 +9,14 @@ function AuthorInput({ author, setAuthor } : AuthorInputProps) {
     let intl = useIntl();
 
     return (
-        <div className='writeForm'>
+        <div className='authorInput'>
             <label>
                 { intl.formatMessage({ id: 'editor.author' }) }
             </label>
-            <div>
-                <input 
-                    value={ author }
-                    onChange={(e) => setAuthor(e.target.value)}
-                />
-            </div>
+            <input 
+                value={ author }
+                onChange={(e) => setAuthor(e.target.value)}
+            />
         </div>
     )
 }

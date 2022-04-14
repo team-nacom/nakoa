@@ -23,18 +23,18 @@ function DisplayMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <summary className='mathCellPreview'>
+        <div className='mathCell'>
+            <summary className='mathCellLabel'>
                 수식
             </summary>
-            <div className='mathCell renderedMathCell' >
+            <div className='mathCellPreview' >
                 <MemoizedTeX block
                     settings={ { macros: state.mathMacroObj } }
                 >
                     { `\\tag{${ labelStr }}` + contents }
                 </MemoizedTeX>
             </div>
-        </>
+        </div>
     );
 }
 
@@ -51,18 +51,18 @@ function PreviewMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <summary className='mathCellPreview'>
+        <div className='mathCell'>
+            <summary className='mathCellLabel'>
                 수식
             </summary>
-            <div className='mathCell previewMathCell' >
+            <div className='mathCellPreview' >
                 <MemoizedTeX block
                     settings={ { macros: state.mathMacroObj } }
                 >
                     { `\\tag{${ labelStr }}` + contents }
                 </MemoizedTeX>
             </div>
-        </>
+        </div>
     );
 }
 
@@ -76,18 +76,14 @@ function EditorMathCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <div className='editorMathCellWrapper'>
-                <SingletonTextArea
-                    className='editorMathCell editorCell'
-                    onChange={handleChangeFactory(dispatch,props.cellId)}
-                    value={contents}
-                />
-            </div>
-            <div className='previewMathCellWrapper'>
-                <PreviewMathCell {...props} />
-            </div>
-        </>
+        <div className='editorMathCellWrapper'>
+            <SingletonTextArea
+                className='editorMathCell editorCell'
+                onChange={handleChangeFactory(dispatch,props.cellId)}
+                value={contents}
+            />
+            <PreviewMathCell {...props} />
+        </div>
     );
 }
 
