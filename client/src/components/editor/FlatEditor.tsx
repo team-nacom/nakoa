@@ -16,7 +16,7 @@ import { handleGlobalShortcutFactory } from 'components/naflat/strategies/helper
 
 import AuthorInput from './AuthorInput';
 import Button from 'components/Button';
-import { localStorageKeys } from 'etc/consts';
+import { autoSaveIntervalMs, localStorageKeys } from 'etc/consts';
 
 interface FlatItemMetadata{
     title: string;
@@ -49,13 +49,25 @@ const FlatEditorComponentWithShortcut = withShortcut(
         } = props;
 
         const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
+        const [autoSaveFlag, setFlag] = useState(0);
 
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);
 
         useEffect(() => {
-            localStorage.setItem(localStorageKeys.flatDraft, JSON.stringify(state.flat));
+            if (autoSaveFlag == 0) setFlag(1);
         }, [state])
+
+        useEffect(() => {
+            if (autoSaveFlag == 1){
+                setFlag(-1);
+                setTimeout(() => {
+                    localStorage.setItem(localStorageKeys.flatDraft, JSON.stringify(state.flat));
+                    console.log('Autosaved');
+                    setFlag(0);
+                }, autoSaveIntervalMs)
+            }
+        }, [autoSaveFlag])
 
         useEffect(() => {
             localStorage.setItem(localStorageKeys.metadataDraft, JSON.stringify({title: title, author: author}));

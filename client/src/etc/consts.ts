@@ -8,3 +8,5 @@ export const localStorageKeys = {
     flatDraft: 'flatDraft',
     metadataDraft: 'metadataDraft',
 };
+
+export const autoSaveIntervalMs = 10 * 1000;
