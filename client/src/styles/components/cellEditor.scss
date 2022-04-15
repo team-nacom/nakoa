@@ -149,15 +149,38 @@
     }
 }
 
+.editorRootCellWrapper, .rootCellSettings{
+    width: 100%;
+}
+
+.rootCellSettings td{
+    height: 24px; //min-height
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.rootCellSettings td:last-child{
+    width: 100%;
+    text-align: left;
+}
+
 .editorRootCell input {
     width: 100%;
     height: 100%;
-    text-align: center;
+    // text-align: center;
     border: none;
     padding: 0;
     &:focus {
         outline: none;
     }
+}
+
+.editorRootCellTextArea {
+    width: 100%;
+}
+
+.editorSectionCellInput{
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cellChildrenWrapper {

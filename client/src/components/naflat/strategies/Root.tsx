@@ -37,12 +37,21 @@ function PreviewRootCell(props: CellComponentProps) {
 
     return (
         <div className='rootCell'>
-            설정 편집
-            <label>수식 매크로 정의</label>
-            <code>
-                { mathMacro }
-            </code>
-        </div> // 뭐 넣지?? 제목 같은 거 전부 여기다 넣는 편이 좋을수도?
+            <table className='rootCellSettings'>
+                <tr>
+                    <td>설정 편집</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>수식 매크로</td>
+                    <td>
+                        <code>
+                            { mathMacro }
+                        </code>
+                    </td>
+                </tr>
+            </table>
+        </div>
     );
 }
 
@@ -56,38 +65,48 @@ function EditorRootCell(props: CellComponentProps) {
     let [mathMacroText, setMathMacro] = useState(mathMacro);
 
     return <div className='editorRootCellWrapper'>
-        설정 편집
-        <label>수식 매크로 정의</label>
-        <SingletonTextArea
-            className='editorRootCellTextArea'
-            initialSelectionStart={ state.cursorStart }
-            initialSelectionEnd={ state.cursorEnd }
-            value={ mathMacroText }
-            onChange={(ev)=>{ setMathMacro(ev.target.value) }}
-        />
-        <button onClick={(ev)=>{
-            dispatch({
-                type: 'update',
-                id: props.cellId,
-                value: {
-                    mathMacro: mathMacroText
-                } as RootCellValue
-            });
+        <table className='rootCellSettings'>
+            <tr>
+                <td>설정 편집</td>
+                <td>
+                    <button onClick={(ev)=>{
+                        dispatch({
+                            type: 'update',
+                            id: props.cellId,
+                            value: {
+                                mathMacro: mathMacroText
+                            } as RootCellValue
+                        });
 
-            let macroPass = {};
-            katex.renderToString(mathMacroText,{
-                throwOnError: false,
-                globalGroup: true,
-                macros : macroPass
-            }); //render once and discard the result!
+                        let macroPass = {};
+                        katex.renderToString(mathMacroText,{
+                            throwOnError: false,
+                            globalGroup: true,
+                            macros : macroPass
+                        }); //render once and discard the result!
 
-            dispatch({
-                type: 'updateMacro',
-                mathMacroObj: macroPass
-            });
-        }}>
-            업데이트
-        </button>
+                        dispatch({
+                            type: 'updateMacro',
+                            mathMacroObj: macroPass
+                        });
+                    }}>
+                        업데이트
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>수식 매크로</td>
+                <td>
+                    <SingletonTextArea
+                        className='editorRootCellTextArea'
+                        initialSelectionStart={ state.cursorStart }
+                        initialSelectionEnd={ state.cursorEnd }
+                        value={ mathMacroText }
+                        onChange={(ev)=>{ setMathMacro(ev.target.value) }}
+                    />
+                </td>
+            </tr>
+        </table>
     </div>
 }
 
