@@ -162,7 +162,7 @@ function CellEditor(props: CellComponentProps) {
                         dispatch({ type: 'focus', id: cellId })
                     }}
                 >
-                    <div className='celleOptions'>
+                    <div className='cellOptions'>
                         <span className='cellId'>
                             ID: { cellId } | 
                         </span>
