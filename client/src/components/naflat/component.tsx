@@ -169,14 +169,6 @@ function CellEditor(props: CellComponentProps) {
                         <span className='cellPos'>
                             pos: { pos }
                         </span>
-                        { isChildAllowed(cell.type) && depth <= maxDepth && cell.childIds.length === 0 &&
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: cellId, pos : 0, cellType: defaultCellType}) } }
-                            >
-                                add
-                            </button>
-                        }
                         {cell.type !== 'root' &&
                             <button
                                 className='material-icons cellOptionButton'
