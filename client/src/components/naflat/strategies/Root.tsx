@@ -98,7 +98,7 @@ function EditorRootCell(props: CellComponentProps) {
                 <td>수식 매크로</td>
                 <td>
                     <SingletonTextArea
-                        className='editorRootCellTextArea'
+                        className='editorRootCellTextArea editorCell'
                         initialSelectionStart={ state.cursorStart }
                         initialSelectionEnd={ state.cursorEnd }
                         value={ mathMacroText }
