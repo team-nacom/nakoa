@@ -1,32 +1,46 @@
 import React from 'react';
+import { maxDepth } from '../component';
 import { Flat, CellType, defaultCellType } from '../flat';
 import { FlatContext } from '../state';
 
-interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
-    parentId : string,
-    pos : number,
+interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    parentId: string,
+    pos: number,
+    depth: number,
 }
 
-function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
+function AddContentCellButton({ parentId, pos, ...others }: AddCellButtonProps) {
     const { state, dispatch } = React.useContext(FlatContext);
 
-    const addCellHandler = (e: any) => {
-        dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType});
-    }
-
     return (
-        <button className='addCellButton material-icons'
-            onClick = {(ev) => { ev.stopPropagation(); dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType})}}>
+        <button className='addContentCellButton material-icons'
+            onClick={(ev) => { ev.stopPropagation(); dispatch({ type: 'createEmpty', parentId, pos, cellType: defaultCellType }) }}>
             add
         </button>
     )
 }
 
+function AddSectionCellButton({ parentId, pos, ...others }: AddCellButtonProps) {
+    const { state, dispatch } = React.useContext(FlatContext);
+
+    return (
+        <button className='addSectionCellButton material-icons'
+            onClick={(ev) => { ev.stopPropagation(); dispatch({ type: 'createEmpty', parentId, pos, cellType: 'section' }) }}>
+            add_circle
+        </button>
+    )
+}
+
 function InterCell(props: AddCellButtonProps) {
+    let depth = props.depth;
+    let isSectionCreationAllowed = depth <= maxDepth
     return (
         <div className='interBlockHelper'>
-            <hr/> {/* only for css */}
-            <AddCellButton {...props} />
+            <hr /> {/* only for css */}
+            <AddContentCellButton {...props} />
+            {isSectionCreationAllowed &&
+                <AddSectionCellButton {...props} />
+            }
         </div>
     )
 }

@@ -203,14 +203,6 @@ function CellEditor(props: CellComponentProps) {
                     </span>
                     {cell.type !== 'root' &&
                         <>
-                            {depth <= maxDepth &&
-                                <button
-                                    className='material-icons cellOptionButton'
-                                    onClick={cellTypeButtonHandlerFactory('section')}
-                                >
-                                    topic
-                                </button>
-                            }
                             <button
                                 className='material-icons cellOptionButton'
                                 onClick={cellTypeButtonHandlerFactory('text')}
@@ -270,8 +262,8 @@ function CellEditor(props: CellComponentProps) {
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellEditor {...props} cellId={childId} />,
-                        <InterCell parentId={cellId} pos={idx + 1} />
-                    ), [<InterCell parentId={cellId} pos={0} />])
+                        <InterCell parentId={cellId} pos={idx + 1} depth={depth}/>
+                    ), [<InterCell parentId={cellId} pos={0} depth={depth}/>])
                 }
             </div>
         }
@@ -353,3 +345,4 @@ function FlatEditorComponent(props: FlatComponentProps) {
 export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
 export { CellPublished, CellDisplay, CellEditor };
 export { FlatPublishedComponent, FlatDisplayComponent, FlatEditorComponent };
+export { maxDepth };
