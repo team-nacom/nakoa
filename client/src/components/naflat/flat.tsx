@@ -1,50 +1,11 @@
 
-////// Definition of data types Cell and Flat, and its basic functions.
+////// Definition of Flat structure, and its basic functions.
 
 import lodash from 'lodash';
 
-type CellType = 'root' // only one root per flat should be allowed.
-    | 'section'
-    | 'text'
-    | 'math'
-    | 'code'
-    | 'image'
-
-const defaultCellType : CellType = 'text';
-
-type CellTypeMap<T> = {
-    [cellType in CellType]: T;
-};
-
-interface Data{
-    [key: string]: unknown;
-}
-
-interface Cell{
-    id: string;
-    parentId?: string; // root has no parent.
-    childIds: string[];
-
-    type: CellType;
-    value?: unknown; 
-    context?: Data; //some settings which should be propagated to children.
-}
+import { Cell, TCell, CellValueType, CellType, CellTypeMap, defaultCellType, defaultValue, isChildAllowed } from './cell'
 
 type Flat = Record<string, Cell>; // Just an alias
-
-const defaultValue : CellTypeMap<unknown> = {
-    'root': { mathMacro: '' },
-    'section': '',
-    'text': '',
-    'math': '',
-    'code': { language: '', contents: '' },
-    'image': { src: '/altImg.png', caption: '' },
-}
-
-const isChildAllowed = (type: CellType) => {
-    return (type === 'root' || type === 'section');
-}
-
 
 // /**
 //  * Transform flat into a nested object(bubble), which can be serialized into JSON string.
@@ -87,7 +48,7 @@ const isChildAllowed = (type: CellType) => {
  * returns next available cell id.
  * to be called when a new cell is created.
  * 
- * current implementation : object ids are numeral string and new id is max + 1.
+ * current implementation : object ids are numeral string starts with 'c' and new id is max + 1.
  * 
  * @param f the flat.
  * @returns an available cell id.
@@ -187,6 +148,61 @@ function findAdjacentId(f: Flat, id: string | undefined, direction: number){
     }
 }
 
+///// auto label generator.
+
+/**
+ * generate label, counted for all cell types.
+ * @param flat reference flat.
+ * @param id root id to start with.
+ * @returns generated string -> number[] object.
+ */
+function generateAllLabel(flat: Flat, id: string): Record<string, number[]>{
+    let obj : Record<string, number[]> = {};
+    _generateAllLabel(flat, id, obj, []);
+    return obj;
+
+    // flat[id].childIds.reduce((acc: Record<string, number>, childId, idx)=>{
+    //     const cell = flat[childId];
+    //     const result = autoLabelAll(flat, childId, [...pfix, idx+1])
+    //     return acc;
+    // }, {})
+}
+function _generateAllLabel(flat: Flat, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+    flat[id].childIds.forEach((childId,idx)=>{
+        _generateAllLabel(flat, childId, obj, [...prefix, idx + 1]);
+    });
+}
+
+/**
+ * generate label, counted for specific cell types.
+ * @param flat reference flat.
+ * @param id root id to start with.
+ * @returns generated string -> number[] object.
+ */
+function generateTypedLabel(flat: Flat, id: string): Record<string, number[]>{
+    let obj: Record<string, number[]> = {};
+    _generateTypedLabel(flat, id, obj, []);
+    return obj;
+}
+function _generateTypedLabel(flat: Flat, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+
+    const idxObj : Record<string, number> = {};
+    flat[id].childIds.forEach((childId,idx)=>{
+        const cell = flat[childId];
+        let currentType : string = cell.type;
+        // may have additional if statements, like...
+        // if(cell.type === 'block' && cell.value.blockType === 'theorem'){
+        //     currentType = 'block-theorem'
+        // }
+        const currentTypeNextIdx = idxObj[currentType] = (idxObj[currentType] || 0) + 1;
+
+        _generateTypedLabel(flat, childId, obj, [...prefix, currentTypeNextIdx]);
+    });
+}
+
+
 ///// Manipulations for reducer.
 
 /**
@@ -197,31 +213,13 @@ function findAdjacentId(f: Flat, id: string | undefined, direction: number){
  * @param value cell value to be replaced.
  * @returns new flat.
  */
-function updateCell(f: Flat, id: string, value: unknown): Flat {
+function updateCell(f: Flat, id: string, value: any): Flat {
     if(!f[id]) return f;
     
     let newf = {...f};
     // let newf = copyFlat(f);
     newf[id].value = value;
     // newf[id].value = lodash.cloneDeep(value);
-    return newf;
-}
-
-/**
- * update cell value.
- * 
- * @param f flat.
- * @param id cell id.
- * @param context
- * @returns new flat.
- */
-function updateContext(f: Flat, id: string, context: Data): Flat {
-    if(!f[id]) return f;
-    
-    let newf = {...f};
-    // let newf = copyFlat(f);
-    // newf[id].context = { ...context };
-    newf[id].context = lodash.cloneDeep(context);
     return newf;
 }
 
@@ -262,7 +260,7 @@ function changeCellType(f: Flat, id: string, type: CellType): Flat{
  * @param value initial value of the cell.
  * @returns new flat. cell id is detatched from any other cells.
  */
-function createCell(f: Flat, id: string, type: CellType, value: unknown): Flat{
+function createCell(f: Flat, id: string, type: CellType, value: any): Flat{
     if(f[id] || type === 'root') return f;
     
     let newf = copyFlat(f);
@@ -355,9 +353,12 @@ function removeCell(f: Flat, id: string) : Flat{
 }
 
 
-export type { Data, CellType, CellTypeMap, Cell, Flat };
-export { defaultValue, defaultCellType, isChildAllowed };
+// re-export
+export type { Cell, TCell, CellValueType, CellType, CellTypeMap };
+export { defaultCellType, defaultValue, isChildAllowed };
 
+export type { Flat };
 export { copyFlat };
 export { findSiblingId, findAdjacentId };
-export { changeCellType, updateCell, updateContext, createCell, moveCell, createChildCell, removeCell };
+export { generateAllLabel, generateTypedLabel };
+export { changeCellType, updateCell, createCell, moveCell, createChildCell, removeCell };

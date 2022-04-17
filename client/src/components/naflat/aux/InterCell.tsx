@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flat, CellType, defaultCellType } from '../flat';
-import {  FlatContext } from '../componentTypes';
+import { FlatContext } from '../state';
 
 interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     parentId : string,

@@ -4,11 +4,14 @@ import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from 'components/naflat/flat';
-import { FlatState, FlatStateAction, reducer } from 'components/naflat/reducer';
-
+import {
+    FlatState, FlatStateAction,
+    reducer, makeInitialState, FlatContext,
+    emptyFlat, defaultRootId
+} from 'components/naflat/state';
 import {
     CellComponentProps, FlatComponentProps,
-    CellRenderStrategy, FlatContext, makeInitialState,
+    CellRenderStrategy,
     CellEditor
 } from 'components/naflat/component';
 
@@ -23,19 +26,10 @@ interface FlatItemMetadata{
     author: string;
 }
 
-interface FlatEditorProps extends FlatComponentProps{
+interface FlatEditorProps extends Omit<FlatComponentProps, 'cellId'>{
     metadata: FlatItemMetadata;
     upload: (metadata: FlatItemMetadata, flat: Flat) => any;
 }
-
-const emptyFlat: Flat = {
-    'c0': {
-        type: 'root',
-        id: 'c0',
-        childIds: [],
-        value: defaultValue['root']
-    }
-};
 
 //attempt 2: use forked 'react-keybind'
 //https://github.com/UnicornHeartClub/react-keybind
@@ -48,7 +42,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
             ...others
         } = props;
 
-        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
+        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, defaultRootId, initialFocusId));
         const [autoSaveFlag, setFlag] = useState(0);
 
         const [title, setTitle] = useState(metadata.title);
@@ -101,7 +95,9 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='cellEditorWrapper'>
+            <div className='cellEditorWrapper'
+                onClick={() => dispatch({ type: 'blur' })}
+            >
                 <div className='editorTextInput'>
                     <div className='titleInput'>
                         <label>
@@ -114,7 +110,7 @@ const FlatEditorComponentWithShortcut = withShortcut(
                 <hr/> {/* only for css */}
 
                 <div className='allCellsWrapper'>
-                    <CellEditor {...others}/> { /* root cell */ }
+                    <CellEditor cellId = { defaultRootId } {...others}/> { /* root cell */ }
                 </div>
 
                 <hr/> {/* only for css */}

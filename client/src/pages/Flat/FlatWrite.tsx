@@ -34,9 +34,8 @@ function FlatWrite() {
             <Header/>
             <div id='content'>
                 <FlatEditor
-                    cellId='c0'
-                    metadata={ storedMetadataDraft ?? { title: '', author: '' } }
                     upload={upload}
+                    metadata={ storedMetadataDraft ?? { title: '', author: '' } }
                     initialFlat={storedFlatDraft ?? undefined}
                 />
             </div>

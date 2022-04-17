@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
@@ -10,29 +12,20 @@ import { FileDropzone } from './helpers/FileDropzone';
 
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
-// Image cell value type
-interface ImageCellValue{
-    src: string, //default value ''
-    caption: string
-}
-
 function DisplayImageCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'image'>;
 
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let { src, width, caption } = cell.value;
 
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    const label = state.typedLabel;
 
     return (
         <div className='imageCell'>
-            <img 
-                className='imageCellImage'
-                src={ src } alt=''
+            <img className='imageCellImage'
+                src={ src }
+                width={ width } // width as pixel.
+                alt=''
                 onError = { (ev) =>{
                     if(ev.currentTarget.src !== '/altImg.png'){
                         ev.currentTarget.src = '/altImg.png';
@@ -42,8 +35,8 @@ function DisplayImageCell(props: CellComponentProps){
             <MarkdownRenderer
                 inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { label }
             >
                 { caption }
             </MarkdownRenderer>
@@ -54,21 +47,18 @@ function DisplayImageCell(props: CellComponentProps){
 
 function PreviewImageCell(props: CellComponentProps){
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'image'>;
 
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let { src, width, caption } = cell.value;
 
-    const label = state.renderInfo.label;
-    var perrefMap : Record<string,string> = {};
-    for(var keyId in label){
-        perrefMap[keyId] = label[keyId].custom || label[keyId].autoType.join('.');
-    }
+    const label = state.typedLabel;
 
     return (
         <div className='imageCell'>
-            <img
-                className='imageCellImage'
-                src={ src } alt=''
+            <img className='imageCellImage'
+                src={ src }
+                width={ width } //width as pixel
+                alt=''
                 onError = { (ev) =>{
                     ev.preventDefault();
                     if(ev.currentTarget.src !== '/altImg.png'){
@@ -79,8 +69,8 @@ function PreviewImageCell(props: CellComponentProps){
             <MarkdownRenderer
                 inlineRenderClassName='imageCellCaption'
                 inlineRenderPrefix=''
-                mathMacros = { state.renderInfo.macros.math }
-                perrefMap = { perrefMap }
+                mathMacroObj = { state.mathMacroObj }
+                perrefMap = { label }
             >
                 { caption }
             </MarkdownRenderer>
@@ -91,12 +81,26 @@ function PreviewImageCell(props: CellComponentProps){
 
 function EditorImageCell(props: CellComponentProps){
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'image'>;
 
-    let cell = state.flat[props.cellId];
-    let { src, caption } = cell.value as ImageCellValue;
+    let { src, width, caption } = cell.value;
 
     return (
-        <div className='imageCellWrapper'>
+        <div className='imageCell'>
+            {src !== '/altImg.png' &&
+                <input type='range' className='imageCellSlider'
+                    min = { 32 }
+                    max = { 720 }
+                    value={ width }
+                    onChange={
+                        handleChangeFactory(
+                            dispatch,
+                            props.cellId,
+                            (str) => ({src, width: Number(str), caption})
+                        )
+                    }
+                />
+            }
             <FileDropzone
                 handleDrop={ async (files) =>{
                     // fileUploadHelper(
@@ -110,18 +114,18 @@ function EditorImageCell(props: CellComponentProps){
                         src = await imgUpload(files[0]);
                         dispatch({
                             type: 'update', id: props.cellId,
-                            value: { src, caption }
+                            value: { src, width, caption }
                         });
                     }
                     catch(err){
                         console.log('이미지 업로드 실패')
                     }
                 } }
-                accept='image/jpeg,/image/png,image/gif,image/svg+xml,image/webp'
+                accept = 'image/jpeg,/image/png,image/gif,image/svg+xml,image/webp'
             >
-                <img 
-                    className='imageCellImage'
+                <img className='imageCellImage'
                     src={ src }
+                    width={ width } //width as pixel
                     alt=''
                     onError = { (ev) =>{
                         ev.preventDefault();
@@ -130,16 +134,15 @@ function EditorImageCell(props: CellComponentProps){
                         }
                     } }
                 />
-                { '이미지 드랍 혹은 클릭해서 업로드' }
+                <p> { '이미지 드랍 혹은 클릭해서 업로드' } </p>
             </FileDropzone>
             <input
-                style={ props.style as any }
-                className='imageCellCaptionInput'
+                className='imageCellCaptionForm'
                 onChange={
                     handleChangeFactory(
                         dispatch,
                         props.cellId,
-                        (str)=>({src, caption: str})
+                        (str)=>({src, width, caption: str})
                     )
                 }
                 value={ caption }

@@ -54,6 +54,13 @@ summary.codeCellPreview {
     @include celllabel(rgba(gray, 0.8), white);
 }
 
+.imageCell {
+    text-align: center;
+    .imageCellImage{
+        max-width: max(100%, 720px);
+    }
+}
+
 @mixin controlButton {
     height: 40px;
     width: 40px;
@@ -92,6 +99,20 @@ summary.codeCellPreview {
     border: 1px solid gray;
     padding: 10px;
 }
+
+.childrenContainerHidden, .childrenContainerHiddenEditor{
+    background-color: antiquewhite;
+}
+
+.childrenContainerHidden > :not(.toggleHideChildren){
+    display: none;
+}
+
+.toggleHideChildren{
+    cursor: pointer;
+    user-select: none;
+}
+
 
 .editorCellContainer {
     display: flex;
