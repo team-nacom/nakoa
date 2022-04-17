@@ -14,30 +14,29 @@ function DisplaySectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId] as TCell<'section'>;
 
     let val = cell.value;
-    if(typeof (val as any) === 'string'){ //backward compatability
+    if (typeof (val as any) === 'string') { //backward compatability
         val = {
             heading: (val as any),
             hideChildren: false
         };
     }
     let { heading, hideChildren } = val;
-    
+
     const label = state.typedLabel;
 
     let depth = label[props.cellId].length;
     let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
-        <>
+        <div className='sectionCell'>
             <MarkdownRenderer
-                inlineRenderClassName='sectionCell'
-                inlineRenderPrefix={ prefix }
-                mathMacroObj = { state.mathMacroObj }
-                perrefMap = { state.typedLabel }
+                inlineRenderPrefix={prefix}
+                mathMacroObj={state.mathMacroObj}
+                perrefMap={state.typedLabel}
             >
-                { '#'.repeat(depth) + ' ' + heading }
+                {'#'.repeat(depth) + ' ' + heading}
             </MarkdownRenderer>
-        </>
+        </div>
     );
 }
 
@@ -47,7 +46,7 @@ function PreviewSectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId] as TCell<'section'>;
 
     let val = cell.value;
-    if(typeof (val as any) === 'string'){ //backward compatability
+    if (typeof (val as any) === 'string') { //backward compatability
         val = {
             heading: (val as any),
             hideChildren: false
@@ -60,14 +59,15 @@ function PreviewSectionCell(props: CellComponentProps) {
     let prefix = '§' + label[props.cellId].join('.') + '. '
 
     return (
-        <MarkdownRenderer
-            inlineRenderClassName='sectionCell'
-            inlineRenderPrefix={ prefix }
-            mathMacroObj = { state.mathMacroObj }
-            perrefMap = { state.typedLabel }
-        >
-            { '#'.repeat(depth) + ' ' + heading }
-        </MarkdownRenderer>
+        <div className='sectionCell'>
+            <MarkdownRenderer
+                inlineRenderPrefix={prefix}
+                mathMacroObj={state.mathMacroObj}
+                perrefMap={state.typedLabel}
+            >
+                {'#'.repeat(depth) + ' ' + heading}
+            </MarkdownRenderer>
+        </div>
     );
 }
 
@@ -77,7 +77,7 @@ function EditorSectionCell(props: CellComponentProps) {
     let cell = state.flat[props.cellId] as TCell<'section'>;
 
     let val = cell.value;
-    if(typeof (val as any) === 'string'){ //backward compatability
+    if (typeof (val as any) === 'string') { //backward compatability
         val = {
             heading: (val as any),
             hideChildren: false
@@ -91,8 +91,8 @@ function EditorSectionCell(props: CellComponentProps) {
         </span>
         <input type="checkbox"
             name="hideChildren"
-            checked={ hideChildren }
-            onChange={ () => {
+            checked={hideChildren}
+            onChange={() => {
                 dispatch({
                     type: 'update',
                     id: props.cellId,
@@ -111,12 +111,12 @@ function EditorSectionCell(props: CellComponentProps) {
         <br />
         <input autoFocus
             className='editorSectionCellInput'
-            value={ heading }
+            value={heading}
             onChange={
                 handleChangeFactory(
                     dispatch,
                     props.cellId,
-                    (str)=>({heading: str, hideChildren})
+                    (str) => ({ heading: str, hideChildren })
                 )
             }
         />
