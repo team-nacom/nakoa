@@ -165,21 +165,27 @@ function CellEditor(props: CellComponentProps) {
                         dispatch({ type: 'focus', id: cellId })
                     }}
                 >
-                    <div className='cellOptions'>
-                        <span className='cellId'>
-                            ID: {cellId} |
-                        </span>
-                        <span className='cellPos'>
-                            pos: {pos}
-                        </span>
-                        {cell.type !== 'root' &&
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={deleteButtonHandler}
-                            >
-                                delete
-                            </button>
-                        }
+                    <div className='cellToolbar'>
+                        <div className='cellOptions'>
+                            {cell.type !== 'root' &&
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={deleteButtonHandler}
+                                >
+                                    delete
+                                </button>
+                            }
+                        </div>
+                        <div className='cellInfo'>
+                            <span className='cellId'>
+                                <span className='material-icons cellInfoIcon'>tag</span>
+                                {cellId}
+                            </span>
+                            <span className='cellPos'>
+                                <span className='material-icons cellInfoIcon'>format_list_numbered_rtl</span>
+                                {pos}
+                            </span>
+                        </div>
                     </div>
                     <PreviewCached //feed cache informations.
                         cellId={cellId}
@@ -194,55 +200,61 @@ function CellEditor(props: CellComponentProps) {
                 onClick={(ev) => { ev.stopPropagation() }}
             >
                 { /* side cell */}
-                <div className='cellOptions'>
-                    <span className='cellId'>
-                        ID: {cellId} |
-                    </span>
-                    <span className='cellPos'>
-                        pos: {pos}
-                    </span>
-                    {cell.type !== 'root' &&
-                        <>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={cellTypeButtonHandlerFactory('text')}
-                            >
-                                article
-                            </button>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={cellTypeButtonHandlerFactory('math')}
-                            >
-                                calculate
-                            </button>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={cellTypeButtonHandlerFactory('code')}
-                            >
-                                code
-                            </button>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={cellTypeButtonHandlerFactory('image')}
-                            >
-                                image
-                            </button>
-                        </>
-                    }
-                    <button
-                        className='material-icons cellOptionButton'
-                        onClick={() => dispatch({ type: 'blur' })}
-                    >
-                        close
-                    </button>
-                    {cell.type !== 'root' &&
+                <div className='cellToolbar'>
+                    <div className='cellOptions'>
+                        {cell.type !== 'root' && cell.type !== 'section' &&
+                            <>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('text')}
+                                >
+                                    article
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('math')}
+                                >
+                                    calculate
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('code')}
+                                >
+                                    code
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('image')}
+                                >
+                                    image
+                                </button>
+                            </>
+                        }
                         <button
                             className='material-icons cellOptionButton'
-                            onClick={deleteButtonHandler}
+                            onClick={() => dispatch({ type: 'blur' })}
                         >
-                            delete
+                            close
                         </button>
-                    }
+                        {cell.type !== 'root' &&
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={deleteButtonHandler}
+                            >
+                                delete
+                            </button>
+                        }
+                    </div>
+                    <div className='cellInfo'>
+                        <span className='cellId'>
+                            <span className='material-icons cellInfoIcon'>tag</span>
+                            {cellId}
+                        </span>
+                        <span className='cellPos'>
+                            <span className='material-icons cellInfoIcon'>format_list_numbered_rtl</span>
+                            {pos}
+                        </span>
+                    </div>
                 </div>
 
                 <EditorCached //feed cache informations.

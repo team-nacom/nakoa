@@ -133,10 +133,10 @@
     
     &:hover{
         @include shadow-template();
-        .cellOptions {
+        .cellToolbar {
             transition: inherit;
             opacity: 1;
-            @include shadow-template();
+            // @include shadow-template();
         }
     }
 
@@ -194,35 +194,47 @@
     }
 }
 
-.cellOptions {
-    background-color: white;
-    border-radius: 7px;
-    opacity: 0;
-
-    right: 10px;
+.cellToolbar {
+    right: 3px;
     top: 0px;
     transform: translateY(-50%);
     position: absolute;
     z-index: 1;
+    opacity: 0;
     display: flex;
-    flex-direction: row;
-    padding: 2px 4px;
+    
+    .cellOptions, .cellInfo {
+        margin: 0px 3px;
+        background-color: white;
+        border-radius: 7px;
+        padding: 2px 4px;
+        @include shadow-template();
+    }
 
-    button {
+    .cellOptionButton, .cellInfoIcon {
         background-color: transparent;
         font-size: 18px;
         width: 20px;
         height: 20px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        vertical-align: middle;
+    }
+
+    .cellInfo span {
+        font-size: 16px;
+        height: 20px;
+    }
+    .cellId, .cellPos {
+        margin-right: 6px;
     }
 }
 
 .editingCellWrapper {
     @include shadow-template();
-    .cellOptions {
-        @include shadow-template();
+    .cellToolbar {
+        opacity: 1;
     }
 }
 
@@ -271,8 +283,12 @@
     button {
         z-index: 1;
         background-color: transparent;
-        width: 30px;
-        font-size: 18px;
+        font-size: 20px;
+        width: 36px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     &:hover {
