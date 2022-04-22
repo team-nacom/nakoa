@@ -16,9 +16,11 @@ function About() {
         <>
             <Header/>
             <div id='content'>
-                <MarkdownRenderer isManual useTOC>
-                    { message }
-                </MarkdownRenderer>
+                <div className='aboutDisplayWrapper'>
+                    <MarkdownRenderer isManual useTOC>
+                        { message }
+                    </MarkdownRenderer>
+                </div>
             </div>
             <Footer/>
         </>
