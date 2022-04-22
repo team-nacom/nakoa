@@ -243,12 +243,20 @@
         border-radius: 3px;
         width: 0;
         transition: inherit;
+        position: absolute;
+        z-index: 0;
+    }
+    
+    .addButtonsWrapper {
+        display: flex;
+        position: relative;
+        padding: 0 10px;
         &:before, &:after {
             position: absolute;
             background-color: white;
             border-radius: 3px;
-            width: 50px;
-            height: 20px;
+            width: 100%;
+            height: 100%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -259,18 +267,14 @@
             z-index: -1;
         }
     }
-
+    
     button {
-        position: absolute;
+        z-index: 1;
         background-color: transparent;
-        width: 50px;
-        height: 20px;
+        width: 30px;
         font-size: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
-
+    
     &:hover {
         opacity: 1;
         hr {
