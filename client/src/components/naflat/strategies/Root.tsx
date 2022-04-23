@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { TCell } from '../cell';
 import { FlatContext } from '../state';
@@ -56,13 +56,36 @@ function PreviewRootCell(props: CellComponentProps) {
 }
 
 
-function EditorRootCell(props: CellComponentProps) {
+function EditorRootCell(props: CellComponentProps, update: boolean) {
     const { state, dispatch } = React.useContext(FlatContext);
     let cell = state.flat[props.cellId] as TCell<'root'>;
 
     let { mathMacro } = cell.value;
 
     let [mathMacroText, setMathMacro] = useState(mathMacro);
+
+    useEffect(() => {
+        console.log('run update!')
+        dispatch({
+            type: 'update',
+            id: props.cellId,
+            value: {
+                mathMacro: mathMacroText
+            } as RootCellValue
+        });
+
+        let macroPass = {};
+        katex.renderToString(mathMacroText,{
+            throwOnError: false,
+            globalGroup: true,
+            macros : macroPass
+        }); //render once and discard the result!
+
+        dispatch({
+            type: 'updateMacro',
+            mathMacroObj: macroPass
+        });
+    }, [update]);
 
     return <div className='editorRootCellWrapper'>
         <table className='rootCellSettings'>
