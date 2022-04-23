@@ -58,7 +58,7 @@ function CellPublished(props: CellComponentProps) {
         </div>
         { /* render children. */}
         {isChildAllowed(cell.type) && // open all cells as default.
-            <div className={'cellChildrenWrapper'}
+            <div className={'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '')}
                 id={cellId}
             >
                 {
