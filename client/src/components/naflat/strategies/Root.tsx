@@ -56,7 +56,7 @@ function PreviewRootCell(props: CellComponentProps) {
 }
 
 
-function EditorRootCell(props: CellComponentProps, update: boolean) {
+function EditorRootCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
     let cell = state.flat[props.cellId] as TCell<'root'>;
 
@@ -64,58 +64,34 @@ function EditorRootCell(props: CellComponentProps, update: boolean) {
 
     let [mathMacroText, setMathMacro] = useState(mathMacro);
 
-    useEffect(() => {
-        console.log('run update!')
-        dispatch({
-            type: 'update',
-            id: props.cellId,
-            value: {
-                mathMacro: mathMacroText
-            } as RootCellValue
-        });
+    if (props.funcRef){
+        props.funcRef.current = () => {
+            dispatch({
+                type: 'update',
+                id: props.cellId,
+                value: {
+                    mathMacro: mathMacroText
+                } as RootCellValue
+            });
 
-        let macroPass = {};
-        katex.renderToString(mathMacroText,{
-            throwOnError: false,
-            globalGroup: true,
-            macros : macroPass
-        }); //render once and discard the result!
+            let macroPass = {};
+            katex.renderToString(mathMacroText,{
+                throwOnError: false,
+                globalGroup: true,
+                macros : macroPass
+            }); //render once and discard the result!
 
-        dispatch({
-            type: 'updateMacro',
-            mathMacroObj: macroPass
-        });
-    }, [update]);
+            dispatch({
+                type: 'updateMacro',
+                mathMacroObj: macroPass
+            });
+        }
+    }
 
     return <div className='editorRootCellWrapper'>
         <table className='rootCellSettings'>
             <tr>
                 <td>설정 편집</td>
-                <td>
-                    <button onClick={(ev)=>{
-                        dispatch({
-                            type: 'update',
-                            id: props.cellId,
-                            value: {
-                                mathMacro: mathMacroText
-                            } as RootCellValue
-                        });
-
-                        let macroPass = {};
-                        katex.renderToString(mathMacroText,{
-                            throwOnError: false,
-                            globalGroup: true,
-                            macros : macroPass
-                        }); //render once and discard the result!
-
-                        dispatch({
-                            type: 'updateMacro',
-                            mathMacroObj: macroPass
-                        });
-                    }}>
-                        업데이트
-                    </button>
-                </td>
             </tr>
             <tr>
                 <td>수식 매크로</td>

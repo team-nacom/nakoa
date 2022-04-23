@@ -85,29 +85,26 @@ function EditorSectionCell(props: CellComponentProps) {
     }
     let { heading, hideChildren } = val;
 
+    if (props.funcRef){
+        props.funcRef.current = () => {
+            dispatch({
+                type: 'update',
+                id: props.cellId,
+                value: {
+                    heading,
+                    hideChildren: !hideChildren
+                }
+            });
+            dispatch({
+                type: 'toggleHideChildren',
+                id: props.cellId
+            });
+            //TODO: flat[cellId].hidechildren should be always synced with state.hideChildren[cellId]. how can we ensure this?
+        }
+
+    }
+
     return <div className='editorSectionCell'>
-        <input type="checkbox"
-            name="hideChildren"
-            checked={hideChildren}
-            onChange={() => {
-                dispatch({
-                    type: 'update',
-                    id: props.cellId,
-                    value: {
-                        heading,
-                        hideChildren: !hideChildren
-                    }
-                });
-                dispatch({
-                    type: 'toggleHideChildren',
-                    id: props.cellId
-                });
-                //TODO: flat[cellId].hidechildren should be always synced with state.hideChildren[cellId]. how can we ensure this?
-            }}
-        />
-        <label for='hide'>
-            접는 셀
-        </label>
         <br />
         <input autoFocus
             className='editorSectionCellInput'

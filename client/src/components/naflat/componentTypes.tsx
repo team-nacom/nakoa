@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 
 interface CellComponentProps{
     cellId : string;
+    funcRef? : any
 }
 type CellComponent = React.FC<CellComponentProps>;
 
@@ -18,9 +19,9 @@ interface CachedCellComponentProps extends CellComponentProps{
 type CachedCellComponent = React.FC<CachedCellComponentProps>;
 
 function withCache(Comp: CellComponent): CachedCellComponent{
-    return React.memo(({cellId, editedTimestamp, contextTimestamp}) => {
+    return React.memo(({cellId, funcRef, editedTimestamp, contextTimestamp}) => {
         //editedTimestamp and contextTimestamp is for caching.
-        return <Comp cellId = { cellId } />;
+        return <Comp cellId = { cellId } funcRef = { funcRef } />;
     })
 }
 
