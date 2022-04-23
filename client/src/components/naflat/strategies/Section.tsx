@@ -25,7 +25,7 @@ function DisplaySectionCell(props: CellComponentProps) {
     const label = state.typedLabel;
 
     let depth = label[props.cellId].length;
-    let prefix = '§' + label[props.cellId].join('.') + '. '
+    let prefix = label[props.cellId].join('.') + '. '
 
     return (
         <div className='sectionCell'>
@@ -56,7 +56,7 @@ function PreviewSectionCell(props: CellComponentProps) {
 
     const label = state.typedLabel;
     let depth = label[props.cellId].length;
-    let prefix = '§' + label[props.cellId].join('.') + '. '
+    let prefix = label[props.cellId].join('.') + '. '
 
     return (
         <div className='sectionCell'>

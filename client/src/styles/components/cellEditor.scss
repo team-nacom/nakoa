@@ -164,33 +164,46 @@
     white-space: pre;
 }
 
-.editorRootCell input {
-    width: 100%;
-    height: 100%;
-    // text-align: center;
-    border: none;
-    padding: 0;
-    &:focus {
-        outline: none;
-    }
-}
-
 .editorRootCellTextArea {
     width: 100%;
 }
 
+.sectionCell {
+    height: 48px;
+    line-height: 48px;
+    padding: 0 7px;
+    box-sizing: border-box;
+}
+.editorSectionCell {
+    width: 100%;
+    height: 100%;
+}
 .editorSectionCellInput{
     width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #f5f6fa;
+    padding: 0;
+    &:focus {
+        outline: none;
+    }
     box-sizing: border-box;
 }
 
 .cellChildrenWrapper {
-    border: solid #84878d 1px;
-    padding: 10px 20px;
+    border-left: solid transparent 3px;
+    padding-left: 10px;
+    // margin-left: 5px;
+    transition: all ease 0.2s 0s;
+
+    &:hover, &:focus-within {
+        border-color: rgba($primary-color, 0.16);
+    }
 
     .allCellsWrapper > & {
         border: none;
         padding: 0px;
+        margin: 0px;
     }
 }
 
@@ -240,7 +253,7 @@
 
 .interBlockHelper {
     opacity: 0;
-    height: 25px;
+    height: 16px;
     position: relative;
     z-index: 1;
     display: flex;
@@ -323,6 +336,7 @@
 .textCell, .mathCell, .codeCell {
     box-sizing: border-box;
     padding: 7px 10px;
+    min-height: 48px;
 }
 .mathCell {
     background-color: rgba($primary-color, 0.06);
