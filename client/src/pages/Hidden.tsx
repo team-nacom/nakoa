@@ -72,23 +72,36 @@ function Hidden() {
     return (
         <>
             <Header/>
-            
-            <button onClick = { ()=>{
-                setDisplay(!display);
+            <div id='content'>
+                <button onClick = { ()=>{
+                    setDisplay(!display);
 
-                dispatch({ type: 'blur' });
-                for(let cell of Object.values(state.flat)){
-                    if(cell.type === 'section' && (cell.value.hideChildren !== !!state.hideChildren[cell.id] )){
-                        dispatch({ type: 'toggleHideChildren', id: cell.id });
+                    dispatch({ type: 'blur' });
+                    for(let cell of Object.values(state.flat)){
+                        if(cell.type === 'section' && (cell.value.hideChildren !== !!state.hideChildren[cell.id] )){
+                            dispatch({ type: 'toggleHideChildren', id: cell.id });
+                        }
                     }
-                }
-            } }>
-                Toggle to { display ? 'editor' : 'display' }
-            </button>
-            <FlatContext.Provider value={{ state, dispatch }}>
-                {display && <CellPublished cellId = { defaultRootId } /> }
-                {!display && <CellEditor cellId = { defaultRootId } /> }
-            </FlatContext.Provider>
+                } }>
+                    Toggle to { display ? 'editor' : 'display' }
+                </button>
+                <FlatContext.Provider value={{ state, dispatch }}>
+                    {display && 
+                        <div className='cellDisplayWrapper'>
+                            <CellPublished cellId = { defaultRootId } /> 
+                        </div>
+                    }
+                    {!display &&
+                        <div className='cellEditorWrapper'>
+                            <div className='editorTextInput'>
+                                <div className='allCellsWrapper'>
+                                    <CellEditor cellId = { defaultRootId }/> { /* root cell */ }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </FlatContext.Provider>
+            </div>
 
             <Footer/>
         </>
