@@ -172,7 +172,7 @@ function CellEditor(props: CellComponentProps) {
                             <>
                                 <div className='cellInfo'>
                                     <span className='cellId'>
-                                        수식 매크로
+                                        <span className='cellInfoText'>수식 매크로</span>
                                     </span>
                                 </div>
                             </>
@@ -190,11 +190,11 @@ function CellEditor(props: CellComponentProps) {
                                 <div className='cellInfo'>
                                     <span className='cellId'>
                                         <span className='material-icons cellInfoIcon'>tag</span>
-                                        {cellId}
+                                        <span className='cellInfoText'>{cellId}</span>
                                     </span>
                                     <span className='cellPos'>
                                         <span className='material-icons cellInfoIcon'>format_list_numbered_rtl</span>
-                                        {pos}
+                                        <span className='cellInfoText'>{pos}</span>
                                     </span>
                                 </div>
                             </>
@@ -214,76 +214,96 @@ function CellEditor(props: CellComponentProps) {
             >
                 { /* side cell */}
                 <div className='cellToolbar'>
-                    {cell.type === 'root' &&
+                    <div className='cellOptions'>
+                        {cell.type === 'root' &&
+                            <>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={funcRef.current}
+                                >
+                                    update
+                                </button>
+                            </>
+                        }
+                        {cell.type === 'section' && 
+                            <>
+                                <input
+                                    type='checkbox'
+                                    onClick={funcRef.current}
+                                    id='hide'
+                                />
+                                <label htmlFor='hide'
+                                    className='material-icons cellOptionButton'
+                                >
+                                    arrow_drop_down
+                                </label>
+                            </>
+                        }
+                        {cell.type !== 'root' && cell.type !== 'section' && 
+                            <>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('text')}
+                                >
+                                    article
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('math')}
+                                >
+                                    calculate
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('code')}
+                                >
+                                    code
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={cellTypeButtonHandlerFactory('image')}
+                                >
+                                    image
+                                </button>
+                            </>
+                        }
+                        {cell.type !== 'root' &&
+                            <>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={() => dispatch({ type: 'blur' })}
+                                >
+                                    close
+                                </button>
+                                <button
+                                    className='material-icons cellOptionButton'
+                                    onClick={deleteButtonHandler}
+                                >
+                                    delete
+                                </button>
+                            </>
+                        }
+                    </div>
+                    {cell.type === 'root' && 
                         <>
-                            <button onClick={funcRef.current}>update</button>
-                        </>
-                    }
-                    {cell.type === 'section' && 
-                        <>
-                            <input
-                                type='checkbox'
-                                onClick={funcRef.current}
-                                id='hide'
-                            />
-                            <label htmlFor='hide'>default hide</label>
-                        </>
-                    }
-                    {cell.type !== 'root' &&
-                        <>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={() => dispatch({ type: 'blur' })}
-                            >
-                                close
-                            </button>
-                            <button
-                                className='material-icons cellOptionButton'
-                                onClick={deleteButtonHandler}
-                            >
-                                delete
-                            </button>
                             <div className='cellInfo'>
                                 <span className='cellId'>
-                                    <span className='material-icons cellInfoIcon'>tag</span>
-                                    {cellId}
-                                </span>
-                                <span className='cellPos'>
-                                    <span className='material-icons cellInfoIcon'>format_list_numbered_rtl</span>
-                                    {pos}
+                                    <span className='cellInfoText'>수식 매크로</span>
                                 </span>
                             </div>
                         </>
                     }
-                    {cell.type !== 'root' && cell.type !== 'section' && 
+                    {cell.type !== 'root' &&
                         <>
-                            <div className='cellOptions'>
-                                <>
-                                    <button
-                                        className='material-icons cellOptionButton'
-                                        onClick={cellTypeButtonHandlerFactory('text')}
-                                    >
-                                        article
-                                    </button>
-                                    <button
-                                        className='material-icons cellOptionButton'
-                                        onClick={cellTypeButtonHandlerFactory('math')}
-                                    >
-                                        calculate
-                                    </button>
-                                    <button
-                                        className='material-icons cellOptionButton'
-                                        onClick={cellTypeButtonHandlerFactory('code')}
-                                    >
-                                        code
-                                    </button>
-                                    <button
-                                        className='material-icons cellOptionButton'
-                                        onClick={cellTypeButtonHandlerFactory('image')}
-                                    >
-                                        image
-                                    </button>
-                                </>
+                            <div className='cellInfo'>
+                                <span className='cellId'>
+                                    <span className='material-icons cellInfoIcon'>tag</span>
+                                    <span className='cellInfoText'>{cellId}</span>
+                                </span>
+                                <span className='cellPos'>
+                                    <span className='material-icons cellInfoIcon'>format_list_numbered_rtl</span>
+                                    <span className='cellInfoText'>{pos}</span>
+                                </span>
                             </div>
                         </>
                     }

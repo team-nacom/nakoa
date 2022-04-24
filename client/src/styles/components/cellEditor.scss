@@ -223,7 +223,18 @@
         padding: 2px 4px;
         @include shadow-template();
     }
-
+    
+    input[type=checkbox] {
+        display: none;
+        &+label {
+            cursor: pointer;
+            margin: 0px;
+        }
+        &:checked+label {
+            color: $primary-color;
+        }
+    }
+    
     .cellOptionButton, .cellInfoIcon {
         background-color: transparent;
         font-size: 18px;
@@ -234,14 +245,16 @@
         justify-content: center;
         vertical-align: middle;
     }
-
-    .cellInfo span {
+    .cellInfoText {
         font-size: 16px;
         height: 20px;
+        margin: 0 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
     }
-    .cellId, .cellPos {
-        margin-right: 6px;
-    }
+    .cellInfoIcon + .cellInfoText { margin: 0 4px 0 0; }
 }
 
 .editingCellWrapper {
