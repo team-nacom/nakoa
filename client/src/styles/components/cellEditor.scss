@@ -131,8 +131,10 @@
     min-height: 48px;
     transition: all ease 0.1s 0s;
     
-    &:hover{
-        @include shadow-template();
+    &:hover, &.editingCellWrapper{
+        &:not(.internalCellWrapper) {
+            @include shadow-template();
+        }
         .cellToolbar {
             transition: inherit;
             opacity: 1;
@@ -255,13 +257,6 @@
         vertical-align: middle;
     }
     .cellInfoIcon + .cellInfoText { margin: 0 4px 0 0; }
-}
-
-.editingCellWrapper {
-    @include shadow-template();
-    .cellToolbar {
-        opacity: 1;
-    }
 }
 
 .interBlockHelper {

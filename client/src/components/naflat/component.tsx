@@ -49,7 +49,7 @@ function CellPublished(props: CellComponentProps) {
     const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
     return <>
-        <div className='cellContentWrapper' id={cellId}>
+        <div className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')} id={cellId}>
             <DisplayCached //feed cache informations.
                 cellId={cellId}
                 editedTimestamp={state.editedTimestamps[cellId]}
@@ -80,7 +80,7 @@ function CellDisplay(props: CellComponentProps) {
     const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
     return <>
-        <div className='cellContentWrapper' id={cellId}>
+        <div className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')} id={cellId}>
             <DisplayCached //feed cache informations.
                 cellId={cellId}
                 editedTimestamp={state.editedTimestamps[cellId]}
@@ -161,7 +161,9 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                <div className='cellContentWrapper' id={cellId}
+                <div
+                    className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')}
+                    id={cellId}
                     onClick={(ev) => {
                         ev.stopPropagation();
                         dispatch({ type: 'focus', id: cellId })
@@ -209,7 +211,9 @@ function CellEditor(props: CellComponentProps) {
             </>
         }
         {isFocused &&
-            <div className='cellContentWrapper editingCellWrapper' id={cellId}
+            <div
+                className={'cellContentWrapper editingCellWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')}
+                id={cellId}
                 onClick={(ev) => { ev.stopPropagation() }}
             >
                 { /* side cell */}
