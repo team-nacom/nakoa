@@ -105,7 +105,6 @@ function EditorSectionCell(props: CellComponentProps) {
     }
 
     return <div className='editorSectionCell'>
-        <br />
         <input autoFocus
             className='editorSectionCellInput'
             value={heading}

@@ -49,11 +49,17 @@ function CellPublished(props: CellComponentProps) {
     const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
     return <>
-        <div className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')} id={cellId}>
+        <div
+            className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '') + (state.hideChildren[cellId] ? ' hiddenSectionWrapper' : '')}
+            id={cellId}
+            onClick={() => {
+                if(cell.type === 'section') dispatch({ type: 'toggleHideChildren', id: cellId });
+            }}
+        >
             <DisplayCached //feed cache informations.
-                cellId={cellId}
-                editedTimestamp={state.editedTimestamps[cellId]}
-                contextTimestamp={state.contextTimestamp}
+                    cellId={cellId}
+                    editedTimestamp={state.editedTimestamps[cellId]}
+                    contextTimestamp={state.contextTimestamp}
             />
         </div>
         { /* render children. */}
@@ -80,7 +86,13 @@ function CellDisplay(props: CellComponentProps) {
     const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
     return <>
-        <div className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '')} id={cellId}>
+        <div
+            className={'cellContentWrapper' + (isChildAllowed(cell.type) ? ' internalCellWrapper' : '') + (state.hideChildren[cellId] ? ' hiddenSectionWrapper' : '')}
+            id={cellId}
+            onClick={() => {
+                if(cell.type === 'section') dispatch({ type: 'toggleHideChildren', id: cellId });
+            }}
+        >
             <DisplayCached //feed cache informations.
                 cellId={cellId}
                 editedTimestamp={state.editedTimestamps[cellId]}
@@ -93,11 +105,8 @@ function CellDisplay(props: CellComponentProps) {
             <div className={'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '')}
                 id={cellId}
             >
-                {cell.type === 'section' &&
+                {/* {cell.type === 'section' &&
                     <div className='toggleHideChildren'
-                        onClick={() => {
-                            dispatch({ type: 'toggleHideChildren', id: cellId });
-                        }}
                     >
                         {
                             state.hideChildren[cellId]
@@ -105,7 +114,7 @@ function CellDisplay(props: CellComponentProps) {
                                 : '▼' + '접기'
                         }
                     </div>
-                }
+                } */}
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,

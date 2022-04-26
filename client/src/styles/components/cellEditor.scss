@@ -174,35 +174,77 @@
 }
 
 .sectionCell {
-    height: 48px;
+    min-height: 48px;
     line-height: 48px;
     padding: 0 7px;
     box-sizing: border-box;
+    word-break: break-all;
+    transition: all ease 0.1s 0s;
+    &:hover {
+        color: $primary-color
+    }
+    &:active {
+        color: rgba($primary-color, 0.16);
+    }
+    .hiddenSectionWrapper & {
+        color: #e5e6ea;
+        &:hover {
+            color: $primary-color
+        }
+        &:active {
+            color: rgba($primary-color, 0.16);
+        }
+    }
+    .cellDisplayWrapper & {
+        cursor: pointer;
+    }
 }
+
 .editorSectionCellInput{
     border: none;
     background-color: #f5f6fa;
-    padding: 0;
+    height: 48px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
     &:focus {
         outline: none;
     }
-    box-sizing: border-box;
 }
+.childrenContainerHidden {
+    display: none;
+}
+.toggleHideChildren{
+    cursor: pointer;
+    user-select: none;
+}
+// .childrenContainerHidden, .childrenContainerHiddenEditor{
+//     background-color: antiquewhite;
+// }
+
+
 
 .cellChildrenWrapper {
-    border-left: solid transparent 3px;
-    padding-left: 10px;
-    // margin-left: 5px;
-    transition: all ease 0.2s 0s;
-
-    &:hover, &:focus-within, .cellContentWrapper:hover+&, .cellContentWrapper:focus-within+& {
-        border-color: rgba($primary-color, 0.16);
+    position: relative;
+    &:after {
+        content: '';
+        position: absolute;
+        left: -40px;
+        top: 0;
+        height: 100%;
+        width: 6px;
+        background-color: transparent;   
+        transition: all ease 0.2s 0s;
     }
-
+    &:hover, &:focus-within, .cellContentWrapper:hover+&, .cellContentWrapper:focus-within+& {
+        &:after {
+            background-color: rgba($primary-color, 0.16);
+        }
+    }
     .allCellsWrapper > & {
-        border: none;
-        padding: 0px;
-        margin: 0px;
+        &:after {
+            background-color: transparent;
+        }
     }
 }
 
@@ -398,19 +440,4 @@
     .uploadButton {
         @include button-template($primary-color);
     }
-}
-
-
-//is here nice place for below?
-.childrenContainerHidden, .childrenContainerHiddenEditor{
-    background-color: antiquewhite;
-}
-
-.childrenContainerHidden > :not(.toggleHideChildren){
-    display: none;
-}
-
-.toggleHideChildren{
-    cursor: pointer;
-    user-select: none;
 }
