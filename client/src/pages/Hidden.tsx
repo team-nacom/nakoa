@@ -88,15 +88,15 @@ function Hidden() {
                 <FlatContext.Provider value={{ state, dispatch }}>
                     {display && 
                         <div className='cellDisplayWrapper'>
-                            <CellPublished cellId = { defaultRootId } /> 
+                            <div className='allCellsWrapper'>
+                                <CellPublished cellId = { defaultRootId } /> 
+                            </div>
                         </div>
                     }
                     {!display &&
                         <div className='cellEditorWrapper'>
-                            <div className='editorTextInput'>
-                                <div className='allCellsWrapper'>
-                                    <CellEditor cellId = { defaultRootId }/> { /* root cell */ }
-                                </div>
+                            <div className='allCellsWrapper'>
+                                <CellEditor cellId = { defaultRootId }/>
                             </div>
                         </div>
                     }

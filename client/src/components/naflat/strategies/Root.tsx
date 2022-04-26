@@ -37,20 +37,11 @@ function PreviewRootCell(props: CellComponentProps) {
 
     return (
         <div className='rootCell'>
-            <table className='rootCellSettings'>
-                <tr>
-                    <td>설정 편집</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>수식 매크로</td>
-                    <td>
-                        <code>
-                            { mathMacro }
-                        </code>
-                    </td>
-                </tr>
-            </table>
+            <div className='rootCellSettings'>
+                <code>
+                    { mathMacro }
+                </code>
+            </div>
         </div>
     );
 }
@@ -88,25 +79,19 @@ function EditorRootCell(props: CellComponentProps) {
         }
     }
 
-    return <div className='editorRootCellWrapper'>
-        <table className='rootCellSettings'>
-            <tr>
-                <td>설정 편집</td>
-            </tr>
-            <tr>
-                <td>수식 매크로</td>
-                <td>
-                    <SingletonTextArea
-                        className='editorRootCellTextArea editorCell'
-                        initialSelectionStart={ state.cursorStart }
-                        initialSelectionEnd={ state.cursorEnd }
-                        value={ mathMacroText }
-                        onChange={(ev)=>{ setMathMacro(ev.target.value) }}
-                    />
-                </td>
-            </tr>
-        </table>
-    </div>
+    return <>
+        <div className='editorRootCellWrapper'>
+            <div className='rootCellSettings'>
+                <SingletonTextArea
+                    className='editorRootCellTextArea editorCell'
+                    initialSelectionStart={ state.cursorStart }
+                    initialSelectionEnd={ state.cursorEnd }
+                    value={ mathMacroText }
+                    onChange={(ev)=>{ setMathMacro(ev.target.value) }}
+                />
+            </div>
+        </div>
+    </>
 }
 
 

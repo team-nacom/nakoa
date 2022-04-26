@@ -97,6 +97,9 @@
         background: #ddd;
     }
 }
+.cellDisplayWrapper .allCellsWrapper > .internalCellWrapper {
+    display: none;
+}
 
 .editorTextInput {
     display: flex;
@@ -131,7 +134,7 @@
     min-height: 48px;
     transition: all ease 0.1s 0s;
     
-    &:hover, &.editingCellWrapper{
+    &:hover, &.editingCellWrapper {
         &:not(.internalCellWrapper) {
             @include shadow-template();
         }
@@ -176,13 +179,7 @@
     padding: 0 7px;
     box-sizing: border-box;
 }
-.editorSectionCell {
-    width: 100%;
-    height: 100%;
-}
 .editorSectionCellInput{
-    width: 100%;
-    height: 100%;
     border: none;
     background-color: #f5f6fa;
     padding: 0;
@@ -198,7 +195,7 @@
     // margin-left: 5px;
     transition: all ease 0.2s 0s;
 
-    &:hover, &:focus-within {
+    &:hover, &:focus-within, .cellContentWrapper:hover+&, .cellContentWrapper:focus-within+& {
         border-color: rgba($primary-color, 0.16);
     }
 
