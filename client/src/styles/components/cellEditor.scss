@@ -304,13 +304,13 @@
     padding: 7px 10px;
 }
 .mathCell {
-    background-color: rgba($primary-color, 0.06);
+    background-color: mix($primary-color, white, 6%);
 }
 .mathCellLabel {
     @include label-template($primary-color);
 }
 .codeCell {
-    background-color: rgba(#84878d, 0.06);
+    background-color: mix(#84878d, white, 6%);
 }
 .codeCellLabel {
     @include label-template(#84878d);

@@ -8,6 +8,7 @@ import { CellPublished, CellDisplay, CellEditor, FlatPublishedComponent, FlatDis
 
 import { compileTex } from 'components/tex';
 import HTMLParser, { Element, DOMNode, domToReact } from 'html-react-parser';
+import CreatePdfButton from 'components/naflat/CreatePdfButton';
 
 const pfaffianFlat: Flat = require('./pfaffian.json');
 
@@ -69,6 +70,8 @@ function Hidden() {
         )
     );
 
+    const documentRef = React.createRef<HTMLDivElement>();
+
     return (
         <>
             <Header />
@@ -85,11 +88,14 @@ function Hidden() {
             }}>
                 Toggle to {display ? 'editor' : 'display'}
             </button>
-            <FlatContext.Provider value={{ state, dispatch }}>
-                {display && <CellPublished cellId={defaultRootId} />}
-                {!display && <CellEditor cellId={defaultRootId} />}
-            </FlatContext.Provider>
 
+            {display && <CreatePdfButton pdfElementRef={documentRef} />}
+            <div ref={documentRef}>
+                <FlatContext.Provider value={{ state, dispatch }}>
+                    {display && <CellPublished cellId={defaultRootId} />}
+                    {!display && <CellEditor cellId={defaultRootId} />}
+                </FlatContext.Provider>
+            </div>
             <Footer />
         </>
     );
