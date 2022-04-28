@@ -64,9 +64,13 @@ function FlatPage() {
             <div id='content'>
                 { flat && parsedFlatRef.current ? (
                     <>
-                        <h1 className='title' style={{lineHeight: '100px'}}> { flat.title } </h1>
-                        <h2 className='author'> { flat.author } </h2>
+                        <div className='displayText'>
+                            <h1 className='title'> { flat.title } </h1>
+                            <h2 className='author'> { flat.author } </h2>
+                        </div>
+                        <div className='cellDisplayWrapper'>
                         <FlatDisplayComponent cellId='c0' initialFlat={ parsedFlatRef.current }/>
+                        </div>
                     </>
                 ) : (
                     <p> 존재하지 않는 버블입니다. </p>

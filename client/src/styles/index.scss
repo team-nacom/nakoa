@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 @font-face {
     font-family: 'SeoulNamsan';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
@@ -69,7 +71,8 @@ a {
 
 
 html {
-    font-family: 'Montserrat', 'SeoulNamsan';
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    // font-family: 'Montserrat', 'SeoulNamsan';
 //    font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -77,15 +80,15 @@ html {
     display: flex;
     flex-direction: column;
     font-size: 15px;
-    line-height: 20px;
+    // line-height: 20px;
     font-weight: 300;  
 
     min-height: 100%;
 }
 
 #content {
-    margin-left: calc(10% - 20px);
-    margin-right: calc(10% - 20px);
+    background-color: #f5f6fa;
+    min-height: calc(100vh - 300px);
 }
 
 .flexbox {
@@ -123,12 +126,11 @@ label {
     }
 }
 
-@import './write.scss';
-
 @import './layout/footer.scss';
 @import './layout/header.scss';
 
-@import './components/bubble.scss';
+@import './components/cellEditor.scss';
+@import './components/cellList.scss';
 @import './components/buttons.scss';
 @import './components/guide.scss';
 @import './components/markdown.scss';

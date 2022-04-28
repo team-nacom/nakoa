@@ -1,3 +1,4 @@
+import { localStorageKeys } from "etc/consts";
 
 const SET_LOCALE = 'SET_LOCALE' as const;
 
@@ -28,7 +29,7 @@ interface LocaleState {
   locale: Locale;
 };
 
-const lsLocale = localStorage.getItem('locale');
+const lsLocale = localStorage.getItem(localStorageKeys.locale);
 
 const initialState : LocaleState = {
   locale: isValidLocale(lsLocale) ? lsLocale : 'ko'
@@ -37,7 +38,7 @@ const initialState : LocaleState = {
 export default function locale(state = initialState, action : LocaleAction) {
   switch (action.type) {
     case SET_LOCALE:
-      localStorage.setItem('locale', action.locale);
+      localStorage.setItem(localStorageKeys.locale, action.locale);
 
       return {
         ...state,

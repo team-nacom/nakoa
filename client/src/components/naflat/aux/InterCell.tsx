@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flat, CellType, defaultCellType } from '../flat';
-import {  FlatContext } from '../componentTypes';
+import { FlatContext } from '../state';
 
 interface AddCellButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     parentId : string,
@@ -25,6 +25,7 @@ function AddCellButton({ parentId, pos, ...others }: AddCellButtonProps){
 function InterCell(props: AddCellButtonProps) {
     return (
         <div className='interBlockHelper'>
+            <hr/> {/* only for css */}
             <AddCellButton {...props} />
         </div>
     )

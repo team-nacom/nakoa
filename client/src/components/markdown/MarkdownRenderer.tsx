@@ -48,8 +48,8 @@ interface RendererOptionProps{
     inlineRenderPrefix?: string, // if rendered inline, set prefix before it.
     inlineRenderClassName?: string,
 
-    mathMacros?: Object,
-    perrefMap?: Record<string,string>
+    mathMacroObj?: Object,
+    perrefMap?: Record<string,string | number[]>
 }
 
 function MarkdownRenderer(props : Options & RendererOptionProps) {
@@ -116,7 +116,7 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         } ), //remove unnecessary linefeed(`\n`) wrappers.
         
         [RehypeKatex, {
-            macros: props.mathMacros,
+            macros: props.mathMacroObj,
             globalGroup: true
         }]
     ];

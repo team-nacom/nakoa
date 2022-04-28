@@ -2,75 +2,64 @@ import React from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
 
-// Code cell value type
-interface CodeCellValue {
-    language: string,
-    contents: string
-}
-
 function DisplayCodeCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
 
-    let cell = state.flat[props.cellId];
-    let { language, contents } = cell.value as CodeCellValue;
+    let cell = state.flat[props.cellId] as TCell<'code'>;
+    let { language, contents } = cell.value;
 
     return (
-        <>
-            <summary className='codeCellPreview'>
-                코드 {language}
+        <div className='codeCell'>
+            <summary className='codeCellLabel'>
+                코드
             </summary>
-            {/* <pre className='codeCell renderedCodeCell'>
-                <code>{contents}</code>
-            </pre> */}
-            <SyntaxHighlighter className='codeCell renderedCodeCell'
+            <SyntaxHighlighter className='codeCellPreview'
                 language={language}
             >
                 {contents}
             </SyntaxHighlighter>
-        </>
+        </div>
     );
 }
 
 
 function PreviewCodeCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'code'>;
 
-    let cell = state.flat[props.cellId];
-    let { language, contents } = cell.value as CodeCellValue;
+    let { language, contents } = cell.value;
 
     return (
-        <>
-            <summary className='codeCellPreview'>
-                코드 {language}
+        <div className='codeCell'>
+            <summary className='codeCellLabel'>
+                코드
             </summary>
-            {/* <pre className='codeCell renderedCodeCell'>
-                <code>{contents}</code>
-            </pre> */}
-            <SyntaxHighlighter className='codeCell renderedCodeCell'
+            <SyntaxHighlighter className='codeCellPreview'
                 language={language}
             >
                 {contents}
             </SyntaxHighlighter>
-        </>
+        </div>
     );
 }
 
 
 function EditorCodeCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'code'>;
 
-    let cell = state.flat[props.cellId];
-    let { language, contents } = cell.value as CodeCellValue;
+    let { language, contents } = cell.value;
 
     return (
-        <>
+        <div className='editorCodeCellWrapper'>
             <input
-                style={props.style as any}
                 className='codeCellCaptionForm'
                 onChange={
                     handleChangeFactory(
@@ -93,7 +82,7 @@ function EditorCodeCell(props: CellComponentProps) {
                 }
                 value={contents}
             />
-        </>
+        </div>
     );
 }
 

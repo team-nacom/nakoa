@@ -4,36 +4,32 @@ import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'
 
 import lodash from 'lodash';
 import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue } from 'components/naflat/flat';
-import { FlatState, FlatStateAction, reducer } from 'components/naflat/reducer';
-
+import {
+    FlatState, FlatStateAction,
+    reducer, makeInitialState, FlatContext,
+    emptyFlat, defaultRootId
+} from 'components/naflat/state';
 import {
     CellComponentProps, FlatComponentProps,
-    CellRenderStrategy, FlatContext, makeInitialState,
+    CellRenderStrategy,
     CellEditor
 } from 'components/naflat/component';
 
 import { handleGlobalShortcutFactory } from 'components/naflat/strategies/helpers/handlers';
 
 import AuthorInput from './AuthorInput';
+import Button from 'components/Button';
+import { autoSaveIntervalMs, localStorageKeys } from 'etc/consts';
 
 interface FlatItemMetadata{
     title: string;
     author: string;
 }
 
-interface FlatEditorProps extends FlatComponentProps{
+interface FlatEditorProps extends Omit<FlatComponentProps, 'cellId'>{
     metadata: FlatItemMetadata;
     upload: (metadata: FlatItemMetadata, flat: Flat) => any;
 }
-
-const emptyFlat: Flat = {
-    'c0': {
-        type: 'root',
-        id: 'c0',
-        childIds: [],
-        value: defaultValue['root']
-    }
-};
 
 //attempt 2: use forked 'react-keybind'
 //https://github.com/UnicornHeartClub/react-keybind
@@ -46,10 +42,30 @@ const FlatEditorComponentWithShortcut = withShortcut(
             ...others
         } = props;
 
-        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, props.cellId, initialFocusId));
+        const [state, dispatch] = useReducer(reducer, makeInitialState(initialFlat || emptyFlat, defaultRootId, initialFocusId));
+        const [autoSaveFlag, setFlag] = useState(0);
 
         const [title, setTitle] = useState(metadata.title);
         const [author, setAuthor] = useState(metadata.author);
+
+        useEffect(() => {
+            if (autoSaveFlag == 0) setFlag(1);
+        }, [state])
+
+        useEffect(() => {
+            if (autoSaveFlag == 1){
+                setFlag(-1);
+                setTimeout(() => {
+                    localStorage.setItem(localStorageKeys.flatDraft, JSON.stringify(state.flat));
+                    console.log('Autosaved');
+                    setFlag(0);
+                }, autoSaveIntervalMs)
+            }
+        }, [autoSaveFlag])
+
+        useEffect(() => {
+            localStorage.setItem(localStorageKeys.metadataDraft, JSON.stringify({title: title, author: author}));
+        }, [title, author])
 
         // attach global shortcuts
         // useMemo for hooking multiple functions
@@ -79,18 +95,31 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
-            <div className='titleEditor'>
-                <label>
-                    제목
-                </label>
-                <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-            </div>
+            <div className='cellEditorWrapper'
+                onClick={() => dispatch({ type: 'blur' })}
+            >
+                <div className='editorTextInput'>
+                    <div className='titleInput'>
+                        <label>
+                            제목
+                        </label>
+                        <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    </div>
+                    <AuthorInput author={author} setAuthor={setAuthor} />
+                </div>
+                <hr/> {/* only for css */}
 
-            <div className='flexbox'>
-                <AuthorInput author={author} setAuthor={setAuthor} />
-            </div>
-            <CellEditor {...others}/> { /* root cell */ }
-            <button onClick = { () => { upload({ title, author }, state.flat) } }>업로드</button>
+                <div className='allCellsWrapper'>
+                    <CellEditor cellId = { defaultRootId } {...others}/> { /* root cell */ }
+                </div>
+
+                <hr/> {/* only for css */}
+
+                {/* <button onClick = { () => { console.log(state.flat) } }>console.log 남기기</button> */}
+                <div className='buttonsWrapper'>
+                    <Button className='uploadButton' onClick = { async () => { upload({ title, author }, state.flat) } }>업로드</Button>
+                </div>
+          </div>
         </FlatContext.Provider>);
     }
 )

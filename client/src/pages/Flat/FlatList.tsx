@@ -9,6 +9,7 @@ import React from 'react';
 import { Link, useParams } from "react-router-dom";
 import AuthorInput from 'components/editor/AuthorInput';
 import Button from 'components/Button';
+import { localStorageKeys } from "etc/consts";
 
 interface Params {
     author?: string;
@@ -16,10 +17,10 @@ interface Params {
 
 function FlatList() {
     let { author: paramAuthor } = useParams<Params>();
-    let storedAuthor = localStorage.getItem('author');
+    let storedAuthor = localStorage.getItem(localStorageKeys.authorSearchQuery);
     let [author, setAuthor] = React.useState<string>(paramAuthor ?? (storedAuthor ?? ''));
     React.useEffect(() => {
-        localStorage.setItem("author", author);
+        localStorage.setItem(localStorageKeys.authorSearchQuery, author);
     }, [author]);
 
     let [flat, setFlats] = React.useState<FlatItem[]>([]);
@@ -44,7 +45,7 @@ function FlatList() {
                     글 검색
                 </PageTitle>
                 
-                <div className='writeBox guide'>
+                <div className='cellListWrapper'>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
                         setFlats(await getFlatsByAuthor(author));
@@ -54,29 +55,27 @@ function FlatList() {
                             <input type="submit" style={{display: 'none'}} />
                         </div>
 
-                        <div className='editorBottom'>
-                            <Button className='submit link' onClick={async (e) => {
-                                setFlats(await getFlatsByAuthor(author));
-                            }}>
-                                검색
-                            </Button>
-                        </div>
+                        <Button className='submit link' onClick={async (e) => {
+                            setFlats(await getFlatsByAuthor(author));
+                        }}>
+                            검색
+                        </Button>
                     </form>
+                    
+                    { !flatLoading && flat && flat.length > 0 && 
+                        <div className='searchedFlatItemList'>
+                            {flat?.map((flat) => <div key={flat.title} className='searchedFlatItem'>
+                                <Link to={`/view/${flat.index}`}>
+                                    <div className='searchedFlatItemInfo'>
+                                        <div className='title'> { flat.title ? flat.title : "untitled" } </div>
+                                        <div className='author'> by { flat.author ?? "anonymous" } </div>
+                                        {/* <div className='content'> { flat.content.substring(0, 100) } </div> */}
+                                    </div>
+                                </Link>
+                            </div>)}
+                        </div>
+                    }
                 </div>
-
-                { !flatLoading && flat && flat.length > 0 && 
-                    <div className='bubbleFeedList'>
-                        {flat?.map((flat) => <div key={flat.title} className='bubbleFeed'>
-                            <Link to={`/view/${flat.index}`}>
-                                <div className='bubbleFeedContent'>
-                                    <div className='title'> { flat.title ? flat.title : "untitled" } </div>
-                                    <div className='author'> by { flat.author ?? "anonymous" } </div>
-                                    {/* <div className='content'> { flat.content.substring(0, 100) } </div> */}
-                                </div>
-                            </Link>
-                        </div>)}
-                    </div>
-                }
             </div>
 
             <Footer/>

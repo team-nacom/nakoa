@@ -2,65 +2,42 @@
 // Declaration of cell renderer components.
 // This file contains definitions which should be defined BEFORE defining render strategies for each types.
 
-import { Dispatch } from 'react';
-import { createContext, useContext } from 'react';
-
-import katex from 'katex';
-
-import { Flat } from './flat';
-import { FlatState, FlatStateAction } from './reducer';
-
-import { RenderInfo, autoLabel } from './renderInfo';
+import React, { useMemo } from 'react';
 
 interface CellComponentProps{
-    className?: string;
-    style?: React.CSSProperties;
-
     cellId : string;
 }
-type CellComponent = (props: CellComponentProps) => JSX.Element
+type CellComponent = React.FC<CellComponentProps>;
 
-type CellRenderStrategy = {
-    'display' : CellComponent;
-    'preview' : CellComponent;
-    'editor' : CellComponent;
+//cache by timestamp.
+interface CachedCellComponentProps extends CellComponentProps{
+    editedTimestamp: number;
+    contextTimestamp: number;
 }
 
-// the cell component type should match to the cell type,
-// but we won't strictly check that elsewhere.
+type CachedCellComponent = React.FC<CachedCellComponentProps>;
 
-function makeInitialState(flat: Flat, rootId?: string, initialFocusId?: string) : FlatState{
-    //fake root rendering
-    //TODO : unify 'initial state rendering' and real root state renmdering logic
+function withCache(Comp: CellComponent): CachedCellComponent{
+    return React.memo(({cellId, editedTimestamp, contextTimestamp}) => {
+        //editedTimestamp and contextTimestamp is for caching.
+        return <Comp cellId = { cellId } />;
+    })
+}
 
-    let macroPass = {};
-    if(rootId){
-        var mathMacro = (flat[rootId]?.value as any)?.mathMacro;
-        katex.renderToString(mathMacro,{
-            throwOnError: false,
-            globalGroup: true,
-            macros : macroPass
-        }); //render once and discard the result!
-    }
+type CellRenderStrategy<T extends CellComponentProps = CellComponentProps> = {
+    'display' : React.FC<T>;
+    'preview' : React.FC<T>;
+    'editor' : React.FC<T>;
+}
 
+function applyCache(strategy: CellRenderStrategy): CellRenderStrategy<CachedCellComponentProps>{
     return {
-        flat: flat,
-        rootId: rootId || '',
-        renderInfo: {
-            label: autoLabel(flat, rootId, {}),
-            refs: {},
-            macros: { math: macroPass, text: {} }
-        },
-        focusId: initialFocusId,
-        history: []
-    };
+        display: withCache(strategy.display),
+        preview: withCache(strategy.preview),
+        editor: withCache(strategy.editor)
+    }
 }
-
-const mockInitialState = makeInitialState({});
-const FlatContext = createContext({
-    state: mockInitialState,
-    dispatch: ( () => mockInitialState  ) as React.Dispatch<FlatStateAction>
-});
 
 export type { CellComponentProps, CellRenderStrategy };
-export { FlatContext, makeInitialState };
+export type { CachedCellComponentProps, CachedCellComponent };
+export { applyCache };

@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { CellComponentProps, CellRenderStrategy, FlatContext } from '../componentTypes';
+import { TCell } from '../cell';
+import { FlatContext } from '../state';
+import { CellComponentProps, CellRenderStrategy } from '../componentTypes';
 
 import { handleChangeFactory } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
@@ -11,63 +13,77 @@ const MemoizedTeX = React.memo(TeX);
 
 function DisplayMathCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
+    let cell = state.flat[props.cellId] as TCell<'math'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     if (typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <div className='mathCell renderedMathCell' >
+        <div className='mathCell'>
+            <summary className='mathCellLabel'>
+                수식
+            </summary>
+            <div className='mathCellPreview' >
                 <MemoizedTeX block
-                    settings={{ macros: state.renderInfo.macros.math }}
+                    settings={{ macros: state.mathMacroObj }}
                 >
                     {`\\tag{${labelStr}}` + contents}
                 </MemoizedTeX>
             </div>
-        </>
+        </div>
     );
 }
 
 
 function PreviewMathCell(props: CellComponentProps) {
     const { state } = React.useContext(FlatContext);
-    const label = state.renderInfo.label;
+    let cell = state.flat[props.cellId] as TCell<'math'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
-    const labelStr = (label[props.cellId].custom || label[props.cellId].autoType.join('.'));
+    const label = state.typedLabel;
+    const labelStr = label[props.cellId].join('.');
 
     if (typeof contents !== 'string') return <></>;
 
     return (
+<<<<<<< HEAD
         <>
             <div className='mathCell previewMathCell' >
                 <MemoizedTeX block
                     settings={{ macros: state.renderInfo.macros.math }}
+=======
+        <div className='mathCell'>
+            <summary className='mathCellLabel'>
+                수식
+            </summary>
+            <div className='mathCellPreview' >
+                <MemoizedTeX block
+                    settings={ { macros: state.mathMacroObj } }
+>>>>>>> dev
                 >
                     {`\\tag{${labelStr}}` + contents}
                 </MemoizedTeX>
             </div>
-        </>
+        </div>
     );
 }
 
 
 function EditorMathCell(props: CellComponentProps) {
     const { state, dispatch } = React.useContext(FlatContext);
+    let cell = state.flat[props.cellId] as TCell<'math'>;
 
-    let cell = state.flat[props.cellId];
     let contents = cell.value;
 
     if (typeof contents !== 'string') return <></>;
 
     return (
+<<<<<<< HEAD
         <>
             <div className='editorMathCellWrapper'>
                 <SingletonTextArea
@@ -80,6 +96,16 @@ function EditorMathCell(props: CellComponentProps) {
                 <PreviewMathCell {...props} />
             </div>
         </>
+=======
+        <div className='editorMathCellWrapper'>
+            <SingletonTextArea
+                className='editorMathCell editorCell'
+                onChange={handleChangeFactory(dispatch,props.cellId)}
+                value={contents}
+            />
+            <PreviewMathCell {...props} />
+        </div>
+>>>>>>> dev
     );
 }
 

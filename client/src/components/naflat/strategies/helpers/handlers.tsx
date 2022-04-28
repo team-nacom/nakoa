@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flat } from '../../flat';
-import { FlatState, FlatStateAction } from '../../reducer';
+import { FlatState, FlatStateAction } from '../../state';
 
 import { fileUpload, imgUpload } from 'etc/FileUpload'
 

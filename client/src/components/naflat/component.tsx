@@ -6,9 +6,16 @@ import React, { useEffect, useCallback, useMemo, useReducer, createContext, useC
 import { ShortcutProvider, withShortcut, IWithShortcut} from 'etc/react-keybind'; // 'react-keybind';
 
 import lodash from 'lodash';
-import { CellType, Cell, CellTypeMap, Flat, defaultCellType, defaultValue, isChildAllowed } from './flat';
-import { FlatState, FlatStateAction, reducer } from './reducer';
-import { CellComponentProps, CellRenderStrategy, FlatContext, makeInitialState } from './componentTypes';
+import {
+    CellType, Cell, CellTypeMap, defaultCellType, defaultValue, isChildAllowed,
+    Flat
+} from './flat';
+import {
+    FlatState, FlatStateAction,
+    reducer, makeInitialState, FlatContext,
+    emptyFlat, defaultRootId
+} from './state';
+import { CellComponentProps, CellRenderStrategy, CachedCellComponentProps, applyCache } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
@@ -23,29 +30,79 @@ import ImageCellStrategy from './strategies/Image';
 
 import InterCell from './aux/InterCell';
 
-const cellRenderStrategyMap: CellTypeMap<CellRenderStrategy> = {
-    'root': RootCellStrategy,
-    'section': SectionCellStrategy,
-    'text': TextCellStrategy,
-    'math': MathCellStrategy,
-    'code': CodeCellStrategy,
-    'image': ImageCellStrategy
+const maxDepth = 4;
+
+const cachedStrategyMap: CellTypeMap<CellRenderStrategy<CachedCellComponentProps>> = {
+    'root': applyCache(RootCellStrategy),
+    'section': applyCache(SectionCellStrategy),
+    'text': applyCache(TextCellStrategy),
+    'math': applyCache(MathCellStrategy),
+    'code': applyCache(CodeCellStrategy),
+    'image': applyCache(ImageCellStrategy)
 };
 
-const maxDepth = 4;
+function CellPublished(props: CellComponentProps) {
+    const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
+
+    const cell = state.flat[cellId];
+    const DisplayCached = cachedStrategyMap[cell.type]['display'];
+
+    return <>
+        <div className='cellContentWrapper' id={ cellId }>
+            <DisplayCached //feed cache informations.
+                cellId = {cellId}
+                editedTimestamp = { state.editedTimestamps[cellId] }
+                contextTimestamp = { state.contextTimestamp }
+            />
+        </div>
+        { /* render children. */}
+        { isChildAllowed(cell.type) && // open all cells as default.
+            <div className={ 'cellChildrenWrapper' }
+                id={ cellId }
+            >
+                {
+                    cell.childIds.reduce((prev, childId, idx) => prev.concat(
+                        <CellPublished {...props} cellId={childId} />,
+                        <div className='interBlockHelper' /> //Just for css.
+                    ), [ <div className='interBlockHelper' /> ])
+                }
+            </div>
+        }
+    </>;
+}
 
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
     const cellId = props.cellId;
 
     const cell = state.flat[cellId];
-    const Strategy = cellRenderStrategyMap[cell.type]['display'];
+    const DisplayCached = cachedStrategyMap[cell.type]['display'];
 
-    return <div className='cellWrapper' id={ cellId }>
-        <Strategy {...props} />
+    return <div className='cellContentWrapper' id={ cellId }>
+        <DisplayCached //feed cache informations.
+            cellId = {cellId}
+            editedTimestamp = { state.editedTimestamps[cellId] }
+            contextTimestamp = { state.contextTimestamp }
+        />
         { /* render children. */}
         { isChildAllowed(cell.type) &&
-            <div className='childrenContainer' id={ cellId }>
+            <div className={ 'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
+                id={ cellId }
+            >
+                { cell.type === 'section' &&
+                    <div className='toggleHideChildren'
+                        onClick = { () => {
+                            dispatch({ type: 'toggleHideChildren', id: cellId });
+                        } }
+                    >
+                        {
+                            state.hideChildren[cellId]
+                            ? '▶' + '펼치기'
+                            : '▼' + '접기'
+                        }
+                    </div>
+                }
                 {
                     cell.childIds.reduce((prev, childId, idx) => prev.concat(
                         <CellDisplay {...props} cellId={childId} />,
@@ -60,16 +117,16 @@ function CellDisplay(props: CellComponentProps) {
 function CellEditor(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
     const cellId = props.cellId;
-    const cellLabel = state.renderInfo.label[cellId];
+    const cellLabel = state.typedLabel[cellId];
 
     const cell = state.flat[cellId];
     const isFocused = (state.focusId === cellId);
 
-    let depth = cellLabel.autoType.length;
-    let pos = cellLabel.custom || cellLabel.autoType.join('.');
+    let depth = cellLabel.length;
+    let pos = cellLabel.join('.');
 
-    const PreviewStrategy = cellRenderStrategyMap[cell.type]['preview'];
-    const EditorStrategy = cellRenderStrategyMap[cell.type]['editor'];
+    const PreviewCached = cachedStrategyMap[cell.type]['preview'];
+    const EditorCached = cachedStrategyMap[cell.type]['editor'];
 
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
@@ -99,114 +156,111 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                <div className='cellWrapper' id={ cellId }
+                <div className='cellContentWrapper' id={ cellId }
                     onClick={(ev) => {
                         ev.stopPropagation();
                         dispatch({ type: 'focus', id: cellId })
                     }}
                 >
-                    <div className='bubbleOptions'>
+                    <div className='cellOptions'>
                         <span className='cellId'>
                             ID: { cellId } | 
                         </span>
                         <span className='cellPos'>
                             pos: { pos }
                         </span>
-                        {/* {isChildAllowed(cell.type) && depth <= maxDepth && cell.childIds.length === 0 &&
-                            <button
-                                className='material-icons bubbleOptionButton'
-                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: cellId, pos : 0, cellType: defaultCellType}) } }
-                            >
-                                add
-                            </button>
-                        } */}
                         {cell.type !== 'root' &&
                             <button
-                                className='material-icons bubbleOptionButton'
+                                className='material-icons cellOptionButton'
                                 onClick={ deleteButtonHandler }
                             >
                                 delete
                             </button>
                         }
                     </div>
-                    <PreviewStrategy {...props} />
+                    <PreviewCached //feed cache informations.
+                        cellId = {cellId}
+                        editedTimestamp = { state.editedTimestamps[cellId] }
+                        contextTimestamp = { state.contextTimestamp }
+                    />
                 </div>
             </>
         }
         {isFocused &&
-            <div className='editorCellContainer'>
-
-                <div className='cellWrapper' id={ cellId }
-                    onClick={(ev) => {ev.stopPropagation()} }
-                >
-                    { /* side cell */}
-                    <div className='bubbleOptions'>
-                        <span className='cellId'>
-                            ID: { cellId } | 
-                        </span>
-                        <span className='cellPos'>
-                            pos: { pos }
-                        </span>
-                        {cell.type !== 'root' &&
-                            <>
-                                {depth <= maxDepth &&
-                                    <button
-                                        className='material-icons bubbleOptionButton'
-                                        onClick={ cellTypeButtonHandlerFactory('section') }
-                                    >
-                                        topic
-                                    </button>
-                                }
+            <div className='cellContentWrapper editingCellWrapper' id={ cellId }
+                onClick={(ev) => {ev.stopPropagation()} }
+            >
+                { /* side cell */}
+                <div className='cellOptions'>
+                    <span className='cellId'>
+                        ID: { cellId } | 
+                    </span>
+                    <span className='cellPos'>
+                        pos: { pos }
+                    </span>
+                    {cell.type !== 'root' &&
+                        <>
+                            {depth <= maxDepth &&
                                 <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('text') }
+                                    className='material-icons cellOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('section') }
                                 >
-                                    article
+                                    topic
                                 </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('math') }
-                                >
-                                    calculate
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('code') }
-                                >
-                                    code
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('image') }
-                                >
-                                    image
-                                </button>
-                            </>
-                        }
-                        <button
-                            className='material-icons bubbleOptionButton'
-                            onClick={() => dispatch({ type: 'blur' })}
-                        >
-                            close
-                        </button>
-                        {cell.type !== 'root' &&
+                            }
                             <button
-                                className='material-icons bubbleOptionButton'
-                                onClick={() => dispatch({ type: 'remove', id: cellId })}
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('text') }
                             >
-                                delete
+                                article
                             </button>
-                        }
-                    </div>
-
-                    <EditorStrategy {...props} />
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('math') }
+                            >
+                                calculate
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('code') }
+                            >
+                                code
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('image') }
+                            >
+                                image
+                            </button>
+                        </>
+                    }
+                    <button
+                        className='material-icons cellOptionButton'
+                        onClick={() => dispatch({ type: 'blur' })}
+                    >
+                        close
+                    </button>
+                    {cell.type !== 'root' &&
+                        <button
+                            className='material-icons cellOptionButton'
+                            onClick={ deleteButtonHandler }
+                        >
+                            delete
+                        </button>
+                    }
                 </div>
+
+                <EditorCached //feed cache informations.
+                    cellId = {cellId}
+                    editedTimestamp = { state.editedTimestamps[cellId] }
+                    contextTimestamp = { state.contextTimestamp }
+                />
             </div>
         }
 
         { /* render children. */}
         { isChildAllowed(cell.type) && depth <= maxDepth &&
-            <div className='childrenContainer'
+            <div className={ 'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHiddenEditor' : '') }
                 // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >
@@ -221,21 +275,32 @@ function CellEditor(props: CellComponentProps) {
     </>;
 }
 
-
-
-const emptyFlat: Flat = {
-    'c0': {
-        type: 'root',
-        id: 'c0',
-        childIds: [],
-        value: ''
-    }
-};
-
 interface FlatComponentProps extends CellComponentProps {
     // id: string // rootId.
     initialFlat?: Flat;
     initialFocusId?: string;
+}
+
+// published component implementation
+function FlatPublishedComponent(props: FlatComponentProps) {
+    const { initialFlat, initialFocusId, ...others } = props;
+
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
+
+    return ( //implement display here
+        <FlatContext.Provider value={{ state, dispatch }} >
+            <div className='allCellsWrapper'>
+                <CellPublished {...others} />
+            </div>
+        </FlatContext.Provider>
+    );
 }
 
 // display component implementation
@@ -253,7 +318,9 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
-            <CellDisplay {...others} />
+            <div className='allCellsWrapper'>
+                <CellDisplay {...others} />
+            </div>
         </FlatContext.Provider>
     );
 }
@@ -274,11 +341,12 @@ function FlatEditorComponent(props: FlatComponentProps){
     );
 
     return (<FlatContext.Provider value={{ state, dispatch }} >
-        <CellEditor {...others}/> { /* root cell */ }
+        <div className='allCellsWrapper'>
+            <CellEditor {...others}/> { /* root cell */ }
+        </div>
     </FlatContext.Provider>);
 }
 
 export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
-export { makeInitialState };
-export { CellDisplay, CellEditor };
-export { FlatContext, FlatDisplayComponent, FlatEditorComponent };
+export { CellPublished, CellDisplay, CellEditor };
+export { FlatPublishedComponent, FlatDisplayComponent, FlatEditorComponent };

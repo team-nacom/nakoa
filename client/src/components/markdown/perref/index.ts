@@ -6,7 +6,7 @@ import { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';
 
 interface PerrefHandlerOption{
-    map?: Record<string,string>;
+    map?: Record<string, string | number[]>;
 }
 
 const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
@@ -20,7 +20,12 @@ const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
             node.value = val.replace(/%[\w-]+%/g,(match)=>{
                 let word = match.slice(1,-1);
 
-                return map[word] || match;
+                let result = map[word];
+                if(Array.isArray(result)){
+                    result = result.join('.');
+                }
+
+                return result || match;
             })
         })
     }
