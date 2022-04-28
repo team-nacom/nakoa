@@ -51,20 +51,13 @@ function PreviewMathCell(props: CellComponentProps) {
     if (typeof contents !== 'string') return <></>;
 
     return (
-<<<<<<< HEAD
-        <>
-            <div className='mathCell previewMathCell' >
-                <MemoizedTeX block
-                    settings={{ macros: state.renderInfo.macros.math }}
-=======
         <div className='mathCell'>
             <summary className='mathCellLabel'>
                 수식
             </summary>
             <div className='mathCellPreview' >
                 <MemoizedTeX block
-                    settings={ { macros: state.mathMacroObj } }
->>>>>>> dev
+                    settings={{ macros: state.mathMacroObj }}
                 >
                     {`\\tag{${labelStr}}` + contents}
                 </MemoizedTeX>
@@ -83,29 +76,14 @@ function EditorMathCell(props: CellComponentProps) {
     if (typeof contents !== 'string') return <></>;
 
     return (
-<<<<<<< HEAD
-        <>
-            <div className='editorMathCellWrapper'>
-                <SingletonTextArea
-                    className='editorMathCell editorCell'
-                    onChange={handleChangeFactory(dispatch, props.cellId)}
-                    value={contents}
-                />
-            </div>
-            <div className='previewMathCellWrapper'>
-                <PreviewMathCell {...props} />
-            </div>
-        </>
-=======
         <div className='editorMathCellWrapper'>
             <SingletonTextArea
                 className='editorMathCell editorCell'
-                onChange={handleChangeFactory(dispatch,props.cellId)}
+                onChange={handleChangeFactory(dispatch, props.cellId)}
                 value={contents}
             />
             <PreviewMathCell {...props} />
         </div>
->>>>>>> dev
     );
 }
 
