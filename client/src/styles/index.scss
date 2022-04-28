@@ -1,9 +1,10 @@
 @import './consts.scss';
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;800&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
+/*
 @font-face {
     font-family: 'SeoulNamsan';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
@@ -16,6 +17,7 @@
     font-weight: normal;
     font-style: normal;
 }
+*/
 
 // Reset CSS : https://meyerweb.com/eric/tools/css/reset/
 
@@ -108,11 +110,6 @@ label {
     line-height: 30px;
 }
 
-
-.pageTitle {
-	font-family: SeoulNamsan;
-	margin: 32px 0px;
-}
 
 .desktopOnly {
     @media (max-width: $max-mobile-width) {
