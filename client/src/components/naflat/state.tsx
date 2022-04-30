@@ -15,8 +15,6 @@ interface FlatState{
     rootId : string;
 
     //////context-specific info
-    editedTimestamps: Record<string, number>;
-    contextTimestamp: number;
     allLabel : Record<string, number[]>;
     typedLabel : Record<string, number[]>;
     hideChildren : Record<string, boolean>;
@@ -28,27 +26,27 @@ interface FlatState{
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose
 
-    history : FlatHistoryAction[];
+    historyPast : FlatHistoryAction[];
+    historyFuture : FlatHistoryAction[];
+
 }
 
 interface FlatHistoryAction {
     id: string;
     subflat: Flat; //the subflat to overwrite.
-    timestamp: number;
 
     // cascadeChildren?: boolean; // if true, cascade flat[id] children before mergeing subflat. also recalculate hideChildren object.
     // relabel?: boolean; //if true, update label objects.
-    // useCellTimestamp?: boolean; //if true, editTimestamp[id] = timestamp is executed.
 
     description: 'update' | 'changeType' | 'move' | 'create' | 'delete';
 }
 
 const historyActionPolicy = {
-    'update' : { cascadeChildren: false, relabel: false, useCellTimestamp: true },
-    'changeType' : { cascadeChildren: true, relabel: true, useCellTimestamp: true },
-    'move' : { cascadeChildren: false, relabel: true, useCellTimestamp: false },
-    'create' : { cascadeChildren: false, relabel: true, useCellTimestamp: true },
-    'delete' : { cascadeChildren: true, relabel: true, useCellTimestamp: false }
+    'update' : { relabel: false, cascadeChildren: false, delete: false },
+    'changeType' : { relabel: true, cascadeChildren: true, delete: false },
+    'move' : { relabel: true, cascadeChildren: false, delete: false },
+    'create' : { relabel: true, cascadeChildren: false, delete: false },
+    'delete' : { relabel: true, cascadeChildren: true, delete: true }
 }
 
 type FlatStateAction
@@ -58,6 +56,9 @@ type FlatStateAction
     | { type: 'createEmpty'; parentId: string; cellType: CellType; pos?: number; }
     | { type: 'remove'; id: string; }
 
+    | { type: 'UNDO'; }
+    | { type: 'REDO'; }
+
     | { type: 'toggleHideChildren'; id: string; } // only on display mode
 
     | { type: 'focus'; id: string; }
@@ -66,23 +67,15 @@ type FlatStateAction
     | { type: 'resetCursor'; }
 ;
 
-function getNonDuplicateTimestamp(baseTimestamp: number){
-    let now = Date.now();
-    while(now <= baseTimestamp){
-        now += 0.01; //may have 100 different timestamps in 1ms.
-    }
-    return now;
-}
-
 function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
     let {
         flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        allLabel, typedLabel, hideChildren, mathMacroObj,
         ...others
     } = state;
 
     let {
-        id, subflat, timestamp, description
+        id, subflat, description
     } = history;
 
 
@@ -90,23 +83,17 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
         if(historyActionPolicy[description].cascadeChildren){
             flat = F.cascadeChildren(flat, id);
         }
+        if(historyActionPolicy[description].delete){
+            delete flat[id];
+        }
 
         flat = {...flat, ...subflat};
 
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
-
-        contextTimestamp = timestamp;
     }
     else{
         flat = {...flat, ...subflat};
-    }
-
-    if(historyActionPolicy[description].useCellTimestamp){
-        editedTimestamps = {
-            ...editedTimestamps,
-            [id]: timestamp || getNonDuplicateTimestamp(editedTimestamps[id])
-        };
     }
 
     // if root cell, and context changed?
@@ -118,32 +105,11 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
             globalGroup: true,
             macros : mathMacroObj
         }); //render once and discard the result!
-
-        contextTimestamp = editedTimestamps[id];
     }
 
     return {
         flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
-        ...others
-    };
-}
-
-function reduceMove(state: FlatState, id: string, parentId: string, pos?: number, timestamp?: number): FlatState{
-    let {
-        flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
-        ...others
-    } = state;
-
-    flat = F.moveCell(flat, id, parentId, pos);
-    allLabel = F.generateAllLabel(flat, rootId);
-    typedLabel = F.generateTypedLabel(flat, rootId);
-    contextTimestamp = timestamp || getNonDuplicateTimestamp(editedTimestamps[id]);
-
-    return {
-        flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
+        allLabel, typedLabel, hideChildren, mathMacroObj,
         ...others
     };
 }
@@ -151,78 +117,158 @@ function reduceMove(state: FlatState, id: string, parentId: string, pos?: number
 const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, action){
     let {
         flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
-        focusId, cursorStart, cursorEnd, history
+        allLabel, typedLabel, hideChildren, mathMacroObj,
+        focusId, cursorStart, cursorEnd, historyPast, historyFuture
     } = state;
 
-    let currentTimestamp = Date.now();
+    function pushHistoryPast(a: FlatHistoryAction){
+        if(historyPast.length === MAX_HISTORY){
+            historyPast.shift();
+        }
+        historyPast.push(a);
+    }
+    function clearHistoryFuture(){
+        historyFuture.length = 0;
+    }
 
     switch (action.type){
     case 'update':
-        state.cursorStart = action.cursorStart;
-        state.cursorEnd = action.cursorEnd;
+        cursorStart = action.cursorStart;
+        cursorEnd = action.cursorEnd;
+
+        pushHistoryPast({
+            description: 'update',
+            id: action.id,
+            subflat: {[action.id]: flat[action.id]}
+        });
+        clearHistoryFuture();
 
         return reduceHistory(
             state,
             {
                 description: 'update',
                 id: action.id,
-                subflat: {[action.id]: {...state.flat[action.id], value: action.value} },
-                timestamp: currentTimestamp
+                subflat: {[action.id]: {...flat[action.id], value: action.value} },
             }
         );
     case 'changeType':
+        pushHistoryPast({
+            description: 'changeType',
+            id: action.id,
+            subflat: F.getSubflat(flat, action.id)
+        });
+        clearHistoryFuture();
+
         return reduceHistory(
             state,
             {
-                description: 'update',
+                description: 'changeType',
                 id: action.id,
-                subflat: {[action.id]: {...state.flat[action.id], type: action.cellType, value: defaultValue[action.cellType] as any}},
-                timestamp: currentTimestamp
+                subflat: {[action.id]: {...flat[action.id], type: action.cellType, value: defaultValue[action.cellType] as any}},
             }
         );
     case 'move':
-        // history
+        var oldParentId = flat[action.id].parentId || defaultRootId;
+        var newParentId = action.parentId;
+
+        pushHistoryPast({
+            description: 'move',
+            id: action.id,
+            subflat: {
+                [action.id]: flat[action.id],
+                [oldParentId]: flat[oldParentId],
+                [newParentId]: flat[newParentId]
+            }
+        });
+        clearHistoryFuture();
+
         return reduceHistory(
             state,
             {
                 description: 'move',
                 id: action.id,
                 subflat: {
-                    [action.parentId]: {
-                        ...state.flat[action.parentId],
-                        childIds: [
-                            ...state.flat[action.parentId].childIds
-                        ]
+                    [action.id]: { ...flat[action.id], parentId: newParentId },
+                    [oldParentId]: {
+                        ...flat[oldParentId],
+                        childIds: flat[oldParentId].childIds.filter(cId => action.id !== cId)
                     },
-                    [action.id]: {
-                        ...state.flat[action.id],
-                        parentId: action.parentId
-                    }
+                    [newParentId]: {
+                        ...flat[newParentId],
+                        childIds: flat[newParentId].childIds.splice(action.pos || flat[newParentId].childIds.length, 0, action.id)
+                    },
                 },
-                timestamp: currentTimestamp
             }
-        )
+        );
     case 'createEmpty':
-        [flat, focusId] = F.createChildCell(flat, action.parentId, action.cellType, action.pos);
-        allLabel = F.generateAllLabel(flat, rootId);
-        typedLabel = F.generateTypedLabel(flat, rootId);
-        hideChildren = {...hideChildren, [focusId]: false};
+        focusId = F.generateId(flat);
 
-        editedTimestamps = {...editedTimestamps, [focusId]: getNonDuplicateTimestamp(0)}
-        contextTimestamp = editedTimestamps[focusId];
-        // if(state.flat !== flat) pushHistory(state.flat);
-        break;
+        pushHistoryPast({
+            description: 'delete',
+            id: focusId,
+            subflat: { [action.parentId]: flat[action.parentId] }
+        });
+        clearHistoryFuture();
+
+        return reduceHistory(
+            {...state, focusId},
+            {
+                description: 'create',
+                id: focusId,
+                subflat: {
+                    [action.parentId]: {
+                        ...flat[action.parentId],
+                        childIds: flat[action.parentId].childIds.splice(action.pos || flat[action.parentId].childIds.length, 0, focusId)
+                    },
+                    [focusId]: {
+                        id: focusId,
+                        type: action.cellType,
+                        value: defaultValue[action.cellType] as any,
+                        childIds: []
+                    }
+                }
+            }
+        );
     case 'remove':
-        flat = F.removeCell(flat, action.id);
-        allLabel = F.generateAllLabel(flat, rootId);
-        typedLabel = F.generateTypedLabel(flat, rootId);
-        hideChildren = {...hideChildren, [action.id]: false}; //reset show/hide status default to show
+        var parentId = flat[action.id].parentId || defaultRootId;
+        
+        pushHistoryPast({
+            description: 'create',
+            id: action.id,
+            subflat: {
+                [parentId]: flat[parentId],
+                ...F.getSubflat(flat, action.id)
+            }
+        });
+        clearHistoryFuture();
 
-        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
-        // if(state.flat !== flat) pushHistory(state.flat);
-        break;
+        return reduceHistory(
+            {...state, focusId: undefined},
+            {
+                description: 'delete',
+                id: action.id,
+                subflat: {
+                    [parentId]: {
+                        ...flat[parentId],
+                        childIds: flat[parentId].childIds.filter(cId => action.id !== cId)
+                    },
+                }
+            }
+        );
     
+    case 'UNDO':
+        var hist = historyPast.pop();
+        if(!hist) return state;
+
+        historyFuture.push(hist);
+        return reduceHistory(state, hist);
+    case 'REDO':
+        var hist = historyFuture.pop();
+        if(!hist) return state;
+
+        historyPast.push(hist);
+        return reduceHistory(state, hist);
+
     case 'toggleHideChildren':
         return {
             ...state,
@@ -241,13 +287,11 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     case 'resetCursor':
         return {...state, cursorStart: undefined, cursorEnd: undefined};
     }
-    
-    // console.log( JSON.stringify(flat) );
 
     return {
         flat, rootId,
-        editedTimestamps, contextTimestamp, allLabel, typedLabel, hideChildren, mathMacroObj,
-        focusId, cursorStart, cursorEnd, history
+        allLabel, typedLabel, hideChildren, mathMacroObj,
+        focusId, cursorStart, cursorEnd, historyPast, historyFuture
     };
 }
 
@@ -277,19 +321,9 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
         }
     }
 
-    //initialize timestamps
-    let currentTimestamp = Date.now();
-    let editedTimestamps = {} as Record<string, number>;
-    for(let cellId of Object.keys(flat)){
-        editedTimestamps[cellId] = currentTimestamp;
-    }
-
     return {
         flat: flat,
         rootId: rootId,
-
-        editedTimestamps: editedTimestamps,
-        contextTimestamp: currentTimestamp,
 
         allLabel: F.generateAllLabel(flat, rootId),
         typedLabel: F.generateTypedLabel(flat, rootId),
@@ -297,7 +331,8 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
         mathMacroObj: macroPass,
 
         focusId: initialFocusId,
-        history: []
+        historyPast: [],
+        historyFuture: []
     };
 }
 

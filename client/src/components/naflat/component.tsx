@@ -15,7 +15,7 @@ import {
     reducer, makeInitialState, FlatContext,
     emptyFlat, defaultRootId
 } from './state';
-import { CellComponentProps, CellRenderStrategy, CachedCellComponentProps, applyCache } from './componentTypes';
+import { CellComponentProps, CellRenderStrategy } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
@@ -32,13 +32,13 @@ import InterCell from './aux/InterCell';
 
 const maxDepth = 4;
 
-const cachedStrategyMap: CellTypeMap<CellRenderStrategy<CachedCellComponentProps>> = {
-    'root': applyCache(RootCellStrategy),
-    'section': applyCache(SectionCellStrategy),
-    'text': applyCache(TextCellStrategy),
-    'math': applyCache(MathCellStrategy),
-    'code': applyCache(CodeCellStrategy),
-    'image': applyCache(ImageCellStrategy)
+const strategyMap: CellTypeMap<CellRenderStrategy<CellComponentProps>> = {
+    'root': RootCellStrategy,
+    'section': SectionCellStrategy,
+    'text': TextCellStrategy,
+    'math': MathCellStrategy,
+    'code': CodeCellStrategy,
+    'image': ImageCellStrategy
 };
 
 
@@ -47,14 +47,10 @@ function CellDisplay(props: CellComponentProps) {
     const cellId = props.cellId;
 
     const cell = state.flat[cellId];
-    const DisplayCached = cachedStrategyMap[cell.type]['display'];
+    const DisplayStrategy = strategyMap[cell.type]['display'];
 
     return <div className='cellWrapper' id={ cellId }>
-        <DisplayCached //feed cache informations.
-            cellId = {cellId}
-            editedTimestamp = { state.editedTimestamps[cellId] }
-            contextTimestamp = { state.contextTimestamp }
-        />
+        <DisplayStrategy cellId = {cellId} />
         { /* render children. */}
         { isChildAllowed(cell.type) &&
             <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
@@ -95,8 +91,8 @@ function CellEditor(props: CellComponentProps) {
     let depth = cellLabel.length;
     let pos = cellLabel.join('.');
 
-    const PreviewCached = cachedStrategyMap[cell.type]['preview'];
-    const EditorCached = cachedStrategyMap[cell.type]['editor'];
+    const PreviewStrategy = strategyMap[cell.type]['preview'];
+    const EditorStrategy = strategyMap[cell.type]['editor'];
 
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
@@ -156,11 +152,7 @@ function CellEditor(props: CellComponentProps) {
                             </button>
                         }
                     </div>
-                    <PreviewCached //feed cache informations.
-                        cellId = {cellId}
-                        editedTimestamp = { state.editedTimestamps[cellId] }
-                        contextTimestamp = { state.contextTimestamp }
-                    />
+                    <PreviewStrategy cellId = {cellId} />
                 </div>
             </>
         }
@@ -230,11 +222,7 @@ function CellEditor(props: CellComponentProps) {
                         }
                     </div>
 
-                    <EditorCached //feed cache informations.
-                        cellId = {cellId}
-                        editedTimestamp = { state.editedTimestamps[cellId] }
-                        contextTimestamp = { state.contextTimestamp }
-                    />
+                    <EditorStrategy cellId = {cellId} />
                 </div>
             </div>
         }
