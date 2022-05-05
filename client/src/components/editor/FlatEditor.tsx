@@ -73,17 +73,27 @@ const FlatEditorComponentWithShortcut = withShortcut(
         }, [ gs ]);
 
         return (<FlatContext.Provider value={{ state, dispatch }} >
+            { /* metadata */ }
             <div className='titleEditor'>
                 <label>
                     제목
                 </label>
                 <input className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
             </div>
-
             <div className='flexbox'>
                 <AuthorInput author={author} setAuthor={setAuthor} />
             </div>
+
+            { /* contents */ }
             <CellEditor cellId = { defaultRootId } {...others} /> { /* root cell */ }
+
+            <button onClick={ () => {
+                dispatch({ type:'UNDO' })
+            }}> UNDO </button>
+            <button onClick={ () => {
+                dispatch({ type:'REDO' })
+            }}> REDO </button>
+
             <button onClick = { () => {
                 upload({ title, author }, state.flat);
             } }>업로드</button>

@@ -6,6 +6,7 @@ import * as F from './flat';
 import { CellType, CellValueType, isChildAllowed, Flat, defaultValue } from './flat';
 
 import katex from 'katex';
+import lodash, { cloneDeep } from 'lodash'
 
 const MAX_HISTORY = 5;
 
@@ -26,9 +27,9 @@ interface FlatState{
     cursorStart? : number; //for text cell purpose
     cursorEnd? : number; //for text cell purpose
 
-    historyPast : FlatHistoryAction[];
-    historyFuture : FlatHistoryAction[];
-
+    historyBackward : FlatHistoryAction[];
+    historyForward : FlatHistoryAction[];
+    historyCursor : number;
 }
 
 interface FlatHistoryAction {
@@ -38,14 +39,13 @@ interface FlatHistoryAction {
     // cascadeChildren?: boolean; // if true, cascade flat[id] children before mergeing subflat. also recalculate hideChildren object.
     // relabel?: boolean; //if true, update label objects.
 
-    description: 'update' | 'changeType' | 'move' | 'create' | 'delete';
+    description: 'update' | 'restructure' | 'cascadeChildren' | 'delete';
 }
 
 const historyActionPolicy = {
     'update' : { relabel: false, cascadeChildren: false, delete: false },
-    'changeType' : { relabel: true, cascadeChildren: true, delete: false },
-    'move' : { relabel: true, cascadeChildren: false, delete: false },
-    'create' : { relabel: true, cascadeChildren: false, delete: false },
+    'restructure' : { relabel: true, cascadeChildren: false, delete: false },
+    'cascadeChildren' : { relabel: true, cascadeChildren: true, delete: false },
     'delete' : { relabel: true, cascadeChildren: true, delete: true }
 }
 
@@ -78,7 +78,6 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
         id, subflat, description
     } = history;
 
-
     if(historyActionPolicy[description].relabel){
         if(historyActionPolicy[description].cascadeChildren){
             flat = F.cascadeChildren(flat, id);
@@ -87,13 +86,13 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
             delete flat[id];
         }
 
-        flat = {...flat, ...subflat};
+        flat = {...flat, ...cloneDeep(subflat)};
 
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
     }
     else{
-        flat = {...flat, ...subflat};
+        flat = {...flat, ...cloneDeep(subflat)};
     }
 
     // if root cell, and context changed?
@@ -118,156 +117,178 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     let {
         flat, rootId,
         allLabel, typedLabel, hideChildren, mathMacroObj,
-        focusId, cursorStart, cursorEnd, historyPast, historyFuture
+        focusId, cursorStart, cursorEnd
     } = state;
 
-    function pushHistoryPast(a: FlatHistoryAction){
-        if(historyPast.length === MAX_HISTORY){
-            historyPast.shift();
+    function pushHistory(histBack: FlatHistoryAction, histForw: FlatHistoryAction){
+        if(state.historyBackward.length > state.historyCursor){ //clear future
+            state.historyBackward = state.historyBackward.slice(0, state.historyCursor);
+            state.historyForward = state.historyForward.slice(0, state.historyCursor);
         }
-        historyPast.push(a);
-    }
-    function clearHistoryFuture(){
-        historyFuture.length = 0;
+
+        if(state.historyBackward.length === MAX_HISTORY){ //remove old history
+            state.historyBackward.shift();
+            state.historyForward.shift();
+            state.historyCursor -= 1;
+        }
+        state.historyBackward.push(histBack);
+        state.historyForward.push(histForw);
+        state.historyCursor += 1;
+
+        // console.log('back', state.historyBackward);
+        // console.log('forw', state.historyForward);
+        // console.log(state.historyCursor);
     }
 
     switch (action.type){
     case 'update':
-        cursorStart = action.cursorStart;
-        cursorEnd = action.cursorEnd;
-
-        pushHistoryPast({
+        pushHistory({
             description: 'update',
             id: action.id,
-            subflat: {[action.id]: flat[action.id]}
+            subflat: cloneDeep({[action.id]: flat[action.id]})
+        }, {
+            description: 'update',
+            id: action.id,
+            subflat: cloneDeep({[action.id]: {...flat[action.id], value: action.value} })
         });
-        clearHistoryFuture();
 
         return reduceHistory(
-            state,
-            {
-                description: 'update',
-                id: action.id,
-                subflat: {[action.id]: {...flat[action.id], value: action.value} },
-            }
+            { ...state, cursorStart: action.cursorStart, cursorEnd: action.cursorEnd },
+            state.historyForward[state.historyCursor - 1]
         );
     case 'changeType':
-        pushHistoryPast({
-            description: 'changeType',
+        pushHistory({
+            description: 'restructure',
             id: action.id,
-            subflat: F.getSubflat(flat, action.id)
+            subflat: cloneDeep({
+                [action.id]: flat[action.id],
+                ...F.getSubflat(flat, action.id)
+            }) //F.getSubflat(flat, action.id) alone should work, but doen't... why???
+        }, {
+            description: 'cascadeChildren',
+            id: action.id,
+            subflat: cloneDeep({[action.id]: {...flat[action.id], type: action.cellType, value: defaultValue[action.cellType] as any}}),
         });
-        clearHistoryFuture();
+
+        // console.log(flat[action.id].childIds);
+        // console.log(state.historyBackward[state.historyCursor - 1]);
 
         return reduceHistory(
             state,
-            {
-                description: 'changeType',
-                id: action.id,
-                subflat: {[action.id]: {...flat[action.id], type: action.cellType, value: defaultValue[action.cellType] as any}},
-            }
+            state.historyForward[state.historyCursor - 1]
         );
     case 'move':
         var oldParentId = flat[action.id].parentId || defaultRootId;
         var newParentId = action.parentId;
+        var pos = action.pos || flat[newParentId].childIds.length;
 
-        pushHistoryPast({
-            description: 'move',
+        pushHistory({
+            description: 'restructure',
             id: action.id,
-            subflat: {
+            subflat: cloneDeep({
                 [action.id]: flat[action.id],
                 [oldParentId]: flat[oldParentId],
                 [newParentId]: flat[newParentId]
-            }
+            })
+        }, {
+            description: 'restructure',
+            id: action.id,
+            subflat: cloneDeep({
+                [action.id]: { ...flat[action.id], parentId: newParentId },
+                [oldParentId]: {
+                    ...flat[oldParentId],
+                    childIds: flat[oldParentId].childIds.filter(cId => action.id !== cId)
+                },
+                [newParentId]: {
+                    ...flat[newParentId],
+                    childIds: [
+                        ...flat[newParentId].childIds.slice(0, pos),
+                        action.id,
+                        ...flat[newParentId].childIds.slice(pos)
+                    ]
+                },
+            }),
         });
-        clearHistoryFuture();
 
         return reduceHistory(
             state,
-            {
-                description: 'move',
-                id: action.id,
-                subflat: {
-                    [action.id]: { ...flat[action.id], parentId: newParentId },
-                    [oldParentId]: {
-                        ...flat[oldParentId],
-                        childIds: flat[oldParentId].childIds.filter(cId => action.id !== cId)
-                    },
-                    [newParentId]: {
-                        ...flat[newParentId],
-                        childIds: flat[newParentId].childIds.splice(action.pos || flat[newParentId].childIds.length, 0, action.id)
-                    },
-                },
-            }
+            state.historyForward[state.historyCursor - 1]
         );
     case 'createEmpty':
         focusId = F.generateId(flat);
+        hideChildren[focusId] = false;
 
-        pushHistoryPast({
+        var pos = action.pos || flat[action.parentId].childIds.length;
+
+        pushHistory({
             description: 'delete',
             id: focusId,
-            subflat: { [action.parentId]: flat[action.parentId] }
+            subflat: cloneDeep({ [action.parentId]: flat[action.parentId] })
+        }, {
+            description: 'restructure',
+            id: focusId,
+            subflat: cloneDeep({
+                [action.parentId]: {
+                    ...flat[action.parentId],
+                    childIds: [
+                        ...flat[action.parentId].childIds.slice(0, pos),
+                        focusId,
+                        ...flat[action.parentId].childIds.slice(pos)
+                    ]
+                },
+                [focusId]: {
+                    id: focusId,
+                    type: action.cellType,
+                    value: defaultValue[action.cellType] as any,
+                    parentId: action.parentId,
+                    childIds: []
+                }
+            })
         });
-        clearHistoryFuture();
 
         return reduceHistory(
-            {...state, focusId},
-            {
-                description: 'create',
-                id: focusId,
-                subflat: {
-                    [action.parentId]: {
-                        ...flat[action.parentId],
-                        childIds: flat[action.parentId].childIds.splice(action.pos || flat[action.parentId].childIds.length, 0, focusId)
-                    },
-                    [focusId]: {
-                        id: focusId,
-                        type: action.cellType,
-                        value: defaultValue[action.cellType] as any,
-                        childIds: []
-                    }
-                }
-            }
+            {...state, focusId, hideChildren},
+            state.historyForward[state.historyCursor - 1]
         );
     case 'remove':
         var parentId = flat[action.id].parentId || defaultRootId;
-        
-        pushHistoryPast({
-            description: 'create',
+
+        pushHistory({
+            description: 'restructure',
             id: action.id,
-            subflat: {
+            subflat: cloneDeep({
                 [parentId]: flat[parentId],
+                [action.id]: flat[action.id],
                 ...F.getSubflat(flat, action.id)
-            }
+            })
+        }, {
+            description: 'delete',
+            id: action.id,
+            subflat: cloneDeep({
+                [parentId]: {
+                    ...flat[parentId],
+                    childIds: flat[parentId].childIds.filter(cId => action.id !== cId)
+                },
+            })
         });
-        clearHistoryFuture();
 
         return reduceHistory(
-            {...state, focusId: undefined},
-            {
-                description: 'delete',
-                id: action.id,
-                subflat: {
-                    [parentId]: {
-                        ...flat[parentId],
-                        childIds: flat[parentId].childIds.filter(cId => action.id !== cId)
-                    },
-                }
-            }
+            state,
+            state.historyForward[state.historyCursor - 1]
         );
     
     case 'UNDO':
-        var hist = historyPast.pop();
-        if(!hist) return state;
+        if(state.historyCursor === 0) return state;
 
-        historyFuture.push(hist);
-        return reduceHistory(state, hist);
+        state.historyCursor -= 1;
+
+        return reduceHistory(state, state.historyBackward[state.historyCursor]);
     case 'REDO':
-        var hist = historyFuture.pop();
-        if(!hist) return state;
+        if(state.historyCursor === state.historyForward.length) return state;
 
-        historyPast.push(hist);
-        return reduceHistory(state, hist);
+        state.historyCursor += 1;
+
+        return reduceHistory(state, state.historyForward[state.historyCursor - 1]);
 
     case 'toggleHideChildren':
         return {
@@ -288,11 +309,11 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         return {...state, cursorStart: undefined, cursorEnd: undefined};
     }
 
-    return {
-        flat, rootId,
-        allLabel, typedLabel, hideChildren, mathMacroObj,
-        focusId, cursorStart, cursorEnd, historyPast, historyFuture
-    };
+    // return {
+    //     flat, rootId,
+    //     allLabel, typedLabel, hideChildren, mathMacroObj,
+    //     focusId, cursorStart, cursorEnd, historyBackward, historyForward, historyCursor
+    // };
 }
 
 // the cell component type should match to the cell type,
@@ -331,8 +352,9 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
         mathMacroObj: macroPass,
 
         focusId: initialFocusId,
-        historyPast: [],
-        historyFuture: []
+        historyBackward: [],
+        historyForward: [],
+        historyCursor: 0
     };
 }
 
