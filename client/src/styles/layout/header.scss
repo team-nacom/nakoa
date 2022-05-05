@@ -17,7 +17,6 @@ header {
         
         color: #000000;
 
-        border-bottom: 1px #cdd1d8 solid;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 
         div.title {
@@ -125,7 +124,7 @@ header {
                         padding: 12px;
                         overflow: hidden;
                         width: 100%;
-                        border: 2px rgba(0, 0, 0, 0) solid;
+                        border: 2px transparent solid;
                         transition: all .2s ease-in-out;
                         
                         &:hover:not(.inactive), &.active {
@@ -196,7 +195,7 @@ header {
                     padding: 16px 12px;
                 }
 
-                border: 2px rgba(0, 0, 0, 0) solid;
+                border: 2px transparent solid;
                 transition: all .2s ease-in-out;
                 
                 &.menu {

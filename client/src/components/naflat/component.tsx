@@ -41,6 +41,32 @@ const strategyMap: CellTypeMap<CellRenderStrategy<CellComponentProps>> = {
     'image': ImageCellStrategy
 };
 
+function CellPublished(props: CellComponentProps) {
+    const { state, dispatch } = useContext(FlatContext);
+    const cellId = props.cellId;
+
+    const cell = state.flat[cellId];
+    const DisplayStrategy = strategyMap[cell.type]['display'];
+
+    return <>
+        <div className='cellContentWrapper' id={ cellId }>
+            <DisplayStrategy cellId = {cellId} />
+        </div>
+        { /* render children. */}
+        { isChildAllowed(cell.type) && // open all cells as default.
+            <div className={ 'cellChildrenWrapper' }
+                id={ cellId }
+            >
+                {
+                    cell.childIds.reduce((prev, childId, idx) => prev.concat(
+                        <CellPublished {...props} cellId={childId} />,
+                        <div className='interBlockHelper' /> //Just for css.
+                    ), [ <div className='interBlockHelper' /> ])
+                }
+            </div>
+        }
+    </>;
+}
 
 function CellDisplay(props: CellComponentProps) {
     const { state, dispatch } = useContext(FlatContext);
@@ -49,11 +75,11 @@ function CellDisplay(props: CellComponentProps) {
     const cell = state.flat[cellId];
     const DisplayStrategy = strategyMap[cell.type]['display'];
 
-    return <div className='cellWrapper' id={ cellId }>
+    return <div className='cellContentWrappe' id={ cellId }>
         <DisplayStrategy cellId = {cellId} />
         { /* render children. */}
         { isChildAllowed(cell.type) &&
-            <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
+            <div className={ 'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHidden' : '') }
                 id={ cellId }
             >
                 { cell.type === 'section' &&
@@ -122,30 +148,22 @@ function CellEditor(props: CellComponentProps) {
     return <>
         {!isFocused &&
             <>
-                <div className='cellWrapper' id={ cellId }
+                <div className='cellContentWrapper' id={ cellId }
                     onClick={(ev) => {
                         ev.stopPropagation();
                         dispatch({ type: 'focus', id: cellId })
                     }}
                 >
-                    <div className='bubbleOptions'>
+                    <div className='cellOptions'>
                         <span className='cellId'>
                             ID: { cellId } | 
                         </span>
                         <span className='cellPos'>
                             pos: { pos }
                         </span>
-                        {/* {isChildAllowed(cell.type) && depth <= maxDepth && cell.childIds.length === 0 &&
-                            <button
-                                className='material-icons bubbleOptionButton'
-                                onClick = { (e) => { e.stopPropagation(); dispatch({ type: 'createEmpty', parentId: cellId, pos : 0, cellType: defaultCellType}) } }
-                            >
-                                add
-                            </button>
-                        } */}
                         {cell.type !== 'root' &&
                             <button
-                                className='material-icons bubbleOptionButton'
+                                className='material-icons cellOptionButton'
                                 onClick={ deleteButtonHandler }
                             >
                                 delete
@@ -157,79 +175,76 @@ function CellEditor(props: CellComponentProps) {
             </>
         }
         {isFocused &&
-            <div className='editorCellContainer'>
-
-                <div className='cellWrapper' id={ cellId }
-                    onClick={(ev) => {ev.stopPropagation()} }
-                >
-                    { /* side cell */}
-                    <div className='bubbleOptions'>
-                        <span className='cellId'>
-                            ID: { cellId } | 
-                        </span>
-                        <span className='cellPos'>
-                            pos: { pos }
-                        </span>
-                        {cell.type !== 'root' &&
-                            <>
-                                {depth <= maxDepth &&
-                                    <button
-                                        className='material-icons bubbleOptionButton'
-                                        onClick={ cellTypeButtonHandlerFactory('section') }
-                                    >
-                                        topic
-                                    </button>
-                                }
+            <div className='cellContentWrapper editingCellWrapper' id={ cellId }
+                onClick={(ev) => {ev.stopPropagation()} }
+            >
+                { /* side cell */}
+                <div className='cellOptions'>
+                    <span className='cellId'>
+                        ID: { cellId } | 
+                    </span>
+                    <span className='cellPos'>
+                        pos: { pos }
+                    </span>
+                    {cell.type !== 'root' &&
+                        <>
+                            {depth <= maxDepth &&
                                 <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('text') }
+                                    className='material-icons cellOptionButton'
+                                    onClick={ cellTypeButtonHandlerFactory('section') }
                                 >
-                                    article
+                                    topic
                                 </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('math') }
-                                >
-                                    calculate
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('code') }
-                                >
-                                    code
-                                </button>
-                                <button
-                                    className='material-icons bubbleOptionButton'
-                                    onClick={ cellTypeButtonHandlerFactory('image') }
-                                >
-                                    image
-                                </button>
-                            </>
-                        }
-                        <button
-                            className='material-icons bubbleOptionButton'
-                            onClick={() => dispatch({ type: 'blur' })}
-                        >
-                            close
-                        </button>
-                        {cell.type !== 'root' &&
+                            }
                             <button
-                                className='material-icons bubbleOptionButton'
-                                onClick={ deleteButtonHandler }
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('text') }
                             >
-                                delete
+                                article
                             </button>
-                        }
-                    </div>
-
-                    <EditorStrategy cellId = {cellId} />
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('math') }
+                            >
+                                calculate
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('code') }
+                            >
+                                code
+                            </button>
+                            <button
+                                className='material-icons cellOptionButton'
+                                onClick={ cellTypeButtonHandlerFactory('image') }
+                            >
+                                image
+                            </button>
+                        </>
+                    }
+                    <button
+                        className='material-icons cellOptionButton'
+                        onClick={() => dispatch({ type: 'blur' })}
+                    >
+                        close
+                    </button>
+                    {cell.type !== 'root' &&
+                        <button
+                            className='material-icons cellOptionButton'
+                            onClick={ deleteButtonHandler }
+                        >
+                            delete
+                        </button>
+                    }
                 </div>
+
+                <EditorStrategy cellId = {cellId} />
             </div>
         }
 
         { /* render children. */}
         { isChildAllowed(cell.type) && depth <= maxDepth &&
-            <div className={ 'childrenContainer' + (state.hideChildren[cellId] ? ' childrenContainerHiddenEditor' : '') }
+            <div className={ 'cellChildrenWrapper' + (state.hideChildren[cellId] ? ' childrenContainerHiddenEditor' : '') }
                 // style={{ border: '1px solid gray', padding: '0 60px' }}
                 onClick={() => dispatch({ type: 'blur' }) }
             >
@@ -250,6 +265,28 @@ interface FlatComponentProps extends CellComponentProps {
     initialFocusId?: string;
 }
 
+// published component implementation
+function FlatPublishedComponent(props: FlatComponentProps) {
+    const { initialFlat, initialFocusId, ...others } = props;
+
+    const [state, dispatch] = useReducer(
+        reducer,
+        makeInitialState(
+            initialFlat || emptyFlat,
+            props.cellId,
+            initialFocusId
+        )
+    );
+
+    return ( //implement display here
+        <FlatContext.Provider value={{ state, dispatch }} >
+            <div className='allCellsWrapper'>
+                <CellPublished {...others} />
+            </div>
+        </FlatContext.Provider>
+    );
+}
+
 // display component implementation
 function FlatDisplayComponent(props: FlatComponentProps) {
     const { initialFlat, initialFocusId, ...others } = props;
@@ -265,7 +302,9 @@ function FlatDisplayComponent(props: FlatComponentProps) {
 
     return ( //implement display here
         <FlatContext.Provider value={{ state, dispatch }} >
-            <CellDisplay {...others} />
+            <div className='allCellsWrapper'>
+                <CellDisplay {...others} />
+            </div>
         </FlatContext.Provider>
     );
 }
@@ -286,10 +325,12 @@ function FlatEditorComponent(props: FlatComponentProps){
     );
 
     return (<FlatContext.Provider value={{ state, dispatch }} >
-        <CellEditor {...others}/> { /* root cell */ }
+        <div className='allCellsWrapper'>
+            <CellEditor {...others}/> { /* root cell */ }
+        </div>
     </FlatContext.Provider>);
 }
 
 export type { CellComponentProps, FlatComponentProps, CellRenderStrategy };
-export { CellDisplay, CellEditor };
-export { FlatDisplayComponent, FlatEditorComponent };
+export { CellPublished, CellDisplay, CellEditor };
+export { FlatPublishedComponent, FlatDisplayComponent, FlatEditorComponent };

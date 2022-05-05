@@ -4,7 +4,7 @@ import Footer from 'components/Footer';
 
 import { Flat, findAdjacentId } from 'components/naflat/flat'
 import { FlatContext, defaultRootId, reducer, makeInitialState } from 'components/naflat/state'
-import { CellDisplay, CellEditor, FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
+import { CellPublished, CellDisplay, CellEditor, FlatPublishedComponent, FlatDisplayComponent, FlatEditorComponent } from 'components/naflat/component';
 
 import { compileTex } from 'components/tex';
 import HTMLParser, { Element, DOMNode, domToReact } from 'html-react-parser';
@@ -86,7 +86,7 @@ function Hidden() {
                 Toggle to { display ? 'editor' : 'display' }
             </button>
             <FlatContext.Provider value={{ state, dispatch }}>
-                {display && <CellDisplay cellId = { defaultRootId } /> }
+                {display && <CellPublished cellId = { defaultRootId } /> }
                 {!display && <CellEditor cellId = { defaultRootId } /> }
             </FlatContext.Provider>
 

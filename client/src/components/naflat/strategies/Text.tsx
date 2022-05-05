@@ -11,12 +11,6 @@ import {
 } from './helpers/handlers';
 import SingletonTextArea from './helpers/singletonTextArea';
 
-import {
-    imgUploadHelper,
-    fileUploadHelper
-} from './helpers/handlers';
-import { FileDropzone } from './helpers/FileDropzone';
-
 import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
 
 function DisplayTextCell(props: CellComponentProps){
@@ -114,46 +108,18 @@ function EditorTextCell(props: CellComponentProps){
     if(typeof contents !== 'string') return <></>;
 
     return (
-        <>
-            <div className='editorTextCellWrapper'>
-                <SingletonTextArea
-                    initialSelectionStart={ state.cursorStart }
-                    initialSelectionEnd={ state.cursorEnd }
-                    className='editorTextCell editorCell'
-                    onChange={handleChangeFactory(dispatch, props.cellId)}
-                    onPaste={handlePasteFactory(dispatch, props.cellId)}
-                    // onKeyDown={ onKeyDown }
-                    value={contents}
-                />
-                <div className='dropzone textCellDropzone'>
-                    <FileDropzone
-                        handleDrop={ (files) => imgUploadHelper(
-                            dispatch, props.cellId, files[0],
-                            state.flat[props.cellId].value as string,
-                            undefined, undefined,
-                            str => str,
-                            () => { console.log('이미지 업로드 실패') }
-                        )}
-                    >
-                        { '이미지 업로드' }
-                    </FileDropzone>
-                    <FileDropzone
-                        handleDrop={ (files) => fileUploadHelper(
-                            dispatch, props.cellId, files[0],
-                            state.flat[props.cellId].value as string,
-                            undefined, undefined,
-                            str => str,
-                            () => { console.log('파일 업로드 실패') }
-                        )}
-                    >
-                        { '파일 업로드' }
-                    </FileDropzone>
-                </div>
-            </div>
-            <div className='previewTextCellWrapper'>
-                <PreviewTextCell {...props} />
-            </div>
-        </>
+        <div className='editorTextCellWrapper'>
+            <SingletonTextArea
+                initialSelectionStart={ state.cursorStart }
+                initialSelectionEnd={ state.cursorEnd }
+                className='editorTextCell editorCell'
+                onChange={handleChangeFactory(dispatch, props.cellId)}
+                onPaste={handlePasteFactory(dispatch, props.cellId)}
+                // onKeyDown={ onKeyDown }
+                value={contents}
+            />
+            <PreviewTextCell {...props} />
+        </div>
     );
 }
 

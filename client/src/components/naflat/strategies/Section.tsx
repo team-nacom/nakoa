@@ -86,17 +86,9 @@ function EditorSectionCell(props: CellComponentProps) {
     let { heading, hideChildren } = val;
 
     return <div className='editorSectionCell'>
-        <input autoFocus
-            className='editorSectionCellInput'
-            value={ heading }
-            onChange={
-                handleChangeFactory(
-                    dispatch,
-                    props.cellId,
-                    (str)=>({heading: str, hideChildren})
-                )
-            }
-        />
+        <span>
+            접는 셀
+        </span>
         <input type="checkbox"
             name="hideChildren"
             checked={ hideChildren }
@@ -115,6 +107,18 @@ function EditorSectionCell(props: CellComponentProps) {
                 });
                 //TODO: flat[cellId].hidechildren should be always synced with state.hideChildren[cellId]. how can we ensure this?
             }}
+        />
+        <br />
+        <input autoFocus
+            className='editorSectionCellInput'
+            value={ heading }
+            onChange={
+                handleChangeFactory(
+                    dispatch,
+                    props.cellId,
+                    (str)=>({heading: str, hideChildren})
+                )
+            }
         />
     </div>
 }

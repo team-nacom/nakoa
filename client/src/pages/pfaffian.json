@@ -247,7 +247,7 @@
         "type": "section",
         "value": {
             "heading": "Product Relation",
-            "hideChildren": false
+            "hideChildren": true
         },
         "childIds": [
             "c40",
