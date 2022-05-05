@@ -119,6 +119,7 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         allLabel, typedLabel, hideChildren, mathMacroObj,
         focusId, cursorStart, cursorEnd
     } = state;
+    let pos : number | undefined = 0;
 
     function pushHistory(histBack: FlatHistoryAction, histForw: FlatHistoryAction){
         if(state.historyBackward.length > state.historyCursor){ //clear future
@@ -180,7 +181,11 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
     case 'move':
         var oldParentId = flat[action.id].parentId || defaultRootId;
         var newParentId = action.parentId;
-        var pos = action.pos || flat[newParentId].childIds.length;
+
+        pos = action.pos;
+        if(typeof pos === 'undefined'){
+            pos = flat[action.parentId].childIds.length;
+        }
 
         pushHistory({
             description: 'restructure',
@@ -218,7 +223,13 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
         focusId = F.generateId(flat);
         hideChildren[focusId] = false;
 
-        var pos = action.pos || flat[action.parentId].childIds.length;
+        pos = action.pos;
+        if(typeof pos === 'undefined'){
+            pos = flat[action.parentId].childIds.length;
+        }
+
+        console.log(action.parentId, action.pos)
+        console.log(flat[action.parentId].childIds.slice(0, pos), focusId, flat[action.parentId].childIds.slice(pos))
 
         pushHistory({
             description: 'delete',
