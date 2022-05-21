@@ -14,7 +14,7 @@ import bubbleRouter from './bubble';
 import flatRouter from './flat';
 
 import {
-  handleErrorMiddleware, isProduction, logger, logStreams,
+  handleErrorMiddleware, isProduction, isStaging, logger, logStreams,
 } from './utils';
 
 // Router
@@ -34,7 +34,7 @@ router.use('/bubble', bubbleRouter.routes());
 router.use('/flat', flatRouter.routes());
 
 // local / production config
-const origin = (isProduction ? 'https://team-na.com' : 'http://localhost:3000');
+const origin = (isProduction ? 'https://team-na.com' : (isStaging ? '*': 'http://localhost:3000'));
 const port = (isProduction ? 3884 : 3885);
 
 // Koa app

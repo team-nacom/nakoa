@@ -33,6 +33,7 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
 }
 
 export const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === 'production');
+export const isStaging = (process.env) && (process.env.MODE) && (process.env.MODE === 'staging');
 const logOptions = {};
 
 function formatMessage(log: any, messageKey: string, levelLabel: string): string {
