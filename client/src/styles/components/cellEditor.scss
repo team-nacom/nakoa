@@ -354,7 +354,7 @@
     }
 }
 
-.editorTextCellWrapper, .editorCodeCellWrapper, .editorMathCellWrapper {
+.editorTextCellWrapper, .editorMathCellWrapper {
     display: flex;
     align-items: stretch;
     @media(max-width: 900px) {
@@ -373,6 +373,14 @@
         }
     }
 }
+.editorCodeCellWrapper {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    .editorCell {
+        border-top: solid 1px #ddd;
+    }
+}
 
 .textCell, .mathCell, .codeCell {
     box-sizing: border-box;
@@ -380,20 +388,17 @@
     min-height: 48px;
 }
 .mathCell {
-    background-color: rgba($primary-color, 0.06);
-}
-.mathCellLabel {
-    @include label-template($primary-color);
+    // background-color: rgba($primary-color, 0.06);
 }
 .codeCell {
-    background-color: rgba(#84878d, 0.06);
 }
 .codeCellLabel {
-    @include label-template(#84878d);
+    @include label-template(#9b9fba);
 }
 .codeCellPreview {
-    margin: 15px 7px;
-    line-height: 1.2;
+    // border-left: solid #9b9fba 3px;
+    font-size: 10pt;
+    line-height: 1.4;
 }
 
 .editorCell {

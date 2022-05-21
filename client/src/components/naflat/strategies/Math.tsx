@@ -24,9 +24,6 @@ function DisplayMathCell(props: CellComponentProps){
 
     return (
         <div className='mathCell'>
-            <summary className='mathCellLabel'>
-                수식
-            </summary>
             <div className='mathCellPreview' >
                 <MemoizedTeX block
                     settings={ { macros: state.mathMacroObj } }
@@ -52,9 +49,6 @@ function PreviewMathCell(props: CellComponentProps){
 
     return (
         <div className='mathCell'>
-            <summary className='mathCellLabel'>
-                수식
-            </summary>
             <div className='mathCellPreview' >
                 <MemoizedTeX block
                     settings={ { macros: state.mathMacroObj } }
