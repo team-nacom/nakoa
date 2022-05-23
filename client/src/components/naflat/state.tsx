@@ -16,11 +16,12 @@ interface FlatState{
     rootId : string;
 
     //////context-specific info
+    editedTimestamps: Record<string, number>;
+    contextTimestamp: number;
     allLabel : Record<string, number[]>;
     typedLabel : Record<string, number[]>;
     hideChildren : Record<string, boolean>;
     mathMacroObj : Object;
-    // textMacro: Object;
 
     //////editor info
     focusId? : string;
@@ -67,10 +68,19 @@ type FlatStateAction
     | { type: 'resetCursor'; }
 ;
 
+function getNonDuplicateTimestamp(baseTimestamp: number){
+    let now = Date.now();
+    while(now <= baseTimestamp){
+        now += 0.01; //may have 100 different timestamps in 1ms.
+    }
+    return now;
+}
+
 function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
     let {
         flat, rootId,
         allLabel, typedLabel, hideChildren, mathMacroObj,
+        editedTimestamps, contextTimestamp,
         ...others
     } = state;
 
@@ -87,12 +97,29 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
         }
 
         flat = {...flat, ...cloneDeep(subflat)};
+        // Object.assign(flat, cloneDeep(subflat));
 
         allLabel = F.generateAllLabel(flat, rootId);
         typedLabel = F.generateTypedLabel(flat, rootId);
+
+        var timestamp = getNonDuplicateTimestamp(contextTimestamp);
+        for(var cid in subflat){
+            editedTimestamps[cid] = timestamp;
+        }
+        for(var cid in flat){
+            if(isChildAllowed(flat[cid].type)){
+                editedTimestamps[cid] = timestamp;
+            }
+        }
     }
     else{
         flat = {...flat, ...cloneDeep(subflat)};
+        // Object.assign(flat, cloneDeep(subflat));
+
+        var timestamp = getNonDuplicateTimestamp(contextTimestamp);
+        for(var cid in subflat){
+            editedTimestamps[cid] = timestamp;
+        }
     }
 
     // if root cell, and context changed?
@@ -104,11 +131,14 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
             globalGroup: true,
             macros : mathMacroObj
         }); //render once and discard the result!
+
+        contextTimestamp = getNonDuplicateTimestamp(contextTimestamp);
     }
 
     return {
         flat, rootId,
         allLabel, typedLabel, hideChildren, mathMacroObj,
+        editedTimestamps, contextTimestamp,
         ...others
     };
 }
@@ -228,9 +258,6 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
             pos = flat[action.parentId].childIds.length;
         }
 
-        console.log(action.parentId, action.pos)
-        console.log(flat[action.parentId].childIds.slice(0, pos), focusId, flat[action.parentId].childIds.slice(pos))
-
         pushHistory({
             description: 'delete',
             id: focusId,
@@ -262,6 +289,9 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
             state.historyForward[state.historyCursor - 1]
         );
     case 'remove':
+        console.log(action.id)
+        console.log(flat);
+
         var parentId = flat[action.id].parentId || defaultRootId;
 
         pushHistory({
@@ -356,6 +386,9 @@ function makeInitialState(flat: Flat, rootId: string, initialFocusId?: string) :
     return {
         flat: flat,
         rootId: rootId,
+
+        editedTimestamps: {},
+        contextTimestamp: 0,
 
         allLabel: F.generateAllLabel(flat, rootId),
         typedLabel: F.generateTypedLabel(flat, rootId),

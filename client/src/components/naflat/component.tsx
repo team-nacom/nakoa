@@ -16,6 +16,7 @@ import {
     emptyFlat, defaultRootId
 } from './state';
 import { CellComponentProps, CellRenderStrategy } from './componentTypes';
+import { CachedCellComponentProps, applyCache } from './componentTypes';
 
 import { handleGlobalShortcutFactory } from './strategies/helpers/handlers';
 
@@ -39,6 +40,14 @@ const strategyMap: CellTypeMap<CellRenderStrategy<CellComponentProps>> = {
     'math': MathCellStrategy,
     'code': CodeCellStrategy,
     'image': ImageCellStrategy
+};
+const cachedStrategyMap: CellTypeMap<CellRenderStrategy<CachedCellComponentProps>> = {
+    'root': applyCache( RootCellStrategy ),
+    'section': applyCache( SectionCellStrategy ),
+    'text': applyCache( TextCellStrategy ),
+    'math': applyCache( MathCellStrategy ),
+    'code': applyCache( CodeCellStrategy ),
+    'image': applyCache( ImageCellStrategy )
 };
 
 function CellPublished(props: CellComponentProps) {
@@ -116,9 +125,12 @@ function CellEditor(props: CellComponentProps) {
 
     let depth = cellLabel.length;
     let pos = cellLabel.join('.');
-
-    const PreviewStrategy = strategyMap[cell.type]['preview'];
+    
+    const PreviewStrategy = strategyMap[cell.type]['preview']
     const EditorStrategy = strategyMap[cell.type]['editor'];
+
+    const CachedPreviewStrategy = cachedStrategyMap[cell.type]['preview'];
+    const CachedEditorStrategy = cachedStrategyMap[cell.type]['editor'];
 
     function cellTypeButtonHandlerFactory(type : CellType){
         return () => {
@@ -170,7 +182,11 @@ function CellEditor(props: CellComponentProps) {
                             </button>
                         }
                     </div>
-                    <PreviewStrategy cellId = {cellId} />
+                    {/* <PreviewStrategy cellId = {cellId} /> */}
+                    <CachedPreviewStrategy cellId = {cellId}
+                        editedTimestamp = { state.editedTimestamps[cellId] }
+                        contextTimestamp = { state.contextTimestamp }
+                    />
                 </div>
             </>
         }
@@ -238,7 +254,11 @@ function CellEditor(props: CellComponentProps) {
                     }
                 </div>
 
-                <EditorStrategy cellId = {cellId} />
+                {/* <EditorStrategy cellId = {cellId} /> */}
+                <CachedEditorStrategy cellId = {cellId}
+                    editedTimestamp = { state.editedTimestamps[cellId] }
+                    contextTimestamp = { state.contextTimestamp }
+                />
             </div>
         }
 

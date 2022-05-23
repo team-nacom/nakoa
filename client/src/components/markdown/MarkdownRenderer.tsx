@@ -131,6 +131,8 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
         }
     }
 
+    console.log('rendered')
+
     return (
         <ErrorBoundary FallbackComponent = { ({error, resetErrorBoundary}) => (
             <div role='alert'>
