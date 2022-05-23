@@ -173,8 +173,6 @@ function findAdjacentId(f: Flat, id: string | undefined, direction: number){
  * @returns generated string -> number[] object.
  */
 function generateAllLabel(flat: Flat, id: string): Record<string, number[]>{
-    console.log(flat);
-
     let obj : Record<string, number[]> = {};
     _generateAllLabel(flat, id, obj, []);
     return obj;
@@ -186,7 +184,6 @@ function generateAllLabel(flat: Flat, id: string): Record<string, number[]>{
     // }, {})
 }
 function _generateAllLabel(flat: Flat, id: string, obj: Record<string, number[]>, prefix: number[]){
-    console.log(id);
     obj[id] = prefix;
     flat[id].childIds.forEach((childId,idx)=>{
         _generateAllLabel(flat, childId, obj, [...prefix, idx + 1]);

@@ -6,7 +6,7 @@ import * as F from './flat';
 import { CellType, CellValueType, isChildAllowed, Flat, defaultValue } from './flat';
 
 import katex from 'katex';
-import lodash, { cloneDeep } from 'lodash'
+import lodash, { cloneDeep, omit } from 'lodash'
 
 const MAX_HISTORY = 5;
 
@@ -93,7 +93,8 @@ function reduceHistory(state: FlatState, history: FlatHistoryAction): FlatState{
             flat = F.cascadeChildren(flat, id);
         }
         if(historyActionPolicy[description].delete){
-            delete flat[id];
+            var {[id]: cellToOmit, ...deletedFlat} = flat; // delete flat[id];
+            flat = deletedFlat;
         }
 
         flat = {...flat, ...cloneDeep(subflat)};
@@ -289,8 +290,7 @@ const reducer : React.Reducer<FlatState, FlatStateAction> = function(state, acti
             state.historyForward[state.historyCursor - 1]
         );
     case 'remove':
-        console.log(action.id)
-        console.log(flat);
+        if(!flat[action.id]) return state;
 
         var parentId = flat[action.id].parentId || defaultRootId;
 
