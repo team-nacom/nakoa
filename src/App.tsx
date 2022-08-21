@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import Dummy from '#components/Dummy'
 
-const MemoDummy = React.memo(Dummy);
+const MemoDummy = React.memo(Dummy)
 
 function App() {
     const txtsA = ['aaa', 'bbb', 'ccc']

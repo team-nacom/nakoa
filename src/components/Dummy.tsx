@@ -8,7 +8,7 @@ interface CellProps {
 function Dummy(props: CellProps){
     const timestamp = Date.now()
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(false)
     useEffect(()=>{
         const timeout = setTimeout(()=>{
             setShow(true)
@@ -19,7 +19,7 @@ function Dummy(props: CellProps){
     // https://stackoverflow.com/questions/66590082/how-to-prevent-re-rendering-of-components-that-have-not-changed
 
     return (
-        <div style={ {border:'1px solid black', width:'400px'} }>
+        <div style={ {border:'1px solid black', width:'200px'} }>
             { props.text }
             <br />
             { show ? timestamp : 'Loading...' }
