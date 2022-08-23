@@ -4,17 +4,24 @@
     "private": true,
     "dependencies": {
         "@craco/craco": "^6.4.5",
+        "@emotion/react": "^11.10.0",
+        "@emotion/styled": "^11.10.0",
+        "@minoru/react-dnd-treeview": "link:../react-dnd-treeview",
+        "@mui/icons-material": "^5.8.4",
+        "@mui/material": "^5.10.1",
         "@types/node": "^18.7.8",
         "@types/react": "^18.0.17",
         "@types/react-dom": "^18.0.6",
-        "react": "^18.2.0",
+        "react": "link:../react-dnd-treeview/node_modules/react",
+        "react-dnd": "^16.0.1",
         "react-dom": "^18.2.0",
         "react-scripts": "^5.0.1",
         "typescript": "^4.7.4"
     },
     "devDependencies": {
         "craco-alias": "^3.0.1",
-        "eslint-webpack-plugin": "^3.2.0"
+        "eslint-webpack-plugin": "^3.2.0",
+        "typescript-plugin-css-modules": "^3.4.0"
     },
     "scripts": {
         "start": "craco start",
