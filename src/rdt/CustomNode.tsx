@@ -22,6 +22,15 @@ export const CustomNode: React.FC<Props> = (props) => {
     props.onToggle(props.node.id);
   };
 
+  const [show, setShow] = React.useState(false)
+  React.useEffect(()=>{
+    const timeout = setTimeout(()=>{
+      setShow(true)
+    }, 1000)
+    return () => clearTimeout(timeout)
+  },[show])
+  if(!show) return (<div>Loading...</div>)
+
   return (
     <div
       className={`tree-node ${styles.root}`}
