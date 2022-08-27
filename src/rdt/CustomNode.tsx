@@ -1,9 +1,10 @@
-import React from "react";
+import React, { RefObject } from "react";
 import Typography from "@mui/material/Typography";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { NodeModel } from "@minoru/react-dnd-treeview";
 import { CustomData } from "./types";
 import { TypeIcon } from "./TypeIcon";
+import GripIcon from "@mui/icons-material/DragHandle";
 import styles from "./CustomNode.module.css";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   depth: number;
   isOpen: boolean;
   onToggle: (id: NodeModel["id"]) => void;
+  gripRef: RefObject<HTMLElement>;
 };
 
 export const CustomNode: React.FC<Props> = (props) => {
@@ -46,6 +48,11 @@ export const CustomNode: React.FC<Props> = (props) => {
             <ArrowRightIcon />
           </div>
         )}
+      </div>
+      <div ref={props.gripRef as RefObject<HTMLDivElement> }
+        className={`${styles.gripWrapper}`}
+      >
+        <GripIcon />
       </div>
       <div>
         <TypeIcon droppable={droppable} fileType={data?.fileType} />

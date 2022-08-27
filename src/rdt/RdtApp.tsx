@@ -27,15 +27,17 @@ function App() {
           <Tree<CustomData>
             tree={treeData}
             rootId={0}
+            hasGrip={true}
             render={(
               node: NodeModel<CustomData>,
-              { depth, isOpen, onToggle }
+              { depth, isOpen, onToggle, gripRef }
             ) => (
               <CustomNode
                 node={node}
                 depth={depth}
                 isOpen={isOpen}
                 onToggle={onToggle}
+                gripRef={gripRef}
               />
             )}
             dragPreviewRender={(
