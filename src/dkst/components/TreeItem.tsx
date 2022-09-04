@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import {Action} from './Action';
 import {Handle} from './Handle';
 import {Remove} from './Remove';
-import styles from './TreeItem.module.css';
+import styles from './TreeItem.module.scss';
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, 'id'> {
   childCount?: number;
@@ -45,6 +45,15 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
+
+    const [show, setShow] = React.useState(false)
+    React.useEffect(()=>{
+        const timeout = setTimeout(()=>{
+            setShow(true)
+        }, 1000)
+        return () => clearTimeout(timeout)
+    }, [show])
+
     return (
       <li
         className={classNames(
@@ -76,7 +85,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
               {collapseIcon}
             </Action>
           )}
-          <span className={styles.Text}>{value}</span>
+          <span className={styles.Text}>{ show ? value : 'loading...'}</span>
           {!clone && onRemove && <Remove onClick={onRemove} />}
           {clone && childCount && childCount > 1 ? (
             <span className={styles.Count}>{childCount}</span>

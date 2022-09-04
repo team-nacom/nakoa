@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Dummy from '#components/Dummy'
+import Dummy from '#/components/Dummy'
 
 const MemoDummy = React.memo(Dummy)
 
