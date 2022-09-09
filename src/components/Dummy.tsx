@@ -9,12 +9,12 @@ function Dummy(props: CellProps){
 
     const [show, setShow] = useState(false)
     useEffect(()=>{
-        console.log('mounted: ', props.text)
+        console.log('mounted: ', props.text, show)
         const timeout = setTimeout(()=>{
             setShow(true)
         }, 1000)
         return () => {
-            console.log('unmounted: ', props.text)
+            console.log('unmounted: ', props.text, show)
             clearTimeout(timeout)
         }
     }, [show])
