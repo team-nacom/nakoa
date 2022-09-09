@@ -224,14 +224,15 @@ export function SortableTree({
             modifiers={indicator ? [adjustTranslate] : undefined}
           >
             {activeId && activeItem ? (
-              <SortableTreeItem
-                id={activeId}
-                depth={activeItem.depth}
-                clone
-                childCount={getChildCount(items, activeId) + 1}
-                value={activeId.toString()}
-                indentationWidth={indentationWidth}
-              />
+              // <SortableTreeItem
+              //   id={activeId}
+              //   depth={activeItem.depth}
+              //   clone
+              //   childCount={getChildCount(items, activeId) + 1}
+              //   value={activeId.toString()}
+              //   indentationWidth={indentationWidth}
+              // />
+              <div>Dragging Now</div>
             ) : null}
           </DragOverlay>,
           document.body
