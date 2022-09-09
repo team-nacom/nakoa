@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 interface CellProps {
-    key: string
     text: string
 }
 
@@ -10,10 +9,14 @@ function Dummy(props: CellProps){
 
     const [show, setShow] = useState(false)
     useEffect(()=>{
+        console.log('mounted: ', props.text)
         const timeout = setTimeout(()=>{
             setShow(true)
         }, 1000)
-        return () => clearTimeout(timeout)
+        return () => {
+            console.log('unmounted: ', props.text)
+            clearTimeout(timeout)
+        }
     }, [show])
 
     // https://stackoverflow.com/questions/66590082/how-to-prevent-re-rendering-of-components-that-have-not-changed
