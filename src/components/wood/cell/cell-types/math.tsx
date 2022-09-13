@@ -28,7 +28,9 @@ function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
 
 function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
     const {} = useRenderInfoScope()
-    const { dispatchCellData: dispatch } = useCellDataScope()
+    const { cellData, dispatchCellData: dispatch } = useCellDataScope()
+
+    const _cell = cellData[cell.id] as MathCell;
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (ev) => {
         dispatch({
@@ -44,10 +46,10 @@ function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
         <div className='editorMathCellWrapper' style={ {width:'100%', border:'1px solid pink'} }>
             <textarea
                 className='editorMathCell editorCell'
-                value={cell.value}
+                value={_cell.value}
                 onChange={ changeHandler }
             />
-            <MathCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
+            <MathCellViewer mode={ RenderMode.PREVIEW } cell={_cell} />
         </div>
     );
 }

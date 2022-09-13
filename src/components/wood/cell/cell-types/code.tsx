@@ -28,7 +28,9 @@ function CodeCellViewer({ mode, cell } : RendererProps<CodeCell>){
 
 function CodeCellEditor({ cell }: Omit<RendererProps<CodeCell>,'mode'>){
     const {} = useRenderInfoScope()
-    const { dispatchCellData: dispatch } = useCellDataScope()
+    const { cellData, dispatchCellData: dispatch } = useCellDataScope()
+
+    const _cell = cellData[cell.id] as CodeCell;
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (ev) => {
         dispatch({
@@ -44,10 +46,10 @@ function CodeCellEditor({ cell }: Omit<RendererProps<CodeCell>,'mode'>){
         <div className='editorCodeCellWrapper' style={ {width:'100%', border:'1px solid blue'} }>
             <textarea
                 className='editorCodeCell editorCell'
-                value={cell.value}
+                value={_cell.value}
                 onChange={ changeHandler }
             />
-            <CodeCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
+            <CodeCellViewer mode={ RenderMode.PREVIEW } cell={_cell} />
         </div>
     );
 }
