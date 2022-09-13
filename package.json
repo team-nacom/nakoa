@@ -10,7 +10,6 @@
         "@dnd-kit/utilities": "^3.2.0",
         "@emotion/react": "^11.10.0",
         "@emotion/styled": "^11.10.0",
-        "@minoru/react-dnd-treeview": "link:../react-dnd-treeview",
         "@mui/icons-material": "^5.8.4",
         "@mui/material": "^5.10.1",
         "@types/node": "^18.7.8",
