@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 // import App from './App'
-import App from './App220908'
+// import App from './App220908'
+import App from './App220912'
 // import App from './rdt/RdtApp'
 // import App from './dkst/DkstApp'
 

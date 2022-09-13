@@ -4,26 +4,28 @@
 import React, { useContext, createContext, useState, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 
-import { KeepAliveKeyType } from './types'
-
 interface NodeState{
-    [id: KeepAliveKeyType]: {
+    [id: string]: {
         children: React.ReactNode,
         element: HTMLDivElement
     }
 }
 
 const AliveScopeContext = createContext({
-    getPortalElement: (id: KeepAliveKeyType, children: ReactNode)=>(document.createElement('div')) // dummy default value.
+    getPortalElement: (id: string, children: ReactNode)=>(document.createElement('div')),
+    removePortalElement: (id: string)=>{} // dummy default value.
 });
 type AliveScopeProps = React.PropsWithChildren<{}>;
 
 export function AliveScope({ children }: AliveScopeProps){
     const [nodes, setNodes] = useState<NodeState>({});
     
-    function getPortalElement(id: KeepAliveKeyType, children: ReactNode){
+    function getPortalElement(id: string, children: ReactNode){
+        // console.log(nodes)
+        // console.log(nodes[id]?.element)
         if(!nodes[id]){
             const element = document.createElement('div');
+            element.id = `alive-${ id }`
             setNodes((prevNodes) => ({
                 ...prevNodes,
                 [id]: { children, element }
@@ -33,10 +35,18 @@ export function AliveScope({ children }: AliveScopeProps){
         return nodes[id].element;
     }
 
+    function removePortalElement(id: string){
+        setNodes((prevNodes)=>{
+            const { [id]: unused, ...nodes } = prevNodes;
+            return nodes;
+        })
+    }
+
     return (
         <AliveScopeContext.Provider
           value={{
-            getPortalElement
+            getPortalElement,
+            removePortalElement
           }}
         >
             { children }

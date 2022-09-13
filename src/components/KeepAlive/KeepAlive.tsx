@@ -1,10 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
 import { useAliveScope } from './AliveScope';
-import { KeepAliveKeyType } from './types'
 
 type KeepAliveProps = React.PropsWithChildren<{
-    id: KeepAliveKeyType
+    id: string
 }>
 
 const KeepAlive = ({id, children}: KeepAliveProps) => {
@@ -20,7 +19,7 @@ const KeepAlive = ({id, children}: KeepAliveProps) => {
         appendPortalElement();
     }, []);
 
-    return <div ref={keepAliveRef} />;
+    return <div className="keepAlive" ref={keepAliveRef} />;
 };
 
 export default KeepAlive;

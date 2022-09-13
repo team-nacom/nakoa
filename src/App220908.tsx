@@ -17,14 +17,14 @@ function App() {
         <AliveScope>
             <div style={ { border: '1px solid green', height: '80px' } }>
                 { cnt % 3 === 0 && (
-                    <KeepAlive id={1}>
+                    <KeepAlive id='1'>
                         <Dummy text="aaaa" />
                     </KeepAlive>
                 ) }
             </div>
             <div style={ { border: '1px solid blue', height: '80px' } }>
                 { cnt % 3 === 2 && (
-                    <KeepAlive id={1}>
+                    <KeepAlive id='1'>
                         <Dummy text="bbbb" />
                     </KeepAlive>
                 ) }

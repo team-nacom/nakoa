@@ -9264,6 +9264,11 @@ v8-to-istanbul@^8.1.0:
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
 
+variant@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/variant/-/variant-2.1.0.tgz#2e66d7406219f596e5a241dc1241feed22abc51c"
+  integrity sha512-kNpWOQGWoc9GjR9rPsBslR/ThbiX3kSic8rHOtAKkwf/Mn17jm59fpB5HpLSMw9zdI9CLYvmvcXu5tcsBqNibQ==
+
 vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
