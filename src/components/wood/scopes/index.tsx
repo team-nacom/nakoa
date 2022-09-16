@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState, ReactPropTypes, PropsWithCh
 import ReactDOM from 'react-dom';
 
 import { WoodStruct, WoodStructScope, useWoodStructScope } from './WoodStruct'
-import { CellData, CellDataScope, useCellDataScope } from './CellData'
+import { CellData, CellDataScope, useCellDataScope, useDispatchCellDataScope } from './CellData'
 import { RenderInfo, RenderInfoScope, useRenderInfoScope } from './RenderInfo'
 
 type WoodScopeProps = PropsWithChildren<{
@@ -25,7 +25,7 @@ export function WoodScope(props: WoodScopeProps){
 
 export {
     useWoodStructScope,
-    useCellDataScope,
+    useCellDataScope, useDispatchCellDataScope,
     useRenderInfoScope,
 }
 

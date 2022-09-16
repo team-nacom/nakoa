@@ -8,7 +8,7 @@ import {
 } from '#/components/wood/scopes'
 
 import {
-    CellRenderer
+    MemoizedCellRenderer
 } from '#/components/wood/cell/CellRenderer'
 
 import {
@@ -98,7 +98,7 @@ interface DummyCellProps{
 }
 function DummyCell({ id } : DummyCellProps){
     const { woodStruct } = useWoodStructScope()
-    const { cellData } = useCellDataScope()
+    const cellData = useCellDataScope()
 
     const childIds = woodStruct.childIds[id]
     const cell = cellData[id]
@@ -112,7 +112,10 @@ function DummyCell({ id } : DummyCellProps){
 
     return <>
         <KeepAlive id = { id }>
-            <CellRenderer cell = { cell } mode = { RenderMode.EDITOR } />
+            <MemoizedCellRenderer key = { id }
+                cell = { cell }
+                mode = { RenderMode.EDITOR }
+            />
         </KeepAlive>
         <div style={ {paddingLeft: '20px'} }>
             {

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
-// RULE OF THUMB: other than useRenderInfoScope and useCellDataScope(for updating state), scopes should not be avoided in each cell rendering.
+import KeepAlive from '#/components/KeepAlive/KeepAlive'
+
+// RULE OF THUMB: other than useRenderInfoScope and useDispatchCellDataScope, scopes should not be avoided in each cell rendering.
 import {
     useRenderInfoScope,
-    useCellDataScope
+    useDispatchCellDataScope
 } from '#/components/wood/scopes'
 
 
@@ -22,18 +24,24 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 // renderers
 
 function TextCellViewer({ mode, cell } : RendererProps<TextCell>){
-    return (<div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
-        {cell.value}
-    </div>)
+    return (
+        // <KeepAlive id = { cell.id }>
+            <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
+            {cell.value}
+            </div>
+        // </KeepAlive>
+    )
 }
 
+
+
 function TextCellEditor({ cell }: Omit<RendererProps<TextCell>,'mode'>){
-    const {} = useRenderInfoScope()
-    const { cellData, dispatchCellData: dispatch } = useCellDataScope()
+    // const {} = useRenderInfoScope()
+    const dispatch = useDispatchCellDataScope()
 
-    const _cell = cellData[cell.id] as TextCell;
-
-    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (ev) => {
+    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
+        ev.stopPropagation()
+        ev.preventDefault()
         dispatch({
             type: 'update',
             id: cell.id,
@@ -41,16 +49,17 @@ function TextCellEditor({ cell }: Omit<RendererProps<TextCell>,'mode'>){
                 value: ev.target.value
             } as Partial<TextCellField>)
         })
-    }
+    }, [cell.id])
 
     return (
         <div className='editorTextCellWrapper' style={ {width:'100%', border:'1px solid black'} }>
+            { Date.now() }
             <textarea
                 className='editorTextCell editorCell'
-                value={_cell.value}
+                value={cell.value}
                 onChange={ changeHandler }
             />
-            <TextCellViewer mode={ RenderMode.PREVIEW } cell={_cell} />
+            <TextCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
     );
 }

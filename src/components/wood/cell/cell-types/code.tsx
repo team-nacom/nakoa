@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react'
 
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
+import KeepAlive from '#/components/KeepAlive/KeepAlive'
+
 import {
     useRenderInfoScope,
-    useCellDataScope
+    useDispatchCellDataScope
 } from '#/components/wood/scopes'
 
 // export const codeCellName = 'code'
@@ -21,18 +23,20 @@ type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
 //renderers
 
 function CodeCellViewer({ mode, cell } : RendererProps<CodeCell>){
-    return (<div className='CodeCell' style={ {width:'100%', border:'1px solid blue'} }>
-        {cell.value}
-    </div>)
+    return (
+        // <KeepAlive id = { cell.id }>
+            <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
+            {cell.value}
+            </div>
+        // </KeepAlive>
+    )
 }
 
 function CodeCellEditor({ cell }: Omit<RendererProps<CodeCell>,'mode'>){
-    const {} = useRenderInfoScope()
-    const { cellData, dispatchCellData: dispatch } = useCellDataScope()
+    // const {} = useRenderInfoScope()
+    const dispatch = useDispatchCellDataScope()
 
-    const _cell = cellData[cell.id] as CodeCell;
-
-    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (ev) => {
+    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         dispatch({
             type: 'update',
             id: cell.id,
@@ -40,16 +44,18 @@ function CodeCellEditor({ cell }: Omit<RendererProps<CodeCell>,'mode'>){
                 value: ev.target.value
             } as Partial<CodeCellField>)
         })
-    }
+    }, [cell.id])
 
     return (
         <div className='editorCodeCellWrapper' style={ {width:'100%', border:'1px solid blue'} }>
+            { Date.now() }
             <textarea
+                key={ `cell-${ cell.id }` }
                 className='editorCodeCell editorCell'
-                value={_cell.value}
+                value={cell.value}
                 onChange={ changeHandler }
             />
-            <CodeCellViewer mode={ RenderMode.PREVIEW } cell={_cell} />
+            <CodeCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
     );
 }

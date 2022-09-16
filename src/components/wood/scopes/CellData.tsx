@@ -42,10 +42,8 @@ const reducer : Reducer<CellData, CellDataAction> = (prevData, action) => {
     }
 }
 
-const CellDataContext = createContext({
-    cellData: cellDataDefault,
-    dispatchCellData: (_: CellDataAction) => {}
-})
+const CellDataContext = createContext(cellDataDefault)
+const DispatchCellDataContext = createContext((_: CellDataAction) => {})
 
 type CellDataScopeProps = PropsWithChildren<{ init?: CellData }>
 
@@ -53,10 +51,13 @@ export function CellDataScope({ init, children }: CellDataScopeProps){
     const [cellData, dispatchCellData] = useReducer(reducer, init || cellDataDefault)
 
     return (
-        <CellDataContext.Provider value={ {cellData, dispatchCellData} }>
-            { children }
+        <CellDataContext.Provider value={ cellData }>
+            <DispatchCellDataContext.Provider value={ dispatchCellData }>
+                { children }
+            </DispatchCellDataContext.Provider>
         </CellDataContext.Provider>
     )
 }
 
 export const useCellDataScope = () => useContext(CellDataContext)
+export const useDispatchCellDataScope = () => useContext(DispatchCellDataContext)

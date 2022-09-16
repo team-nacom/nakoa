@@ -21,18 +21,29 @@ export function AliveScope({ children }: AliveScopeProps){
     const [nodes, setNodes] = useState<NodeState>({});
     
     function getPortalElement(id: string, children: ReactNode){
-        // console.log(nodes)
-        // console.log(nodes[id]?.element)
+        // if(!nodes[id]){
+        //     const element = document.createElement('div');
+        //     element.id = `alive-${ id }`
+        //     setNodes((prevNodes) => ({
+        //         ...prevNodes,
+        //         [id]: { children, element }
+        //     }));
+        //     return element;
+        // }
+        // return nodes[id].element;
+        
+        let element : HTMLDivElement
         if(!nodes[id]){
-            const element = document.createElement('div');
+            element = document.createElement('div');
             element.id = `alive-${ id }`
-            setNodes((prevNodes) => ({
-                ...prevNodes,
-                [id]: { children, element }
-            }));
-            return element;
+        } else {
+            element = nodes[id].element
         }
-        return nodes[id].element;
+        setNodes((prevNodes) => ({
+            ...prevNodes,
+            [id]: { children, element }
+        }));
+        return element
     }
 
     function removePortalElement(id: string){

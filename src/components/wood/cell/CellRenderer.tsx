@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { memo, useState, useEffect } from 'react'
+import { isEqual } from 'lodash'
 
 import { match } from 'variant'
 
@@ -34,3 +35,4 @@ export function CellRenderer({mode, cell}: RendererProps<Cell>){
     //     'math': cell => MathCellRenderer({mode, cell})
     // }, cellTypeStr)
 }
+export const MemoizedCellRenderer = memo(CellRenderer, isEqual)

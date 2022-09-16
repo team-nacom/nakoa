@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
+import KeepAlive from '#/components/KeepAlive/KeepAlive'
+
 import {
     useRenderInfoScope,
-    useCellDataScope
+    useDispatchCellDataScope
 } from '#/components/wood/scopes'
 
 // export const mathCellName = 'math'
@@ -21,18 +23,25 @@ type MathCell = CellFrom<MathCellField,'math'> // only used in this file
 //renderers
 
 function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
-    return (<div className='MathCell' style={ {width:'100%', border:'1px solid pink'} }>
-        {cell.value}
-    </div>)
+    function makeLog(str: string){
+        console.log(str)
+        return str
+    }
+
+    return (
+        // <KeepAlive id = { cell.id }>
+            <div className='mathCell' style={ {width:'100%', border:'1px solid pink'} } >
+            { cell.value }
+            </div>
+        // </KeepAlive>
+    )
 }
 
 function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
-    const {} = useRenderInfoScope()
-    const { cellData, dispatchCellData: dispatch } = useCellDataScope()
+    // const {} = useRenderInfoScope()
+    const dispatch = useDispatchCellDataScope()
 
-    const _cell = cellData[cell.id] as MathCell;
-
-    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (ev) => {
+    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         dispatch({
             type: 'update',
             id: cell.id,
@@ -40,16 +49,17 @@ function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
                 value: ev.target.value
             } as Partial<MathCellField>)
         })
-    }
+    }, [cell.id])
 
     return (
         <div className='editorMathCellWrapper' style={ {width:'100%', border:'1px solid pink'} }>
+            { Date.now() }
             <textarea
                 className='editorMathCell editorCell'
-                value={_cell.value}
+                value={cell.value}
                 onChange={ changeHandler }
             />
-            <MathCellViewer mode={ RenderMode.PREVIEW } cell={_cell} />
+            <MathCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
     );
 }
