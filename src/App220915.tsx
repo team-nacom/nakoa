@@ -76,9 +76,9 @@ const DataEditScopeContext = createContext(
 // Box에서 txt를 props로 받으니까 rerender가 강제되는 것 아닐까. 안쪽에 textarea가 있는 이상 어쩔 수 없는 것 같다.
 
 interface BoxProps { txt: string }
-function Box({ /* txt */ }: BoxProps) {
+function Box({ txt }: BoxProps) {
     // function Box() {
-    const txt = useContext(DataScopeContext)
+    // const txt = useContext(DataScopeContext)
     const setTxt = useContext(DataEditScopeContext)
     const changeHandler = (e : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         console.log(e.target.value)
@@ -107,16 +107,16 @@ function App() {
             <DataEditScopeContext.Provider value = { setTxt } >
                 <div style={ {border:'1px solid purple', padding:'10px', height: '100px'} }>
                     { state &&
-                        <KeepAlive id = '1'>
+                        // <KeepAlive id = '1'>
                             <MemoBox txt = { txt } />
-                        </KeepAlive>
+                        // </KeepAlive>
                     }
                 </div>
                 <div style={ {border:'1px solid purple', padding:'10px', height: '100px'} }>
                     { !state &&
-                        <KeepAlive id = '1'>
+                        // <KeepAlive id = '1'>
                             <MemoBox txt = { txt } />
-                        </KeepAlive>
+                        // </KeepAlive>
                     }
                 </div>
             </DataEditScopeContext.Provider>

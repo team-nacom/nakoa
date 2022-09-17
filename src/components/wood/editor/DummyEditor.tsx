@@ -111,12 +111,12 @@ function DummyCell({ id } : DummyCellProps){
     }
 
     return <>
-        <KeepAlive id = { id }>
+        {/* <KeepAlive id = { id }> */}
             <MemoizedCellRenderer key = { id }
                 cell = { cell }
                 mode = { RenderMode.EDITOR }
             />
-        </KeepAlive>
+        {/* </KeepAlive> */}
         <div style={ {paddingLeft: '20px'} }>
             {
                 childIds.map( childId => (
