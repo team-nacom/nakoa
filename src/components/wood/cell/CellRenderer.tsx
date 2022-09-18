@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from 'react'
-import { isEqual } from 'lodash'
+import isEqual from 'react-fast-compare'
 
 import { match } from 'variant'
 
