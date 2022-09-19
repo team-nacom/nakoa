@@ -1,7 +1,5 @@
 import React, { useState, useReducer, useCallback, createContext, useContext, useMemo, memo } from 'react'
 
-import Dummy from '#/components/Dummy'
-
 
 import { HtmlPortalNode, createHtmlPortalNode, InPortal, OutPortal } from 'react-reverse-portal'
 
@@ -67,7 +65,8 @@ function App() {
     const [ cnt, setCnt ] = useState(0)
 
     const initNodes = useMemo(()=>{
-        return idToNodes({}, arr1)
+        // return idToNodes({}, arr1)
+        return idToNodes({}, arr3)
     }, [])
 
     const [ nodes, setNodes ] = useState(initNodes)

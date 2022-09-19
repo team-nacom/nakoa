@@ -3,8 +3,6 @@ import React, { useCallback } from 'react';
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
-import KeepAlive from '#/components/KeepAlive/KeepAlive'
-
 import {
     useRenderInfoScope,
     useDispatchCellDataScope
@@ -29,11 +27,9 @@ function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
     }
 
     return (
-        // <KeepAlive id = { cell.id }>
-            <div className='mathCell' style={ {width:'100%', border:'1px solid pink'} } >
+        <div className='mathCell' style={ {width:'100%', border:'1px solid pink'} } >
             { cell.value }
-            </div>
-        // </KeepAlive>
+        </div>
     )
 }
 

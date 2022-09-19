@@ -3,8 +3,6 @@ import React, { useCallback } from 'react'
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
-import KeepAlive from '#/components/KeepAlive/KeepAlive'
-
 import {
     useRenderInfoScope,
     useDispatchCellDataScope
@@ -24,11 +22,9 @@ type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
 
 function CodeCellViewer({ mode, cell } : RendererProps<CodeCell>){
     return (
-        // <KeepAlive id = { cell.id }>
-            <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
+        <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
             {cell.value}
-            </div>
-        // </KeepAlive>
+        </div>
     )
 }
 

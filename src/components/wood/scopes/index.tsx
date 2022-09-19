@@ -24,6 +24,12 @@ export function WoodScope(props: WoodScopeProps){
 }
 
 export {
+    WoodStructScope,
+    CellDataScope,
+    RenderInfoScope
+}
+
+export {
     useWoodStructScope,
     useCellDataScope, useDispatchCellDataScope,
     useRenderInfoScope,

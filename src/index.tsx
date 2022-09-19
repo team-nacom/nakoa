@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom/client'
 // import App from './rdt/RdtApp'
 // import App from './dkst/DkstApp'
 
-// import App from './DummyApp'
+import App from './DummyApp'
 // import App from './App220831'
 // import App from './App220908'
 // import App from './App220915'
-import App from './App220916'
+// import App from './App220917'
 
 
 const rootElement = document.getElementById('root')

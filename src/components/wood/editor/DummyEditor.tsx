@@ -2,25 +2,17 @@ import { useState, useCallback, useEffect } from 'react'
 
 import {
     WoodScope,
-    useWoodStructScope, WoodStruct,
-    useCellDataScope, CellData,
-    useRenderInfoScope, RenderInfo
+    useWoodStructScope, WoodStructScope, WoodStruct,
+    useCellDataScope, CellDataScope, CellData,
+    useRenderInfoScope, RenderInfoScope, RenderInfo
 } from '#/components/wood/scopes'
 
 import {
-    MemoizedCellRenderer
-} from '#/components/wood/cell/CellRenderer'
-
-import {
-    cellTypeStr
-} from '#/components/wood/cell/types-common'
-
-import {
+    MemoizedCellRenderer, cellTypeStr,
     RenderMode
-} from '#/components/wood/cell/types-render'
+} from '#/components/wood/cell'
 
-import { AliveScope } from '#/components/KeepAlive/AliveScope'
-import KeepAlive from '#/components/KeepAlive/KeepAlive'
+import { PortalScope, CellOutPortal } from './ReversePortal'
 
 const rootId = 'c0'
 
@@ -111,19 +103,10 @@ function DummyCell({ id } : DummyCellProps){
     }
 
     return <>
-        {/* <KeepAlive id = { id }> */}
-            <MemoizedCellRenderer key = { id }
-                cell = { cell }
-                mode = { RenderMode.EDITOR }
-            />
-        {/* </KeepAlive> */}
-        <div style={ {paddingLeft: '20px'} }>
-            {
-                childIds.map( childId => (
-                    <DummyCell key = { childId } id = { childId } />
-                ) )
-            }
-        </div>
+        <MemoizedCellRenderer key = { id }
+            cell = { cell }
+            mode = { RenderMode.EDITOR }
+        />
     </>
 }
 
@@ -134,10 +117,12 @@ export function DummyEditor(){
             woodStructInit = { struct0 }
             cellDataInit = { data }
         >
-            <AliveScope>
-                <DummyCell id= { rootId } />
-                <DummyButton />
-            </AliveScope>
+            <PortalScope
+                CellIndicator={ DummyCell }
+            >
+                <CellOutPortal id= { rootId } />
+            </PortalScope>
+            <DummyButton />
         </WoodScope>
     )
 }

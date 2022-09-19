@@ -2,9 +2,17 @@
 // so that each celltype renderer can refer to these types.
 
 /**
+ * props interface for component indicating a cell.
+ * @property {string} id cell id.
+ */
+export interface CellIndicatorProps{
+    id: string
+}
+
+/**
  * Rendering mode for renderer. 
  */
- export enum RenderMode{
+export enum RenderMode{
     PUBLISH,
     DISPLAY,
     PREVIEW,

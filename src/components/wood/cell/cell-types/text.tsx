@@ -3,8 +3,6 @@ import React, { useCallback } from 'react';
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
-import KeepAlive from '#/components/KeepAlive/KeepAlive'
-
 // RULE OF THUMB: other than useRenderInfoScope and useDispatchCellDataScope, scopes should not be avoided in each cell rendering.
 import {
     useRenderInfoScope,
@@ -25,11 +23,9 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 
 function TextCellViewer({ mode, cell } : RendererProps<TextCell>){
     return (
-        // <KeepAlive id = { cell.id }>
-            <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
+        <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
             {cell.value}
-            </div>
-        // </KeepAlive>
+        </div>
     )
 }
 
