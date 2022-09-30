@@ -18,21 +18,20 @@ export function CellRenderer({mode, cell}: RendererProps<Cell>){
     //     setTs(Date.now())
     // },[])
 
-    return <>
-        { Date.now() }
-        { match(cell,{
-            // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.
-            'text': cell => <TextCellRenderer {...{mode, cell}} />,
-            'code': cell => <CodeCellRenderer {...{mode, cell}} />,
-            'math': cell => <MathCellRenderer {...{mode, cell}} />
-        }, cellTypeStr) }
-    </>
+    // return <>
+    //     { Date.now() }
+    //     { match(cell,{
+    //         'text': cell => <TextCellRenderer {...{mode, cell}} />,
+    //         'code': cell => <CodeCellRenderer {...{mode, cell}} />,
+    //         'math': cell => <MathCellRenderer {...{mode, cell}} />
+    //     }, cellTypeStr) }
+    // </>
 
-    // return match(cell,{
-    //     // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.
-    //     'text': cell => TextCellRenderer({mode, cell}),
-    //     'code': cell => CodeCellRenderer({mode, cell}),
-    //     'math': cell => MathCellRenderer({mode, cell})
-    // }, cellTypeStr)
+    return match(cell,{
+        // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.
+        'text': cell => TextCellRenderer({mode, cell}),
+        'code': cell => CodeCellRenderer({mode, cell}),
+        'math': cell => MathCellRenderer({mode, cell})
+    }, cellTypeStr)
 }
 export const MemoizedCellRenderer = memo(CellRenderer, isEqual)

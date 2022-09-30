@@ -19,11 +19,9 @@ export enum RenderMode{
     EDITOR
 }
 
-export interface RenderContext{
-    
-}
-export interface RendererProps<T> extends RenderContext{
+export interface RendererProps<T>{
     mode: RenderMode,
     cell: T
+    // @todo for optimization, pass id and render timestamp (+ context change timestamp?) instead of the whole cell.
 }
 export type Renderer<T> = (props: RendererProps<T>) => JSX.Element

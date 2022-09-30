@@ -11,9 +11,9 @@ import {
     cellTypeStr
 } from './types-common'
 
-import { TextCellField } from './cell-types/text'
-import { CodeCellField } from './cell-types/code'
-import { MathCellField } from './cell-types/math'
+import { TextCellField, textCellDefault } from './cell-types/text'
+import { CodeCellField, codeCellDefault } from './cell-types/code'
+import { MathCellField, mathCellDefault } from './cell-types/math'
 
 export { cellTypeStr };
 
@@ -28,12 +28,12 @@ const cellFields = variantList([
 
 /**
  * sum type of 'cellType' field.
- * equivalent to 'text' | 'code' | 'math' | ... | undefined
+ * equivalent to 'text' | 'code' | 'math' | ...
  */
-export type CellType = TypeNames<
+export type CellType = Exclude<TypeNames<
      typeof cellFields,
      typeof cellTypeStr
->
+>, undefined>
 
 /**
  * sum type of fields.
@@ -44,8 +44,13 @@ export type CellType = TypeNames<
  * Cell<'text'> should be compatible with CellFrom<TextCellField, 'text'>.
  * @todo can we force this in compile-time?
  */
-export type Cell<T extends CellType = undefined> = VariantOf<typeof cellFields, T, typeof cellTypeStr>
+export type Cell<T extends CellType | undefined = undefined> = VariantOf<typeof cellFields, T, typeof cellTypeStr>
 
-export type CellData = {
-    [id: string]: Cell
+/**
+ * default value for each type of cells.
+ */
+export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof cellTypeStr > > = {
+    'text': textCellDefault,
+    'code': codeCellDefault,
+    'math': mathCellDefault
 }

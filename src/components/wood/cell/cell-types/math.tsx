@@ -4,9 +4,9 @@ import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
 import {
-    useRenderInfoScope,
-    useDispatchCellDataScope
-} from '#/components/wood/scopes'
+    useRenderData,
+    useCombinedDispatch
+} from '#/components/wood/states'
 
 // export const mathCellName = 'math'
 export interface MathCellField{
@@ -21,10 +21,10 @@ type MathCell = CellFrom<MathCellField,'math'> // only used in this file
 //renderers
 
 function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
-    function makeLog(str: string){
-        console.log(str)
-        return str
-    }
+    // function makeLog(str: string){
+    //     console.log(str)
+    //     return str
+    // }
 
     return (
         <div className='mathCell' style={ {width:'100%', border:'1px solid pink'} } >
@@ -34,8 +34,8 @@ function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
 }
 
 function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
-    // const {} = useRenderInfoScope()
-    const dispatch = useDispatchCellDataScope()
+    // const {} = useRenderData()
+    const dispatch = useCombinedDispatch()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         dispatch({

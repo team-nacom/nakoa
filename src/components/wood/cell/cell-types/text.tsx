@@ -3,11 +3,11 @@ import React, { useCallback } from 'react';
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
-// RULE OF THUMB: other than useRenderInfoScope and useDispatchCellDataScope, scopes should not be avoided in each cell rendering.
+// RULE OF THUMB: other than useRenderInfoScope and useCellDispatch, scopes should not appear in each cell rendering.
 import {
-    useRenderInfoScope,
-    useDispatchCellDataScope
-} from '#/components/wood/scopes'
+    useRenderData,
+    useCombinedDispatch
+} from '#/components/wood/states'
 
 
 // export const textCellName = 'text'
@@ -32,8 +32,8 @@ function TextCellViewer({ mode, cell } : RendererProps<TextCell>){
 
 
 function TextCellEditor({ cell }: Omit<RendererProps<TextCell>,'mode'>){
-    // const {} = useRenderInfoScope()
-    const dispatch = useDispatchCellDataScope()
+    // const {} = useRenderData()
+    const dispatch = useCombinedDispatch()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()

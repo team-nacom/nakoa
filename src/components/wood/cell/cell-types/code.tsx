@@ -4,9 +4,9 @@ import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, RendererProps } from '../types-render';
 
 import {
-    useRenderInfoScope,
-    useDispatchCellDataScope
-} from '#/components/wood/scopes'
+    useRenderData,
+    useCombinedDispatch
+} from '#/components/wood/states'
 
 // export const codeCellName = 'code'
 export interface CodeCellField{
@@ -29,8 +29,8 @@ function CodeCellViewer({ mode, cell } : RendererProps<CodeCell>){
 }
 
 function CodeCellEditor({ cell }: Omit<RendererProps<CodeCell>,'mode'>){
-    // const {} = useRenderInfoScope()
-    const dispatch = useDispatchCellDataScope()
+    // const {} = useRenderData()
+    const dispatch = useCombinedDispatch()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         dispatch({

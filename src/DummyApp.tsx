@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react'
 
-import { DummyEditor } from '#/components/wood/editor/DummyEditor'
+import { Editor } from '#/components/wood/editor/Editor'
 
 function App() {
-    return ( <DummyEditor /> );
+    return ( <Editor /> );
 }
 
 export default App;
