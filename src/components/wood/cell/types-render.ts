@@ -7,6 +7,7 @@
  */
 export interface CellIndicatorProps{
     id: string
+    depth?: number
 }
 
 /**

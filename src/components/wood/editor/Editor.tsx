@@ -17,8 +17,8 @@ import {
 
 import {
     CellPortalScope,
-    CellOutPortalWithInterCell, InterCellProps
-} from './CellReversePortal'
+    CellPortalWithInterCell, InterCellProps
+} from './CellPortal'
 
 const rootId = 'c0'
 
@@ -52,32 +52,11 @@ const data0 : CellData = {
     }
 }
 
-function CellIndicator({ id } : CellIndicatorProps){
-    const structData = useStructData()
-    const cellData = useCellData()
-
-    const childIds = structData[id]
-    const cell = cellData[id]
-    if(!childIds || !cell){
-        return <>
-            <div style={ {paddingLeft: '20px'} }>
-                cell {id} Not Found!
-            </div>
-        </>
-    }
-
-    return <>
-        <MemoizedCellRenderer key = { id }
-            cell = { cell }
-            mode = { RenderMode.EDITOR }
-        />
-    </>
-}
-
 function InterCell({ parentId, idx }: InterCellProps){
     const dispatch = useCombinedDispatch()
     return (
-        <button onClick={()=>{
+        <button onClick={(ev)=>{
+            ev.stopPropagation()
             dispatch({
                 type: 'createChild',
                 parentId,
@@ -90,7 +69,7 @@ function InterCell({ parentId, idx }: InterCellProps){
     )
 }
 
-const CellOutPortal = CellOutPortalWithInterCell(InterCell)
+const CellPortal = CellPortalWithInterCell(InterCell)
 
 export function Editor(){
     // calculating parentIds from childrenIds(struct) --
@@ -114,9 +93,9 @@ export function Editor(){
         <CombinedStateContext.Provider value={ data }>
             <CombinedDispatchContext.Provider value={ dispatch }>
                 <CellPortalScope
-                    CellIndicator={ CellIndicator }
+                    CellIndicator={ MemoizedCellRenderer }
                 >
-                    <CellOutPortal id= { rootId } />
+                    <CellPortal id= { rootId } />
                 </CellPortalScope>
             </CombinedDispatchContext.Provider>
         </CombinedStateContext.Provider>

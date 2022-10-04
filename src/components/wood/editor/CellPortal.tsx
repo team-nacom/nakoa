@@ -40,11 +40,12 @@ function provideNodes(prev: PortalNodeRecord, ids: string[]): PortalNodeRecord {
 const PortalNodeContext = createContext< PortalNodeRecord >({})
 
 interface PortalScopeProps{
-    CellIndicator: (props: CellIndicatorProps) => JSX.Element
+    CellIndicator: (props: CellIndicatorProps) => JSX.Element | null
 }
 
 /**
  * portal node provider.
+ * TODO: CellPortalScope receives CellIndicator passed as props, but below CellOutPortal is defined as HOL. unify the convention?
  */
 export function CellPortalScope({ CellIndicator, children }: PropsWithChildren<PortalScopeProps>){
     const structData = useStructData()
@@ -62,8 +63,6 @@ export function CellPortalScope({ CellIndicator, children }: PropsWithChildren<P
     useEffect(()=>{
         setNodes(nodes => provideNodes(nodes, idsHolder.current))
     },[idsHolder.current])
-
-    
 
     return (
         <PortalNodeContext.Provider value = { nodes }>
@@ -85,17 +84,20 @@ export function CellPortalScope({ CellIndicator, children }: PropsWithChildren<P
 export interface InterCellProps{
     parentId: string
     idx: number
+    depth?: number
 }
 /**
  * given InterCell, gives tree-structured outPortal component declared by `structData`
- * @param InterCell component that should be placed between sibling cells. e.g. add cell button. its props should be `InterCellProps`.
+ * @param InterCell component with `InterCellProps` props which should be placed between sibling cells. e.g. add cell button.
  */
-export function CellOutPortalWithInterCell(InterCell? : (props: InterCellProps) => JSX.Element){
-    return function CellOutPortal({ id }: CellIndicatorProps){
+export function CellPortalWithInterCell(InterCell? : (props: InterCellProps) => JSX.Element){
+    return function CellPortal({ id, depth }: CellIndicatorProps){
         const portalNodes = useContext(PortalNodeContext)
         const structData = useStructData()
         
         const childIds = structData[id] || []
+
+        const nextDepth = (depth || 0) + 1
 
         if(portalNodes[id] === undefined) return null
         
@@ -105,12 +107,12 @@ export function CellOutPortalWithInterCell(InterCell? : (props: InterCellProps) 
                 {
                     childIds.map( (childId, idx) => (
                         <>
-                            { InterCell && <InterCell parentId = { id } idx = { idx } /> }
-                            <CellOutPortal key = { childId } id = { childId } />
+                            { InterCell && <InterCell parentId = { id } idx = { idx } depth = { nextDepth } /> }
+                            <CellPortal key = { childId } id = { childId } depth = { nextDepth } />
                         </>
                     ) )
                 }
-                { InterCell && <InterCell parentId = { id } idx = { childIds.length } /> }
+                { InterCell && <InterCell parentId = { id } idx = { childIds.length } depth = { nextDepth } /> }
             </div>
         </div>
     }

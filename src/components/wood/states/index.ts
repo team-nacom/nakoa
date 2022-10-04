@@ -8,10 +8,12 @@ import {
 
 import { CellType, cellTypeStr, defaultFields } from '#/components/wood/cell/types'
 
-import { CellData, cellDataDefault, CellDataAction, cellReducer } from './CellData'
-import { StructData, structDataDefault, StructDataAction, structReducer } from './StructData'
-import { RenderData, renderDataDefault, RenderDataAction, renderReducer } from './RenderData'
+import { CellData, cellDataDefault, cellReducer } from './CellData'
+import { StructData, structDataDefault, structReducer } from './StructData'
+import { RenderData, renderDataDefault, renderReducer } from './RenderData'
 import { EditorState, editorStateDefault } from './EditorState'
+
+// define combined state, combined action to manage data and states simultaneously
 
 export type CombinedState = {
     cellData: CellData,
@@ -156,6 +158,7 @@ export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 
 export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
 
+export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
 export const useCellData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData)
 export const useStructData = () => useContextSelector(CombinedStateContext, ctx => ctx.structData)
 export const useRenderData = () => useContextSelector(CombinedStateContext, ctx => ctx.renderData)

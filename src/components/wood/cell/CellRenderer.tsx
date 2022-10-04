@@ -4,34 +4,26 @@ import isEqual from 'react-fast-compare'
 import { match } from 'variant'
 
 import { Cell, cellTypeStr } from './types'
-import { RenderMode, Renderer, RendererProps } from './types-render'
+import { RenderMode, Renderer, RendererProps, CellIndicatorProps } from './types-render'
 
 import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
 import { MathCellRenderer } from './cell-types/math'
 
-export function CellRenderer({mode, cell}: RendererProps<Cell>){
+import { useSingleCell } from '#/components/wood/states'
 
-    // for debugging.
-    // const [ts, setTs] = useState(0)
-    // useEffect(()=>{
-    //     setTs(Date.now())
-    // },[])
+export function CellRenderer({ id }: CellIndicatorProps){
+    const cell = useSingleCell(id)
+    if(cell === undefined) return null
 
-    // return <>
-    //     { Date.now() }
-    //     { match(cell,{
-    //         'text': cell => <TextCellRenderer {...{mode, cell}} />,
-    //         'code': cell => <CodeCellRenderer {...{mode, cell}} />,
-    //         'math': cell => <MathCellRenderer {...{mode, cell}} />
-    //     }, cellTypeStr) }
-    // </>
+    const mode = RenderMode.EDITOR
 
     return match(cell,{
         // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.
         'text': cell => TextCellRenderer({mode, cell}),
         'code': cell => CodeCellRenderer({mode, cell}),
-        'math': cell => MathCellRenderer({mode, cell})
+        'math': cell => MathCellRenderer({mode, cell}),
+        default: () => null
     }, cellTypeStr)
 }
 export const MemoizedCellRenderer = memo(CellRenderer, isEqual)
