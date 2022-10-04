@@ -11,13 +11,13 @@ import {
 
 
 import {
-    MemoizedCellRenderer, cellTypeStr, CellIndicatorProps,
+    MemoizedCellRenderer, cellTypeStr, 
     RenderMode
 } from '#/components/wood/cell'
 
 import {
-    CellPortalScope,
-    CellPortalWithInterCell, InterCellProps
+    CellPortalScopeWith, CellIndicatorProps,
+    CellPortalWith, InterCellProps
 } from './CellPortal'
 
 const rootId = 'c0'
@@ -52,6 +52,10 @@ const data0 : CellData = {
     }
 }
 
+function CellIndicator({ id }: CellIndicatorProps){
+    return <MemoizedCellRenderer mode = { RenderMode.EDITOR } id = { id } />
+}
+
 function InterCell({ parentId, idx }: InterCellProps){
     const dispatch = useCombinedDispatch()
     return (
@@ -69,7 +73,8 @@ function InterCell({ parentId, idx }: InterCellProps){
     )
 }
 
-const CellPortal = CellPortalWithInterCell(InterCell)
+const CellPortalScope = CellPortalScopeWith(CellIndicator)
+const CellPortal = CellPortalWith(InterCell)
 
 export function Editor(){
     // calculating parentIds from childrenIds(struct) --
@@ -92,9 +97,7 @@ export function Editor(){
     return (
         <CombinedStateContext.Provider value={ data }>
             <CombinedDispatchContext.Provider value={ dispatch }>
-                <CellPortalScope
-                    CellIndicator={ MemoizedCellRenderer }
-                >
+                <CellPortalScope>
                     <CellPortal id= { rootId } />
                 </CellPortalScope>
             </CombinedDispatchContext.Provider>

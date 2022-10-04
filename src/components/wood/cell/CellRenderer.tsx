@@ -4,7 +4,7 @@ import isEqual from 'react-fast-compare'
 import { match } from 'variant'
 
 import { Cell, cellTypeStr } from './types'
-import { RenderMode, Renderer, RendererProps, CellIndicatorProps } from './types-render'
+import { RenderMode, Renderer, CellTypeRendererProps, CellRendererProps } from './types-render'
 
 import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
@@ -12,11 +12,9 @@ import { MathCellRenderer } from './cell-types/math'
 
 import { useSingleCell } from '#/components/wood/states'
 
-export function CellRenderer({ id }: CellIndicatorProps){
+export function CellRenderer({ mode, id }: CellRendererProps){
     const cell = useSingleCell(id)
     if(cell === undefined) return null
-
-    const mode = RenderMode.EDITOR
 
     return match(cell,{
         // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.

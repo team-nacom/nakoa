@@ -159,6 +159,8 @@ export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
 
 export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
+export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)
+
 export const useCellData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData)
 export const useStructData = () => useContextSelector(CombinedStateContext, ctx => ctx.structData)
 export const useRenderData = () => useContextSelector(CombinedStateContext, ctx => ctx.renderData)

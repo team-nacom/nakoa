@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { CellFrom } from '../types-common';
-import { RenderMode, Renderer, RendererProps } from '../types-render';
+import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 // RULE OF THUMB: other than useRenderInfoScope and useCellDispatch, scopes should not appear in each cell rendering.
 import {
@@ -21,7 +21,7 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 
 // renderers
 
-function TextCellViewer({ mode, cell } : RendererProps<TextCell>){
+function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
     return (
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
             {cell.value}
@@ -31,7 +31,7 @@ function TextCellViewer({ mode, cell } : RendererProps<TextCell>){
 
 
 
-function TextCellEditor({ cell }: Omit<RendererProps<TextCell>,'mode'>){
+function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
     // const {} = useRenderData()
     const dispatch = useCombinedDispatch()
 
@@ -61,7 +61,7 @@ function TextCellEditor({ cell }: Omit<RendererProps<TextCell>,'mode'>){
 }
 
 
-export function TextCellRenderer({ mode, cell }: RendererProps<TextCell>){
+export function TextCellRenderer({ mode, cell }: CellTypeRendererProps<TextCell>){
     if(mode !== RenderMode.EDITOR){
         return <TextCellViewer mode={ mode } cell={ cell } />
     }

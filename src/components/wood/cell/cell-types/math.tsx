@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { CellFrom } from '../types-common';
-import { RenderMode, Renderer, RendererProps } from '../types-render';
+import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
@@ -20,7 +20,7 @@ type MathCell = CellFrom<MathCellField,'math'> // only used in this file
 
 //renderers
 
-function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
+function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
     // function makeLog(str: string){
     //     console.log(str)
     //     return str
@@ -33,7 +33,7 @@ function MathCellViewer({ mode, cell } : RendererProps<MathCell>){
     )
 }
 
-function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
+function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
     // const {} = useRenderData()
     const dispatch = useCombinedDispatch()
 
@@ -61,7 +61,7 @@ function MathCellEditor({ cell }: Omit<RendererProps<MathCell>,'mode'>){
 }
 
 
-export function MathCellRenderer({ mode, cell }: RendererProps<MathCell>){
+export function MathCellRenderer({ mode, cell }: CellTypeRendererProps<MathCell>){
     if(mode !== RenderMode.EDITOR){
         return <MathCellViewer mode={ mode } cell={ cell } />
     }
