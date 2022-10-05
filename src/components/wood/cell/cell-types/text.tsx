@@ -11,7 +11,9 @@ import {
 
 
 import ReactMarkdown from 'react-markdown'
-
+import RemarkGFM from 'remark-gfm'
+import RemarkMath from 'remark-math'
+import RehypeKatex from 'rehype-katex'
 
 // export const textCellName = 'text'
 export interface TextCellField{
@@ -29,7 +31,10 @@ function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
             { Date.now() }
             <br />
-            <ReactMarkdown className='markdown'>
+            <ReactMarkdown className='markdown'
+                remarkPlugins = { [ RemarkGFM, RemarkMath ] }
+                rehypePlugins = { [ RehypeKatex ] }
+            >
                 {cell.value}
             </ReactMarkdown>
         </div>

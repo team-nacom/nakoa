@@ -13,6 +13,8 @@ import { StructData, structDataDefault, structReducer } from './StructData'
 import { RenderData, renderDataDefault, renderReducer } from './RenderData'
 import { EditorState, editorStateDefault } from './EditorState'
 
+import katex from 'katex'
+
 // define combined state, combined action to manage data and states simultaneously
 
 export interface CombinedState extends EditorState {
@@ -53,6 +55,16 @@ function generateId(parentIds: {[id: string]: string | undefined}) : string{
     return 'c' + mx; // cell ids are 'cNN' format now.
 }
 
+function toMathMacroObj(mathMacroStr: string){
+    let obj = {}
+    katex.renderToString(mathMacroStr,{
+        throwOnError: false,
+        globalGroup: true,
+        macros: obj
+    })
+    return obj
+}
+
 const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a: CombinedAction) => {
     const next : CombinedState = {...prev}
     switch(a.type){
@@ -63,6 +75,15 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             id: a.id,
             ...fields
         })
+
+        if(id === prev.rootId && fields.mathMacroStr){
+            const mathMacroStr = fields.mathMacroStr as string
+            next.renderData = {
+                ...prev.renderData,
+                mathMacroObj: toMathMacroObj(mathMacroStr)
+            }
+        }
+
     } break
     case 'changeType': {
         // if(a.cellType === 'root') return;
@@ -81,11 +102,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         })
     } break
     case 'move': {
-        const { parentIds } = prev
+        const { parentIds, structData } = prev
         const targetParentId = parentIds[a.targetId]
         if(targetParentId === undefined) return prev
 
-        const targetPos = parentIds[targetParentId]?.indexOf(a.targetId)
+        const targetPos = structData[targetParentId]?.indexOf(a.targetId)
         if(targetPos === undefined || targetPos === -1) return prev
 
         next.structData = structReducer(prev.structData, {
@@ -119,11 +140,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         next.parentIds = {...parentIds, [newId]: a.parentId }
     } break
     case 'remove': {
-        const { parentIds } = prev
+        const { parentIds, structData } = prev
         const targetParentId = parentIds[a.targetId]
         if(targetParentId === undefined) return prev
 
-        const targetPos = parentIds[targetParentId]?.indexOf(a.targetId)
+        const targetPos = structData[targetParentId]?.indexOf(a.targetId)
         if(targetPos === undefined || targetPos === -1) return prev
 
         next.cellData = cellReducer(prev.cellData, {
@@ -146,6 +167,50 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
 
     }
     return next
+}
+
+export function initializeState(
+    rootId: string,
+    cellData?: CellData, structData?: StructData,
+    focusId?: string
+) : CombinedState{
+
+    if(!cellData){
+        cellData = {
+            [rootId]: {
+                [cellTypeStr]: 'text', //root
+                id: rootId,
+                value: ''
+            }
+        }
+    }
+    if(!structData){
+        structData = { [rootId]: [] }
+        for(let id in cellData){
+            if(id === rootId) continue
+            structData[rootId].push(id)
+            structData[id] = []
+        }
+    }
+
+    const parentIds : {[id: string]: string | undefined} = {}
+    for(let pid in structData){
+        for(let cid of structData[pid]){
+            parentIds[cid] = pid;
+        }
+    }
+
+    const mathMacroStr = (cellData[rootId] as any).mathMacroStr as string || ''
+
+    return {
+        cellData, structData,
+        renderData: {
+            mathMacroObj: toMathMacroObj(mathMacroStr),
+            Label: {},
+            LabelTypewise: {}
+        },
+        parentIds, rootId, focusId
+    }
 }
 
 export const CombinedStateContext = createContext(combinedStateDefault)

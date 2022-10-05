@@ -6,7 +6,7 @@ import {
 
 import {
     MemoizedCellRenderer, RenderMode,
-    CellType, cellTypeStr,
+    Cell, CellType, cellTypeStr,
     defaultFields
 } from '#/components/wood/cell'
 
@@ -19,10 +19,11 @@ import isEqual from 'react-fast-compare'
 
 import {
     AddBox,
-    Article, Calculate, Code, Image, Tag
+    Article, Calculate, Code, Delete, Image, Tag
 } from '@mui/icons-material'
 
 function CellToolbar({ id }: CellIndicatorProps){
+    const rootId = useRootId()
     const cell = useSingleCell(id)
     const childIds = useSingleCellChildren(id)
     const dispatch = useCombinedDispatch()
@@ -46,7 +47,7 @@ function CellToolbar({ id }: CellIndicatorProps){
     }), [cell, childIds])
 
     const deleteHandler = useCallback(()=>{
-        const { [cellTypeStr]: cellType, id: _, ...fields } = cell
+        const { [cellTypeStr]: cellType, id: unused, ...fields } = cell
 
         if((
             isEqual(fields, defaultFields[cellType])
@@ -78,6 +79,13 @@ function CellToolbar({ id }: CellIndicatorProps){
             >
                 <Code />
             </button>
+            {id !== rootId &&
+                <button className='cellOptionButton'
+                    onClick={ deleteHandler }
+                >
+                    <Delete />
+                </button>
+            }
         </div>
         <div className='cellInfo'>
             <span className='cellId'>
@@ -86,47 +94,27 @@ function CellToolbar({ id }: CellIndicatorProps){
             </span>
         </div>
     </div>
-
-}
-
-
-function CellIndicatorFocused({ id }: CellIndicatorProps){
-    return (
-        <div key = { id } id = { id }
-            className={ 'cellContentWrapper editingCellWrapper' }
-            onClick = { (ev) => {
-                ev.stopPropagation()
-            }}
-        >
-            <CellToolbar id = {id} />
-            
-            <MemoizedCellRenderer id = { id } mode = { RenderMode.EDITOR } />
-        </div>
-    )
-}
-function CellIndicatorUnfocused({ id }: CellIndicatorProps){
-    const dispatch = useCombinedDispatch()
-
-    return (
-        <div key = { id } id = { id }
-            className={ 'cellContentWrapper' }
-            onClick = { (ev) => {
-                ev.stopPropagation()
-                dispatch({type:'focus', targetId:id})
-            }}
-        >
-            <CellToolbar id = {id} />
-
-            <MemoizedCellRenderer id = { id } mode = { RenderMode.PREVIEW } />
-        </div>
-    )
 }
 
 function CellIndicator({ id }: CellIndicatorProps){
     const isFocused = useSingleCellFocused(id)
+    const cn = 'cellContentWrapper' + (isFocused? ' editingCellWrapper' : '')
+    const mode = (isFocused? RenderMode.EDITOR : RenderMode.PREVIEW)
 
-    if(isFocused) return <CellIndicatorFocused id={id} />
-    else return <CellIndicatorUnfocused id={id} />
+    const dispatch = useCombinedDispatch()
+
+    return (
+        <div key = { id } id = { id }
+            className={ cn }
+            onClick = { (ev) => {
+                ev.stopPropagation()
+                !isFocused && dispatch({type:'focus', targetId:id})
+            }}
+        >
+            <CellToolbar id = { id } />
+            <MemoizedCellRenderer id = { id } mode = { mode } />
+        </div>
+    )
 }
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
 

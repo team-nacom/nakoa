@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, PropsWithChildren, Reduce
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
 
 export interface RenderData{
-    mathMacro: Object
+    mathMacroObj: Object
     Label: Record<string, number[]>
     LabelTypewise: Record<string, number[]>
 
@@ -11,7 +11,7 @@ export interface RenderData{
     // render mode(publish / display / preview) : pass as props.
 }
 export const renderDataDefault : RenderData = {
-    mathMacro: {},
+    mathMacroObj: {},
     Label: {},
     LabelTypewise: {}
 }
