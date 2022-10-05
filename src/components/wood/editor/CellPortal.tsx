@@ -121,14 +121,27 @@ export function CellPortalWith(
             <OutPortal node = { portalNodes[id] } />
             <ChildrenWrapper>
                 {
-                    childIds.map( (childId, idx) => (
-                        <>
-                            { InterCell && <InterCell key = { 'inter-' + id + '-' + idx } parentId = { id } idx = { idx } depth = { nextDepth } /> }
-                            <CellPortal key = { 'cell-' + childId } id = { childId } depth = { nextDepth } /> 
-                        </> //TODO
-                    ) )
+                    childIds.reduce( (prev: any[], childId, idx) => {
+                        prev.push(
+                            <CellPortal key = { 'cell-' + childId }
+                                id = { childId }
+                                depth = { nextDepth }
+                            />
+                        )
+                        prev.push(
+                            <InterCell key = { 'inter-' + id + '-' + (idx + 1) }
+                                parentId = { id } idx = { idx + 1 }
+                                depth = { nextDepth }
+                            />
+                        )
+                        return prev
+                    }, [
+                        <InterCell key = { 'inter-' + id + '-0' }
+                            parentId = { id } idx = { childIds.length }
+                            depth = { nextDepth }
+                        /> // 0th element
+                    ])
                 }
-                { InterCell && <InterCell key = { 'inter-' + id + '-' + childIds.length } parentId = { id } idx = { childIds.length } depth = { nextDepth } /> }
             </ChildrenWrapper>
         </div>
     }
