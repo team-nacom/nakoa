@@ -8,6 +8,9 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
+import 'katex/dist/katex.min.css';
+import TeX from '@matejmazur/react-katex';
+
 // export const mathCellName = 'math'
 export interface MathCellField{
     value: string
@@ -27,8 +30,15 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
     // }
 
     return (
-        <div className='mathCell' style={ {width:'100%', border:'1px solid pink'} } >
-            { cell.value }
+        <div className='mathCell'>
+            { Date.now() }
+            <div className='mathCellPreview'>
+                <TeX block
+                    settings={ { macros: {} } }
+                >
+                    { cell.value }
+                </TeX>
+            </div>
         </div>
     )
 }
@@ -48,8 +58,7 @@ function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
     }, [cell.id])
 
     return (
-        <div className='editorMathCellWrapper' style={ {width:'100%', border:'1px solid pink'} }>
-            { Date.now() }
+        <div className='editorMathCellWrapper'>
             <textarea
                 className='editorMathCell editorCell'
                 value={cell.value}

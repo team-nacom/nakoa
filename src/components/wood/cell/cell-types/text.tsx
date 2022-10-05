@@ -10,6 +10,9 @@ import {
 } from '#/components/wood/states'
 
 
+import ReactMarkdown from 'react-markdown'
+
+
 // export const textCellName = 'text'
 export interface TextCellField{
     value: string
@@ -24,7 +27,11 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
     return (
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
-            {cell.value}
+            { Date.now() }
+            <br />
+            <ReactMarkdown className='markdown'>
+                {cell.value}
+            </ReactMarkdown>
         </div>
     )
 }
@@ -48,8 +55,7 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
     }, [cell.id])
 
     return (
-        <div className='editorTextCellWrapper' style={ {width:'100%', border:'1px solid black'} }>
-            { Date.now() }
+        <div className='editorTextCellWrapper'>
             <textarea
                 className='editorTextCell editorCell'
                 value={cell.value}

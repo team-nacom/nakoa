@@ -15,18 +15,17 @@ import { EditorState, editorStateDefault } from './EditorState'
 
 // define combined state, combined action to manage data and states simultaneously
 
-export type CombinedState = {
+export interface CombinedState extends EditorState {
     cellData: CellData,
     structData: StructData,
     renderData: RenderData,
-    editorState: EditorState
 }
 
 const combinedStateDefault : CombinedState = {
+    ...editorStateDefault,
     cellData: cellDataDefault,
     structData: structDataDefault,
     renderData: renderDataDefault,
-    editorState: editorStateDefault
 }
 
 export type CombinedAction
@@ -39,7 +38,7 @@ export type CombinedAction
     // | { type: 'toggleHide', id: string }
     // | { type: 'updateMacro', mathMacroObj: Object }
 
-    // | { type: 'focus', id?: string }
+    | { type: 'focus', targetId?: string } // blur with targetId = undefined
     // | { type: 'focusAdj', direction: number }
 ;
 
@@ -82,7 +81,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         })
     } break
     case 'move': {
-        const { parentIds } = prev.editorState
+        const { parentIds } = prev
         const targetParentId = parentIds[a.targetId]
         if(targetParentId === undefined) return prev
 
@@ -96,14 +95,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             destParentId: a.destParentId,
             destPos: a.destPos
         })
-        next.editorState = (({parentIds, ...other} : EditorState)=>{
-            const nextParentIds = {...parentIds}
-            nextParentIds[a.targetId] = a.destParentId
-            return { parentIds, ...other }
-        })(prev.editorState)
+        next.parentIds = {...parentIds, [a.targetId]: a.destParentId }
     } break
     case 'createChild': {
-        const newId = generateId(prev.editorState.parentIds)
+        const { parentIds } = prev
+        const newId = generateId(prev.parentIds)
 
         next.cellData = cellReducer(prev.cellData, {
             type: 'create',
@@ -120,14 +116,10 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             pos: a.pos,
             cellId: newId
         })
-        next.editorState = (({parentIds, ...other} : EditorState)=>{
-            const nextParentIds = {...parentIds}
-            nextParentIds[newId] = a.parentId
-            return { parentIds: nextParentIds, ...other }
-        })(prev.editorState)
+        next.parentIds = {...parentIds, [newId]: a.parentId }
     } break
     case 'remove': {
-        const { parentIds } = prev.editorState
+        const { parentIds } = prev
         const targetParentId = parentIds[a.targetId]
         if(targetParentId === undefined) return prev
 
@@ -143,12 +135,15 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             parentId: targetParentId,
             pos: targetPos
         })
-        next.editorState = (({parentIds, ...other} : EditorState)=>{
-            const nextParentIds = {...parentIds}
-            delete nextParentIds[a.targetId]
-            return { parentIds, ...other }
-        })(prev.editorState)
+
+        const { [a.targetId]: _, ...newParentIds } = parentIds
+        next.parentIds = newParentIds
     } break
+
+    case 'focus': {
+        next.focusId = a.targetId
+    } break
+
     }
     return next
 }
@@ -158,13 +153,17 @@ export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 
 export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
 
+export const useRootId = () => useContextSelector(CombinedStateContext, ctx => ctx.rootId)
+
 export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
 export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)
+export const useSingleCellFocused = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.focusId === id)
+
+export const useSingleCellChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => (ctx.structData[id] || []) )
 
 export const useCellData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData)
 export const useStructData = () => useContextSelector(CombinedStateContext, ctx => ctx.structData)
 export const useRenderData = () => useContextSelector(CombinedStateContext, ctx => ctx.renderData)
-export const useEditorState = () => useContextSelector(CombinedStateContext, ctx => ctx.editorState)
 export const useCombinedDispatch = () => useContext(CombinedDispatchContext)
 
 export type {

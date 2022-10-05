@@ -23,6 +23,8 @@ type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
 function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
     return (
         <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
+            { Date.now() }
+            <br />
             {cell.value}
         </div>
     )
@@ -43,8 +45,7 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
     }, [cell.id])
 
     return (
-        <div className='editorCodeCellWrapper' style={ {width:'100%', border:'1px solid blue'} }>
-            { Date.now() }
+        <div className='editorCodeCellWrapper'>
             <textarea
                 key={ `cell-${ cell.id }` }
                 className='editorCodeCell editorCell'

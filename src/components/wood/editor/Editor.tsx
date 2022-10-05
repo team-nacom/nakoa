@@ -1,18 +1,13 @@
-import { useState, useReducer, useCallback, useEffect, useMemo } from 'react'
+import { useState, useReducer, useCallback, useEffect, useMemo, PropsWithChildren } from 'react'
 
 import {
-    CellData,
-    useCellData, useStructData, useRenderData, useEditorState,
-    
-    CombinedStateContext, CombinedDispatchContext,
-    useCombinedReducer, useCombinedDispatch
+    useCombinedDispatch, useSingleCell, useSingleCellFocused, useRootId, useSingleCellChildren
 } from '#/components/wood/states'
 
-
-
 import {
-    MemoizedCellRenderer, cellTypeStr, 
-    RenderMode
+    MemoizedCellRenderer, RenderMode,
+    CellType, cellTypeStr,
+    defaultFields
 } from '#/components/wood/cell'
 
 import {
@@ -20,87 +15,188 @@ import {
     CellPortalWith, InterCellProps
 } from './CellPortal'
 
-const rootId = 'c0'
+import isEqual from 'react-fast-compare'
 
-const struct0 : { [id: string]: string[] } = {
-    [rootId]: ['c1', 'c2', 'c3'],
-    'c1': [],
-    'c2': [],
-    'c3': []
+import {
+    AddBox,
+    Article, Calculate, Code, Image, Tag
+} from '@mui/icons-material'
+
+function CellToolbar({ id }: CellIndicatorProps){
+    const cell = useSingleCell(id)
+    const childIds = useSingleCellChildren(id)
+    const dispatch = useCombinedDispatch()
+
+    const changeCellTypeHandlerFactory = useCallback((targetType: CellType) => (() => {
+        const { [cellTypeStr]: cellType, id: _, ...fields } = cell
+
+        if(cellType === targetType) return
+        if((
+            isEqual(fields, defaultFields[cellType])
+            && !(childIds.length > 0)
+        )
+            || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 변경하시겠습니까?')
+        ){
+            dispatch({
+                type: 'changeType',
+                cellType: targetType,
+                id
+            })
+        }
+    }), [cell, childIds])
+
+    const deleteHandler = useCallback(()=>{
+        const { [cellTypeStr]: cellType, id: _, ...fields } = cell
+
+        if((
+            isEqual(fields, defaultFields[cellType])
+            && !(childIds.length > 0)
+        )
+            || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
+        ){
+            dispatch({
+                type: 'remove',
+                targetId: id
+            })
+        }
+    }, [cell, childIds])
+
+    return <div className='cellToolbar'>
+        <div className='cellOptions'>
+            <button className='cellOptionButton'
+                onClick={ changeCellTypeHandlerFactory('text') }
+            >
+                <Article />
+            </button>
+            <button className='cellOptionButton'
+                onClick={ changeCellTypeHandlerFactory('math') }
+            >
+                <Calculate />
+            </button>
+            <button className='cellOptionButton'
+                onClick={ changeCellTypeHandlerFactory('code') }
+            >
+                <Code />
+            </button>
+        </div>
+        <div className='cellInfo'>
+            <span className='cellId'>
+                <span className='cellInfoIcon'><Tag /></span>
+                <span className='cellInfoText'>{id}</span>
+            </span>
+        </div>
+    </div>
+
 }
 
-const data0 : CellData = {
-    [rootId]: {
-        [cellTypeStr]: 'text',
-        id: rootId,
-        value: ''
-    },
-    'c1': {
-        [cellTypeStr]: 'code',
-        id: 'c1',
-        value: 'print(\'Hello, World!\')'
-    },
-    'c2': {
-        [cellTypeStr]: 'math',
-        id: 'c2',
-        value: 'a^2+b^2=c^2'
-    },
-    'c3': {
-        [cellTypeStr]: 'text',
-        id: 'c3',
-        value: 'wwwwww'
-    }
+
+function CellIndicatorFocused({ id }: CellIndicatorProps){
+    return (
+        <div key = { id } id = { id }
+            className={ 'cellContentWrapper editingCellWrapper' }
+            onClick = { (ev) => {
+                ev.stopPropagation()
+            }}
+        >
+            <CellToolbar id = {id} />
+            
+            <MemoizedCellRenderer id = { id } mode = { RenderMode.EDITOR } />
+        </div>
+    )
+}
+function CellIndicatorUnfocused({ id }: CellIndicatorProps){
+    const dispatch = useCombinedDispatch()
+
+    return (
+        <div key = { id } id = { id }
+            className={ 'cellContentWrapper' }
+            onClick = { (ev) => {
+                ev.stopPropagation()
+                dispatch({type:'focus', targetId:id})
+            }}
+        >
+            <CellToolbar id = {id} />
+
+            <MemoizedCellRenderer id = { id } mode = { RenderMode.PREVIEW } />
+        </div>
+    )
 }
 
 function CellIndicator({ id }: CellIndicatorProps){
-    return <MemoizedCellRenderer mode = { RenderMode.EDITOR } id = { id } />
+    const isFocused = useSingleCellFocused(id)
+
+    if(isFocused) return <CellIndicatorFocused id={id} />
+    else return <CellIndicatorUnfocused id={id} />
 }
+const CellPortalScope = CellPortalScopeWith(CellIndicator)
+
 
 function InterCell({ parentId, idx }: InterCellProps){
     const dispatch = useCombinedDispatch()
     return (
-        <button onClick={(ev)=>{
-            ev.stopPropagation()
-            dispatch({
-                type: 'createChild',
-                parentId,
-                pos: idx,
-                cellType: 'text'
-            })
-        }}>
-            Add children
-        </button>
+        <div className='interBlockHelper'>
+            <hr />
+            <div className='addButtonsWrapper'>
+                <button className='addContentCellButton'
+                    onClick={(ev)=>{
+                        ev.stopPropagation()
+                        dispatch({
+                            type: 'createChild',
+                            parentId,
+                            pos: idx,
+                            cellType: 'text'
+                        })
+                    }}
+                >
+                    <AddBox />
+                </button>
+            </div>
+        </div>
     )
 }
+function ChildrenWrapper({ children }: PropsWithChildren){
+    return <div className={'cellChildrenWrapper'} style={ {padding:'0 20px'} }>
+        { children }
+    </div>
+}
+const CellPortal = CellPortalWith(InterCell, ChildrenWrapper)
 
-const CellPortalScope = CellPortalScopeWith(CellIndicator)
-const CellPortal = CellPortalWith(InterCell)
-
-export function Editor(){
-    // calculating parentIds from childrenIds(struct) --
-    // childrenIds should be managed by structData / editorState is some cache of it, stored in editorState.
-    const parentIds : {[id: string]: string | undefined} = {}
-    for(let pid in struct0){
-        for(let cid of struct0[pid]){
-            parentIds[cid] = pid;
-        }
-    }
-
-    // todo : make rootId, struct0, data0 into props.
-    const [data, dispatch] = useCombinedReducer({
-        cellData: data0,
-        structData: struct0,
-        renderData: { mathMacro: {}, Label: {}, LabelTypewise: {} },
-        editorState: { parentIds }
-    })
+/**
+ * Editor core.
+ * CombinedStateContext.Provider and CombinedDispatchContext.Provider should be set on the component scope.
+ */
+export function EditorCore(){
+    const rootId = useRootId()
+    const dispatch = useCombinedDispatch()
 
     return (
-        <CombinedStateContext.Provider value={ data }>
-            <CombinedDispatchContext.Provider value={ dispatch }>
+        <div className='cellEditorWrapper'
+            onClick={() => dispatch({type: 'focus'})}
+        >
+            <div className='editorTextInput'>
+                <div className='titleInput'>
+                    <label>제목</label>
+                    <input className='title' />
+                </div>
+                <div className='authorInput'>
+                    <label>작성자</label>
+                    <input className='author' />
+                </div>
+            </div>
+
+            <hr />
+            <div className='allCellsWrapper'>
                 <CellPortalScope>
-                    <CellPortal id= { rootId } />
+                    <CellPortal id= {
+                        rootId
+                    } />
                 </CellPortalScope>
-            </CombinedDispatchContext.Provider>
-        </CombinedStateContext.Provider>
+            </div>
+            <hr />
+
+            <div className='buttonsWrapper'>
+                <button>Upload(defunct)</button>
+            </div>
+        </div>
     )
 }

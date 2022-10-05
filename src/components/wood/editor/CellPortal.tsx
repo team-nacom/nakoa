@@ -35,6 +35,14 @@ function provideNodes(prev: PortalNodeRecord, ids: string[]): PortalNodeRecord {
 // Contexts for Portal
 const PortalNodeContext = createContext< PortalNodeRecord >({})
 
+// some dummy values
+const VoidWrapper = ({children}: PropsWithChildren) => <>{children}</>
+const VoidComponent = () => <></>
+
+/////////////////////////////
+//// CellPortalScopeWith ////
+/////////////////////////////
+
 export interface CellIndicatorProps{
     id: string
 }
@@ -44,7 +52,7 @@ export interface CellIndicatorProps{
  * 
  */
 export function CellPortalScopeWith(
-    CellIndicator: (props: CellIndicatorProps) => JSX.Element | null
+    CellIndicator: (props: CellIndicatorProps) => JSX.Element | null,
 ){
     return function CellPortalScope({ children }: PropsWithChildren){
         const structData = useStructData()
@@ -65,21 +73,23 @@ export function CellPortalScopeWith(
     
         return (
             <PortalNodeContext.Provider value = { nodes }>
-                <div>
-                    {
-                        idsHolder.current.map( (id) => {
-                            if(nodes[id] === undefined) return null
-                            return <InPortal key = {id} node = {nodes[id]}>
-                                <CellIndicator id = { id } />
-                            </InPortal> //TODO
-                        } )
-                    }
-                    { children /* OUTPORTAL HERE */ }
-                </div>
+                {
+                    idsHolder.current.map( (id) => {
+                        if(nodes[id] === undefined) return null
+                        return <InPortal key = {id} node = {nodes[id]}>
+                            <CellIndicator id = { id } />
+                        </InPortal> //TODO
+                    } )
+                }
+                { children /* OUTPORTAL HERE */ }
             </PortalNodeContext.Provider>
         )
     }
 }
+
+/////////////////////////////
+////// CellPortalWith ///////
+/////////////////////////////
 
 export interface InterCellProps{
     parentId: string
@@ -95,7 +105,8 @@ export interface CellPortalProps{
  * @param InterCell component with `InterCellProps` props which should be placed between sibling cells. e.g. add cell button.
  */
 export function CellPortalWith(
-    InterCell? : (props: InterCellProps) => JSX.Element
+    InterCell : (props: InterCellProps) => JSX.Element = VoidComponent,
+    ChildrenWrapper: (props: PropsWithChildren) => JSX.Element = VoidWrapper,
 ){
     return function CellPortal({ id, depth }: CellPortalProps){
         const portalNodes = useContext(PortalNodeContext)
@@ -108,17 +119,17 @@ export function CellPortalWith(
         
         return <div>
             <OutPortal node = { portalNodes[id] } />
-            <div style={ {paddingLeft: '20px'} }>
+            <ChildrenWrapper>
                 {
                     childIds.map( (childId, idx) => (
                         <>
-                            { InterCell && <InterCell parentId = { id } idx = { idx } depth = { nextDepth } /> }
-                            <CellPortal key = { childId } id = { childId } depth = { nextDepth } /> 
+                            { InterCell && <InterCell key = { 'inter-' + id + '-' + idx } parentId = { id } idx = { idx } depth = { nextDepth } /> }
+                            <CellPortal key = { 'cell-' + childId } id = { childId } depth = { nextDepth } /> 
                         </> //TODO
                     ) )
                 }
-                { InterCell && <InterCell parentId = { id } idx = { childIds.length } depth = { nextDepth } /> }
-            </div>
+                { InterCell && <InterCell key = { 'inter-' + id + '-' + childIds.length } parentId = { id } idx = { childIds.length } depth = { nextDepth } /> }
+            </ChildrenWrapper>
         </div>
     }
 }
