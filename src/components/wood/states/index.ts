@@ -10,10 +10,8 @@ import { Cell, CellType, cellTypeStr, defaultFields } from '#/components/wood/ce
 
 import { CellData, cellDataDefault, cellReducer } from './CellData'
 import { StructData, structDataDefault, structReducer } from './StructData'
-import { RenderData, renderDataDefault, renderReducer } from './RenderData'
+import { RenderData, renderDataDefault, renderReducer, initializeRenderData } from './RenderData'
 import { EditorState, editorStateDefault } from './EditorState'
-
-import katex from 'katex'
 
 // define combined state, combined action to manage data and states simultaneously
 
@@ -38,7 +36,7 @@ export type CombinedAction
     | { type: 'remove', targetId: string } // *
 
     // | { type: 'toggleHide', id: string }
-    // | { type: 'updateMacro', mathMacroObj: Object }
+    | { type: 'updateRenderData' }
 
     | { type: 'focus', targetId?: string } // blur with targetId = undefined
     // | { type: 'focusAdj', direction: number }
@@ -55,16 +53,6 @@ function generateId(parentIds: {[id: string]: string | undefined}) : string{
     return 'c' + mx; // cell ids are 'cNN' format now.
 }
 
-function toMathMacroObj(mathMacroStr: string){
-    let obj = {}
-    katex.renderToString(mathMacroStr,{
-        throwOnError: false,
-        globalGroup: true,
-        macros: obj
-    })
-    return obj
-}
-
 const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a: CombinedAction) => {
     const next : CombinedState = {...prev}
     switch(a.type){
@@ -75,15 +63,6 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             id: a.id,
             ...fields
         })
-
-        if(id === prev.rootId && fields.mathMacroStr){
-            const mathMacroStr = fields.mathMacroStr as string
-            next.renderData = {
-                ...prev.renderData,
-                mathMacroObj: toMathMacroObj(mathMacroStr)
-            }
-        }
-
     } break
     case 'changeType': {
         if(a.cellType === 'root' || prev.cellData[a.id].cellType === 'root') return prev
@@ -162,7 +141,21 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         next.parentIds = newParentIds
     } break
 
+    case 'updateRenderData': {
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'updateFromRoot',
+            rootCell: prev.cellData[prev.rootId] as Cell<'root'>
+        })
+    } break
+
     case 'focus': {
+        if(prev.focusId === prev.rootId){
+            //special treatement: if root cell is blurred, then render data are updated.
+            next.renderData = renderReducer(prev.renderData, {
+                type: 'updateFromRoot',
+                rootCell: prev.cellData[prev.rootId] as Cell<'root'>
+            })
+        }
         next.focusId = a.targetId
     } break
 
@@ -201,15 +194,11 @@ export function initializeState(
         }
     }
 
-    const mathMacroStr = (cellData[rootId] as Cell<'root'>).mathMacroStr
-
     return {
         cellData, structData,
-        renderData: {
-            mathMacroObj: toMathMacroObj(mathMacroStr),
-            Label: {},
-            LabelTypewise: {}
-        },
+        renderData: initializeRenderData(
+            cellData[rootId] as Cell<'root'>
+        ),
         parentIds, rootId, focusId
     }
 }

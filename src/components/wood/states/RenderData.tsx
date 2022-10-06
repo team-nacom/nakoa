@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useReducer, PropsWithChildren, Reducer } from 'react';
+import { Cell } from '#/components/wood/cell';
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
+
+import katex from 'katex'
 
 export interface RenderData{
     mathMacroObj: Object
@@ -17,42 +20,46 @@ export const renderDataDefault : RenderData = {
 }
 
 export type RenderDataAction = {
-    type: 'simple'
-    next: RenderData
+    type: 'updateFromRoot'
+    rootCell: Cell<'root'>
 }
+
+
+// helper function
+function toMathMacroObj(mathMacroStr: string){
+    let obj = {}
+    katex.renderToString(mathMacroStr,{
+        throwOnError: false,
+        globalGroup: true,
+        macros: obj
+    })
+    return obj
+}
+
 
 /**
  * Reducer for render data.
- * not yet implemented. @todo
  */
-export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAction[]> = (prev, action) => {
-    if(Array.isArray(action)){
-        return action.reduce((renderData: RenderData, a)=> renderReducer(renderData, a), prev )
+export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAction[]> = (prev, a) => {
+    if(Array.isArray(a)){
+        return a.reduce((renderData: RenderData, a)=> renderReducer(renderData, a), prev )
     }
 
-    return action.next;
+    const next = {...prev}
+    switch(a.type){
+    case 'updateFromRoot': {
+        next.mathMacroObj = toMathMacroObj(a.rootCell.mathMacroStr)
+    } break
+
+    }
+
+    return next;
 }
 
-// export const RenderDataContext = createContext(renderDataDefault)
-
-// export const RenderDispatchContext = createContext((_: RenderDataAction | RenderDataAction[]) => {})
-
-// export const useRenderReducer = (init?: RenderData) => useReducer(renderReducer, init || renderDataDefault)
-
-// type RenderDataScopeProps = PropsWithChildren<{ init?: RenderData }>
-// export function RenderDataScope({ init, children }: RenderDataScopeProps){
-//     const [renderData, renderDispatch] = useRenderReducer(init)
-
-//     return (
-//         <RenderDataContext.Provider value={ renderData }>
-//             <RenderDispatchContext.Provider value={ renderDispatch }>
-//                 { children }
-//             </RenderDispatchContext.Provider>
-//         </RenderDataContext.Provider>
-//     )
-// }
-
-
-
-// export const useRenderData = () => useContext(RenderDataContext)
-// export const useRenderDispatch = () => useContext(RenderDispatchContext)
+export function initializeRenderData(rootCell: Cell<'root'>): RenderData{
+    return {
+        mathMacroObj: toMathMacroObj(rootCell.mathMacroStr),
+        Label: {},
+        LabelTypewise: {}
+    }
+}
