@@ -86,7 +86,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
 
     } break
     case 'changeType': {
-        if(a.cellType === 'root') return prev
+        if(a.cellType === 'root' || prev.cellData[a.id].cellType === 'root') return prev
         next.cellData = cellReducer(prev.cellData, {
             type: 'create',
             id: a.id,
@@ -140,6 +140,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         next.parentIds = {...parentIds, [newId]: a.parentId }
     } break
     case 'remove': {
+        if(prev.cellData[a.targetId].cellType === 'root') return prev
         const { parentIds, structData } = prev
         const targetParentId = parentIds[a.targetId]
         if(targetParentId === undefined) return prev
@@ -157,7 +158,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             pos: targetPos
         })
 
-        const { [a.targetId]: _, ...newParentIds } = parentIds
+        const { [a.targetId]: unused, ...newParentIds } = parentIds
         next.parentIds = newParentIds
     } break
 

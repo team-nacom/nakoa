@@ -28,6 +28,7 @@ function CellToolbar({ id }: CellIndicatorProps){
     const rootId = useRootId()
     const cell = useSingleCell(id)
     const childIds = useSingleCellChildren(id)
+    const isFocused = useSingleCellFocused(id)
     const dispatch = useCombinedDispatch()
 
     const changeCellTypeHandlerFactory = useCallback((targetType: CellType) => (() => {
@@ -66,28 +67,30 @@ function CellToolbar({ id }: CellIndicatorProps){
 
     return <div className='cellToolbar'>
         <div className='cellOptions'>
-            <button className='cellOptionButton'
-                onClick={ changeCellTypeHandlerFactory('text') }
-            >
-                <Article />
-            </button>
-            <button className='cellOptionButton'
-                onClick={ changeCellTypeHandlerFactory('math') }
-            >
-                <Calculate />
-            </button>
-            <button className='cellOptionButton'
-                onClick={ changeCellTypeHandlerFactory('code') }
-            >
-                <Code />
-            </button>
-            {id !== rootId &&
+            {id !== rootId && <>
+                {isFocused && <>
+                    <button className='cellOptionButton'
+                        onClick={ changeCellTypeHandlerFactory('text') }
+                    >
+                        <Article />
+                    </button>
+                    <button className='cellOptionButton'
+                        onClick={ changeCellTypeHandlerFactory('math') }
+                    >
+                        <Calculate />
+                    </button>
+                    <button className='cellOptionButton'
+                        onClick={ changeCellTypeHandlerFactory('code') }
+                    >
+                        <Code />
+                    </button>
+                </>}
                 <button className='cellOptionButton'
                     onClick={ deleteHandler }
                 >
                     <Delete />
                 </button>
-            }
+            </>}
         </div>
         <div className='cellInfo'>
             <span className='cellId'>
@@ -199,14 +202,7 @@ export function EditorCore(){
             onClick={() => dispatch({type: 'focus'})}
         >
             <div className='editorTextInput'>
-                <div className='titleInput'>
-                    <label>제목</label>
-                    <input className='title' />
-                </div>
-                <div className='authorInput'>
-                    <label>작성자</label>
-                    <input className='author' />
-                </div>
+                <MetadataInput />
             </div>
 
             <hr />
