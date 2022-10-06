@@ -4,8 +4,9 @@ import isEqual from 'react-fast-compare'
 import { match } from 'variant'
 
 import { Cell, cellTypeStr } from './types'
-import { RenderMode, Renderer, CellTypeRendererProps, CellRendererProps } from './types-render'
+import { CellRendererProps } from './types-render'
 
+import { RootCellRenderer } from './cell-types/root'
 import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
 import { MathCellRenderer } from './cell-types/math'
@@ -17,7 +18,8 @@ export function CellRenderer({ mode, id }: CellRendererProps){
     if(cell === undefined) return null
 
     return match(cell,{
-        // exhaustive selection: if this spits some errors, check whether we've fed every renderers for each cellType correctly.
+        // exhaustive selection: if this spits some errors when commenting out 'default', check whether we've fed every renderers for each cellType correctly.
+        'root': cell => RootCellRenderer({mode, cell}),
         'text': cell => TextCellRenderer({mode, cell}),
         'code': cell => CodeCellRenderer({mode, cell}),
         'math': cell => MathCellRenderer({mode, cell}),

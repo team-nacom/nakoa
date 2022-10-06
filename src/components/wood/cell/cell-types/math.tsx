@@ -24,17 +24,14 @@ type MathCell = CellFrom<MathCellField,'math'> // only used in this file
 //renderers
 
 function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
-    // function makeLog(str: string){
-    //     console.log(str)
-    //     return str
-    // }
+    const { mathMacroObj } = useRenderData()
 
     return (
         <div className='mathCell'>
             { Date.now() }
             <div className='mathCellPreview'>
                 <TeX block
-                    settings={ { macros: {} } }
+                    settings={ { macros: mathMacroObj } }
                 >
                     { cell.value }
                 </TeX>
@@ -44,7 +41,6 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
 }
 
 function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
-    // const {} = useRenderData()
     const dispatch = useCombinedDispatch()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {

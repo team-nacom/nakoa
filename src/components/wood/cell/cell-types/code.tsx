@@ -25,7 +25,9 @@ function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
         <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
             { Date.now() }
             <br />
-            {cell.value}
+            <code>
+                {cell.value}
+            </code>
         </div>
     )
 }

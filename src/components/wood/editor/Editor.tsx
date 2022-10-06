@@ -1,7 +1,9 @@
 import { useState, useReducer, useCallback, useEffect, useMemo, PropsWithChildren } from 'react'
 
 import {
-    useCombinedDispatch, useSingleCell, useSingleCellFocused, useRootId, useSingleCellChildren
+    useCombinedDispatch,
+    useSingleCell, useSingleCellFocused, useSingleCellChildren,
+    useRootId, useMetaData
 } from '#/components/wood/states'
 
 import {
@@ -98,14 +100,13 @@ function CellToolbar({ id }: CellIndicatorProps){
 
 function CellIndicator({ id }: CellIndicatorProps){
     const isFocused = useSingleCellFocused(id)
-    const cn = 'cellContentWrapper' + (isFocused? ' editingCellWrapper' : '')
     const mode = (isFocused? RenderMode.EDITOR : RenderMode.PREVIEW)
 
     const dispatch = useCombinedDispatch()
 
     return (
-        <div key = { id } id = { id }
-            className={ cn }
+        <div id = { id }
+            className={ 'cellContentWrapper' + (isFocused? ' editingCellWrapper' : '') }
             onClick = { (ev) => {
                 ev.stopPropagation()
                 !isFocused && dispatch({type:'focus', targetId:id})
@@ -149,6 +150,42 @@ function ChildrenWrapper({ children }: PropsWithChildren){
 }
 const CellPortal = CellPortalWith(InterCell, ChildrenWrapper)
 
+function MetadataInput(){
+    const metadata = useMetaData()
+    const dispatch = useCombinedDispatch()
+
+    return (
+        <>
+            <div className='titleInput'>
+                <label>제목</label>
+                <input className='title'
+                    value={ metadata.title }
+                    onChange={ (ev)=>{
+                        dispatch({
+                            type: 'update',
+                            id: metadata.id, // rootId
+                            title: ev.target.value
+                        })
+                    } }
+                />
+            </div>
+            <div className='authorInput'>
+                <label>작성자</label>
+                <input className='author'
+                    value={ metadata.author }
+                    onChange={ (ev)=>{
+                        dispatch({
+                            type: 'update',
+                            id: metadata.id, // rootId
+                            author: ev.target.value
+                        })
+                    } }
+                />
+            </div>
+        </>
+    )
+}
+
 /**
  * Editor core.
  * CombinedStateContext.Provider and CombinedDispatchContext.Provider should be set on the component scope.
@@ -175,9 +212,7 @@ export function EditorCore(){
             <hr />
             <div className='allCellsWrapper'>
                 <CellPortalScope>
-                    <CellPortal id= {
-                        rootId
-                    } />
+                    <CellPortal id={ rootId } />
                 </CellPortalScope>
             </div>
             <hr />

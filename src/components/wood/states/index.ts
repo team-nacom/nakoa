@@ -6,7 +6,7 @@ import {
     createContext, useContextSelector, useContext
 } from 'use-context-selector'
 
-import { CellType, cellTypeStr, defaultFields } from '#/components/wood/cell/types'
+import { Cell, CellType, cellTypeStr, defaultFields } from '#/components/wood/cell/types'
 
 import { CellData, cellDataDefault, cellReducer } from './CellData'
 import { StructData, structDataDefault, structReducer } from './StructData'
@@ -86,7 +86,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
 
     } break
     case 'changeType': {
-        // if(a.cellType === 'root') return;
+        if(a.cellType === 'root') return prev
         next.cellData = cellReducer(prev.cellData, {
             type: 'create',
             id: a.id,
@@ -94,7 +94,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
                 [cellTypeStr]: a.cellType,
                 id: a.id,
                 ...defaultFields[a.cellType]
-            }
+            } as any
         })
         next.structData = structReducer(prev.structData, {
             type: 'cascadeChildren',
@@ -129,7 +129,7 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
                 [cellTypeStr]: a.cellType,
                 id: newId,
                 ...defaultFields[a.cellType]
-            }
+            } as any
         })
         next.structData = structReducer(prev.structData, {
             type: 'addChild',
@@ -178,9 +178,9 @@ export function initializeState(
     if(!cellData){
         cellData = {
             [rootId]: {
-                [cellTypeStr]: 'text', //root
+                [cellTypeStr]: 'root',
                 id: rootId,
-                value: ''
+                title: '', author: '', mathMacroStr: ''
             }
         }
     }
@@ -200,7 +200,7 @@ export function initializeState(
         }
     }
 
-    const mathMacroStr = (cellData[rootId] as any).mathMacroStr as string || ''
+    const mathMacroStr = (cellData[rootId] as Cell<'root'>).mathMacroStr
 
     return {
         cellData, structData,
@@ -219,6 +219,7 @@ export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
 
 export const useRootId = () => useContextSelector(CombinedStateContext, ctx => ctx.rootId)
+export const useMetaData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData[ctx.rootId] as Cell<'root'>)
 
 export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
 export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)

@@ -11,6 +11,7 @@ import {
     cellTypeStr
 } from './types-common'
 
+import { RootCellField, rootCellDefault } from './cell-types/root'
 import { TextCellField, textCellDefault } from './cell-types/text'
 import { CodeCellField, codeCellDefault } from './cell-types/code'
 import { MathCellField, mathCellDefault } from './cell-types/math'
@@ -21,6 +22,7 @@ export { cellTypeStr };
 const cvf = variantFactory(cellTypeStr)
 const cv = <F>() => <K extends string>(name: K) => cvf(name, fields<F & CellBase>())
 const cellFields = variantList([
+    cv<RootCellField>()('root'),
     cv<TextCellField>()('text'),
     cv<CodeCellField>()('code'),
     cv<MathCellField>()('math'),
@@ -50,6 +52,7 @@ export type Cell<T extends CellType | undefined = undefined> = VariantOf<typeof 
  * default value for each type of cells.
  */
 export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof cellTypeStr > > = {
+    'root': rootCellDefault,
     'text': textCellDefault,
     'code': codeCellDefault,
     'math': mathCellDefault
