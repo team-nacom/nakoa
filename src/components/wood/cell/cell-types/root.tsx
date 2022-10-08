@@ -3,9 +3,7 @@ import React, { useCallback } from 'react';
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
-// RULE OF THUMB: other than useRenderInfoScope and useCellDispatch, scopes should not appear in each cell rendering.
 import {
-    useRenderData,
     useCombinedDispatch
 } from '#/components/wood/states'
 

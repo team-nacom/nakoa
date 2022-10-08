@@ -8,42 +8,41 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
-
 import ReactMarkdown from 'react-markdown'
 import RemarkGFM from 'remark-gfm'
 import RemarkMath from 'remark-math'
 import RehypeKatex from 'rehype-katex'
 
-// export const textCellName = 'text'
-export interface TextCellField{
-    value: string
+
+// export const sectionCellName = 'section'
+export interface SectionCellField{
+    value: string,
+    hideChildren: boolean
 }
-export const textCellDefault: TextCellField = {
-    value: ''
+export const sectionCellDefault: SectionCellField = {
+    value: '',
+    hideChildren: false
 }
-type TextCell = CellFrom<TextCellField,'text'> // only used in this file
+type SectionCell = CellFrom<SectionCellField,'section'> // only used in this file
 
 // renderers
 
-function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
+function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
+    // todo: depths!!
     return (
-        <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
-            { Date.now() }
-            <br />
+        <div className='sectionCell' >
             <ReactMarkdown className='markdown'
                 remarkPlugins = { [ RemarkGFM, RemarkMath ] }
                 rehypePlugins = { [ RehypeKatex ] }
             >
-                {cell.value}
+                { '# ' + cell.value}
             </ReactMarkdown>
         </div>
     )
 }
 
 
-
-function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
-    // const {} = useRenderData()
+function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mode'>){
     const dispatch = useCombinedDispatch()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
@@ -54,27 +53,26 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
             id: cell.id,
             ...({
                 value: ev.target.value
-            } as Partial<TextCellField>)
+            } as Partial<SectionCellField>)
         })
     }, [cell.id])
 
     return (
-        <div className='editorTextCellWrapper'>
-            <textarea
-                className='editorTextCell editorCell'
-                value={cell.value}
+        <div className='editorSectionCell'>
+            <input autoFocus
+                className='editorSectionCellInput'
+                value={ cell.value }
                 onChange={ changeHandler }
             />
-            <TextCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
     );
 }
 
 
-export function TextCellRenderer({ mode, cell }: CellTypeRendererProps<TextCell>){
+export function SectionCellRenderer({ mode, cell }: CellTypeRendererProps<SectionCell>){
     if(mode !== RenderMode.EDITOR){
-        return <TextCellViewer mode={ mode } cell={ cell } />
+        return <SectionCellViewer mode={ mode } cell={ cell } />
     }
 
-    return <TextCellEditor cell={ cell } />
+    return <SectionCellEditor cell={ cell } />
 }

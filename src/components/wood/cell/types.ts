@@ -12,6 +12,8 @@ import {
 } from './types-common'
 
 import { RootCellField, rootCellDefault } from './cell-types/root'
+import { SectionCellField, sectionCellDefault } from './cell-types/section'
+
 import { TextCellField, textCellDefault } from './cell-types/text'
 import { CodeCellField, codeCellDefault } from './cell-types/code'
 import { MathCellField, mathCellDefault } from './cell-types/math'
@@ -23,6 +25,7 @@ const cvf = variantFactory(cellTypeStr)
 const cv = <F>() => <K extends string>(name: K) => cvf(name, fields<F & CellBase>())
 const cellFields = variantList([
     cv<RootCellField>()('root'),
+    cv<SectionCellField>()('section'),
     cv<TextCellField>()('text'),
     cv<CodeCellField>()('code'),
     cv<MathCellField>()('math'),
@@ -36,6 +39,15 @@ export type CellType = Exclude<TypeNames<
      typeof cellFields,
      typeof cellTypeStr
 >, undefined>
+
+/**
+ * shorthand of `cellType === 'root' || cellType === 'section'`.
+ * @param cellType the cell type to test.
+ * @returns whether the specified type can have children.
+ */
+export const isParentType = (cellType: CellType) => (
+    cellType === 'root' || cellType === 'section'
+)
 
 /**
  * sum type of fields.
@@ -53,6 +65,7 @@ export type Cell<T extends CellType | undefined = undefined> = VariantOf<typeof 
  */
 export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof cellTypeStr > > = {
     'root': rootCellDefault,
+    'section': sectionCellDefault,
     'text': textCellDefault,
     'code': codeCellDefault,
     'math': mathCellDefault

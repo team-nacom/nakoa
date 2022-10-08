@@ -3,6 +3,8 @@ import { Cell } from '#/components/wood/cell';
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
 
 import katex from 'katex'
+import { CellData } from './CellData';
+import { StructData } from './StructData';
 
 export interface RenderData{
     mathMacroObj: Object
@@ -10,18 +12,23 @@ export interface RenderData{
     LabelTypewise: Record<string, number[]>
 
     // whether hide some children or not
+    hideChildren: Record<string, boolean>
 
     // render mode(publish / display / preview) : pass as props.
 }
 export const renderDataDefault : RenderData = {
     mathMacroObj: {},
     Label: {},
-    LabelTypewise: {}
+    LabelTypewise: {},
+    hideChildren: {}
 }
 
 export type RenderDataAction = {
     type: 'updateFromRoot'
     rootCell: Cell<'root'>
+} | {
+    type: 'toggleHideChildren'
+    id: string
 }
 
 
@@ -50,16 +57,33 @@ export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAc
     case 'updateFromRoot': {
         next.mathMacroObj = toMathMacroObj(a.rootCell.mathMacroStr)
     } break
+    case 'toggleHideChildren': {
+        next.hideChildren = {
+            ...prev.hideChildren,
+            [a.id]: !prev.hideChildren[a.id]
+        }
+    }
 
     }
 
     return next;
 }
 
-export function initializeRenderData(rootCell: Cell<'root'>): RenderData{
+export function initializeRenderData(cellData: CellData, rootId: string): RenderData{
+    const hideChildren: Record<string, boolean> = {}
+    for(let id in cellData){
+        const cell = cellData[id]
+        if(cell.cellType === 'section' && cell.hideChildren){
+            hideChildren[id] = true
+        }
+    }
+
+    const rootCell = cellData[rootId] as Cell<'root'>
+
     return {
         mathMacroObj: toMathMacroObj(rootCell.mathMacroStr),
         Label: {},
-        LabelTypewise: {}
+        LabelTypewise: {},
+        hideChildren
     }
 }

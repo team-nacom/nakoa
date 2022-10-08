@@ -6,7 +6,7 @@ import {
     createContext, useContextSelector, useContext
 } from 'use-context-selector'
 
-import { Cell, CellType, cellTypeStr, defaultFields } from '#/components/wood/cell/types'
+import { Cell, CellType, cellTypeStr, defaultFields, isParentType } from '#/components/wood/cell'
 
 import { CellData, cellDataDefault, cellReducer } from './CellData'
 import { StructData, structDataDefault, structReducer } from './StructData'
@@ -35,8 +35,8 @@ export type CombinedAction
     | { type: 'createChild', parentId: string, cellType: CellType, pos?: number }
     | { type: 'remove', targetId: string } // *
 
-    // | { type: 'toggleHide', id: string }
     | { type: 'updateRenderData' }
+    | { type: 'toggleHideChildren', id: string }
 
     | { type: 'focus', targetId?: string } // blur with targetId = undefined
     // | { type: 'focusAdj', direction: number }
@@ -147,6 +147,12 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             rootCell: prev.cellData[prev.rootId] as Cell<'root'>
         })
     } break
+    case 'toggleHideChildren': {
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'toggleHideChildren',
+            id: a.id
+        }) //equivalent to renderReducer(prev.renderData, a)
+    } break
 
     case 'focus': {
         if(prev.focusId === prev.rootId){
@@ -196,9 +202,7 @@ export function initializeState(
 
     return {
         cellData, structData,
-        renderData: initializeRenderData(
-            cellData[rootId] as Cell<'root'>
-        ),
+        renderData: initializeRenderData(cellData, rootId),
         parentIds, rootId, focusId
     }
 }
@@ -215,7 +219,13 @@ export const useSingleCell = (id: string) => useContextSelector(CombinedStateCon
 export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)
 export const useSingleCellFocused = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.focusId === id)
 
-export const useSingleCellChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => (ctx.structData[id] || []) )
+function getChildren(state: CombinedState, id: string): (string[] | undefined){
+    const cellType = state.cellData[id]?.cellType
+    if(isParentType(cellType)) return state.structData[id] || []
+    return undefined
+}
+export const useSingleCellChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => getChildren(ctx, id) )
+export const useSingleCellHideChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.renderData.hideChildren[id])
 
 export const useCellData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData)
 export const useStructData = () => useContextSelector(CombinedStateContext, ctx => ctx.structData)

@@ -2,32 +2,34 @@ import { useState, useReducer, useCallback, useEffect, useMemo, PropsWithChildre
 
 import {
     useCombinedDispatch,
-    useSingleCell, useSingleCellFocused, useSingleCellChildren,
-    useRootId, useMetaData
+    useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren,
+    useRootId, useMetaData, 
 } from '#/components/wood/states'
 
 import {
     MemoizedCellRenderer, RenderMode,
     Cell, CellType, cellTypeStr,
-    defaultFields
+    defaultFields, isParentType
 } from '#/components/wood/cell'
 
 import {
     CellPortalScopeWith, CellIndicatorProps,
-    CellPortalWith, InterCellProps
+    CellPortalWith, InterCellProps, ChildrenWrapperProps
 } from './CellPortal'
 
 import isEqual from 'react-fast-compare'
 
 import {
-    AddBox,
-    Article, Calculate, Code, Delete, Image, Tag
+    AddBox, ArrowDropDown, ListAlt,
+    Article, Calculate, Code, Close, Delete, Image, Tag, Update
 } from '@mui/icons-material'
 
+const maxDepth = 4
+
 function CellToolbar({ id }: CellIndicatorProps){
-    const rootId = useRootId()
     const cell = useSingleCell(id)
     const childIds = useSingleCellChildren(id)
+    const hide = useSingleCellHideChildren(id)
     const isFocused = useSingleCellFocused(id)
     const dispatch = useCombinedDispatch()
 
@@ -37,7 +39,7 @@ function CellToolbar({ id }: CellIndicatorProps){
         if(cellType === targetType) return
         if((
             isEqual(fields, defaultFields[cellType])
-            && !(childIds.length > 0)
+            && !((childIds || []).length > 0)
         )
             || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 변경하시겠습니까?')
         ){
@@ -54,7 +56,7 @@ function CellToolbar({ id }: CellIndicatorProps){
 
         if((
             isEqual(fields, defaultFields[cellType])
-            && !(childIds.length > 0)
+            && !((childIds || []).length > 0)
         )
             || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
         ){
@@ -65,32 +67,67 @@ function CellToolbar({ id }: CellIndicatorProps){
         }
     }, [cell, childIds])
 
+    const { [cellTypeStr]: cellType } = cell
+
     return <div className='cellToolbar'>
         <div className='cellOptions'>
-            {id !== rootId && <>
-                {isFocused && <>
-                    <button className='cellOptionButton'
-                        onClick={ changeCellTypeHandlerFactory('text') }
-                    >
-                        <Article />
-                    </button>
-                    <button className='cellOptionButton'
-                        onClick={ changeCellTypeHandlerFactory('math') }
-                    >
-                        <Calculate />
-                    </button>
-                    <button className='cellOptionButton'
-                        onClick={ changeCellTypeHandlerFactory('code') }
-                    >
-                        <Code />
-                    </button>
+            {cellType !== 'root' && <>
+                {cellType !== 'section' && <>
+                    {isFocused && <>
+                        <button className='cellOptionButton'
+                            onClick={ changeCellTypeHandlerFactory('text') }
+                        >
+                            <Article />
+                        </button>
+                        <button className='cellOptionButton'
+                            onClick={ changeCellTypeHandlerFactory('math') }
+                        >
+                            <Calculate />
+                        </button>
+                        <button className='cellOptionButton'
+                            onClick={ changeCellTypeHandlerFactory('code') }
+                        >
+                            <Code />
+                        </button>
+                    </>}
                 </>}
+                {cellType === 'section' && <>
+                    {isFocused && <>
+                        <input type='checkbox'
+                            id={ 'hide-' + id }
+                            defaultChecked={ hide /* cell.hideChildren */ }
+                            onClick={ () => dispatch({type: 'toggleHideChildren', id: id}) }
+                        />
+                        <label className='cellOptionButton'
+                            htmlFor={ 'hide-' + id }
+                        >
+                            <ArrowDropDown />
+                        </label>
+                    </>}
+                </>}
+            </>}
+            {cellType !== 'root' && <>
+                <button className='cellOptionButton'
+                    onClick={ () => dispatch({type: 'focus' }) }
+                >
+                    <Close />
+                </button>
                 <button className='cellOptionButton'
                     onClick={ deleteHandler }
                 >
                     <Delete />
                 </button>
             </>}
+            {cellType === 'root' &&
+                <button
+                    className='cellOptionButton'
+                    onClick={()=>{
+                        dispatch({type:'updateRenderData'})
+                    }}
+                >
+                    <Update />
+                </button>
+            }
         </div>
         <div className='cellInfo'>
             <span className='cellId'>
@@ -124,6 +161,7 @@ const CellPortalScope = CellPortalScopeWith(CellIndicator)
 
 
 function InterCell({ parentId, idx }: InterCellProps){
+    const cellType = useSingleCellType(parentId)
     const dispatch = useCombinedDispatch()
     return (
         <div className='interBlockHelper'>
@@ -142,12 +180,29 @@ function InterCell({ parentId, idx }: InterCellProps){
                 >
                     <AddBox />
                 </button>
+                {isParentType(cellType) &&
+                    <button className='addSectionCellButton'
+                        onClick={(ev)=>{
+                            ev.stopPropagation()
+                            dispatch({
+                                type: 'createChild',
+                                parentId,
+                                pos: idx,
+                                cellType: 'section'
+                            })
+                        }}
+                    >
+                        <ListAlt />
+                    </button>
+                }
             </div>
         </div>
     )
 }
-function ChildrenWrapper({ children }: PropsWithChildren){
-    return <div className={'cellChildrenWrapper'} style={ {padding:'0 20px'} }>
+function ChildrenWrapper({ children, hide }: ChildrenWrapperProps){
+    return <div className={'cellChildrenWrapper'+ (hide ? ' childrenContainerHidden' : '')}
+        style={ {padding:'0 20px'} }
+    >
         { children }
     </div>
 }

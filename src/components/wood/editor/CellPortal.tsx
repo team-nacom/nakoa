@@ -8,6 +8,8 @@ import {
     useStructData,
     useCellData,
     useRenderData,
+    useSingleCellChildren,
+    useSingleCellHideChildren,
 } from '#/components/wood/states'
 
 type PortalNodeRecord = Record<string, HtmlPortalNode>
@@ -96,6 +98,9 @@ export interface InterCellProps{
     idx: number
     depth?: number
 }
+export type ChildrenWrapperProps = PropsWithChildren<{
+    hide?: boolean
+}>
 export interface CellPortalProps{
     id: string,
     depth?: number
@@ -106,43 +111,45 @@ export interface CellPortalProps{
  */
 export function CellPortalWith(
     InterCell : (props: InterCellProps) => JSX.Element = VoidComponent,
-    ChildrenWrapper: (props: PropsWithChildren) => JSX.Element = VoidWrapper,
+    ChildrenWrapper: (props: ChildrenWrapperProps) => JSX.Element = VoidWrapper,
 ){
     return function CellPortal({ id, depth }: CellPortalProps){
         const portalNodes = useContext(PortalNodeContext)
-        const structData = useStructData()
-        
-        const childIds = structData[id] || []
+        const childIds = useSingleCellChildren(id)
+        const hide = useSingleCellHideChildren(id)
+
         const nextDepth = (depth || 0) + 1
 
         if(portalNodes[id] === undefined) return null
         
         return <div>
             <OutPortal node = { portalNodes[id] } />
-            <ChildrenWrapper>
-                {
-                    childIds.reduce( (prev: any[], childId, idx) => {
-                        prev.push(
-                            <CellPortal key = { 'cell-' + childId }
-                                id = { childId }
+            {childIds !== undefined &&
+                <ChildrenWrapper hide={hide}>
+                    {
+                        childIds.reduce( (prev: any[], childId, idx) => {
+                            prev.push(
+                                <CellPortal key = { 'cell-' + childId }
+                                    id = { childId }
+                                    depth = { nextDepth }
+                                />
+                            )
+                            prev.push(
+                                <InterCell key = { 'inter-' + id + '-' + (idx + 1) }
+                                    parentId = { id } idx = { idx + 1 }
+                                    depth = { nextDepth }
+                                />
+                            )
+                            return prev
+                        }, [
+                            <InterCell key = { 'inter-' + id + '-0' }
+                                parentId = { id } idx = { childIds.length }
                                 depth = { nextDepth }
-                            />
-                        )
-                        prev.push(
-                            <InterCell key = { 'inter-' + id + '-' + (idx + 1) }
-                                parentId = { id } idx = { idx + 1 }
-                                depth = { nextDepth }
-                            />
-                        )
-                        return prev
-                    }, [
-                        <InterCell key = { 'inter-' + id + '-0' }
-                            parentId = { id } idx = { childIds.length }
-                            depth = { nextDepth }
-                        /> // 0th element
-                    ])
-                }
-            </ChildrenWrapper>
+                            /> // 0th element
+                        ])
+                    }
+                </ChildrenWrapper>
+            }
         </div>
     }
 }
