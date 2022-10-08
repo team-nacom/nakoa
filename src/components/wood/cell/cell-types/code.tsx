@@ -1,5 +1,8 @@
 import React, { useCallback } from 'react'
 
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+
 import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
@@ -10,9 +13,11 @@ import {
 
 // export const codeCellName = 'code'
 export interface CodeCellField{
+    language: string
     value: string
 }
 export const codeCellDefault: CodeCellField = {
+    language: '',
     value: ''
 }
 type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
@@ -22,12 +27,18 @@ type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
 
 function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
     return (
-        <div className='codeCell' style={ {width:'100%', border:'1px solid blue'} } >
+        <div className='codeCell' >
             { Date.now() }
-            <br />
-            <code>
+            <summary className='codeCellLabel'>
+                { cell.language }
+            </summary>
+            <SyntaxHighlighter className='codeCellPreview'
+                language = { cell.language }
+                style = { docco }
+                wrapLongLines = { true }
+            >
                 {cell.value}
-            </code>
+            </SyntaxHighlighter>
         </div>
     )
 }
@@ -46,17 +57,32 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
         })
     }, [cell.id])
 
+    const changeCaptionHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
+        dispatch({
+            type: 'update',
+            id: cell.id,
+            ...({
+                language: ev.target.value
+            } as Partial<CodeCellField>)
+        })
+    }, [cell.id])
+
     return (
         <div className='editorCodeCellWrapper'>
+            <div className='languageInput'>
+                <label>language</label>
+                <input className='codeCellCaptionForm'
+                    value={ cell.language }
+                    onChange={ changeCaptionHandler }
+                />
+            </div>
             <textarea
-                key={ `cell-${ cell.id }` }
                 className='editorCodeCell editorCell'
-                value={cell.value}
+                value={ cell.value }
                 onChange={ changeHandler }
             />
-            <CodeCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
-    );
+    )
 }
 
 

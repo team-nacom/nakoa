@@ -62,7 +62,7 @@ function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
             />
             <MathCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
-    );
+    )
 }
 
 

@@ -65,7 +65,7 @@ function RootCellEditor({ cell }: Omit<CellTypeRendererProps<RootCell>,'mode'>){
                 />
             </div>
         </div>
-    );
+    )
 }
 
 

@@ -65,7 +65,7 @@ function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mo
                 onChange={ changeHandler }
             />
         </div>
-    );
+    )
 }
 
 

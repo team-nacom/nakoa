@@ -67,7 +67,7 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
             />
             <TextCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
         </div>
-    );
+    )
 }
 
 
