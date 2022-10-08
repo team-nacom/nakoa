@@ -143,7 +143,7 @@ export function CellPortalWith(
                             return prev
                         }, [
                             <InterCell key = { 'inter-' + id + '-0' }
-                                parentId = { id } idx = { childIds.length }
+                                parentId = { id } idx = { 0 }
                                 depth = { nextDepth }
                             /> // 0th element
                         ])
