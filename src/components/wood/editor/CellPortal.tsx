@@ -10,7 +10,7 @@ import {
     useSingleCellHideChildren,
 } from '#/components/wood/states'
 
-type PortalNodeRecord = Record<string, HtmlPortalNode>
+type PortalNodeMap = Map<string, HtmlPortalNode>
 
 /**
  * Keeping the entries of `prev`, create portal nodes and attach if an id in `ids` is absent.
@@ -19,21 +19,18 @@ type PortalNodeRecord = Record<string, HtmlPortalNode>
  * @param ids new id array
  * @returns the result record which have `ids` as key.
  */
-function provideNodes(prev: PortalNodeRecord, ids: string[]): PortalNodeRecord {
-    const intermed = Object.fromEntries(Object.entries(prev).filter(([k]) => (ids.indexOf(k) !== -1)  ))
-
-    const next = ids.reduce( (acc, id)=>{
-        if(!acc[id]){
-            return { ...acc, [id] : createHtmlPortalNode() }
+function provideNodes(prev: PortalNodeMap, ids: string[]): PortalNodeMap {
+    const next = new Map(Array.from(prev.entries()).filter( ([k]) => (ids.indexOf(k) !== -1) ))
+    ids.forEach((id) => {
+        if(!next.has(id)){
+            next.set(id, createHtmlPortalNode())
         }
-        return acc
-    }, intermed)
-
+    })
     return next
 }
 
 // Contexts for Portal
-const PortalNodeContext = createContext< PortalNodeRecord >({})
+const PortalNodeContext = createContext< PortalNodeMap >(new Map())
 
 // some dummy values
 const VoidWrapper = ({children}: PropsWithChildren) => <>{children}</>
@@ -73,7 +70,7 @@ export function CellPortalScopeWith(
         // const structData = useStructData()
         // const ids = Object.keys(structData)
     
-        const [nodes, setNodes] = useState<PortalNodeRecord>({})
+        const [nodes, setNodes] = useState<PortalNodeMap>(new Map())
     
         // recalculate nodes with array comparison
         const idsHolder = useRef<string[]>(ids)
@@ -82,15 +79,23 @@ export function CellPortalScopeWith(
         }
         useEffect(()=>{
             setNodes(nodes => provideNodes(nodes, idsHolder.current))
-        },[idsHolder.current])
-    
+        }, [idsHolder.current])
+
+        // const InPortals = idsHolder.current.map( (id) => {
+        //     const node = nodes.get(id)
+        //     if(node === undefined) return null
+        //     return <CellInPortal key = {id} id = {id} node = {node} />
+        // } )
+
         return (
             <PortalNodeContext.Provider value = { nodes }>
                 {
                     idsHolder.current.map( (id) => {
-                        if(nodes[id] === undefined) return null
-                        return <CellInPortal key = {id} id = {id} node = {nodes[id]} />
+                        const node = nodes.get(id)
+                        if(node === undefined) return null
+                        return <CellInPortal key = {id} id = {id} node = {node} />
                     } )
+                    // InPortals
                 }
                 { children /* OUTPORTAL HERE */ }
             </PortalNodeContext.Provider>
@@ -129,10 +134,11 @@ export function CellPortalWith(
 
         const nextDepth = (depth || 0) + 1
 
-        if(portalNodes[id] === undefined) return null
+        const node = portalNodes.get(id)
+        if(node === undefined) return null
         
         return <div>
-            <OutPortal node = { portalNodes[id] } />
+            <OutPortal node = { node } />
             {childIds !== undefined &&
                 <ChildrenWrapper hide={hide}>
                     {
