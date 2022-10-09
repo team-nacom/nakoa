@@ -1,4 +1,4 @@
-import { useState, useReducer, useCallback, useEffect, useMemo, PropsWithChildren } from 'react'
+import { useState, useReducer, useCallback, useEffect, useMemo, memo, PropsWithChildren } from 'react'
 
 import {
     useCombinedDispatch,
@@ -26,7 +26,7 @@ import {
 
 const maxDepth = 4
 
-function CellToolbar({ id }: CellIndicatorProps){
+function _CellToolbar({ id }: CellIndicatorProps){
     const cell = useSingleCell(id)
     const childIds = useSingleCellChildren(id)
     const hide = useSingleCellHideChildren(id)
@@ -137,8 +137,9 @@ function CellToolbar({ id }: CellIndicatorProps){
         </div>
     </div>
 }
+const CellToolbar = memo(_CellToolbar)
 
-function CellIndicator({ id }: CellIndicatorProps){
+function _CellIndicator({ id }: CellIndicatorProps){
     const isFocused = useSingleCellFocused(id)
     const mode = (isFocused? RenderMode.EDITOR : RenderMode.PREVIEW)
 
@@ -157,10 +158,12 @@ function CellIndicator({ id }: CellIndicatorProps){
         </div>
     )
 }
+const CellIndicator = memo(_CellIndicator)
+
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
 
 
-function InterCell({ parentId, idx }: InterCellProps){
+function _InterCell({ parentId, idx }: InterCellProps){
     const cellType = useSingleCellType(parentId)
     const dispatch = useCombinedDispatch()
     return (
@@ -199,6 +202,8 @@ function InterCell({ parentId, idx }: InterCellProps){
         </div>
     )
 }
+const InterCell = memo(_InterCell)
+
 function ChildrenWrapper({ children, hide }: ChildrenWrapperProps){
     return <div className={'cellChildrenWrapper'+ (hide ? ' childrenContainerHidden' : '')}
         style={ {padding:'0 20px'} }
@@ -208,7 +213,7 @@ function ChildrenWrapper({ children, hide }: ChildrenWrapperProps){
 }
 const CellPortal = CellPortalWith(InterCell, ChildrenWrapper)
 
-function MetadataInput(){
+function _MetadataInput(){
     const metadata = useMetaData()
     const dispatch = useCombinedDispatch()
 
@@ -243,6 +248,7 @@ function MetadataInput(){
         </>
     )
 }
+const MetadataInput = memo(_MetadataInput)
 
 /**
  * Editor core.
@@ -263,7 +269,7 @@ export function EditorCore(){
             <hr />
             <div className='allCellsWrapper'>
                 <CellPortalScope>
-                    <CellPortal id={ rootId } />
+                    <CellPortal key = { 'cell-' + rootId } id={ rootId } />
                 </CellPortalScope>
             </div>
             <hr />

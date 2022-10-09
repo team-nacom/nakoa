@@ -1,13 +1,11 @@
-import React, { useState, createContext, useContext, useRef, PropsWithChildren, useEffect } from 'react'
+import React, { useState, createContext, useContext, useRef, memo, PropsWithChildren, useEffect } from 'react'
 
 import { HtmlPortalNode, createHtmlPortalNode, InPortal, OutPortal } from 'react-reverse-portal'
 
 import isEqual from 'react-fast-compare'
 
 import {
-    useStructData,
-    useCellData,
-    useRenderData,
+    useParentIds, useStructData,
     useSingleCellChildren,
     useSingleCellHideChildren,
 } from '#/components/wood/states'
@@ -48,21 +46,34 @@ const VoidComponent = () => <></>
 export interface CellIndicatorProps{
     id: string
 }
+
 /**
  * portal node provider.
  * @param CellIndicator the cell renderer with {id, cell} specified, component with wrappers.
  * 
  */
 export function CellPortalScopeWith(
-    CellIndicator: (props: CellIndicatorProps) => JSX.Element | null,
+    CellIndicator: React.ComponentType<CellIndicatorProps>,
 ){
+    interface CellInPortalProps{
+        id: string
+        node: any // can we do typing?
+    }
+
+    const CellInPortal = memo(({ id, node }: CellInPortalProps)=>{
+        return <InPortal node = {node}>
+            <CellIndicator id = { id } />
+        </InPortal>
+    })
+
     return function CellPortalScope({ children }: PropsWithChildren){
-        const structData = useStructData()
-        const ids = Object.keys(structData)
+        const parentIds = useParentIds() // parentIds will only change when struct is changed
+        const ids = Object.keys(parentIds)
+
+        // const structData = useStructData()
+        // const ids = Object.keys(structData)
     
-        const [nodes, setNodes] = useState<PortalNodeRecord>(
-            provideNodes({}, ids)
-        )
+        const [nodes, setNodes] = useState<PortalNodeRecord>({})
     
         // recalculate nodes with array comparison
         const idsHolder = useRef<string[]>(ids)
@@ -78,9 +89,7 @@ export function CellPortalScopeWith(
                 {
                     idsHolder.current.map( (id) => {
                         if(nodes[id] === undefined) return null
-                        return <InPortal key = {id} node = {nodes[id]}>
-                            <CellIndicator id = { id } />
-                        </InPortal> //TODO
+                        return <CellInPortal key = {id} id = {id} node = {nodes[id]} />
                     } )
                 }
                 { children /* OUTPORTAL HERE */ }
@@ -110,10 +119,10 @@ export interface CellPortalProps{
  * @param InterCell component with `InterCellProps` props which should be placed between sibling cells. e.g. add cell button.
  */
 export function CellPortalWith(
-    InterCell : (props: InterCellProps) => JSX.Element = VoidComponent,
-    ChildrenWrapper: (props: ChildrenWrapperProps) => JSX.Element = VoidWrapper,
+    InterCell : React.ComponentType<InterCellProps> = VoidComponent,
+    ChildrenWrapper: React.ComponentType<ChildrenWrapperProps> = VoidWrapper,
 ){
-    return function CellPortal({ id, depth }: CellPortalProps){
+    const CellPortal = memo(function _CellPortal({ id, depth }: CellPortalProps){
         const portalNodes = useContext(PortalNodeContext)
         const childIds = useSingleCellChildren(id)
         const hide = useSingleCellHideChildren(id)
@@ -151,5 +160,6 @@ export function CellPortalWith(
                 </ChildrenWrapper>
             }
         </div>
-    }
+    })
+    return CellPortal
 }

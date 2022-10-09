@@ -31,7 +31,7 @@ function cascadeChildren(struct: StructData, id: string): StructData{
     let newStruct = {...struct}
 
     function _cascadeChildren(cellId: string){
-        for(let childId of struct[cellId]){
+        for(let childId of struct[cellId] || []){
             _cascadeChildren(childId);
             delete newStruct[childId];
         }
@@ -47,7 +47,7 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
     }
 
     switch(action.type){
-    case 'addChild': {
+    case 'addChild': { // parentId must be root or section.
         let {parentId, pos} = action
         if(pos === undefined) pos = prevStruct[parentId].length
         return {
@@ -61,7 +61,7 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
         }
     }
     
-    case 'removeChild': {
+    case 'removeChild': { // parentId must be root or section.
         let {parentId, pos} = action
         let {
             [prevStruct[parentId][pos]]: _unused,
@@ -76,7 +76,7 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
         }
     }
 
-    case 'moveChild': {
+    case 'moveChild': { // targetParentId, destParentId must be root or section.
         let {targetParentId, targetPos, destParentId, destPos} = action
         if(destPos === undefined) destPos = prevStruct[destParentId].length
         if(targetParentId === destParentId){

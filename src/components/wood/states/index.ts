@@ -196,9 +196,10 @@ export function initializeState(
     const parentIds : {[id: string]: string | undefined} = {}
     for(let pid in structData){
         for(let cid of structData[pid]){
-            parentIds[cid] = pid;
+            parentIds[cid] = pid
         }
     }
+    parentIds[rootId] = undefined
 
     return {
         cellData, structData,
@@ -213,6 +214,7 @@ export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
 
 export const useRootId = () => useContextSelector(CombinedStateContext, ctx => ctx.rootId)
+export const useParentIds = () => useContextSelector(CombinedStateContext, ctx => ctx.parentIds)
 export const useMetaData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData[ctx.rootId] as Cell<'root'>)
 
 export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
