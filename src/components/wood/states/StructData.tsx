@@ -67,6 +67,7 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
             [prevStruct[parentId][pos]]: _unused,
             ...intermStruct
         } = cascadeChildren(prevStruct, prevStruct[parentId][pos])
+
         return {
             ...intermStruct,
             [parentId]: [

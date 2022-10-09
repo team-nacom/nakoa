@@ -137,8 +137,13 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             pos: targetPos
         })
 
-        const { [a.targetId]: unused, ...newParentIds } = parentIds
-        next.parentIds = newParentIds
+        // recalculate parentIds...
+        next.parentIds = { [next.rootId]: undefined }
+        for(let pid in next.structData){
+            for(let cid of next.structData[pid]){
+                next.parentIds[cid] = pid
+            }
+        }
     } break
 
     case 'updateRenderData': {
@@ -193,13 +198,12 @@ export function initializeState(
         }
     }
 
-    const parentIds : {[id: string]: string | undefined} = {}
+    const parentIds : {[id: string]: string | undefined} = { [rootId]: undefined }
     for(let pid in structData){
         for(let cid of structData[pid]){
             parentIds[cid] = pid
         }
     }
-    parentIds[rootId] = undefined
 
     return {
         cellData, structData,

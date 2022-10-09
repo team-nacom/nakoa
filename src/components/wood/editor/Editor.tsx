@@ -67,6 +67,8 @@ function _CellToolbar({ id }: CellIndicatorProps){
         }
     }, [cell, childIds])
 
+    if(cell === undefined) return null
+    
     const { [cellTypeStr]: cellType } = cell
 
     return <div className='cellToolbar'>
