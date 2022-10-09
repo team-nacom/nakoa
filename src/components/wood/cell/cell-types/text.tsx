@@ -8,6 +8,7 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
+import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
 import ReactMarkdown from 'react-markdown'
 import RemarkGFM from 'remark-gfm'
@@ -28,8 +29,6 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
     return (
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
-            { Date.now() }
-            <br />
             <ReactMarkdown className='markdown'
                 remarkPlugins = { [ RemarkGFM, RemarkMath ] }
                 rehypePlugins = { [ RehypeKatex ] }
@@ -60,7 +59,7 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
 
     return (
         <div className='editorTextCellWrapper'>
-            <textarea
+            <SingletonTextArea
                 className='editorTextCell editorCell'
                 value={cell.value}
                 onChange={ changeHandler }

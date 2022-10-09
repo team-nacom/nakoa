@@ -7,6 +7,8 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
+import SingletonTextArea from '#/components/helpers/SingletonTextArea'
+
 // export const rootCellName = 'root'
 export interface RootCellField{
     title: string
@@ -58,7 +60,7 @@ function RootCellEditor({ cell }: Omit<CellTypeRendererProps<RootCell>,'mode'>){
     return (
         <div className='editorRootCellWrapper'>
             <div className='rootCellSettings'>
-                <textarea
+                <SingletonTextArea
                     className='editorRootCellTextArea editorCell'
                     value={ cell.mathMacroStr }
                     onChange={ changeHandler }

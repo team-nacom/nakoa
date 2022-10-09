@@ -11,6 +11,8 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
+import SingletonTextArea from '#/components/helpers/SingletonTextArea'
+
 // export const codeCellName = 'code'
 export interface CodeCellField{
     language: string
@@ -28,7 +30,6 @@ type CodeCell = CellFrom<CodeCellField,'code'> // only used in this file
 function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
     return (
         <div className='codeCell' >
-            { Date.now() }
             <summary className='codeCellLabel'>
                 { cell.language }
             </summary>
@@ -76,7 +77,7 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
                     onChange={ changeCaptionHandler }
                 />
             </div>
-            <textarea
+            <SingletonTextArea
                 className='editorCodeCell editorCell'
                 value={ cell.value }
                 onChange={ changeHandler }

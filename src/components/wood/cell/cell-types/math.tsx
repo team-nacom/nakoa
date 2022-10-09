@@ -8,6 +8,8 @@ import {
     useCombinedDispatch
 } from '#/components/wood/states'
 
+import SingletonTextArea from '#/components/helpers/SingletonTextArea'
+
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
 
@@ -28,7 +30,6 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
 
     return (
         <div className='mathCell'>
-            { Date.now() }
             <div className='mathCellPreview'>
                 <TeX block
                     settings={ { macros: mathMacroObj } }
@@ -55,7 +56,7 @@ function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
 
     return (
         <div className='editorMathCellWrapper'>
-            <textarea
+            <SingletonTextArea
                 className='editorMathCell editorCell'
                 value={cell.value}
                 onChange={ changeHandler }
