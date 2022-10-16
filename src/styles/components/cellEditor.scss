@@ -207,6 +207,9 @@
         outline: none;
     }
 }
+.childrenContainerHiddenEditor{
+    background-color: antiquewhite;
+}
 .childrenContainerHidden {
     display: none;
 }
@@ -214,12 +217,10 @@
     cursor: pointer;
     user-select: none;
 }
-// .childrenContainerHidden, .childrenContainerHiddenEditor{
-//     background-color: antiquewhite;
-// }
 
 .cellChildrenWrapper {
     position: relative;
+    padding: 0 10px;
     &:after {
         content: '';
         position: absolute;

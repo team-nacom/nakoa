@@ -90,7 +90,7 @@ const handleTextbox : ToMarkdownHandle = function(node, _, context, safeOptions)
     let value = tracker.move(prefix + (node.data.name || ''));
     
     let shallow = node;
-    let head : Node | undefined = (node.children || [])[0];
+    let head : Parent | undefined = (node.children || [])[0];
     head = inlineTextboxLabel(head) ? head : undefined;
     if (head && Array.isArray(head.children) && head.children.length > 0){
         const exit1 = context.enter('label');

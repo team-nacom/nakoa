@@ -15,7 +15,7 @@ const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
     const perrefHandler : Transformer = (tree, file) => {
         const root = tree as Parent;
 
-        visit(root, 'text', (node) => {
+        visit(root, 'text', (node: any) => {
             let val = node.value as string;
             node.value = val.replace(/%[\w-]+%/g,(match)=>{
                 let word = match.slice(1,-1);

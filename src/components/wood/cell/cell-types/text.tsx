@@ -15,6 +15,9 @@ import RemarkGFM from 'remark-gfm'
 import RemarkMath from 'remark-math'
 import RehypeKatex from 'rehype-katex'
 
+// import Markdown from '#/components/markdown/MarkdownRenderer'
+import Markdown from '#/components/markdown-lab/Markdown'
+
 // export const textCellName = 'text'
 export interface TextCellField{
     value: string
@@ -27,14 +30,15 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 // renderers
 
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
+    const { mathMacroObj } = useRenderData()
+
     return (
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
-            <ReactMarkdown className='markdown'
-                remarkPlugins = { [ RemarkGFM, RemarkMath ] }
-                rehypePlugins = { [ RehypeKatex ] }
+            <Markdown
+                mathMacroObj={ mathMacroObj }
             >
                 {cell.value}
-            </ReactMarkdown>
+            </Markdown>
         </div>
     )
 }

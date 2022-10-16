@@ -13,6 +13,8 @@ import RemarkGFM from 'remark-gfm'
 import RemarkMath from 'remark-math'
 import RehypeKatex from 'rehype-katex'
 
+// import Markdown from '#/components/markdown/MarkdownRenderer'
+import Markdown from '#/components/markdown-lab/Markdown'
 
 // export const sectionCellName = 'section'
 export interface SectionCellField{
@@ -28,15 +30,16 @@ type SectionCell = CellFrom<SectionCellField,'section'> // only used in this fil
 // renderers
 
 function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
+    const { mathMacroObj } = useRenderData()
+    
     // todo: depths!!
     return (
         <div className='sectionCell' >
-            <ReactMarkdown className='markdown'
-                remarkPlugins = { [ RemarkGFM, RemarkMath ] }
-                rehypePlugins = { [ RehypeKatex ] }
+            <Markdown
+                mathMacroObj={ mathMacroObj }
             >
                 { '# ' + cell.value}
-            </ReactMarkdown>
+            </Markdown>
         </div>
     )
 }

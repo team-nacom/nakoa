@@ -207,9 +207,7 @@ function _InterCell({ parentId, idx }: InterCellProps){
 const InterCell = memo(_InterCell)
 
 function ChildrenWrapper({ children, hide }: ChildrenWrapperProps){
-    return <div className={'cellChildrenWrapper'+ (hide ? ' childrenContainerHidden' : '')}
-        style={ {padding:'0 20px'} }
-    >
+    return <div className={'cellChildrenWrapper'+ (hide ? ' childrenContainerHiddenEditor' : '')}>
         { children }
     </div>
 }

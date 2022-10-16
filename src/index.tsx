@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom/client'
 
 import './styles/index.scss'
 
-// import App from './rdt/RdtApp'
 // import App from './dkst/DkstApp'
 
 import App from './App'
+// import App from './App221015'
 
 
 const rootElement = document.getElementById('root')

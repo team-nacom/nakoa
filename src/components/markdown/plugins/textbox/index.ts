@@ -31,7 +31,7 @@ const NamarkTextbox : Plugin = function(){
     //traverse tree and attach label
     //This plugin is called BEFORE remark-rehype.
     const namarkTextbox : Transformer = (tree, file) => {
-        visit(tree, ['textbox', ...namedTextboxes], (node)=>{
+        visit(tree, ['textbox', ...namedTextboxes], (node: any)=>{
             if(node.children && Array.isArray(node.children) && node.children.length > 0){
                 let cNode = (node as Parent).children[0];
                 if(cNode.type === 'paragraph' && cNode.data?.textboxLabel){

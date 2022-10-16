@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, PropsWithChildren } from 'react';
 import { FallbackProps, ErrorBoundary } from 'react-error-boundary';
 
 import isEqual from 'react-fast-compare'
@@ -9,20 +9,21 @@ import { u } from 'unist-builder';
 import { remove } from 'unist-util-remove';
 
 import { Root as MdastRoot, Parent as MdastParent } from 'mdast';
-import { H, Handler, Handlers, all } from 'mdast-util-to-hast';
+import { H, Handler, Handlers } from 'mdast-util-to-hast';
+import { all } from 'mdast-util-to-hast/lib/traverse'
 
 import ReactMarkdown, { Options } from 'react-markdown';
+import { Remark } from 'react-remark'
 
 import RemarkGFM from 'remark-gfm';
 import RemarkMath from 'remark-math';
 import RemarkFootnotes from 'remark-footnotes';
 import CodeFrontmatter from 'remark-code-frontmatter';
 
+import 'katex/dist/katex.min.css';
 import RehypeKatex from 'rehype-katex';
 
-
-import 'katex/dist/katex.min.css';
-import TeX from '@matejmazur/react-katex';
+// import TeX from '@matejmazur/react-katex';
 
 import 'highlight.js/styles/github.css';
 // import 'react-highlight.js/node_modules/highlight.js/styles/github.css';
@@ -31,7 +32,7 @@ import 'highlight.js/styles/github.css';
 import InternalLinkHandler from './InternalLinkHandler';
 // import FootnoteEnumerator, { FootnoteDefinitionRenderer, FootnoteReferenceRenderer } from './FootnoteEnumerator';
 import NamarkPerref from './plugins/perref';
-import { NamarkTextbox, NamarkTextboxToHast } from './plugins/textbox';
+// import { NamarkTextbox, NamarkTextboxToHast } from './plugins/textbox';
 import namarkNaHeading from './plugins/naheading';
 
 // type MdastNode = MdastRoot | MdastParent['children'][number];
@@ -48,34 +49,36 @@ interface RendererOptionProps{
     inlineRenderClassName?: string,
 
     mathMacroObj?: Object,
-    perrefMap?: Record<string,string | number[]>
+    perrefMap?: Record<string, string | number[]>
+
+    children: string
 }
 
-function MarkdownRenderer(props : Options & RendererOptionProps) {
+function MarkdownRenderer(props : RendererOptionProps) {
     //TODO : TOC
     //TODO : priority heading
     //TODO : SECTION (part of bubble?)
     //TODO : FOOTNOTE
 
     //remark plugins(constructing & manipulating mdast)
-    const remarkPlugins : PluggableList = [
+    const remarkPlugins : PluggableList = useMemo(() => [
         RemarkGFM,
         RemarkMath,
         [RemarkFootnotes, {inlineNotes: true}],
 
         /////// custom plugins for parsing
-        NamarkTextbox,
-        namarkNaHeading,
+        // NamarkTextbox,
+        // namarkNaHeading,
 
         /////// manipulations
-        [NamarkPerref, { map: props.perrefMap }],
+        // [NamarkPerref, { map: props.perrefMap }],
         InternalLinkHandler,
         // ...( props.useTOC ? [SectionEnumerator] : [] ),
         // FootnoteEnumerator,
 
         // Inline Render
         // discard parent cell except one.
-        () => ( (tree, file) => {
+        () => ( (tree: any, file: any) => {
             if(props.inlineRenderPrefix === undefined) return;
 
             let root = tree as Parent;
@@ -93,42 +96,47 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
 
                 root.children = [child];
             }
-        })
+        }),
 
-        // () => ( (tree,file) => {console.log(tree)} )
-    ];
+        // () => ( (tree: any,file: any) => {console.log(tree)} )
+    ], [ /* props.perrefMap, */ props.inlineRenderPrefix, props.inlineRenderClassName])
 
-    //remark -> rehype handlers (previously renderers)
+    //remark -> rehype handlers
     const remarkRehypeHandlers : Handlers = {
-        ...NamarkTextboxToHast,
-        intLink: (h, node) => {
+        // ...NamarkTextboxToHast,
+        intLink: (h, node: any) => {
             return h(node, 'a', { href: '/'+ node.for + '/' + node.target },
-                [ u('text','🔗'), ...all(h,node)]
+                [ u('text','🔗'), ...all(h, node)]
             )
         }
     }
 
     //rehype plugins(manipulating hast)
-    const rehypePlugins : PluggableList = [
-        () => ( (tree,file) => {
+    const rehypePlugins : PluggableList = useMemo(() => [
+        () => ( (tree, file) => {
             remove(tree, (node)=>( node.type === 'text' && node.value === '\n' ))
         } ), //remove unnecessary linefeed(`\n`) wrappers.
         
         [RehypeKatex, {
             macros: props.mathMacroObj,
             globalGroup: true
-        }]
-    ];
+        }],
+
+        // () => ( (tree: any,file: any) => {console.log(tree)} )
+    ], [props.mathMacroObj])
 
     //HTML components.
-    const components : {[nodeType: string]: ((p: Node) => JSX.Element)} = {
+    const components = {
         details: (p: any) => {
-            let { node, children, ...others } = p;
+            let { children, ...others } = p;
             return <details {...others} open={props.openDetails}>
                 { p.children }
             </details>;
         }
     }
+
+    // 타입이 잘 안맞는다. remark ecosystem이 워낙 거대해서 dependency version 미스매치가 자주 발생하는 듯.
+    // 장기적으로는 line 단위 캐싱을 해야 될 듯 한데 이 경우 remark 의존성을 줄여야 할지도.
 
     return (
         <ErrorBoundary FallbackComponent = { ({error, resetErrorBoundary}) => (
@@ -139,12 +147,12 @@ function MarkdownRenderer(props : Options & RendererOptionProps) {
             (error: Error) => { console.log(error) } // may do some error handling
         } resetKeys={[props.children]} >
             <ReactMarkdown {...props}
-                className={ props.inlineRenderPrefix === undefined ? 'markdown' : undefined } //if inlineRenderPrefix is set ('' included) then render as react.fragment.
-                remarkPlugins = { remarkPlugins }
+                className={ props.inlineRenderPrefix === undefined ? 'markdown' : undefined }
+                remarkPlugins = { remarkPlugins as any }
                 remarkRehypeOptions = { {
-                    handlers: remarkRehypeHandlers
+                    handlers: remarkRehypeHandlers as any
                 } }
-                rehypePlugins = { rehypePlugins }
+                rehypePlugins = { rehypePlugins as any }
                 components = { components }
             />
         </ErrorBoundary>
