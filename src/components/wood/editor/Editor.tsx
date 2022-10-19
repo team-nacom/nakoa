@@ -1,8 +1,8 @@
-import { useState, useReducer, useCallback, useEffect, useMemo, memo, PropsWithChildren } from 'react'
+import { useCallback, memo } from 'react'
 
 import {
     useCombinedDispatch,
-    useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren,
+    useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren, useSingleCellLabelTypewise,
     useRootId, useMetaData, 
 } from '#/components/wood/states'
 
@@ -20,17 +20,23 @@ import {
 import isEqual from 'react-fast-compare'
 
 import {
-    AddBox, ArrowDropDown, ListAlt,
+    AddBox, ArrowDropDown, ListAlt, FormatListNumberedRtl,
     Article, Calculate, Code, Close, Delete, Image, Tag, Update
 } from '@mui/icons-material'
 
 const maxDepth = 4
+
+function CellLabel({ id }: CellIndicatorProps){
+    const lbl = useSingleCellLabelTypewise(id)
+    return <>{ lbl.join('.') }</>
+}
 
 function _CellToolbar({ id }: CellIndicatorProps){
     const cell = useSingleCell(id)
     const childIds = useSingleCellChildren(id)
     const hide = useSingleCellHideChildren(id)
     const isFocused = useSingleCellFocused(id)
+
     const dispatch = useCombinedDispatch()
 
     const changeCellTypeHandlerFactory = useCallback((targetType: CellType) => (() => {
@@ -49,7 +55,7 @@ function _CellToolbar({ id }: CellIndicatorProps){
                 id
             })
         }
-    }), [cell, childIds])
+    }), [cell, childIds, id])
 
     const deleteHandler = useCallback(()=>{
         const { [cellTypeStr]: cellType, id: unused, ...fields } = cell
@@ -65,7 +71,7 @@ function _CellToolbar({ id }: CellIndicatorProps){
                 targetId: id
             })
         }
-    }, [cell, childIds])
+    }, [cell, childIds, id])
 
     if(cell === undefined) return null
     
@@ -136,6 +142,10 @@ function _CellToolbar({ id }: CellIndicatorProps){
                 <span className='cellInfoIcon'><Tag /></span>
                 <span className='cellInfoText'>{id}</span>
             </span>
+            <span className='cellPos'>
+                <span className='cellInfoIcon'><FormatListNumberedRtl /></span>
+                <span className='cellInfoText'><CellLabel id={id} /></span>
+            </span>
         </div>
     </div>
 }
@@ -165,9 +175,14 @@ const CellIndicator = memo(_CellIndicator)
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
 
 
-function _InterCell({ parentId, idx }: InterCellProps){
+function _InterCell({ parentId, idx, depth }: InterCellProps){
     const cellType = useSingleCellType(parentId)
     const dispatch = useCombinedDispatch()
+
+    if(depth !== undefined && depth >= maxDepth){
+        return null
+    }
+
     return (
         <div className='interBlockHelper'>
             <hr />

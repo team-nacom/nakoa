@@ -10,11 +10,6 @@ import {
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
-import ReactMarkdown from 'react-markdown'
-import RemarkGFM from 'remark-gfm'
-import RemarkMath from 'remark-math'
-import RehypeKatex from 'rehype-katex'
-
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown-lab/Markdown'
 
@@ -30,12 +25,13 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 // renderers
 
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
-    const { mathMacroObj } = useRenderData()
+    const { mathMacroObj, Label, LabelTypewise } = useRenderData()
 
     return (
         <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
             <Markdown
                 mathMacroObj={ mathMacroObj }
+                perrefMap={ LabelTypewise }
             >
                 {cell.value}
             </Markdown>

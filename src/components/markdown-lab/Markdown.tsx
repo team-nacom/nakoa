@@ -8,16 +8,19 @@ import RemarkMath from 'remark-math';
 import { MdastTransform, Handlers } from './MdastTransform'
 import WrapTableRows from './remark-wrap-table-rows'
 import RemovePosition from './remark-remove-position'
+import perref from './perref'
+import inlineRender from './inline-render'
 
 import katex from 'katex'
 
 function customHandlersBuilder(mathMacroObj: Object): Handlers{
+    const macros = {...mathMacroObj}
     return {
         'math': ({ children, ...props }) => {
             const innerHtml = katex.renderToString(props.value, {
                 displayMode: true,
                 throwOnError: false,
-                macros: mathMacroObj
+                macros, // globalGroup: true
             })
             return <div className='math-display'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }
@@ -27,7 +30,7 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
             const innerHtml = katex.renderToString(props.value, {
                 displayMode: false,
                 throwOnError: false,
-                macros: mathMacroObj
+                macros, // globalGroup: true
             })
             return <span className='math-inline'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }
@@ -38,12 +41,16 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
 
 interface RendererOptionProps{
     mathMacroObj?: Object,
+    inlineRenderPrefix?: string,
+    perrefMap?: Record<string, number[]>,
 
     children: string
 }
 function Markdown(props: RendererOptionProps){
     const {
         mathMacroObj,
+        inlineRenderPrefix,
+        perrefMap,
         children: contents
     } = props
 
@@ -57,6 +64,9 @@ function Markdown(props: RendererOptionProps){
         .use([
             RemarkGFM, WrapTableRows,
             RemarkMath,
+
+            // [inlineRender, { prefix: inlineRenderPrefix } ],
+            [perref, { map: perrefMap }],
 
             RemovePosition
         ])

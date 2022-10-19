@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 
 import {
     cellTypeStr, 
@@ -135,7 +135,7 @@ const cellData: CellData = {
     'c33': {
         cellType: 'text',
         id: 'c33',
-        value: '무 순열 $\\sigma \\in S_{2n}$이 주어져 있을 때, $i \\to \\sigma(i)$ 간선을 이어주면 방향성 있는 사이클로만 이루어진 그래프가 됩니다. 여기서 방향성을 제거해서 얻은 그래프들은 사이클로만 이루어져 있으면 되니 $\\et$보다 좀 더 다양합니다.\n마찬가지로 $\\sigma, \\tau$에서 얻을 수 있는 그래프가 $H$로 동일하면 $\\sigma \\equiv \\tau$, $H$를 강조하고 싶을 때는 $\\sigma \\equiv_{H} \\tau$로 정의하고, $P(\\sigma)$와 비슷하게 $D(\\sigma)$를 $\\sgn(\\sigma) \\times a_{1 \\sigma(1)} \\cdots a_{2n \\sigma(2n)}$로 정의합시다.'
+        value: '아무 순열 $\\sigma \\in S_{2n}$이 주어져 있을 때, $i \\to \\sigma(i)$ 간선을 이어주면 방향성 있는 사이클로만 이루어진 그래프가 됩니다. 여기서 방향성을 제거해서 얻은 그래프들은 사이클로만 이루어져 있으면 되니 $\\et$보다 좀 더 다양합니다.\n마찬가지로 $\\sigma, \\tau$에서 얻을 수 있는 그래프가 $H$로 동일하면 $\\sigma \\equiv \\tau$, $H$를 강조하고 싶을 때는 $\\sigma \\equiv_{H} \\tau$로 정의하고, $P(\\sigma)$와 비슷하게 $D(\\sigma)$를 $\\sgn(\\sigma) \\times a_{1 \\sigma(1)} \\cdots a_{2n \\sigma(2n)}$로 정의합시다.'
     },
     'c34': {
         cellType: 'text',
@@ -207,7 +207,8 @@ const structData : StructData = {
 }
 
 function App() {
-    const [data, dispatch] = useCombinedReducer(initializeState(rootId, cellData, structData))
+    const initState = useMemo(() => initializeState(rootId, cellData, structData), [])
+    const [data, dispatch] = useCombinedReducer(initState)
     return (
         <div id='content'>
             <CombinedStateContext.Provider value={ data }>

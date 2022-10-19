@@ -30,15 +30,15 @@ type SectionCell = CellFrom<SectionCellField,'section'> // only used in this fil
 // renderers
 
 function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
-    const { mathMacroObj } = useRenderData()
+    const { mathMacroObj, Label, LabelTypewise } = useRenderData()
+    const lbl = LabelTypewise[cell.id] || []
     
-    // todo: depths!!
     return (
         <div className='sectionCell' >
             <Markdown
                 mathMacroObj={ mathMacroObj }
             >
-                { '# ' + cell.value}
+                { '#'.repeat(lbl.length) + ' ' + lbl.join('.') + ' '  + cell.value }
             </Markdown>
         </div>
     )

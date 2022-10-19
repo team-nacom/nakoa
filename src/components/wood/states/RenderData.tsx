@@ -31,6 +31,41 @@ export type RenderDataAction = {
     id: string
 }
 
+function _generateAllLabel(structData: StructData, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+    (structData[id] || []).forEach((childId,idx)=>{
+        _generateAllLabel(structData, childId, obj, [...prefix, idx+1])
+    })
+}
+
+export function generateAllLabel(structData: StructData, root: string): Record<string, number[]>{
+    let obj: Record<string, number[]> = {}
+    _generateAllLabel(structData, root, obj, [])
+    return obj
+}
+
+function _generateTypedLabel(structData: StructData, cellData: CellData, id: string, obj: Record<string, number[]>, prefix: number[]){
+    obj[id] = prefix;
+
+    const idxObj : Record<string, number> = {};
+    (structData[id] || []).forEach((childId,idx)=>{
+        let currentType : string = cellData[idx]?.cellType || 'unknown'
+        // may have additional handlings, like...
+        // if(cellData[idx].cellType === 'block' && cellData[idx].blockType === 'theorem'){
+        //     currentType = 'block-theorem'
+        // }
+
+        const currentTypeNextIdx = idxObj[currentType] = (idxObj[currentType] || 0) + 1
+
+        _generateTypedLabel(structData, cellData, childId, obj, [...prefix, currentTypeNextIdx])
+    })
+}
+
+export function generateTypedLabel(structData: StructData, cellData: CellData, root: string): Record<string, number[]>{
+    let obj: Record<string, number[]> = {}
+    _generateTypedLabel(structData, cellData, root, obj, [])
+    return obj
+}
 
 // helper function
 function toMathMacroObj(mathMacroStr: string){
@@ -69,7 +104,7 @@ export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAc
     return next;
 }
 
-export function initializeRenderData(cellData: CellData, rootId: string): RenderData{
+export function initializeRenderData(structData: StructData, cellData: CellData, rootId: string): RenderData{
     const hideChildren: Record<string, boolean> = {}
     for(let id in cellData){
         const cell = cellData[id]
@@ -78,12 +113,14 @@ export function initializeRenderData(cellData: CellData, rootId: string): Render
         }
     }
 
+    const Label = generateAllLabel(structData, rootId)
+    const LabelTypewise = generateTypedLabel(structData, cellData, rootId)
+
     const rootCell = cellData[rootId] as Cell<'root'>
 
     return {
         mathMacroObj: toMathMacroObj(rootCell.mathMacroStr),
-        Label: {},
-        LabelTypewise: {},
+        Label, LabelTypewise,
         hideChildren
     }
 }

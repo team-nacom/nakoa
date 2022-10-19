@@ -11,8 +11,8 @@
 React 구조상으로 할 만한 건 다 했다. bottleneck은 markdown rendering이다.
 
 - [x] textarea를 autosize 가능하게
-- [ ] markdown renderer에서 mathMacroObj 적용할 수 있도록
-- [ ] 라벨링
+- [x] markdown renderer에서 mathMacroObj 적용할 수 있도록
+- [x] 라벨링
 
 - [ ] Display / Publish 모드 구현
 

@@ -1,16 +1,21 @@
 import {
-    Reducer, Dispatch, SetStateAction, useReducer,
+    Reducer, Dispatch, SetStateAction, useReducer, useMemo
     // createContext, useContext,
 } from 'react'
 import {
+    Context,
     createContext, useContextSelector, useContext
 } from 'use-context-selector'
+import isEqual from 'react-fast-compare'
 
 import { Cell, CellType, cellTypeStr, defaultFields, isParentType } from '#/components/wood/cell'
 
 import { CellData, cellDataDefault, cellReducer } from './CellData'
 import { StructData, structDataDefault, structReducer } from './StructData'
-import { RenderData, renderDataDefault, renderReducer, initializeRenderData } from './RenderData'
+import {
+    RenderData, renderDataDefault, renderReducer, initializeRenderData,
+    generateAllLabel, generateTypedLabel
+} from './RenderData'
 import { EditorState, editorStateDefault } from './EditorState'
 
 // define combined state, combined action to manage data and states simultaneously
@@ -42,11 +47,10 @@ export type CombinedAction
     // | { type: 'focusAdj', direction: number }
 ;
 
-function generateId(parentIds: {[id: string]: string | undefined}) : string{
+function generateId(ids: string[]) : string{
     let mx = Math.max.apply(
         null,
-        Object.keys(parentIds)
-            .map( str => parseInt(str.slice(1)) )
+        ids.map( str => parseInt(str.slice(1)) )
             .filter( isFinite )
             .concat(0)
     ) + 1;
@@ -79,6 +83,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             type: 'cascadeChildren',
             id: a.id
         })
+
+        next.renderData = {
+            ...prev.renderData,
+            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
+        }
     } break
     case 'move': {
         const { parentIds, structData } = prev
@@ -96,10 +105,15 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             destPos: a.destPos
         })
         next.parentIds = {...parentIds, [a.targetId]: a.destParentId }
+        next.renderData = {
+            ...prev.renderData,
+            Label: generateAllLabel(next.structData, next.rootId),
+            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
+        }
     } break
     case 'createChild': {
         const { parentIds } = prev
-        const newId = generateId(prev.parentIds)
+        const newId = generateId(Object.keys(prev.parentIds))
 
         next.cellData = cellReducer(prev.cellData, {
             type: 'create',
@@ -117,6 +131,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             cellId: newId
         })
         next.parentIds = {...parentIds, [newId]: a.parentId }
+        next.renderData = {
+            ...prev.renderData,
+            Label: generateAllLabel(next.structData, next.rootId),
+            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
+        }
     } break
     case 'remove': {
         if(prev.cellData[a.targetId].cellType === 'root') return prev
@@ -143,6 +162,17 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             for(let cid of next.structData[pid]){
                 next.parentIds[cid] = pid
             }
+        }
+        // next.parentIds = Object.fromEntries(
+        //     Object.entries(next.parentIds).filter( ([id, p]) => (
+        //         id in next.structData
+        //      ) )
+        // )
+
+        next.renderData = {
+            ...prev.renderData,
+            Label: generateAllLabel(next.structData, next.rootId),
+            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
         }
     } break
 
@@ -207,10 +237,33 @@ export function initializeState(
 
     return {
         cellData, structData,
-        renderData: initializeRenderData(cellData, rootId),
-        parentIds, rootId, focusId
+        renderData: initializeRenderData(structData, cellData, rootId),
+        parentIds, rootId,
+        focusId
     }
 }
+
+// https://github.com/dai-shi/use-context-selector/issues/19#issuecomment-927748302
+export const useContextSelectorDeep = <T extends any, R extends any>(
+    context: Context<T>,
+    selector: (val: T) => R,
+) => {
+    const patchedSelector = useMemo(() => {
+        let prevValue: R | null = null;
+    
+        return (state: T) => {
+            const nextValue: R = selector(state);
+            if (prevValue !== null && isEqual(prevValue, nextValue)) {
+                return prevValue;
+            }
+    
+            prevValue = nextValue;
+            return nextValue;
+        };
+    }, [selector]);
+  
+    return useContextSelector(context, patchedSelector);
+};
 
 export const CombinedStateContext = createContext(combinedStateDefault)
 export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
@@ -224,6 +277,9 @@ export const useMetaData = () => useContextSelector(CombinedStateContext, ctx =>
 export const useSingleCell = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id])
 export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)
 export const useSingleCellFocused = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.focusId === id)
+
+export const useSingleCellLabel = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.Label[id] || [])
+export const useSingleCellLabelTypewise = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.LabelTypewise[id] || [])
 
 function getChildren(state: CombinedState, id: string): (string[] | undefined){
     const cellType = state.cellData[id]?.cellType

@@ -1,4 +1,8 @@
-import React, { useState, createContext, useContext, useRef, memo, PropsWithChildren, useEffect } from 'react'
+import React, { useState, useRef, memo, PropsWithChildren, useEffect } from 'react'
+
+import {
+    createContext, useContextSelector, useContext
+} from 'use-context-selector'
 
 import { HtmlPortalNode, createHtmlPortalNode, InPortal, OutPortal } from 'react-reverse-portal'
 
@@ -107,6 +111,8 @@ export function CellPortalScopeWith(
 ////// CellPortalWith ///////
 /////////////////////////////
 
+const usePortalNode = (id: string) => useContextSelector(PortalNodeContext, map => map.get(id))
+
 export interface InterCellProps{
     parentId: string
     idx: number
@@ -128,13 +134,12 @@ export function CellPortalWith(
     ChildrenWrapper: React.ComponentType<ChildrenWrapperProps> = VoidWrapper,
 ){
     const CellPortal = memo(function _CellPortal({ id, depth }: CellPortalProps){
-        const portalNodes = useContext(PortalNodeContext)
+        const node = usePortalNode(id)
         const childIds = useSingleCellChildren(id)
         const hide = useSingleCellHideChildren(id)
 
         const nextDepth = (depth || 0) + 1
-
-        const node = portalNodes.get(id)
+        
         if(node === undefined) return null
         
         return <div>
