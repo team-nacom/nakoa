@@ -11,24 +11,22 @@ export interface RenderData{
     Label: Record<string, number[]>
     LabelTypewise: Record<string, number[]>
 
-    // whether hide some children or not
-    hideChildren: Record<string, boolean>
-
     // render mode(publish / display / preview) : pass as props.
 }
 export const renderDataDefault : RenderData = {
     mathMacroObj: {},
     Label: {},
     LabelTypewise: {},
-    hideChildren: {}
 }
 
 export type RenderDataAction = {
     type: 'updateFromRoot'
     rootCell: Cell<'root'>
 } | {
-    type: 'toggleHideChildren'
-    id: string
+    type: 'relabel',
+    structData: StructData,
+    cellData: CellData,
+    rootId: string
 }
 
 function _generateAllLabel(structData: StructData, id: string, obj: Record<string, number[]>, prefix: number[]){
@@ -88,12 +86,10 @@ export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAc
     case 'updateFromRoot': {
         next.mathMacroObj = toMathMacroObj(a.rootCell.mathMacroStr)
     } break
-    case 'toggleHideChildren': {
-        next.hideChildren = {
-            ...prev.hideChildren,
-            [a.id]: !prev.hideChildren[a.id]
-        }
-    }
+    case 'relabel': {
+        next.Label = generateAllLabel(a.structData, a.rootId)
+        next.LabelTypewise = generateTypedLabel(a.structData, a.cellData, a.rootId)
+    } break
 
     }
 
@@ -101,22 +97,11 @@ export const renderReducer : Reducer<RenderData, RenderDataAction | RenderDataAc
 }
 
 export function initializeRenderData(structData: StructData, cellData: CellData, rootId: string): RenderData{
-    const hideChildren: Record<string, boolean> = {}
-    for(let id in cellData){
-        const cell = cellData[id]
-        if(cell.cellType === 'section' && cell.hideChildren){
-            hideChildren[id] = true
-        }
-    }
-
-    const Label = generateAllLabel(structData, rootId)
-    const LabelTypewise = generateTypedLabel(structData, cellData, rootId)
-
     const rootCell = cellData[rootId] as Cell<'root'>
 
     return {
         mathMacroObj: toMathMacroObj(rootCell.mathMacroStr),
-        Label, LabelTypewise,
-        hideChildren
+        Label: generateAllLabel(structData, rootId),
+        LabelTypewise: generateTypedLabel(structData, cellData, rootId)
     }
 }

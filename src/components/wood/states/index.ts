@@ -84,10 +84,12 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             id: a.id
         })
 
-        next.renderData = {
-            ...prev.renderData,
-            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
-        }
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'relabel',
+            structData: next.structData,
+            cellData: next.cellData,
+            rootId: next.rootId
+        })
     } break
     case 'move': {
         const { parentIds, structData } = prev
@@ -105,11 +107,12 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             destPos: a.destPos
         })
         next.parentIds = {...parentIds, [a.targetId]: a.destParentId }
-        next.renderData = {
-            ...prev.renderData,
-            Label: generateAllLabel(next.structData, next.rootId),
-            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
-        }
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'relabel',
+            structData: next.structData,
+            cellData: next.cellData,
+            rootId: next.rootId
+        })
     } break
     case 'createChild': {
         const { parentIds } = prev
@@ -131,11 +134,12 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             cellId: newId
         })
         next.parentIds = {...parentIds, [newId]: a.parentId }
-        next.renderData = {
-            ...prev.renderData,
-            Label: generateAllLabel(next.structData, next.rootId),
-            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
-        }
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'relabel',
+            structData: next.structData,
+            cellData: next.cellData,
+            rootId: next.rootId
+        })
     } break
     case 'remove': {
         if(prev.cellData[a.targetId].cellType === 'root') return prev
@@ -169,11 +173,12 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         //      ) )
         // )
 
-        next.renderData = {
-            ...prev.renderData,
-            Label: generateAllLabel(next.structData, next.rootId),
-            LabelTypewise: generateTypedLabel(next.structData, next.cellData, next.rootId)
-        }
+        next.renderData = renderReducer(prev.renderData, {
+            type: 'relabel',
+            structData: next.structData,
+            cellData: next.cellData,
+            rootId: next.rootId
+        })
     } break
 
     case 'updateRenderData': {
@@ -183,10 +188,10 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
         })
     } break
     case 'toggleHideChildren': {
-        next.renderData = renderReducer(prev.renderData, {
-            type: 'toggleHideChildren',
-            id: a.id
-        }) //equivalent to renderReducer(prev.renderData, a)
+        next.hideChildren = {
+            ...prev.hideChildren,
+            [a.id]: !prev.hideChildren[a.id]
+        }
     } break
 
     case 'focus': {
@@ -235,11 +240,20 @@ export function initializeState(
         }
     }
 
+    const hideChildren: Record<string, boolean> = {}
+    for(let id in cellData){
+        const cell = cellData[id]
+        if(cell.cellType === 'section' && cell.hideChildren){
+            hideChildren[id] = true
+        }
+    }
+
     return {
         cellData, structData,
         renderData: initializeRenderData(structData, cellData, rootId),
         parentIds, rootId,
-        focusId
+        focusId,
+        hideChildren
     }
 }
 
@@ -287,7 +301,7 @@ function getChildren(state: CombinedState, id: string): (string[] | undefined){
     return undefined
 }
 export const useSingleCellChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => getChildren(ctx, id) )
-export const useSingleCellHideChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.renderData.hideChildren[id])
+export const useSingleCellHideChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.hideChildren[id])
 
 export const useCellData = () => useContextSelector(CombinedStateContext, ctx => ctx.cellData)
 export const useStructData = () => useContextSelector(CombinedStateContext, ctx => ctx.structData)

@@ -100,27 +100,34 @@ function _CellToolbar({ id }: CellIndicatorProps){
                         </button>
                     </>}
                 </>}
-                {cellType === 'section' && <>
-                    {isFocused && <>
-                        <input type='checkbox'
-                            id={ 'hide-' + id }
-                            defaultChecked={ hide /* cell.hideChildren */ }
-                            onClick={ () => dispatch({type: 'toggleHideChildren', id: id}) }
-                        />
-                        <label className='cellOptionButton'
-                            htmlFor={ 'hide-' + id }
-                        >
-                            <ArrowDropDown />
-                        </label>
-                    </>}
-                </>}
             </>}
             {cellType !== 'root' && <>
-                <button className='cellOptionButton'
-                    onClick={ () => dispatch({type: 'focus' }) }
-                >
-                    <Close />
-                </button>
+                {isFocused &&
+                    <button className='cellOptionButton'
+                        onClick={ (ev) => {
+                            ev.stopPropagation()
+                            dispatch({type: 'focus' })
+                        } }
+                    >
+                        <Close />
+                    </button>
+                }
+                {cellType === 'section' && <>
+                    <input type='checkbox'
+                        id={ 'hide-' + id }
+                        defaultChecked={ hide /* cell.hideChildren */ }
+                        onClick={ (ev) => {
+                            ev.stopPropagation()
+                            dispatch({type: 'toggleHideChildren', id: id})
+                        } }
+                    />
+                    <label className='cellOptionButton'
+                        htmlFor={ 'hide-' + id }
+                        onClick={ (ev) => { ev.stopPropagation() } }
+                    >
+                        <ArrowDropDown />
+                    </label>
+                </>}
                 <button className='cellOptionButton'
                     onClick={ deleteHandler }
                 >
