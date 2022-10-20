@@ -38,7 +38,7 @@ function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
             <Markdown
                 mathMacroObj={ mathMacroObj }
             >
-                { '#'.repeat(lbl.length) + ' ' + lbl.join('.') + ' '  + cell.value }
+                { '#'.repeat(lbl.length) + ' ' + lbl.join('.') + '. '  + cell.value }
             </Markdown>
         </div>
     )
@@ -62,6 +62,7 @@ function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mo
 
     return (
         <div className='editorSectionCell'>
+            <SectionCellViewer mode={ RenderMode.PREVIEW } cell={ cell } />
             <input autoFocus
                 className='editorSectionCellInput'
                 value={ cell.value }
