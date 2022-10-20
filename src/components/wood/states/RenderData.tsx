@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, PropsWithChildren, Reducer } from 'react';
-import { Cell } from '#/components/wood/cell';
+import { Cell, labelType } from '#/components/wood/cell';
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
 
 import katex from 'katex'
@@ -48,14 +48,10 @@ function _generateTypedLabel(structData: StructData, cellData: CellData, id: str
     obj[id] = prefix;
 
     const idxObj : Record<string, number> = {};
-    (structData[id] || []).forEach((childId,idx)=>{
-        let currentType : string = cellData[idx]?.cellType || 'unknown'
-        // may have additional handlings, like...
-        // if(cellData[idx].cellType === 'block' && cellData[idx].blockType === 'theorem'){
-        //     currentType = 'block-theorem'
-        // }
-
-        const currentTypeNextIdx = idxObj[currentType] = (idxObj[currentType] || 0) + 1
+    (structData[id] || []).forEach((childId)=>{
+        const currentType = labelType(cellData[childId])
+        const currentTypeNextIdx = (idxObj[currentType] || 0) + 1
+        idxObj[currentType] = currentTypeNextIdx
 
         _generateTypedLabel(structData, cellData, childId, obj, [...prefix, currentTypeNextIdx])
     })

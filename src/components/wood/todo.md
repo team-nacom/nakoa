@@ -8,7 +8,7 @@
  => 16.5ms + 24.9ms
  => 6.1ms + 23.6ms ...
 
-React 구조상으로 할 만한 건 다 했다. bottleneck은 markdown rendering이다.
+React 구조상으로 할 만한 건 다 했다. bottleneck은 markdown parsing이다.
 
 - [x] textarea를 autosize 가능하게
 - [x] markdown renderer에서 mathMacroObj 적용할 수 있도록

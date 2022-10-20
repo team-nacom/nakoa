@@ -70,3 +70,18 @@ export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof
     'code': codeCellDefault,
     'math': mathCellDefault
 }
+
+/**
+ * depending on cell contents, get the label type
+ * in most cases, the label type is equal to the cell type.
+ * @param cell the cell, possibly undefined.
+ * @returns the label type of the cell.
+ */
+export function labelType(cell?: Cell) : string{
+    return cell?.[cellTypeStr] || 'unknown'
+
+    // may have additional branches, e.g. )
+    // if(cell?.cellType === 'block' && cell?.blockType === 'theorem'){
+    //     return 'block-theorem'
+    // }
+}

@@ -9,7 +9,7 @@ import {
 import {
     MemoizedCellRenderer, RenderMode,
     Cell, CellType, cellTypeStr,
-    defaultFields, isParentType
+    defaultFields, isParentType, labelType
 } from '#/components/wood/cell'
 
 import {
@@ -24,11 +24,12 @@ import {
     Article, Calculate, Code, Close, Delete, Image, Tag, Update
 } from '@mui/icons-material'
 
-const maxDepth = 4
+const maxDepth = 5
 
 function CellLabel({ id }: CellIndicatorProps){
+    const cell = useSingleCell(id)
     const lbl = useSingleCellLabelTypewise(id)
-    return <>{ lbl.join('.') }</>
+    return <>{ `(${ labelType(cell) }) ${ lbl.join('.') }` }</>
 }
 
 function _CellToolbar({ id }: CellIndicatorProps){
@@ -179,7 +180,9 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
     const cellType = useSingleCellType(parentId)
     const dispatch = useCombinedDispatch()
 
-    if(depth !== undefined && depth >= maxDepth){
+    depth = depth || 0
+
+    if(depth > maxDepth){
         return null
     }
 
@@ -200,7 +203,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
                 >
                     <AddBox />
                 </button>
-                {isParentType(cellType) &&
+                {isParentType(cellType) && (depth < maxDepth) &&
                     <button className='addSectionCellButton'
                         onClick={(ev)=>{
                             ev.stopPropagation()
