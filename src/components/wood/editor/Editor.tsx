@@ -2,13 +2,15 @@ import { useCombinedDispatch, useRootId } from '#/components/wood/states'
 
 import { MetadataInput } from './MetadataInput'
 
+import { DndScope } from './DndScope'
+
 import { CellPortalScopeWith, CellPortalWith } from './Portal'
 import { CellIndicator } from './CellIndicator'
 import { InterCell } from './InterCell'
 import { ChildrenWrapper } from './ChildrenWrapper'
 
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
-const CellPortal = CellPortalWith(InterCell, ChildrenWrapper)
+const [CellPortal, CellPortalDraggable] = CellPortalWith(InterCell, ChildrenWrapper)
 
 /**
  * Editor core.
@@ -21,6 +23,7 @@ export function EditorCore(){
 
     return (
         <div className='cellEditorWrapper'
+            // collisionDetection={  }
             onClick={() => dispatch({type: 'focus'})}
         >
             <div className='editorTextInput'>
@@ -29,9 +32,11 @@ export function EditorCore(){
 
             <hr />
             <div className='allCellsWrapper'>
-                <CellPortalScope>
-                    <CellPortal key = { 'cell-' + rootId } id={ rootId } />
-                </CellPortalScope>
+                <DndScope>
+                    <CellPortalScope>
+                        <CellPortal key = { 'cell-' + rootId } id={ rootId } />
+                    </CellPortalScope>
+                </DndScope>
             </div>
             <hr />
 

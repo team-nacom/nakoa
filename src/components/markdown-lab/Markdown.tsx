@@ -11,6 +11,8 @@ import RemovePosition from './remark-remove-position'
 import perref from './perref'
 import inlineRender from './inline-render'
 
+import InternalLinkHandler from './InternalLinkHandler'
+
 import katex from 'katex'
 
 function customHandlersBuilder(mathMacroObj: Object): Handlers{

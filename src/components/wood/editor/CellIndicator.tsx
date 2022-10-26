@@ -10,7 +10,6 @@ import {
 } from '#/components/wood/cell'
 
 import { CellIndicatorProps } from './Portal'
-
 import { Toolbar } from './Toolbar'
 
 function _CellIndicator({ id }: CellIndicatorProps){
@@ -20,7 +19,7 @@ function _CellIndicator({ id }: CellIndicatorProps){
     const dispatch = useCombinedDispatch()
 
     return (
-        <div id = { id }
+        <div id={ id }
             className={ 'cellContentWrapper' + (isFocused? ' editingCellWrapper' : '') }
             onClick = { (ev) => {
                 ev.stopPropagation()

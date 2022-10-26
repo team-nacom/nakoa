@@ -18,7 +18,7 @@ const Wrapper = ({children}: {children: React.ReactNode}) => (
 function App(){
     return (
         <Wrapper>
-            <SortableTree collapsible indicator removable />
+            <SortableTree indicator />
         </Wrapper>
     )
 }

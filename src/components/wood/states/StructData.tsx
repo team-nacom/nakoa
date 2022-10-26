@@ -86,9 +86,9 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
                     ...prevStruct,
                     [targetParentId]: [
                         ...prevStruct[targetParentId].slice(0,targetPos),
-                        ...prevStruct[targetParentId].slice(targetPos+1, destPos+1),
+                        ...prevStruct[targetParentId].slice(targetPos+1, destPos),
                         prevStruct[targetParentId][targetPos],
-                        ...prevStruct[targetParentId].slice(destPos+1)
+                        ...prevStruct[targetParentId].slice(destPos)
                     ]
                 }
             return { //targetPos > destPos

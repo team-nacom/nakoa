@@ -14,6 +14,9 @@ import {
     useSingleCellHideChildren,
 } from '#/components/wood/states'
 
+import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+
 type PortalNodeMap = Map<string, HtmlPortalNode>
 
 /**
@@ -117,6 +120,7 @@ export interface InterCellProps{
     parentId: string
     idx: number
     depth?: number
+    over?: boolean
 }
 export type ChildrenWrapperProps = PropsWithChildren<{
     hide?: boolean
@@ -142,14 +146,14 @@ export function CellPortalWith(
         
         if(node === undefined) return null
         
-        return <div>
+        return <>
             <OutPortal node = { node } />
             {childIds !== undefined &&
                 <ChildrenWrapper hide={hide}>
                     {
                         childIds.reduce( (prev: any[], childId, idx) => {
                             prev.push(
-                                <CellPortal key = { 'cell-' + childId }
+                                <CellPortalDraggable key = { 'cell-' + childId }
                                     id = { childId }
                                     depth = { nextDepth }
                                 />
@@ -170,7 +174,35 @@ export function CellPortalWith(
                     }
                 </ChildrenWrapper>
             }
+        </>
+    })
+
+    const CellPortalDraggable = memo(function _CellPortalDraggable({ id, depth }: CellPortalProps){
+        //draggable settings
+        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data: { id } })
+        const style : React.CSSProperties = {
+            transform: CSS.Translate.toString(transform),
+            position: 'relative',
+            zIndex: transform !== null ? 3 : 2, // should be higher than interCell
+            opacity: transform !== null ? 0.8 : undefined,
+        }
+
+        return <div ref={ setNodeRef } style={style}>
+
+            { /* TODO : move dnd into separate component */ }
+            <div  {...listeners} {...attributes}
+                className={ 'cellHandle' }
+                style={ {
+                    width:'10px', height:'10px',
+                    backgroundColor:'blue',
+                    // visibility: transform !== null ? 'hidden' : undefined
+                } } 
+            />
+
+            <CellPortal id = { id } depth = { depth } />
+
         </div>
     })
-    return CellPortal
+
+    return [CellPortal, CellPortalDraggable]
 }

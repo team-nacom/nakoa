@@ -29,7 +29,6 @@ import {
   buildTree,
   flattenTree,
   getProjection,
-  getChildCount,
   removeItem,
   removeChildrenOf,
   setProperty,
@@ -96,19 +95,15 @@ const dropAnimationConfig: DropAnimation = {
 };
 
 interface Props {
-  collapsible?: boolean;
   defaultItems?: TreeItems;
   indentationWidth?: number;
   indicator?: boolean;
-  removable?: boolean;
 }
 
 export function SortableTree({
-  collapsible,
   defaultItems = initialItems,
   indicator = false,
   indentationWidth = 50,
-  removable,
 }: Props) {
   const [items, setItems] = useState(() => defaultItems);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -211,11 +206,11 @@ export function SortableTree({
             indicator={indicator}
             collapsed={Boolean(collapsed && children.length)}
             onCollapse={
-              collapsible && children.length
+              children.length
                 ? () => handleCollapse(id)
                 : undefined
             }
-            onRemove={removable ? () => handleRemove(id) : undefined}
+            onRemove={() => handleRemove(id)}
           />
         ))}
         {createPortal(
