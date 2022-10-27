@@ -7,6 +7,7 @@
 - [x] 레이턴시 줄이기 - 27.2ms + 43.2ms
  => 16.5ms + 24.9ms
  => 6.1ms + 23.6ms ...
+ => 1~2ms + 8ms ...
 
 React 구조상으로 할 만한 건 다 했다. bottleneck은 markdown parsing이다.
 
@@ -16,7 +17,7 @@ React 구조상으로 할 만한 건 다 했다. bottleneck은 markdown parsing�
 
 - [ ] Display / Publish 모드 구현
 
-- [ ] cell 옮기기 기능
+- [x] cell 옮기기 기능
 
 - [ ] cell <=> { rootId, cellData, structData } 양방향 변환
 
