@@ -164,10 +164,6 @@
     text-align: left;
     white-space: pre;
 }
-.rootCellSettings code{
-    text-align: left;
-    white-space: pre;
-}
 
 .editorRootCellTextArea {
     width: 100%;
@@ -211,9 +207,6 @@
         outline: none;
     }
 }
-.childrenContainerHiddenEditor{
-    background-color: antiquewhite;
-}
 .childrenContainerHidden {
     display: none;
 }
@@ -221,10 +214,12 @@
     cursor: pointer;
     user-select: none;
 }
+// .childrenContainerHidden, .childrenContainerHiddenEditor{
+//     background-color: antiquewhite;
+// }
 
 .cellChildrenWrapper {
     position: relative;
-    padding: 0 10px;
     &:after {
         content: '';
         position: absolute;
@@ -355,36 +350,6 @@
         hr {
             @include shadow-template();
             width: 100%;
-        }
-    }
-
-    &.helperOver {
-        opacity: 1;
-        hr {
-            @include shadow-template();
-            width: 100%;
-            background-color: $primary-color;
-        }
-
-        .addButtonsWrapper {
-            display: flex;
-            position: relative;
-            padding: 0 10px;
-            &:before, &:after {
-                position: absolute;
-                background-color: $primary-color;
-                border-radius: 3px;
-                width: 100%;
-                height: 100%;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                content:'';
-            }
-            &:after {
-                @include shadow-template();
-                z-index: -1;
-            }
         }
     }
 }

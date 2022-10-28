@@ -35,7 +35,7 @@ function tocHeadingCopy(node: Node){
     return copied;
 }
 
-function wrapSection(nodes: Node[], depth: Number){
+function wrapSection(nodes: any[], depth: Number){
     var stack: Node[] = [];
     while(nodes.length > 0){
         const node = nodes.pop();
@@ -77,7 +77,7 @@ const SectionEnumerator : Plugin = (settings) => {
 
         // wrap section block and enumerate.
         var newChildren: Node[] = [];
-        for(const node of root.children){
+        for(const node of root.children as any[]){
             node.numbering = [] as Number[];
 
             if(node.type === 'heading'){

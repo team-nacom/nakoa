@@ -37,7 +37,7 @@ const FootnoteEnumerator : Plugin = () => {
 
         const identifiers = [']'] as string[];
 
-        visit(root, (node) => {
+        visit(root, (node: any) => {
             if(node.type === 'footnote'){
                 const protectedId = `]${ node.position?.start.line }-${ node.position?.start.column }`;
 
@@ -62,7 +62,7 @@ const FootnoteEnumerator : Plugin = () => {
             }
         })
 
-        visit(root, 'footnoteDefinition', (node) => {
+        visit(root, 'footnoteDefinition', (node: any) => {
             const id = node.identifier as string;
             var l = identifiers.indexOf( id );
             if(l === -1){
@@ -77,7 +77,7 @@ const FootnoteEnumerator : Plugin = () => {
         remove(root, 'footnote');
         remove(root, 'footnoteDefinition');
 
-        footnoteList.children.sort( (a:Node,b:Node) => { return (a.label as number) - (b.label as number) } )
+        footnoteList.children.sort( (a: any, b: any) => { return (a.label as number) - (b.label as number) } )
         root.children.push(footnoteList);
 
         // console.log(root);

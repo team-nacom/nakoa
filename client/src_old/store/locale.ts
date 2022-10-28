@@ -1,4 +1,4 @@
-import { localStorageKeys } from "etc/consts";
+import { localStorageKeys } from "../etc/consts";
 
 const SET_LOCALE = 'SET_LOCALE' as const;
 

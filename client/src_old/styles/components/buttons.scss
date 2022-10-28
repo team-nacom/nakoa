@@ -1,0 +1,130 @@
+@mixin standardButton {
+    background-color: $main-background;
+    margin: 8px;
+    padding: 10px 30px;
+    border: 2px solid $primary-color;
+    background: white;
+    color: $primary-color;
+    font-size: 14px;
+    border-radius: 27px;
+
+    &:hover {
+        background: $primary-color;
+        color: white;
+    }
+}
+
+@mixin roundButton {
+    display: block;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    text-align: center;
+
+    float: right;
+    background-color: white;
+    box-shadow: 0px 3px 10px #0000004D;
+
+    z-index: 1;
+    padding: 6px;
+    margin: 0;
+    margin-right: 30px;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: $primary-color;
+    }
+}
+
+@mixin sidebarButton {
+    margin: 8px;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    text-align: center;
+
+    background-color: white;
+    box-shadow: 0px 3px 10px #0000004D;
+
+    z-index: 1;
+    font-size: 30px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $primary-color;
+    }
+}
+
+@mixin underlineButton {
+    padding: 15px 25px;
+    background: white;
+    font-size: 14px;
+    border-bottom: 2px solid #00000000;
+
+    &:hover,
+    &.active {
+        color: $primary-color;
+        border-bottom: 2px solid $primary-color;
+    }
+}
+
+@mixin tagButton($color, $size: 13px) {
+    padding: 5px 10px;
+    margin: 2px 5px;
+    font-size: $size;
+    border-radius: 2px;
+
+    background-color: $color;
+    box-shadow: 0px 2px 6px #0000003D;
+}
+
+button {
+    border: none;
+    width: fit-content;
+    cursor: pointer;
+
+    &.button {
+        @include standardButton;
+    }
+}
+
+div.buttonContainer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: fit-content;
+    margin: 0px auto;
+}
+
+// 임시
+.bubbleSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3;
+
+    button {
+        @include sidebarButton;
+    }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: -140px;
+        top: -220px;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 2px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004D;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
+}

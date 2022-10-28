@@ -1,0 +1,17 @@
+# Commands to start on workspace startup
+tasks:
+  - name: install nodemon and packages
+    before: |
+      yarn global add nodemon
+    init: yarn
+    # command: |
+# Ports to expose on workspace startup
+ports:
+  - port: 3000
+    onOpen: open-preview
+
+# example .gitpod.yml from https://github.com/gitpod-io/demo-multi-repo-frontend
+additionalRepositories:
+  - url: https://github.com/paulsohn/react-dnd-treeview
+    # checkoutLocation is relative to /workspace
+    checkoutLocation: react-dnd-treeview

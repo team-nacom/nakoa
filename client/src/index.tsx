@@ -1,19 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'styles/index.scss';
-import App from 'App';
-import store from 'store';
-import { Provider } from 'react-redux';
-import ReactGA from 'react-ga';
-import config from './etc/config';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 
-ReactGA.initialize(config.googleAnalyticsTrackingId);
+import './styles/index.scss'
 
-ReactDOM.render(
-  <Provider store={store}>
+// import App from './dkst/DkstApp'
+
+import App from './App'
+// import App from './App221015'
+
+
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('Failed to find the root element')
+const root = ReactDOM.createRoot(rootElement)
+
+root.render(
     <React.StrictMode>
-      <App />
+        <App />
     </React.StrictMode>
-  </Provider>,
-  document.getElementById('root')
-);
+)
