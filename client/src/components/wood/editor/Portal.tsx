@@ -1,4 +1,4 @@
-import React, { useState, useRef, memo, PropsWithChildren, useEffect } from 'react'
+import React, { useState, useRef, useMemo, useEffect, memo, PropsWithChildren } from 'react'
 
 import {
     createContext, useContextSelector, useContext
@@ -70,7 +70,7 @@ export function CellPortalScopeWith(
         </InPortal>
     })
 
-    return function CellPortalScope({ children }: PropsWithChildren){
+    function _CellPortalScope({ children }: PropsWithChildren){
         const parentIds = useParentIds() // parentIds will only change when struct is changed
         const ids = Object.keys(parentIds)
 
@@ -108,6 +108,8 @@ export function CellPortalScopeWith(
             </PortalNodeContext.Provider>
         )
     }
+
+    return memo(_CellPortalScope)
 }
 
 /////////////////////////////
@@ -179,24 +181,19 @@ export function CellPortalWith(
 
     const CellPortalDraggable = memo(function _CellPortalDraggable({ id, depth }: CellPortalProps){
         //draggable settings
-        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data: { id } })
-        const style : React.CSSProperties = {
+        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data: { id } }) // TODO: seems like this hook 
+        const style : React.CSSProperties = useMemo(() => ({
             transform: CSS.Translate.toString(transform),
             position: 'relative',
             zIndex: transform !== null ? 3 : 2, // should be higher than interCell
             opacity: transform !== null ? 0.8 : undefined,
-        }
+        }), [transform])
 
         return <div ref={ setNodeRef } style={style}>
 
             { /* TODO : move dnd into separate component */ }
             <div  {...listeners} {...attributes}
                 className={ 'cellHandle' }
-                style={ {
-                    width:'10px', height:'10px',
-                    backgroundColor:'blue',
-                    // visibility: transform !== null ? 'hidden' : undefined
-                } } 
             />
 
             <CellPortal id = { id } depth = { depth } />

@@ -297,6 +297,22 @@
     .cellInfoIcon + .cellInfoText { margin: 0 4px 0 0; }
 }
 
+.cellHandle {
+    width: 10px;
+    height: 10px;
+    background-color: blue;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+
+    &:active {
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+    }
+    // visibility: transform !== null ? 'hidden' : undefined
+}
+
 .interBlockHelper {
     opacity: 0;
     height: 16px;

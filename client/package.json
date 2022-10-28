@@ -105,12 +105,12 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "watch": "nodemon --watch ./src --exec craco start",
+    "watch": "GENERATE_SOURCEMAP=false nodemon --watch ./src --exec craco start",
     "server": "yarn serve -s build --port 3000",
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "start": "craco start"
+    "start": "GENERATE_SOURCEMAP=false craco start"
   },
   "eslintConfig": {
     "extends": [

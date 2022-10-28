@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 
 import {
     Context,
@@ -21,7 +21,7 @@ const OverIdContext = createContext<string | number>('')
 
 export const useIsOver = (dndId: string) => useContextSelector(OverIdContext, overId => overId === dndId)
 
-export function DndScope({ children }: React.PropsWithChildren){
+function _DndScope({ children }: React.PropsWithChildren){
     const parentIds = useParentIds()
     const dispatch = useCombinedDispatch()
 
@@ -55,7 +55,7 @@ export function DndScope({ children }: React.PropsWithChildren){
         } else{
             setOverId('')
         }
-    }, [])
+    }, [parentIds])
     
     const handleDragEnd = useCallback( (ev: DragEndEvent) => {
         const { active, over } = ev
@@ -81,7 +81,7 @@ export function DndScope({ children }: React.PropsWithChildren){
             }
         }
         setOverId('')
-    }, [])
+    }, [parentIds])
 
     return <DndContext sensors={ sensors }
         onDragOver={ handleDragOver }
@@ -93,3 +93,4 @@ export function DndScope({ children }: React.PropsWithChildren){
         </OverIdContext.Provider>
     </DndContext>
 }
+export const DndScope = memo(_DndScope)
