@@ -20,7 +20,7 @@ function Write() {
     // initializing state
     // TODO: updating
     const initState = useMemo(() => {
-        // find if draft stored in autosave.
+        // find if draft has been autosaved in local storage.
         const storedRootId = localStorage.getItem(localStorageKeys.rootIdDraft)
         const storedCellDataStr = localStorage.getItem(localStorageKeys.cellDataDraft)
         const storedStructDataStr = localStorage.getItem(localStorageKeys.structDataDraft)
@@ -46,6 +46,7 @@ function Write() {
         if (autoSaveFlag == 1){
             setAutoSaveFlag(-1);
             setTimeout(() => {
+                // save draft in localStorage.
                 localStorage.setItem(localStorageKeys.rootIdDraft, state.rootId)
                 localStorage.setItem(localStorageKeys.cellDataDraft, JSON.stringify(state.cellData));
                 localStorage.setItem(localStorageKeys.structDataDraft, JSON.stringify(state.structData));
@@ -53,7 +54,7 @@ function Write() {
                 setAutoSaveFlag(0);
             }, autoSaveIntervalMs)
         }
-    }, [autoSaveFlag])
+    }, [autoSaveFlag]) // BUG: autosave state is fixed to the version when autosave flag is set to 1. (any changes between flag set ~ autosave is discarded)
 
     const upload = useCallback(()=>{
         console.log(state.cellData, state.structData)
