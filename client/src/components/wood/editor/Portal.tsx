@@ -144,7 +144,7 @@ export function CellPortalWith(
         const childIds = useSingleCellChildren(id)
         const hide = useSingleCellHideChildren(id)
 
-        const nextDepth = (depth || 0) + 1
+        const nextDepth = (depth ?? 0) + 1
         
         if(node === undefined) return null
         

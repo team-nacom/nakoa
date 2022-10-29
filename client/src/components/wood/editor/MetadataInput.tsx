@@ -1,10 +1,11 @@
 import { memo } from 'react'
 
 import {
-    useCombinedDispatch, useMetaData
+    useCombinedDispatch, useMetaData, useRootId
 } from '#/components/wood/states'
 
 function _MetadataInput(){
+    const rootId = useRootId()
     const metadata = useMetaData()
     const dispatch = useCombinedDispatch()
 
@@ -17,7 +18,7 @@ function _MetadataInput(){
                     onChange={ (ev)=>{
                         dispatch({
                             type: 'update',
-                            id: metadata.id, // rootId
+                            id: rootId,
                             title: ev.target.value
                         })
                     } }
@@ -30,7 +31,7 @@ function _MetadataInput(){
                     onChange={ (ev)=>{
                         dispatch({
                             type: 'update',
-                            id: metadata.id, // rootId
+                            id: rootId,
                             author: ev.target.value
                         })
                     } }

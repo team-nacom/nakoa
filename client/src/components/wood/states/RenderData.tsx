@@ -31,7 +31,7 @@ export type RenderDataAction = {
 
 function _generateAllLabel(structData: StructData, id: string, obj: Record<string, number[]>, prefix: number[]){
     obj[id] = prefix;
-    (structData[id] || []).forEach((childId,idx)=>{
+    (structData[id] ?? []).forEach((childId,idx)=>{
         _generateAllLabel(structData, childId, obj, [...prefix, idx+1])
     })
 }
@@ -46,9 +46,9 @@ function _generateTypedLabel(structData: StructData, cellData: CellData, id: str
     obj[id] = prefix;
 
     const idxObj : Record<string, number> = {};
-    (structData[id] || []).forEach((childId)=>{
+    (structData[id] ?? []).forEach((childId)=>{
         const currentType = labelType(cellData[childId])
-        const currentTypeNextIdx = (idxObj[currentType] || 0) + 1
+        const currentTypeNextIdx = (idxObj[currentType] ?? 0) + 1
         idxObj[currentType] = currentTypeNextIdx
 
         _generateTypedLabel(structData, cellData, childId, obj, [...prefix, currentTypeNextIdx])

@@ -31,13 +31,13 @@ const defaultHandlers: Handlers = {
     'code': ({ children, ...props }) => {
         return <pre>
             <code className={ props.lang ? 'language-' + props.lang : ''} >
-                { (props.value || '') + '\n' }
+                { (props.value ?? '') + '\n' }
             </code>
         </pre>
     },
     'inlineCode': ({ children, ...props }) => {
         return <code>
-            { (props.value || '').replace(/\r?\n|\r/g, ' ') }
+            { (props.value ?? '').replace(/\r?\n|\r/g, ' ') }
         </code>
     },
     
@@ -51,11 +51,11 @@ const defaultHandlers: Handlers = {
     },
     
     'image': ({ children, ...props }) => {
-        return <img src={ normalizeUri(props.url) } alt={ props.alt } title={ props.title || '' } />
+        return <img src={ normalizeUri(props.url) } alt={ props.alt } title={ props.title ?? '' } />
     },
     
     'link': ({ children, ...props }) => {
-        return <a href={ normalizeUri(props.url) } title={ props.title || '' }>{ children }</a>
+        return <a href={ normalizeUri(props.url) } title={ props.title ?? '' }>{ children }</a>
     },
 
     'list': ({ children, ...props }) => {
@@ -117,16 +117,16 @@ interface InnerMdastTransformProps{
     handlers: Handlers
 }
 function _InnerMdastTransform({ node, handlers }: InnerMdastTransformProps){
-    const { type, children, position, ...props } = (node || {})
+    const { type, children, position, ...props } = (node ?? {})
 
     // if(!type){
     //     throw new Error('Expected node, got `' + node + '`')
     // }
     
-    const Fn : Handler = handlers[type] || (()=><></>)
+    const Fn : Handler = handlers[type] ?? (()=><></>)
 
     return <Fn {...props}>
-        { (children as any[] || []).map((child, idx) => <InnerMdastTransform key={ idx } node={ child } handlers={ handlers } />) }
+        { (children as any[] ?? []).map((child, idx) => <InnerMdastTransform key={ idx } node={ child } handlers={ handlers } />) }
     </Fn>
 }
 const InnerMdastTransform = React.memo(_InnerMdastTransform, isEqual)

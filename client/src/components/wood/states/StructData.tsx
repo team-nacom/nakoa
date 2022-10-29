@@ -31,7 +31,7 @@ function cascadeChildren(struct: StructData, id: string): StructData{
     let newStruct = {...struct}
 
     function _cascadeChildren(cellId: string){
-        for(let childId of struct[cellId] || []){
+        for(let childId of struct[cellId] ?? []){
             _cascadeChildren(childId);
             delete newStruct[childId];
         }
@@ -125,7 +125,7 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
 // export const StructDataContext = createContext(structDataDefault)
 // export const StructDispatchContext = createContext((_: StructDataAction | StructDataAction[]) => {})
 
-// export const useStructReducer = (init?: StructData) => useReducer(structReducer, init || structDataDefault)
+// export const useStructReducer = (init?: StructData) => useReducer(structReducer, init ?? structDataDefault)
 
 // type StructDataScopeProps = PropsWithChildren<{ init?: StructData }>
 // export function StructDataScope({ init, children }: StructDataScopeProps){

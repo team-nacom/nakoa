@@ -78,7 +78,7 @@ export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof
  * @returns the label type of the cell.
  */
 export function labelType(cell?: Cell) : string{
-    return cell?.[cellTypeStr] || 'unknown'
+    return cell?.[cellTypeStr] ?? 'unknown'
 
     // may have additional branches, e.g. )
     // if(cell?.cellType === 'block' && cell?.blockType === 'theorem'){

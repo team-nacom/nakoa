@@ -28,7 +28,7 @@ function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
     const { mathMacroObj, Label, LabelTypewise } = useRenderData()
 
     return (
-        <div className='textCell' style={ {width:'100%', border:'1px solid black'} } >
+        <div className='textCell'>
             <Markdown
                 mathMacroObj={ mathMacroObj }
                 perrefMap={ LabelTypewise }

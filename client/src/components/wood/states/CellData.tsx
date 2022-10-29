@@ -53,7 +53,7 @@ export const cellReducer : Reducer<CellData, CellDataAction | CellDataAction[]> 
 // export const CellDataContext = createContext(cellDataDefault)
 // export const CellDispatchContext = createContext((_: CellDataAction) => {})
 
-// export const useCellReducer = (init?: CellData) => useReducer(cellReducer, init || cellDataDefault)
+// export const useCellReducer = (init?: CellData) => useReducer(cellReducer, init ?? cellDataDefault)
 
 // type CellDataScopeProps = PropsWithChildren<{ init?: CellData }>
 // export function CellDataScope({ init, children }: CellDataScopeProps){

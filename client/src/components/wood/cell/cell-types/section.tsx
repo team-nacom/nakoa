@@ -31,7 +31,7 @@ type SectionCell = CellFrom<SectionCellField,'section'> // only used in this fil
 
 function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
     const { mathMacroObj, Label, LabelTypewise } = useRenderData()
-    const lbl = LabelTypewise[cell.id] || []
+    const lbl = LabelTypewise[cell.id] ?? []
     
     return (
         <div className='sectionCell' >

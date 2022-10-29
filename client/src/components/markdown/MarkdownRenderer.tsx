@@ -86,7 +86,7 @@ function MarkdownRenderer(props : RendererOptionProps) {
                 let child = root.children[0] as Parent;
 
                 if(props.inlineRenderClassName){
-                    child.data = child.data || {};
+                    child.data = child.data ?? {};
                     child.data['hClassName'] = props.inlineRenderClassName;
                 }
 

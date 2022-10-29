@@ -10,7 +10,7 @@ const InternalLinkHandler : Plugin = () => {
         const root = tree as Parent;
 
         visit(root, 'link', (node: any) => {
-            node.data = node.data || {}
+            node.data = node.data ?? {}
             if(typeof node.url === 'string' && node.url.startsWith('guide:')){
                 var idStr = node.url.slice('guide:'.length)
 

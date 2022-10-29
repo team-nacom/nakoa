@@ -10,7 +10,7 @@ interface PerrefHandlerOption{
 }
 
 const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
-    const map = option?.map || {};
+    const map = option?.map ?? {};
 
     const perrefHandler : Transformer = (tree, file) => {
         const root = tree as Parent;
@@ -19,7 +19,7 @@ const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
         // instead of string replacement, make a separate node and only the %% node would subscribe the map.
         // possible difficulties: what to do in math mode?
         visit(root, ['text', 'math', 'inlineMath'], (node: any) => {
-            let val = node.value as string || '';
+            let val = node.value as string ?? '';
             node.value = val.replace(/%[\w-]+%/g,(match)=>{
                 let word = match.slice(1,-1);
 
@@ -28,7 +28,7 @@ const PerrefHandler : Plugin = (option?: PerrefHandlerOption) => {
                     result = result.join('.');
                 }
 
-                return result || match;
+                return result ?? match;
             })
         })
     }

@@ -44,7 +44,7 @@ function _DndScope({ children }: React.PropsWithChildren){
     
         if(over){
             const spl = String(over.id).split('@')
-            let pid : string | undefined = spl[0] || ''
+            let pid : string | undefined = spl[0] ?? ''
             while(pid){
                 if(pid === active.id) break
                 pid = parentIds[pid]
@@ -67,7 +67,7 @@ function _DndScope({ children }: React.PropsWithChildren){
 
             const targetId = String(active.id)
             const spl = String(over.id).split('@')
-            let pid : string | undefined = spl[0] || ''
+            let pid : string | undefined = spl[0] ?? ''
             while(pid){
                 if(pid === active.id) break
                 pid = parentIds[pid]
@@ -75,7 +75,7 @@ function _DndScope({ children }: React.PropsWithChildren){
             if(pid === undefined){
                 dispatch({ type: 'move',
                     targetId,
-                    destParentId: spl[0] || '',
+                    destParentId: spl[0] ?? '',
                     destPos: Number(spl[1])
                 })
             }

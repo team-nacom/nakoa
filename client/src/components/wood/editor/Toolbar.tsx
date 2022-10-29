@@ -41,7 +41,7 @@ function _Toolbar({ id }: CellIndicatorProps){
         if(cellType === targetType) return
         if((
             isEqual(fields, defaultFields[cellType])
-            && !((childIds || []).length > 0)
+            && !((childIds ?? []).length > 0)
         )
             || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 변경하시겠습니까?')
         ){
@@ -58,7 +58,7 @@ function _Toolbar({ id }: CellIndicatorProps){
 
         if((
             isEqual(fields, defaultFields[cellType])
-            && !((childIds || []).length > 0)
+            && !((childIds ?? []).length > 0)
         )
             || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
         ){

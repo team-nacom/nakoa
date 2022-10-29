@@ -57,7 +57,7 @@ function Markdown(props: RendererOptionProps){
     } = props
 
     const customHandlers = React.useMemo(()=>{
-        return customHandlersBuilder(mathMacroObj || {})
+        return customHandlersBuilder(mathMacroObj ?? {})
     }, [mathMacroObj])
 
     // should be memoed?

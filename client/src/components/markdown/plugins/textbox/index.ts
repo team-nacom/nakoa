@@ -50,13 +50,13 @@ type INamedTextbox = {
 
 const NamarkTextboxToHast : Record<string,Handler> & INamedTextbox = {
     textbox: (h, node) => {
-        let labelHNode = all(h, node.label || []);
+        let labelHNode = all(h, node.label ?? []);
         return h(node, 'div', { className: 'textframe' },
             [...labelHNode, ...all(h,node)]
         );
     },
     exercise: (h, node) => {
-        let labelHNode = all(h, node.label || []);
+        let labelHNode = all(h, node.label ?? []);
         return h(node, 'div', { className: 'exercise' },
             [
                 h(node.label, 'div', { className: 'label' }, [
@@ -68,7 +68,7 @@ const NamarkTextboxToHast : Record<string,Handler> & INamedTextbox = {
         );
     },
     expand: (h, node) => {
-        let labelHNode = all(h, node.label || []);
+        let labelHNode = all(h, node.label ?? []);
         return h(node, 'details', { className: 'expand' },
             [
                 h(node.label, 'summary', labelHNode),

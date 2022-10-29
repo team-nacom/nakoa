@@ -29,7 +29,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
         data: { parentId, idx }
     })
 
-    depth = depth || 0
+    depth = depth ?? 0
 
     if(depth > maxDepth){
         return null

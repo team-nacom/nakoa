@@ -282,7 +282,7 @@ export const useContextSelectorDeep = <T extends any, R extends any>(
 export const CombinedStateContext = createContext(combinedStateDefault)
 export const CombinedDispatchContext = createContext((_: CombinedAction) => {})
 
-export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init || combinedStateDefault)
+export const useCombinedReducer = (init: CombinedState) => useReducer(reducer, init ?? combinedStateDefault)
 
 export const useRootId = () => useContextSelector(CombinedStateContext, ctx => ctx.rootId)
 export const useParentIds = () => useContextSelector(CombinedStateContext, ctx => ctx.parentIds)
@@ -292,12 +292,12 @@ export const useSingleCell = (id: string) => useContextSelector(CombinedStateCon
 export const useSingleCellType = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.cellData[id]?.cellType)
 export const useSingleCellFocused = (id: string) => useContextSelector(CombinedStateContext, ctx => ctx.focusId === id)
 
-export const useSingleCellLabel = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.Label[id] || [])
-export const useSingleCellLabelTypewise = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.LabelTypewise[id] || [])
+export const useSingleCellLabel = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.Label[id] ?? [])
+export const useSingleCellLabelTypewise = (id: string) => useContextSelectorDeep(CombinedStateContext, ctx => ctx.renderData.LabelTypewise[id] ?? [])
 
 function getChildren(state: CombinedState, id: string): (string[] | undefined){
     const cellType = state.cellData[id]?.cellType
-    if(isParentType(cellType)) return state.structData[id] || []
+    if(isParentType(cellType)) return state.structData[id] ?? []
     return undefined
 }
 export const useSingleCellChildren = (id: string) => useContextSelector(CombinedStateContext, ctx => getChildren(ctx, id) )
