@@ -38,6 +38,7 @@
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
+    "crypto-browserify": "^3.12.0",
     "dotenv": "^8.2.0",
     "dvi2html": "^1.5.0",
     "hastscript": "^7.0.2",
@@ -53,6 +54,7 @@
     "micromark-util-symbol": "^1.0.1",
     "micromark-util-types": "^1.0.2",
     "pako": "^2.0.4",
+    "path-browserify": "^1.0.1",
     "query-string": "^7.0.1",
     "react": "^18.2.0",
     "react-contenteditable": "^3.3.6",
@@ -92,6 +94,7 @@
     "sass": "^1.43.4",
     "serve": "^11.3.2",
     "stream": "^0.0.2",
+    "stream-browserify": "^3.0.0",
     "styled-components": "^5.2.1",
     "textarea-caret-position": "^0.1.1",
     "unified": "^10.1.1",
@@ -121,6 +124,11 @@
       "@typescript-eslint/no-unused-vars": "off"
     }
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -138,16 +146,19 @@
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
-    "@craco/craco": "^6.4.5",
+    "@craco/craco": "^7.0.0-alpha.9",
+    "buffer": "^6.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "craco-alias": "^3.0.1",
     "css-loader": "^6.7.1",
     "eslint-webpack-plugin": "^3.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "process": "^0.11.10",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.3.1",
     "typescript": "^4.8.4",
     "typescript-plugin-css-modules": "^3.4.0",
+    "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   }
 }
