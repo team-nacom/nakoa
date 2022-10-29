@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useReducer, Reducer, PropsWithChildren  } from 'react';
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
 
-export interface StructData{
-    [id: string]: string[]
-}
+import { StructData } from '#/components/wood/types'
 
 export const structDataDefault : StructData = {}
 
@@ -120,6 +118,8 @@ export const structReducer : Reducer<StructData, StructDataAction | StructDataAc
     }
     }
 }
+
+export type { StructData }
 
 
 // export const StructDataContext = createContext(structDataDefault)

@@ -9,6 +9,7 @@ import ReactGA from 'react-ga';
 
 import { localeMessages } from '#/locale'
 import Hidden from '#/pages/Hidden'
+import Write from '#/pages/Write'
 import NotFound from '#/pages/NotFound'
 import About from '#/pages/About'
 
@@ -27,6 +28,7 @@ function App() {
                 <Switch>
                     <Redirect exact path='/' to='/hidden' />
                     <Route exact path='/hidden' component={Hidden} />
+                    <Route exact path='/write' component={Write} />
                     <Route exact path='/about' component={About}/>
                     <Route component={NotFound}/>
                 </Switch>

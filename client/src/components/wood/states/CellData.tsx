@@ -1,11 +1,8 @@
 import React, { createContext, useContext, useState, useReducer, Reducer, PropsWithChildren } from 'react';
 // import { ScopeFromState, ScopeFromReducer } from './helpers'
 
-import { Cell, CellType } from '#/components/wood/cell/types'
+import { Cell, CellType, CellData } from '#/components/wood/cell/types'
 
-export type CellData = {
-    [id: string]: Cell
-}
 export const cellDataDefault : CellData = {}
 
 export type CellDataAction = {
@@ -49,6 +46,8 @@ export const cellReducer : Reducer<CellData, CellDataAction | CellDataAction[]> 
         return data
     }
 }
+
+export type { CellData }
 
 // export const CellDataContext = createContext(cellDataDefault)
 // export const CellDispatchContext = createContext((_: CellDataAction) => {})

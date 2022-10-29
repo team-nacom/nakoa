@@ -1,6 +1,6 @@
 import { useCombinedDispatch, useRootId } from '#/components/wood/states'
 
-import { MetadataInput } from './MetadataInput'
+import { RootInput } from './RootInput'
 
 import { DndScope } from './DndScope'
 
@@ -9,25 +9,30 @@ import { CellIndicator } from './CellIndicator'
 import { InterCell } from './InterCell'
 import { ChildrenWrapper } from './ChildrenWrapper'
 
+import Button from '#/components/Button'
+
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
 const [CellPortal, CellPortalDraggable] = CellPortalWith(InterCell, ChildrenWrapper)
+
+interface EditorCoreProps{
+    upload?: () => any
+}
 
 /**
  * Editor core.
  * 
  * `CombinedStateContext.Provider` and `CombinedDispatchContext.Provider` should be set on the component scope.
  */
-export function EditorCore(){
+export function EditorCore({ upload }: EditorCoreProps){
     const rootId = useRootId()
     const dispatch = useCombinedDispatch()
 
     return (
         <div className='cellEditorWrapper'
-            // collisionDetection={  }
             onClick={() => dispatch({type: 'focus'})}
         >
             <div className='editorTextInput'>
-                <MetadataInput />
+                <RootInput />
             </div>
 
             <hr />
@@ -41,7 +46,9 @@ export function EditorCore(){
             <hr />
 
             <div className='buttonsWrapper'>
-                <button>Upload(defunct)</button>
+                <Button className='uploadButton' onClick = { upload }>
+                    업로드(console.log)
+                </Button>
             </div>
         </div>
     )

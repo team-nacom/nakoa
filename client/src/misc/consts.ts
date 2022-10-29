@@ -5,8 +5,9 @@ export const subColor = '#2bb886';
 export const localStorageKeys = {
     locale: 'locale',
     authorSearchQuery: 'author',
-    flatDraft: 'flatDraft',
-    metadataDraft: 'metadataDraft',
+    cellDataDraft: 'cellDataDraft',
+    structDataDraft: 'structDataDraft',
+    rootIdDraft: 'rootIdDraft'
 };
 
 export const autoSaveIntervalMs = 10 * 1000;

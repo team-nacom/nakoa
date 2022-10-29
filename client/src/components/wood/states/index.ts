@@ -8,7 +8,7 @@ import {
 } from 'use-context-selector'
 import isEqual from 'react-fast-compare'
 
-import { Cell, CellType, cellTypeStr, defaultFields, isParentType } from '#/components/wood/cell'
+import { Cell, CellBase, CellType, cellTypeStr, defaultFields, isParentType } from '#/components/wood/cell'
 
 import { CellData, cellDataDefault, cellReducer } from './CellData'
 import { StructData, structDataDefault, structReducer } from './StructData'
@@ -61,10 +61,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
     const next : CombinedState = {...prev}
     switch(a.type){
     case 'update':{
-        const {type, id, ...fields} = a
+        const {type, id, lastModified, ...fields} = a
         next.cellData = cellReducer(prev.cellData, {
             type: 'update',
             id: a.id,
+            lastModified: Date.now(),
             ...fields
         })
     } break
@@ -75,7 +76,11 @@ const reducer: Reducer<CombinedState, CombinedAction> = (prev: CombinedState, a:
             id: a.id,
             cell: {
                 [cellTypeStr]: a.cellType,
-                id: a.id,
+                ...({
+                    id: a.id,
+                    author: '',
+                    lastModified: Date.now()
+                }) as CellBase,
                 ...defaultFields[a.cellType]
             } as any
         })

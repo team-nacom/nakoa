@@ -2,7 +2,23 @@ import {
     CellData, StructData
 } from '#/components/wood/states'
 
-export const rootId = 'c0'
+import { Wood } from '#/components/wood/types'
+
+export const wood: Wood = {
+    rootId: 'c0',
+    title: 'Pfaffian',
+    author: '팀 나무컴퍼스',
+    structData: {
+        'c0': ['c6','c7','c14'],
+        'c6': [],
+        'c7': ['c8','c9','c10','c11','c12','c13'],
+        'c14': ['c21','c29','c32','c39'],
+        'c21': ['c22','c23','c24','c25','c26','c28'],
+        'c29': ['c30','c31','c45'],
+        'c32': ['c33','c35','c34','c37','c38'],
+        'c39': ['c40','c41','c42','c43']
+    }
+}
 
 export const cellData: CellData = {
     'c0': {
@@ -179,15 +195,4 @@ export const cellData: CellData = {
         id: 'c45',
         value: '\\abs{j^{-1}(G)} = 2^{\\beta(G)}'
     }
-}
-
-export const structData : StructData = {
-    'c0': ['c6','c7','c14'],
-    'c6': [],
-    'c7': ['c8','c9','c10','c11','c12','c13'],
-    'c14': ['c21','c29','c32','c39'],
-    'c21': ['c22','c23','c24','c25','c26','c28'],
-    'c29': ['c30','c31','c45'],
-    'c32': ['c33','c35','c34','c37','c38'],
-    'c39': ['c40','c41','c42','c43']
 }

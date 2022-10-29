@@ -18,8 +18,6 @@ import { TextCellField, textCellDefault } from './cell-types/text'
 import { CodeCellField, codeCellDefault } from './cell-types/code'
 import { MathCellField, mathCellDefault } from './cell-types/math'
 
-export { cellTypeStr };
-
 // some currying, bit dirty...
 const cvf = variantFactory(cellTypeStr)
 const cv = <F>() => <K extends string>(name: K) => cvf(name, fields<F & CellBase>())
@@ -85,3 +83,10 @@ export function labelType(cell?: Cell) : string{
     //     return 'block-theorem'
     // }
 }
+
+export type CellData = {
+    [id: string]: Cell
+}
+
+export type { CellBase }
+export { cellTypeStr };

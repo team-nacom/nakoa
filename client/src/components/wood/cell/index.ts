@@ -1,7 +1,7 @@
 import { MemoizedCellRenderer } from './CellRenderer'
-import { cellTypeStr } from './types-common'
+import { CellBase, cellTypeStr } from './types-common'
 import { RenderMode, CellRendererProps, CellTypeRendererProps } from './types-render'
-import { Cell, CellType, defaultFields, isParentType, labelType } from './types'
+import { Cell, CellType, defaultFields, isParentType, labelType, CellData } from './types'
 
 export { MemoizedCellRenderer, cellTypeStr, defaultFields, isParentType, labelType, RenderMode }
-export type { Cell, CellType, CellRendererProps, CellTypeRendererProps }
+export type { Cell, CellBase, CellType, CellRendererProps, CellTypeRendererProps, CellData }

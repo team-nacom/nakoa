@@ -4,7 +4,7 @@ import {
     useCombinedDispatch, useMetaData, useRootId
 } from '#/components/wood/states'
 
-function _MetadataInput(){
+function _RootInput(){
     const rootId = useRootId()
     const metadata = useMetaData()
     const dispatch = useCombinedDispatch()
@@ -40,4 +40,4 @@ function _MetadataInput(){
         </>
     )
 }
-export const MetadataInput = memo(_MetadataInput)
+export const RootInput = memo(_RootInput)
