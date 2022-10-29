@@ -126,6 +126,14 @@ label {
     }
 }
 
+@import './layout/footer.scss';
+@import './layout/header.scss';
+
 @import './components/cellEditor.scss';
+@import './components/cellList.scss';
 @import './components/buttons.scss';
-@import './components/markdown.scss'
+@import './components/guide.scss';
+@import './components/markdown.scss';
+@import './components/popup.scss';
+@import './components/tabs.scss';
+@import './components/tags.scss';

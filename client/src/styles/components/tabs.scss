@@ -1,0 +1,31 @@
+@import '../consts.scss';
+
+.tabs {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: left;
+  
+    display: flex;
+  
+    border-bottom: 1px solid #dddddd;
+  
+    letter-spacing: 0.1rem;
+    text-align: center;
+  
+    button {
+        border: none;
+        border-bottom: 2px solid #dddddd;
+        background-color: transparent;
+        color: #555;
+        font-weight: 400;
+        padding: 16px 24px;
+        font-size: 16px;
+        font-weight: 400;
+        
+        &.active {
+            font-weight: 700;
+            border-bottom: 2px solid $main-color;
+        }
+    }
+  }
+  

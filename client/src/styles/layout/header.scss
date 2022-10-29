@@ -1,0 +1,221 @@
+@import '../consts.scss';
+
+header {
+    .navbar {
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        position: fixed;
+        z-index: 2;
+        
+        background: white;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 16px;
+        align-items: center;
+        
+        color: #000000;
+
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+
+        div.title {
+            position: absolute;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 24px;
+
+            z-index: 1;
+        }
+
+        .navitem {
+            .localeSelect {
+                position: absolute;
+                width: 150px;
+                background: white;
+                border-radius: 10px;
+                z-index: 999;
+                text-align: right;
+    
+    
+                background-color: white;
+                box-shadow: 0px 3px 10px #0000004D;
+    
+                .localeSelectItem {
+                    margin: 4px;
+                    padding: 10px;
+                    font-size: 16px;
+                    border-radius: 10px;
+                    color: black;
+    
+                    .material-icons {
+                        font-size: 16px;
+                    }
+    
+                    &.focus {
+                        background: #eeeeee;
+                    }
+    
+                    &:hover {
+                        background: #cccccc;
+                        color: $main-color;
+                    }
+                }
+            }    
+        }
+    }
+}
+
+
+@media (max-width: $max-mobile-width) {
+    #root {
+        margin-top: 45px;
+    }
+    
+    header {
+        .navbar {
+            padding-top: 45px;
+    
+            div.title {
+                top: 4px;
+                left: 16px;
+                
+                img {
+                    height: 24px;
+                    margin: 7px 0px;
+                }
+            }
+
+            .navitem {
+                display: none;
+            }
+                
+            &.expanded {
+                .navitem {
+                    display: block;
+                    width: 100%;
+                    box-sizing: border-box;
+
+                    color: #666666;
+                    font-size: 15px;
+                    font-weight: 300;
+
+                    transition: all .2s ease-in-out;
+                    
+                    &.menu {
+                        padding: 12px;
+                        &:hover:not(.inactive), &.active {
+                            color: $main-color;
+                        }
+                    }
+    
+                    &.icons {
+                        padding: 8px 4px;
+                        .icon {
+                            font-size: 21px;
+                            padding: 0px 8px;
+                        }
+                    }
+    
+                    li {
+                        color: #666666;
+                        font-size: 15px;
+                        font-weight: 300;
+                        padding: 12px;
+                        overflow: hidden;
+                        width: 100%;
+                        border: 2px transparent solid;
+                        transition: all .2s ease-in-out;
+                        
+                        &:hover:not(.inactive), &.active {
+                            color: $main-color;
+                            border-bottom: 2px $main-color solid;
+                        }
+                    }
+                }
+            }
+
+            ul.account {
+                top: 0px;
+                margin-right: 10px;
+            }
+
+            .expandMenu {
+                position: absolute;
+                margin: 0;
+                right: 0;
+                top: 0;
+
+                color: #666666;
+                font-size: 22px;
+                font-weight: 300;
+                padding: 12px 20px;
+                float: left;
+                overflow: hidden;
+                transition: all .2s ease-in-out;
+
+                &:hover, &.active {
+                    color: $main-color;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: $min-tablet-width) {
+    #root {
+        margin-top: 70px;
+    }
+    
+    header {
+        .navbar {
+            min-height: 70px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding-right: 10%;
+            box-sizing: border-box;
+
+            div.title {
+                bottom: 9px;
+                left: 10%;
+
+                img {
+                    height: 32px;
+                    margin: 3px 0px;
+                }
+            }
+
+            .navitem {
+                color: #666666;
+                font-size: 15px;
+                font-weight: 300;
+
+                &.menu div {
+                    padding: 16px 12px;
+                }
+
+                border: 2px transparent solid;
+                transition: all .2s ease-in-out;
+                
+                &.menu {
+                    &:hover:not(.inactive), &.active {
+                        color: $main-color;
+                        border-bottom: 2px $main-color solid;
+                    }
+                }
+
+                &.icons {
+                    .icon {
+                        font-size: 24px;
+                        padding: 10px 7px;
+                    }
+                }
+            }
+
+            .expandMenu {
+                display: none;
+            }
+        }
+    }
+}
