@@ -4,9 +4,6 @@ import '#/styles/index.scss'
 
 import App from './App'
 
-import { Provider } from 'react-redux'
-import store from '#/store'
-
 import ReactGA from 'react-ga'
 import config from '#/misc/config';
 
@@ -17,11 +14,9 @@ if (!rootElement) throw new Error('Failed to find the root element')
 const root = ReactDOM.createRoot(rootElement)
 
 root.render(
-    <Provider store={store}>
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    </Provider>
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
 )
 
 // TODO : migrate BOTH redux AND react context providers into zustand

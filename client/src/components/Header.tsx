@@ -3,12 +3,11 @@ import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { RootReducer } from '#/store';
-import { localeList, localeName, setLocale } from '#/store/locale';
+import { localeList, localeName, useLocale } from '#/store/locale';
 
 function LocaleButton() {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
-    let nowLocale = useSelector((state: RootReducer) => state.locale.locale);
+    let { locale: currentLocale, setLocale } = useLocale()
     let dispatch = useDispatch();
 
     return (
@@ -29,12 +28,12 @@ function LocaleButton() {
                 >
                     { localeList.map((locale) => (
                         <div 
-                            className={'localeSelectItem' + (locale === nowLocale ? ' focus' : '')} 
-                            onClick={() => dispatch(setLocale(locale))}
+                            className={'localeSelectItem' + (locale === currentLocale ? ' focus' : '')} 
+                            onClick={() => setLocale(locale)}
                             style={{display: 'flex' }}
                         > 
                             <span className='material-icons' style={{flex: '0 0 10%' }}>
-                                { locale === nowLocale && 'check' }
+                                { locale === currentLocale && 'check' }
                             </span>
                             <span style={{flex: '1 0 0' }}>
                                 { localeName[locale] } 

@@ -1,3 +1,7 @@
+import create from 'zustand'
+import { immer } from 'zustand/middleware/immer'
+import { persist } from 'zustand/middleware/persist'
+
 import { localStorageKeys } from "#/misc/consts";
 
 const SET_LOCALE = 'SET_LOCALE' as const;
@@ -10,41 +14,30 @@ export const localeName = {
 
 type Locale = typeof localeList[number];
 
-const isValidLocale = (locale: any) : locale is Locale => (
-  typeof locale === 'string' && localeList.find((x) => x === locale) !== undefined
+const isValidLocale = (locale: string) : locale is Locale => (
+  localeList.find((x) => x === locale) !== undefined
 );
 
-export const setLocale = (locale: Locale) => {
-  return {
-    type: SET_LOCALE,
-    locale,
-  };
-};
-
-export type LocaleAction = 
-  | ReturnType<typeof setLocale>
-;
-
-interface LocaleState {
-  locale: Locale;
-};
-
-const lsLocale = localStorage.getItem(localStorageKeys.locale);
-
-const initialState : LocaleState = {
-  locale: isValidLocale(lsLocale) ? lsLocale : 'ko'
-};
-
-export default function locale(state = initialState, action : LocaleAction) {
-  switch (action.type) {
-    case SET_LOCALE:
-      localStorage.setItem(localStorageKeys.locale, action.locale);
-
-      return {
-        ...state,
-        locale: action.locale,
-      };
-    default:
-      return state;
-  }
+interface LocaleState{
+  locale: Locale,
+  setLocale: (locale: string) => void
 }
+
+export const useLocale = create<LocaleState>()(
+  persist(
+    immer(
+      (set, get) => ({
+        locale: 'ko', //initial locale set to ko.
+        setLocale: (locale) => {
+          set(( state )=>{
+            state.locale = isValidLocale(locale) ? locale : 'ko';
+          })
+        }
+      })
+    ),
+    {
+      name: localStorageKeys.locale,
+      getStorage: () => localStorage
+    }
+  )
+)

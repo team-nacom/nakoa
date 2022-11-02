@@ -35,7 +35,10 @@ function Write() {
     }, [])
 
     // initialize editor state.
-    useEditorInit()(initCellData, initRootId, initStructData)
+    const init = useEditorInit()
+    useEffect(() => {
+        init(initCellData, initRootId, initStructData)
+    }, [])
 
     // subscribe for state variables.
     const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]

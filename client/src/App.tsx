@@ -3,18 +3,19 @@ import { Redirect, Route, Router, Switch } from 'react-router-dom'
 
 import { IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { RootReducer } from '#/store';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 
+import { useLocale } from '#/store/locale'
 import { localeMessages } from '#/locale'
+
 import Hidden from '#/pages/Hidden'
 import Write from '#/pages/Write'
 import NotFound from '#/pages/NotFound'
 import About from '#/pages/About'
 
 function App() {
-    let locale = useSelector((state: RootReducer) => state.locale.locale);
+    const { locale } = useLocale()
 
     const history = createBrowserHistory();
     history.listen((location: any) => {

@@ -12,7 +12,7 @@ import { ChildrenWrapper } from './ChildrenWrapper'
 import Button from '#/components/Button'
 
 const CellPortalScope = CellPortalScopeWith(CellIndicator)
-const [CellPortal, CellPortalDraggable] = CellPortalWith(InterCell, ChildrenWrapper)
+const [CellPortal, CellPortalDraggable] = CellPortalWith(InterCell, ChildrenWrapper) // root cell is not draggable
 
 interface EditorCoreProps{
     upload?: () => any
@@ -20,8 +20,6 @@ interface EditorCoreProps{
 
 /**
  * Editor core.
- * 
- * `CombinedStateContext.Provider` and `CombinedDispatchContext.Provider` should be set on the component scope.
  */
 export function EditorCore({ upload }: EditorCoreProps){
     const rootId = useRootId()
