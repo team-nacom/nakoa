@@ -5,8 +5,8 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useCombinedDispatch
-} from '#/components/wood/states'
+    useWoodAction,
+} from '#/components/wood/store/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
@@ -25,13 +25,13 @@ type TextCell = CellFrom<TextCellField,'text'> // only used in this file
 // renderers
 
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
-    const { mathMacroObj, Label, LabelTypewise } = useRenderData()
+    const { mathMacroObj, label, labelTypewise } = useRenderData()
 
     return (
         <div className='textCell'>
             <Markdown
                 mathMacroObj={ mathMacroObj }
-                perrefMap={ LabelTypewise }
+                perrefMap={ labelTypewise }
             >
                 {cell.value}
             </Markdown>
@@ -43,18 +43,14 @@ function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
 
 function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
     // const {} = useRenderData()
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                value: ev.target.value
-            } as Partial<TextCellField>)
-        })
+        woodAction.update(cell.id, {
+            value: ev.target.value
+        } as Partial<TextCellField>)
     }, [cell.id])
 
     return (

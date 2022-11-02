@@ -1,9 +1,10 @@
 import { useCallback, memo } from 'react'
 
 import {
-    useCombinedDispatch,
+    useWoodAction, useEditorAction,
+
     useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren, useSingleCellLabelTypewise,
-} from '#/components/wood/states'
+} from '#/components/wood/store/EditorState'
 
 import {
     Cell, CellType, cellTypeStr,
@@ -33,7 +34,8 @@ function _Toolbar({ id }: CellIndicatorProps){
     const hide = useSingleCellHideChildren(id)
     const isFocused = useSingleCellFocused(id)
 
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
+    const editorAction = useEditorAction()
 
     const changeCellTypeHandlerFactory = useCallback((targetType: CellType) => (() => {
         const { [cellTypeStr]: cellType, id: _, ...fields } = cell
@@ -45,11 +47,7 @@ function _Toolbar({ id }: CellIndicatorProps){
         )
             || window.confirm('셀 타입을 변경하면 하위 셀이 삭제되며 내용이 초기화됩니다. 정말로 변경하시겠습니까?')
         ){
-            dispatch({
-                type: 'changeType',
-                cellType: targetType,
-                id
-            })
+            woodAction.changeType(id, targetType)
         }
     }), [cell, childIds, id])
 
@@ -62,10 +60,7 @@ function _Toolbar({ id }: CellIndicatorProps){
         )
             || window.confirm('정말로 셀과 하위 셀을 삭제하시겠습니까?')
         ){
-            dispatch({
-                type: 'remove',
-                targetId: id
-            })
+            woodAction.remove(id)
         }
     }, [cell, childIds, id])
 
@@ -101,7 +96,7 @@ function _Toolbar({ id }: CellIndicatorProps){
                     <button className='cellOptionButton'
                         onClick={ (ev) => {
                             ev.stopPropagation()
-                            dispatch({type: 'focus' })
+                            editorAction.focus() // blur
                         } }
                     >
                         <Close />
@@ -113,7 +108,8 @@ function _Toolbar({ id }: CellIndicatorProps){
                         defaultChecked={ hide /* cell.hideChildren */ }
                         onClick={ (ev) => {
                             ev.stopPropagation()
-                            dispatch({type: 'toggleHideChildren', id: id})
+                            woodAction.toggleHideChildren(id)
+                            editorAction.toggleHideChildren(id)
                         } }
                     />
                     <label className='cellOptionButton'
@@ -133,7 +129,7 @@ function _Toolbar({ id }: CellIndicatorProps){
                 <button
                     className='cellOptionButton'
                     onClick={()=>{
-                        dispatch({type:'updateRenderData'})
+                        woodAction.updateRenderData()
                     }}
                 >
                     <Update />

@@ -1,4 +1,4 @@
-import { useCombinedDispatch, useRootId } from '#/components/wood/states'
+import { useEditorAction, useRootId } from '#/components/wood/store/EditorState'
 
 import { RootInput } from './RootInput'
 
@@ -25,11 +25,13 @@ interface EditorCoreProps{
  */
 export function EditorCore({ upload }: EditorCoreProps){
     const rootId = useRootId()
-    const dispatch = useCombinedDispatch()
+    const editorAction = useEditorAction()
 
     return (
         <div className='cellEditorWrapper'
-            onClick={() => dispatch({type: 'focus'})}
+            onClick={() => {
+                editorAction.focus() // blur
+            }}
         >
             <div className='editorTextInput'>
                 <RootInput />

@@ -4,8 +4,8 @@ import { CellFrom } from '../types-common';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
-    useCombinedDispatch
-} from '#/components/wood/states'
+    useWoodAction,
+} from '#/components/wood/store/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
@@ -43,18 +43,14 @@ function RootCellViewer({ mode, cell } : CellTypeRendererProps<RootCell>){
 
 
 function RootCellEditor({ cell }: Omit<CellTypeRendererProps<RootCell>,'mode'>){
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                mathMacroStr: ev.target.value
-            } as Partial<RootCellField>)
-        })
+        woodAction.update(cell.id, {
+            mathMacroStr: ev.target.value
+        } as Partial<RootCellField>)
     }, [cell.id])
 
     return (

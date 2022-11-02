@@ -1,12 +1,12 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 
 import {
-    CombinedStateContext, CombinedDispatchContext,
-    useCombinedReducer, useCombinedDispatch,
-} from '#/components/wood/states'
+    CellData, StructData, RenderData,
+
+    useEditorInit, useRootId, useCellData, useStructData
+} from '#/components/wood/store/EditorState'
 
 import { cellData as PfCellData, wood as PfWood } from '#/components/wood/util/pfaffian'
-import { wood2state, state2wood } from '#/components/wood/util/convert'
 
 import { EditorCore } from '#/components/wood/editor/Editor'
 
@@ -14,18 +14,23 @@ import Header from '#/components/Header'
 import Footer from '#/components/Footer'
 
 function Hidden() {
-    const initState = useMemo(() => wood2state(PfWood, PfCellData), [])
-    const [state, dispatch] = useCombinedReducer(initState)
+    const [initCellData, initRootId, initStructData] : [CellData?, string?, StructData?] = useMemo(() => [ PfCellData, PfWood.rootId, PfWood.structData ], [])
+
+    // initialize editor state.
+    useEditorInit()(initCellData, initRootId, initStructData)
+
+    // subscribe for state variables.
+    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
+
+    const upload = useCallback(()=>{
+        console.log(cellData, structData)
+    }, [cellData, structData])
 
     return (
         <>
             <Header />
             <div id='content'>
-                <CombinedStateContext.Provider value={ state }>
-                    <CombinedDispatchContext.Provider value={ dispatch }>
-                        <EditorCore />
-                    </CombinedDispatchContext.Provider>
-                </CombinedStateContext.Provider>
+                <EditorCore upload={ upload } />
             </div>
             <Footer />
         </>

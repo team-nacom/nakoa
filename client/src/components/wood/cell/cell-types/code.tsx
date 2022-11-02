@@ -8,8 +8,8 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useCombinedDispatch
-} from '#/components/wood/states'
+    useWoodAction,
+} from '#/components/wood/store/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
@@ -46,26 +46,22 @@ function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
 
 function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
     // const {} = useRenderData()
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                value: ev.target.value
-            } as Partial<CodeCellField>)
-        })
+        ev.stopPropagation()
+        ev.preventDefault()
+        woodAction.update(cell.id, {
+            value: ev.target.value
+        } as Partial<CodeCellField>)
     }, [cell.id])
 
     const changeCaptionHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                language: ev.target.value
-            } as Partial<CodeCellField>)
-        })
+        ev.stopPropagation()
+        ev.preventDefault()
+        woodAction.update(cell.id, {
+            language: ev.target.value
+        } as Partial<CodeCellField>)
     }, [cell.id])
 
     return (

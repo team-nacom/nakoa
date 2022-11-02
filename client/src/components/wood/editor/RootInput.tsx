@@ -1,13 +1,14 @@
 import { memo } from 'react'
 
 import {
-    useCombinedDispatch, useMetaData, useRootId
-} from '#/components/wood/states'
+    useWoodAction,
+    useMetaData, useRootId
+} from '#/components/wood/store/EditorState'
 
 function _RootInput(){
     const rootId = useRootId()
     const metadata = useMetaData()
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     return (
         <>
@@ -16,9 +17,7 @@ function _RootInput(){
                 <input className='title'
                     value={ metadata.title }
                     onChange={ (ev)=>{
-                        dispatch({
-                            type: 'update',
-                            id: rootId,
+                        woodAction.update(rootId, {
                             title: ev.target.value
                         })
                     } }
@@ -29,9 +28,7 @@ function _RootInput(){
                 <input className='author'
                     value={ metadata.author }
                     onChange={ (ev)=>{
-                        dispatch({
-                            type: 'update',
-                            id: rootId,
+                        woodAction.update(rootId, {
                             author: ev.target.value
                         })
                     } }

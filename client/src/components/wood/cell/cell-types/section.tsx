@@ -5,13 +5,8 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useCombinedDispatch
-} from '#/components/wood/states'
-
-import ReactMarkdown from 'react-markdown'
-import RemarkGFM from 'remark-gfm'
-import RemarkMath from 'remark-math'
-import RehypeKatex from 'rehype-katex'
+    useWoodAction,
+} from '#/components/wood/store/EditorState'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown-lab/Markdown'
@@ -30,8 +25,8 @@ type SectionCell = CellFrom<SectionCellField,'section'> // only used in this fil
 // renderers
 
 function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
-    const { mathMacroObj, Label, LabelTypewise } = useRenderData()
-    const lbl = LabelTypewise[cell.id] ?? []
+    const { mathMacroObj, label, labelTypewise } = useRenderData()
+    const lbl = labelTypewise[cell.id] ?? []
     
     return (
         <div className='sectionCell' >
@@ -46,18 +41,14 @@ function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
 
 
 function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mode'>){
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                value: ev.target.value
-            } as Partial<SectionCellField>)
-        })
+        woodAction.update(cell.id, {
+            value: ev.target.value
+        } as Partial<SectionCellField>)
     }, [cell.id])
 
     return (

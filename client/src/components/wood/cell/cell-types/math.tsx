@@ -5,13 +5,13 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useCombinedDispatch
-} from '#/components/wood/states'
+    useWoodAction,
+} from '#/components/wood/store/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
 import 'katex/dist/katex.min.css';
-import TeX from '@matejmazur/react-katex';
+import TeX from '@matejmazur/react-katex'; // todo(?): remove dependency of react-katex. just render with katex.
 
 // export const mathCellName = 'math'
 export interface MathCellField{
@@ -42,16 +42,14 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
 }
 
 function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        dispatch({
-            type: 'update',
-            id: cell.id,
-            ...({
-                value: ev.target.value
-            } as Partial<MathCellField>)
-        })
+        ev.stopPropagation()
+        ev.preventDefault()
+        woodAction.update(cell.id, {
+            value: ev.target.value
+        } as Partial<MathCellField>)
     }, [cell.id])
 
     return (

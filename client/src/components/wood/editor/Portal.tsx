@@ -12,7 +12,7 @@ import {
     useParentIds, useStructData,
     useSingleCellChildren,
     useSingleCellHideChildren,
-} from '#/components/wood/states'
+} from '#/components/wood/store/EditorState'
 
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
@@ -95,6 +95,7 @@ export function CellPortalScopeWith(
         // } )
 
         return (
+            // @todo: can we get rid of this nasty provider pattern? (using zustand)
             <PortalNodeContext.Provider value = { nodes }>
                 {
                     idsHolder.current.map( (id) => {

@@ -3,9 +3,13 @@ import React, { memo, useCallback, useState } from 'react'
 import {
     Context,
     createContext, useContextSelector, useContext
-} from 'use-context-selector'
+} from 'use-context-selector' // @todo : context to zustand!
 
-import { useParentIds, useCombinedDispatch } from '#/components/wood/states'
+import {
+    useParentIds,
+    useWoodAction,
+    useEditorAction
+} from '#/components/wood/store/EditorState'
 
 import {
     DndContext, useDndMonitor, DragStartEvent, DragOverEvent, DragEndEvent,
@@ -23,7 +27,8 @@ export const useIsOver = (dndId: string) => useContextSelector(OverIdContext, ov
 
 function _DndScope({ children }: React.PropsWithChildren){
     const parentIds = useParentIds()
-    const dispatch = useCombinedDispatch()
+    const woodAction = useWoodAction()
+    // const editorAction = useEditorAction()
 
     // const [activeId, setActiveId] = useState<string | number>('')
     const [overId, setOverId] = useState<string | number>('')
@@ -73,11 +78,11 @@ function _DndScope({ children }: React.PropsWithChildren){
                 pid = parentIds[pid]
             }
             if(pid === undefined){
-                dispatch({ type: 'move',
+                woodAction.move(
                     targetId,
-                    destParentId: spl[0] ?? '',
-                    destPos: Number(spl[1])
-                })
+                    spl[0] ?? '', // destParentId
+                    Number(spl[1]) // destPos
+                )
             }
         }
         setOverId('')

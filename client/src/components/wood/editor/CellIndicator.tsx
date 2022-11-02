@@ -1,9 +1,9 @@
 import { memo } from 'react'
 
 import {
-    useCombinedDispatch,
+    useEditorAction,
     useSingleCellFocused, 
-} from '#/components/wood/states'
+} from '#/components/wood/store/EditorState'
 
 import {
     MemoizedCellRenderer, RenderMode,
@@ -16,14 +16,14 @@ function _CellIndicator({ id }: CellIndicatorProps){
     const isFocused = useSingleCellFocused(id)
     const mode = (isFocused? RenderMode.EDITOR : RenderMode.PREVIEW)
 
-    const dispatch = useCombinedDispatch()
+    const editorAction = useEditorAction()
 
     return (
         <div id={ id }
             className={ 'cellContentWrapper' + (isFocused? ' editingCellWrapper' : '') }
             onClick = { (ev) => {
                 ev.stopPropagation()
-                !isFocused && dispatch({type:'focus', targetId:id})
+                !isFocused && editorAction.focus(id)
             }}
         >
             <Toolbar id = { id } />

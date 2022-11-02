@@ -1,13 +1,10 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 
 import {
-    initializeState,
+    CellData, StructData, RenderData,
 
-    CombinedStateContext, CombinedDispatchContext,
-    useCombinedReducer, useCombinedDispatch,
-} from '#/components/wood/states'
-
-import { wood2state, state2wood } from '#/components/wood/util/convert'
+    useEditorInit, useRootId, useCellData, useStructData
+} from '#/components/wood/store/EditorState'
 
 import { EditorCore } from '#/components/wood/editor/Editor'
 
@@ -19,46 +16,51 @@ import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 function Write() {
     // initializing state
     // TODO: updating
-    const initState = useMemo(() => {
+    const [initCellData, initRootId, initStructData] : [CellData?, string?, StructData?] = useMemo(() => {
         // find if draft has been autosaved in local storage.
-        const storedRootId = localStorage.getItem(localStorageKeys.rootIdDraft)
+        // @todo: make the state persist (in zustand meaning)
         const storedCellDataStr = localStorage.getItem(localStorageKeys.cellDataDraft)
+        const storedRootId = localStorage.getItem(localStorageKeys.rootIdDraft)
         const storedStructDataStr = localStorage.getItem(localStorageKeys.structDataDraft)
-        if( storedRootId && storedCellDataStr && storedStructDataStr ){
-            return initializeState(
-                storedRootId,
+        if( storedCellDataStr && storedRootId && storedStructDataStr ){
+            return [
                 JSON.parse(storedCellDataStr) ?? {},
+                storedRootId,
                 JSON.parse(storedStructDataStr) ?? { [storedRootId]: [] }
-            )
+            ]
         }
 
         // draft not found.
-        return initializeState('c0')
+        return [undefined, 'c0', undefined]
     }, [])
 
-    const [state, dispatch] = useCombinedReducer(initState)
+    // initialize editor state.
+    useEditorInit()(initCellData, initRootId, initStructData)
+
+    // subscribe for state variables.
+    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
 
     const [autoSaveFlag, setAutoSaveFlag] = useState(0)
     useEffect(() => {
-        if (autoSaveFlag == 0) setAutoSaveFlag(1)
-    }, [state])
+        if (autoSaveFlag === 0) setAutoSaveFlag(1)
+    }, [autoSaveFlag, cellData, rootId, structData])
     useEffect(() => {
-        if (autoSaveFlag == 1){
+        if (autoSaveFlag === 1){
             setAutoSaveFlag(-1);
             setTimeout(() => {
                 // save draft in localStorage.
-                localStorage.setItem(localStorageKeys.rootIdDraft, state.rootId)
-                localStorage.setItem(localStorageKeys.cellDataDraft, JSON.stringify(state.cellData));
-                localStorage.setItem(localStorageKeys.structDataDraft, JSON.stringify(state.structData));
+                localStorage.setItem(localStorageKeys.cellDataDraft, JSON.stringify(cellData));
+                localStorage.setItem(localStorageKeys.rootIdDraft, rootId);
+                localStorage.setItem(localStorageKeys.structDataDraft, JSON.stringify(structData));
                 console.log('Autosaved');
                 setAutoSaveFlag(0);
             }, autoSaveIntervalMs)
         }
-    }, [autoSaveFlag]) // BUG: autosave state is fixed to the version when autosave flag is set to 1. (any changes between flag set ~ autosave is discarded)
+    }, [autoSaveFlag, cellData, rootId, structData]) // BUG: autosave state is fixed to the version when autosave flag is set to 1. (any changes between flag set ~ autosave is discarded)
 
     const upload = useCallback(()=>{
-        console.log(state.cellData, state.structData)
-    }, [state])
+        console.log(cellData, structData)
+    }, [cellData, structData])
 
     // TODO: loading from autosave??
 
@@ -66,11 +68,7 @@ function Write() {
         <>
             <Header />
             <div id='content'>
-                <CombinedStateContext.Provider value={ state }>
-                    <CombinedDispatchContext.Provider value={ dispatch }>
-                        <EditorCore upload={ upload } />
-                    </CombinedDispatchContext.Provider>
-                </CombinedStateContext.Provider>
+                <EditorCore upload={ upload } />
             </div>
             <Footer />
         </>

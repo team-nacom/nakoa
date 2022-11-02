@@ -1,6 +1,6 @@
 import {
     CellData, StructData
-} from '#/components/wood/states'
+} from '#/components/wood/store/EditorState'
 
 import { Wood } from '#/components/wood/types'
 
