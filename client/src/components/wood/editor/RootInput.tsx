@@ -9,6 +9,10 @@ function _RootInput(){
     const rootId = useRootId()
     const metadata = useMetaData()
     const woodAction = useWoodAction()
+    
+    if(metadata === undefined){
+        return <></>
+    }
 
     return (
         <>
