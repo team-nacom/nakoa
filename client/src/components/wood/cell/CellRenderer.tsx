@@ -11,6 +11,7 @@ import { SectionCellRenderer } from './cell-types/section'
 import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
 import { MathCellRenderer } from './cell-types/math'
+import { CanvasCellRenderer } from './cell-types/canvas'
 
 import { useSingleCell, useSingleCellFocused } from '#/components/wood/store/EditorState'
 
@@ -25,6 +26,7 @@ export function CellRenderer({ mode, id }: CellRendererProps){
         'text': cell => TextCellRenderer({mode, cell}),
         'code': cell => CodeCellRenderer({mode, cell}),
         'math': cell => MathCellRenderer({mode, cell}),
+        'canvas': cell => CanvasCellRenderer({mode, cell}),
         default: () => null
     }, cellTypeStr)
 }

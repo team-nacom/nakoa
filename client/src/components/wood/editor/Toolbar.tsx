@@ -19,7 +19,7 @@ import isEqual from 'react-fast-compare'
 
 import {
     AddBox, ArrowDropDown, ListAlt, FormatListNumberedRtl,
-    Article, Calculate, Code, Close, Delete, Image, Tag, Update
+    Article, Brush, Calculate, Code, Close, Delete, Image, Tag, Update
 } from '@mui/icons-material'
 
 function CellLabel({ id }: CellIndicatorProps){
@@ -87,6 +87,11 @@ function _Toolbar({ id }: CellIndicatorProps){
                             onClick={ changeCellTypeHandlerFactory('code') }
                         >
                             <Code />
+                        </button>
+                        <button className='cellOptionButton'
+                            onClick={ changeCellTypeHandlerFactory('canvas') }
+                        >
+                            <Brush />
                         </button>
                     </>}
                 </>}
