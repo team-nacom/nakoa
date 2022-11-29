@@ -11,7 +11,7 @@ ports:
     onOpen: open-preview
 
 # example .gitpod.yml from https://github.com/gitpod-io/demo-multi-repo-frontend
-additionalRepositories:
-  - url: https://github.com/paulsohn/react-dnd-treeview
-    # checkoutLocation is relative to /workspace
-    checkoutLocation: react-dnd-treeview
+# additionalRepositories:
+#   - url: https://github.com/paulsohn/react-dnd-treeview
+#     # checkoutLocation is relative to /workspace
+#     checkoutLocation: react-dnd-treeview
