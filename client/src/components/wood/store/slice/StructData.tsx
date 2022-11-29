@@ -70,7 +70,12 @@ export const createStructDataSlice : StateCreator<
                 if(targetPos === undefined || targetPos === -1) return
 
                 state.structData = cascadeChildren(state.structData, targetId)
-                state.structData[targetParentId].splice(targetPos, 0)
+                
+                // state.structData[targetParentId].splice(targetPos, 0)
+                state.structData[targetParentId] = [
+                    ...state.structData[targetParentId].slice(0, targetPos),
+                    ...state.structData[targetParentId].slice(targetPos+1)
+                ]
 
                 // recalculate parents
                 state.parentIds = { [state.rootId]: undefined }
