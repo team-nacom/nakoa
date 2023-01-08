@@ -7,7 +7,8 @@ export const localStorageKeys = {
     authorSearchQuery: 'author',
     cellDataDraft: 'cellDataDraft',
     structDataDraft: 'structDataDraft',
-    rootIdDraft: 'rootIdDraft'
+    rootIdDraft: 'rootIdDraft',
+    classicDraft: 'classicDraft'
 };
 
 export const autoSaveIntervalMs = 10 * 1000;
