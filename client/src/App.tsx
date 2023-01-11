@@ -13,7 +13,6 @@ import Hidden from '#/pages/Hidden'
 import Write from '#/pages/Write'
 import NotFound from '#/pages/NotFound'
 import About from '#/pages/About'
-import WriteClassic from './pages/WriteClassic'
 
 function App() {
     const { locale } = useLocale()
@@ -28,10 +27,9 @@ function App() {
         <IntlProvider locale={locale} messages={localeMessages[locale]}>
             <Router history={history}>
                 <Switch>
-                    <Redirect exact path='/' to='/write-classic' />
+                    <Redirect exact path='/' to='/hidden' />
                     <Route exact path='/hidden' component={Hidden} />
                     <Route exact path='/write' component={Write} />
-                    <Route exact path='/write-classic' component={WriteClassic} />
                     <Route exact path='/about' component={About}/>
                     <Route component={NotFound}/>
                 </Switch>

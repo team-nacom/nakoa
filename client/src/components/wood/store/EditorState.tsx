@@ -36,7 +36,8 @@ export const createEditorState : StateCreator<
                 [rootId]: {
                     [cellTypeStr]: 'root',
                     id: rootId,
-                    title: '', author: '', mathMacroStr: ''
+                    // title: '', author: '',
+                    mathMacroStr: ''
                 }
             }
             if(!structData){

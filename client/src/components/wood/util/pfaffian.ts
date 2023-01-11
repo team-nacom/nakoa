@@ -24,8 +24,8 @@ export const cellData: CellData = {
     'c0': {
         cellType: 'root',
         id: 'c0',
-        title: 'Pfaffian',
-        author: '팀 나무컴퍼스',
+        // title: 'Pfaffian',
+        // author: '팀 나무컴퍼스',
         mathMacroStr: '\\newcommand{\\pf}{\\mathrm{pf}}\n\\newcommand{\\sgn}{\\mathrm{sgn}}\n\\newcommand{\\mt}{\\mathcal{M}[2n]}\n\\newcommand{\\et}{\\mathcal{E}[2n]}\n\\newcommand{\\abs}[1]{\\left\\lvert #1 \\right\\rvert}'
     },
     'c6': {

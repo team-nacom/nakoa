@@ -31,3 +31,5 @@ export const useClassicEditorInit = () => useClassicEditorState(
         state.setPreviewText(text);
     }
 )
+
+export const useClassicText = () => useClassicEditorState(state => state.text);

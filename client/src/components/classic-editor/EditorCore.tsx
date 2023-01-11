@@ -84,7 +84,7 @@ interface ClassicEditorBodyProps extends React.HTMLAttributes<HTMLTextAreaElemen
     update?: (c : string) => void //can we do this w/o callback?
 }
 
-function ClassicEditorBody({ update, ...other } : ClassicEditorBodyProps) {
+export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
     const {
         text, setText,
         previewText, setPreviewText
@@ -167,7 +167,7 @@ function ClassicEditorBody({ update, ...other } : ClassicEditorBodyProps) {
     },[drag]);
     // });
 
-    return (<>
+    return (<div className='classicEditorWrapper'>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
                 <PanelMenu className='panelMenu1' label={ intl.formatMessage({id: 'editor.edit'}) } callback = { () => setActiveIndex(1) }>
@@ -221,7 +221,5 @@ function ClassicEditorBody({ update, ...other } : ClassicEditorBodyProps) {
             </div>
         </div>
         <Manual visible={manualVisible} setVisible={setManualVisible} />
-    </>);
+    </div>);
 }
-
-export default ClassicEditorBody;

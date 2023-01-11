@@ -47,7 +47,8 @@ export const createWoodSlice : StateCreator<
                 [rootId]: {
                     [cellTypeStr]: 'root',
                     id: rootId,
-                    title: '', author: '', mathMacroStr: ''
+                    // title: '', author: '',
+                    mathMacroStr: ''
                 }
             }
             if(!structData){

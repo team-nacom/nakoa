@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => Promise<any>,
+    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void | Promise<any>,
 };
 
 function Button(props : Props) {

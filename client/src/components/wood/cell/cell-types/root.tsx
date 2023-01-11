@@ -11,13 +11,13 @@ import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
 // export const rootCellName = 'root'
 export interface RootCellField{
-    title: string
-    author: string
+    // title: string
+    // author: string
     mathMacroStr: string
 }
 export const rootCellDefault: RootCellField = {
-    title: '',
-    author: '',
+    // title: '',
+    // author: '',
     mathMacroStr: ''
 }
 type RootCell = CellFrom<RootCellField,'root'> // only used in this file

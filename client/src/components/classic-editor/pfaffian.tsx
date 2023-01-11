@@ -1,14 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
-
-import { useClassicEditorState, useClassicEditorInit } from '#/components/classic-editor/EditorState'
-
-import { ClassicEditorCore } from '#/components/classic-editor/Editor'
-import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
-
-import Header from '#/components/Header'
-import Footer from '#/components/Footer'
-
-const pfaffian = `
+export const pfaffian = `
 # Pfaffian Identity
 # Introduction
 어떤 행렬 $A = (a_{ij})$가 $a_{ij} = -a_{ji}$, 즉 $A = -A^{t}$를 만족하면 $A$를 skew-symmetric matrix라고 합니다.\n일반적으로 $m \\times m$ 행렬 $B = (b_{ij})$의 *Determinant* $\\det(B)$는 아래와 같이 정의한다는 사실이 잘 알려져 있습니다.
@@ -62,59 +52,3 @@ $$
 \\abs{j^{-1}(G)} = 2^{\\beta(G)}
 $$
 `
-
-export default function WriteClassic(){
-    // initializing state
-    // TODO: updating
-    const initDraft : string = useMemo(() => {
-        // const storedDraft = localStorage.getItem(localStorageKeys.classicDraft)
-        // if(storedDraft){
-        //     return storedDraft;
-        // }
-
-        // Buggy now...
-
-        return pfaffian // return ''
-    }, [])
-
-    // initialize editor state.
-    const init = useClassicEditorInit()
-    useEffect(() => {
-        init(initDraft)
-    }, [])
-
-    // subscribe for state variable
-    const text = useClassicEditorState(state => state.text)
-
-    const [autoSaveFlag, setAutoSaveFlag] = useState(0)
-    useEffect(() => {
-        if (autoSaveFlag === 0) setAutoSaveFlag(1)
-    }, [autoSaveFlag, text])
-    useEffect(() => {
-        if (autoSaveFlag === 1){
-            setAutoSaveFlag(-1);
-            setTimeout(() => {
-                // save draft in localStorage.
-                localStorage.setItem(localStorageKeys.classicDraft, JSON.stringify(text));
-                console.log('Autosaved');
-                setAutoSaveFlag(0);
-            }, autoSaveIntervalMs)
-        }
-    }, [autoSaveFlag, text]) // BUG: autosave state is fixed to the version when autosave flag is set to 1. (any changes between flag set ~ autosave is discarded)
-
-    const upload = useCallback(()=>{
-        console.log(text)
-    }, [text])
-
-    // TODO: loading from autosave??
-
-    return (
-        <>
-            <Header />
-            <div id='content'>
-                <ClassicEditorCore upload={ upload } />
-            </div>
-            <Footer />
-        </>
-    );
-}
