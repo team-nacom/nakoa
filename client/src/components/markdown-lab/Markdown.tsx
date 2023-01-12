@@ -22,7 +22,8 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
             const innerHtml = katex.renderToString(props.value, {
                 displayMode: true,
                 throwOnError: false,
-                macros, // globalGroup: true
+                macros,
+                globalGroup: true
             })
             return <div className='math-display'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }
@@ -32,7 +33,8 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
             const innerHtml = katex.renderToString(props.value, {
                 displayMode: false,
                 throwOnError: false,
-                macros, // globalGroup: true
+                macros,
+                globalGroup: true
             })
             return <span className='math-inline'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }

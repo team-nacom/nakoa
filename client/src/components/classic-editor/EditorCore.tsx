@@ -14,6 +14,8 @@ import { useClassicEditorState, useClassicEditorInit } from './EditorState';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
 
+const MemoizedMarkdown = React.memo(Markdown);
+
 const usePrevious = <T extends unknown>(value: T): T | undefined => {
     const ref = useRef<T>();
     useEffect(() => { ref.current = value; });
@@ -32,7 +34,6 @@ function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement> & 
     )
 }
 
-const MemoizedMarkdown = React.memo(Markdown);
 function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
     return(
         <div {...props} />
@@ -171,9 +172,9 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
                 <PanelMenu className='panelMenu1' label={ intl.formatMessage({id: 'editor.edit'}) } callback = { () => setActiveIndex(1) }>
-                    <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
+                    {/* <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
                         <span className="material-icons">help_outline</span>
-                    </button>
+                    </button> */}
                 </PanelMenu>
                 <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
@@ -197,7 +198,9 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
-                        <MemoizedMarkdown /* usePriority useTOC openDetails */>
+                        <MemoizedMarkdown /* usePriority useTOC openDetails */
+                            mathMacroObj={ {} }
+                        >
                             { previewText }
                         </MemoizedMarkdown>
                     </PreviewArea>
@@ -220,6 +223,6 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                 <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
             </div>
         </div>
-        <Manual visible={manualVisible} setVisible={setManualVisible} />
+        {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}
     </div>);
 }
