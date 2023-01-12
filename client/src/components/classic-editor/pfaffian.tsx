@@ -1,4 +1,6 @@
 export const pfaffian = `
+
+
 # Pfaffian Identity
 # Introduction
 어떤 행렬 $A = (a_{ij})$가 $a_{ij} = -a_{ji}$, 즉 $A = -A^{t}$를 만족하면 $A$를 skew-symmetric matrix라고 합니다.\n일반적으로 $m \\times m$ 행렬 $B = (b_{ij})$의 *Determinant* $\\det(B)$는 아래와 같이 정의한다는 사실이 잘 알려져 있습니다.

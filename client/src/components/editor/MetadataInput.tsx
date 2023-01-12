@@ -1,13 +1,15 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
+import { Metadata, useMetadataState, useMetadataInit } from './MetadataState'
 
-interface MetadataInputProps{
-    title: string,
-    setTitle: (title: string) => any,
-    author: string,
-    setAuthor: (author: string) => any
-}
+export function MetadataInput(metadata: Partial<Metadata>){
+    const init = useMetadataInit()
 
-function _MetadataInput({title, setTitle, author, setAuthor}: MetadataInputProps){
+    useEffect(()=>{
+        init( metadata )
+    }, [metadata])
+
+    const { title, author, setTitle, setAuthor } = useMetadataState()
+
     return (
         <div className='metadataInput'>
             <div className='titleInput'>
@@ -31,4 +33,3 @@ function _MetadataInput({title, setTitle, author, setAuthor}: MetadataInputProps
         </div>
     )
 }
-export const MetadataInput = memo(_MetadataInput)

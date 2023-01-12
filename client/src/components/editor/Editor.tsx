@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useCallback, memo } from 'react';
 
 import Button from '#/components/Button'
 
@@ -9,24 +9,38 @@ import { useClassicEditorInit, useClassicText } from '#/components/classic-edito
 
 import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructData } from '#/components/wood/store/EditorState'
 
+import { useMetadataState } from './MetadataState';
 import { MetadataInput } from './MetadataInput'
 
-
-
 export function Editor(){
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
+    // const metadata = useMetadataState();
 
     const [mode, setMode] = useState('classic'); // classic or cell.
 
     // initialize outside.
+    // const text = useClassicText();
+    // const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
 
-    const text = useClassicText();
-    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
+    // const upload = useCallback(() => {
+    //     var obj : {mode:string, value:any} = {
+    //         mode,
+    //         value: undefined
+    //     }
+    //     if(mode === 'classic'){
+    //         obj.value = text;
+    //     } else if(mode === 'cell'){
+    //         obj.value = {
+    //             cellData, structData
+    //         };
+    //     }
+    //     // console.log(metadata);
+    //     console.log(obj);
+    // }, [mode, text, cellData, structData])
+    const upload = () => {}
 
     return (
         <div className='cellEditorWrapper'>
-            <MetadataInput {...{title, setTitle, author, setAuthor}} />
+            {/* <MetadataInput /> */}
 
             <hr />
 
@@ -46,20 +60,7 @@ export function Editor(){
                     모드 전환(Classic / Cell)
                 </Button>
                 <Button className='uploadButton'
-                    onClick = { () => {
-                        var obj : {mode:string, value:any} = {
-                            mode,
-                            value: undefined
-                        }
-                        if(mode === 'classic'){
-                            obj.value = text;
-                        } else if(mode === 'cell'){
-                            obj.value = {
-                                cellData, structData
-                            };
-                        }
-                        console.log(obj);
-                    } }
+                    onClick = { upload }
                 >
                     업로드(console.log)
                 </Button>

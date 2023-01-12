@@ -99,8 +99,6 @@ export const useParentIds = () => useEditorState(state => state.parentIds)
 export const useStructData = () => useEditorState(state => state.structData)
 export const useRenderData = () => useEditorState(state => state.renderData)
 
-export const useMetaData = () => useEditorState(state => state.cellData[state.rootId] as Cell<'root'>)
-
 export const useSingleCell = (id: string) => useEditorState(state => state.cellData[id])
 export const useSingleCellType = (id: string) => useEditorState(state => state.cellData[id]?.cellType)
 export const useSingleCellFocused = (id: string) => useEditorState(state => state.focusId === id)

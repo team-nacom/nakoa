@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 export interface ClassicEditorState{
     text: string,
     previewText: string,
-
+    
     setText(text: string): void,
     setPreviewText(previewText: string): void
 }
@@ -23,7 +23,9 @@ export const createClassicEditorState : StateCreator<
     },
 })
 
-export const useClassicEditorState = create<ClassicEditorState>()(immer(createClassicEditorState))
+export const useClassicEditorState = create<ClassicEditorState>()(
+    immer(createClassicEditorState)
+)
 
 export const useClassicEditorInit = () => useClassicEditorState(
     state => (text: string) => {
