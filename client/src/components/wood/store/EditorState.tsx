@@ -85,6 +85,9 @@ export const useEditorState = create<EditorState>()(immer(createEditorState))
 
 export const useEditorInit = () => useEditorState(
     state => (initCellData?: CellData, initRootId?: string, initStructData?: StructData) => {
+        if(initRootId === undefined){
+            initRootId = 'c0';
+        }
         state.woodAction.init(initCellData, initRootId, initStructData);
         state.editorAction.init(initCellData, initRootId, initStructData);
     }

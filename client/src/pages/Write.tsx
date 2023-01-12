@@ -3,8 +3,12 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import {
     CellData, StructData, RenderData,
 
-    useEditorInit, useRootId, useCellData, useStructData
+    useEditorInit as useCellEditorInit, useRootId, useCellData, useStructData
 } from '#/components/wood/store/EditorState'
+
+import {
+    useClassicEditorInit
+} from '#/components/classic-editor/EditorState'
 
 import { Editor } from '#/components/editor/Editor'
 
@@ -14,6 +18,14 @@ import Footer from '#/components/Footer'
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
 function Write() {
+    const cellInit = useCellEditorInit()
+    const classicInit = useClassicEditorInit()
+    useEffect(() => {
+        cellInit()
+        classicInit('')
+    }, [])
+
+
     // // initializing state
     // // TODO: updating
     // const [initCellData, initRootId, initStructData] : [CellData?, string?, StructData?] = useMemo(() => {
