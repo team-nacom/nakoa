@@ -23,7 +23,7 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
                 displayMode: true,
                 throwOnError: false,
                 macros,
-                globalGroup: true
+                // globalGroup: true
             })
             return <div className='math-display'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }
@@ -34,7 +34,7 @@ function customHandlersBuilder(mathMacroObj: Object): Handlers{
                 displayMode: false,
                 throwOnError: false,
                 macros,
-                globalGroup: true
+                // globalGroup: true
             })
             return <span className='math-inline'
                 dangerouslySetInnerHTML={ { __html: innerHtml } }

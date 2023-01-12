@@ -13,34 +13,33 @@ import { useMetadataState } from './MetadataState';
 import { MetadataInput } from './MetadataInput'
 
 export function Editor(){
-    // const metadata = useMetadataState();
+    const metadata = useMetadataState();
 
     const [mode, setMode] = useState('classic'); // classic or cell.
 
     // initialize outside.
-    // const text = useClassicText();
-    // const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
+    const text = useClassicText();
+    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
 
-    // const upload = useCallback(() => {
-    //     var obj : {mode:string, value:any} = {
-    //         mode,
-    //         value: undefined
-    //     }
-    //     if(mode === 'classic'){
-    //         obj.value = text;
-    //     } else if(mode === 'cell'){
-    //         obj.value = {
-    //             cellData, structData
-    //         };
-    //     }
-    //     // console.log(metadata);
-    //     console.log(obj);
-    // }, [mode, text, cellData, structData])
-    const upload = () => {}
+    const upload = useCallback(() => {
+        var obj : {mode:string, value:any} = {
+            mode,
+            value: undefined
+        }
+        if(mode === 'classic'){
+            obj.value = text;
+        } else if(mode === 'cell'){
+            obj.value = {
+                cellData, structData
+            };
+        }
+        console.log(metadata);
+        console.log(obj);
+    }, [metadata, mode, text, cellData, structData])
 
     return (
         <div className='cellEditorWrapper'>
-            {/* <MetadataInput /> */}
+            <MetadataInput />
 
             <hr />
 

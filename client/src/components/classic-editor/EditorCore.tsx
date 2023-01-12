@@ -199,7 +199,7 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
                         <MemoizedMarkdown /* usePriority useTOC openDetails */
-                            mathMacroObj={ {} }
+                            // mathMacroObj={ {} }
                         >
                             { previewText }
                         </MemoizedMarkdown>
