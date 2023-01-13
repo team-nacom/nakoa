@@ -1,5 +1,11 @@
 export const pfaffian = `
-
+$$
+\\providecommand{\\pf}{\\mathrm{pf}}
+\\providecommand{\\sgn}{\\mathrm{sgn}}
+\\providecommand{\\mt}{\\mathcal{M}[2n]}
+\\providecommand{\\et}{\\mathcal{E}[2n]}
+\\providecommand{\\abs}[1]{\\left\\lvert #1 \\right\\rvert}
+$$
 
 # Pfaffian Identity
 # Introduction
