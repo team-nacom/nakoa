@@ -1,8 +1,8 @@
 import {
     CellData, StructData
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
-import { Wood } from '#/components/wood/types'
+import { Wood } from '#/components/cell-editor/types'
 
 export const wood: Wood = {
     rootId: 'c0',

@@ -9,7 +9,7 @@ import {
     useParentIds,
     useWoodAction,
     useEditorAction
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
 import {
     DndContext, useDndMonitor, DragStartEvent, DragOverEvent, DragEndEvent,

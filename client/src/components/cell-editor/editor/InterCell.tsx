@@ -3,9 +3,9 @@ import React, { memo } from 'react'
 import {
     useWoodAction,
     useSingleCellType
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
-import { isParentType } from '#/components/wood/cell'
+import { isParentType } from '#/components/cell-editor/cell'
 
 import { useIsOver } from './DndScope'
 import { InterCellProps } from './Portal'

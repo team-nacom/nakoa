@@ -4,12 +4,12 @@ import {
     useWoodAction, useEditorAction,
 
     useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren, useSingleCellLabelTypewise,
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
 import {
     Cell, CellType, cellTypeStr,
     defaultFields, isParentType, labelType
-} from '#/components/wood/cell'
+} from '#/components/cell-editor/cell'
 
 import {
     CellIndicatorProps

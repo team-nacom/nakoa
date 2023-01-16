@@ -3,11 +3,11 @@ import { memo } from 'react'
 import {
     useEditorAction,
     useSingleCellFocused, 
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
 import {
     MemoizedCellRenderer, RenderMode,
-} from '#/components/wood/cell'
+} from '#/components/cell-editor/cell'
 
 import { CellIndicatorProps } from './Portal'
 import { Toolbar } from './Toolbar'

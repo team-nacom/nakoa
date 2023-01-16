@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand'
 
-import { Cell, CellType } from '#/components/wood/cell/types'
-import { StructData } from '#/components/wood/types'
+import { Cell, CellType } from '#/components/cell-editor/cell/types'
+import { StructData } from '#/components/cell-editor/types'
 
 export interface StructDataSlice{
     rootId: string,

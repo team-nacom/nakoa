@@ -1,4 +1,4 @@
-import { Cell, CellType, cellTypeStr, isParentType } from '#/components/wood/cell/types'
+import { Cell, CellType, cellTypeStr, isParentType } from '#/components/cell-editor/cell/types'
 
 import create, { StateCreator } from 'zustand'
 import { immer } from 'zustand/middleware/immer'

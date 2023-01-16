@@ -5,7 +5,7 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useWoodAction,
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 

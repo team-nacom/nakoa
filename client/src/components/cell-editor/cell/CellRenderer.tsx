@@ -12,7 +12,7 @@ import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
 import { MathCellRenderer } from './cell-types/math'
 
-import { useSingleCell, useSingleCellFocused } from '#/components/wood/store/EditorState'
+import { useSingleCell, useSingleCellFocused } from '#/components/cell-editor/store/EditorState'
 
 export function CellRenderer({ mode, id }: CellRendererProps){
     const cell = useSingleCell(id)

@@ -6,7 +6,7 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 import {
     useRenderData,
     useWoodAction,
-} from '#/components/wood/store/EditorState'
+} from '#/components/cell-editor/store/EditorState'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown-lab/Markdown'

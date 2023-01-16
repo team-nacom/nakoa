@@ -1,8 +1,8 @@
 import katex from 'katex'
 import { StateCreator } from 'zustand'
 
-import { Cell, CellType, CellData, labelType } from '#/components/wood/cell/types'
-import { StructData } from '#/components/wood/types'
+import { Cell, CellType, CellData, labelType } from '#/components/cell-editor/cell/types'
+import { StructData } from '#/components/cell-editor/types'
 
 import { CellDataSlice } from './CellData'
 import { StructDataSlice } from './StructData'

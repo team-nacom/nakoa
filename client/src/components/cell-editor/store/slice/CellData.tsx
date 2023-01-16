@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand'
 
-import { Cell, CellType, cellTypeStr, CellData } from '#/components/wood/cell/types'
+import { Cell, CellType, cellTypeStr, CellData } from '#/components/cell-editor/cell/types'
 
 export interface CellDataSlice{
     cellData: CellData,

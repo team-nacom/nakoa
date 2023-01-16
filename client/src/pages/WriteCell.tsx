@@ -1,29 +1,22 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 
-import {
-    CellData, StructData, RenderData,
+import Button from '#/components/Button'
 
-    useEditorInit as useCellEditorInit, useRootId, useCellData, useStructData
-} from '#/components/wood/store/EditorState'
+import { EditorCore as CellEditorCore } from '#/components/cell-editor/editor/EditorCore';
 
-import {
-    useClassicEditorInit
-} from '#/components/classic-editor/EditorState'
+import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
 
-import { Editor } from '#/components/editor/Editor'
+import { useMetadataState } from '#/components/editor/MetadataState';
+import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import Header from '#/components/Header'
-import Footer from '#/components/Footer'
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
-function Write() {
+function WriteCell() {
     const cellInit = useCellEditorInit()
-    const classicInit = useClassicEditorInit()
     useEffect(() => {
         cellInit()
-        classicInit('')
-    }, [])
+    }, []);
 
 
     // // initializing state
@@ -79,7 +72,33 @@ function Write() {
 
     // // TODO: loading from autosave??
 
-    return <Editor />;
+    const metadata = useMetadataState();
+    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()];
+
+    const upload = useCallback(() => {
+        console.log({
+            mode: 'cell',
+            metadata,
+            cellData,
+            structData
+        });
+    }, [metadata, cellData, structData]);
+
+    return (
+        <div className='cellEditorWrapper'>
+            <MetadataInput />
+            <hr />
+            <CellEditorCore />
+            <hr />
+            <div className='buttonsWrapper'>
+                <Button className='uploadButton'
+                    onClick = { upload }
+                >
+                    업로드(console.log)
+                </Button>
+            </div>
+        </div>
+    );
 }
 
-export default Write;
+export default WriteCell;
