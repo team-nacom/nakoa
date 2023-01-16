@@ -9,6 +9,9 @@ import ReactGA from 'react-ga';
 import { useLocale } from '#/store/locale'
 import { localeMessages } from '#/locale'
 
+import Header from '#/components/Header';
+import Footer from '#/components/Footer';
+
 import Hidden from '#/pages/Hidden'
 import Write from '#/pages/Write'
 import NotFound from '#/pages/NotFound'
@@ -26,13 +29,18 @@ function App() {
     return (
         <IntlProvider locale={locale} messages={localeMessages[locale]}>
             <Router history={history}>
-                <Switch>
-                    <Redirect exact path='/' to='/hidden' />
-                    <Route exact path='/hidden' component={Hidden} />
-                    <Route exact path='/write' component={Write} />
-                    <Route exact path='/about' component={About}/>
-                    <Route component={NotFound}/>
-                </Switch>
+                {/* Layout */}
+                <Header />
+                <div id='content'>
+                    <Switch>
+                        <Redirect exact path='/' to='/hidden' />
+                        <Route exact path='/hidden' component={Hidden} />
+                        <Route exact path='/write' component={Write} />
+                        <Route exact path='/about' component={About}/>
+                        <Route component={NotFound}/>
+                    </Switch>
+                </div>
+                <Footer />
             </Router>
         </IntlProvider>
     )

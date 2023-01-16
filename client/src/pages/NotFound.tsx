@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from '#/components/Header';
-import Footer from '#/components/Footer';
 import Markdown from '#/components/markdown-lab/Markdown';
 
 
@@ -14,15 +12,9 @@ function NotFound() {
     }, [])
 
     return (
-        <>
-            <Header/>
-            <div id='content'>
-                <Markdown>
-                    { message }
-                </Markdown>
-            </div>
-            <Footer/>
-        </>
+        <Markdown>
+            { message }
+        </Markdown>
     );
 }
 

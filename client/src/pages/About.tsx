@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from '#/components/Header';
-import Footer from '#/components/Footer';
 import Markdown from '#/components/markdown-lab/Markdown';
 
 
@@ -13,17 +11,11 @@ function About() {
         .then(text => setMessage(text));
 
     return (
-        <>
-            <Header/>
-            <div id='content'>
-                <div className='aboutDisplayWrapper'>
-                    <Markdown>
-                        { message }
-                    </Markdown>
-                </div>
-            </div>
-            <Footer/>
-        </>
+        <div className='aboutDisplayWrapper'>
+            <Markdown>
+                { message }
+            </Markdown>
+        </div>
     );
 }
 

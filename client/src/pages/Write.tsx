@@ -79,15 +79,7 @@ function Write() {
 
     // // TODO: loading from autosave??
 
-    return (
-        <>
-            <Header />
-            <div id='content'>
-                <Editor />
-            </div>
-            <Footer />
-        </>
-    );
+    return <Editor />;
 }
 
 export default Write;

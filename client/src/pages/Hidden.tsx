@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 
 import {
-    CellData, StructData, RenderData,
-
-    useEditorInit as useCellEditorInit, useRootId, useCellData, useStructData
+    useEditorInit as useCellEditorInit
 } from '#/components/wood/store/EditorState'
 
 import {
@@ -15,9 +13,6 @@ import { pfaffian as PfText } from '#/components/classic-editor/pfaffian'
 
 import { Editor } from '#/components/editor/Editor'
 
-import Header from '#/components/Header'
-import Footer from '#/components/Footer'
-
 function Hidden() {
     // initialize editor state.
     // may need a single provider for this? see https://github.com/pmndrs/zustand#react-context
@@ -28,15 +23,7 @@ function Hidden() {
         classicInit(PfText)
     }, [])
 
-    return (
-        <>
-            <Header />
-            <div id='content'>
-                <Editor />
-            </div>
-            <Footer />
-        </>
-    );
+    return <Editor />;
 }
 
 export default Hidden;
