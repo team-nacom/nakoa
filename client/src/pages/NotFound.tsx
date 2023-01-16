@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from '#/components/markdown-lab/Markdown';
-
+import { ApplyLayout } from '#/layout/Apply';
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
@@ -18,4 +18,4 @@ function NotFound() {
     );
 }
 
-export default NotFound;
+export default ApplyLayout({ Content: NotFound });

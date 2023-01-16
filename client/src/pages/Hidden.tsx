@@ -14,6 +14,7 @@ import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructDa
 
 import { useMetadataState } from '#/components/editor/MetadataState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
+import { ApplyLayout } from '#/layout/Apply'
 
 function Hidden() {
     // initialize editor state.
@@ -80,4 +81,4 @@ function Hidden() {
     )
 }
 
-export default Hidden;
+export default ApplyLayout({Content: Hidden});

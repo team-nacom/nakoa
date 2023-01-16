@@ -11,6 +11,8 @@ import { MetadataInput } from '#/components/editor/MetadataInput';
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
+import { ApplyLayout } from '#/layout/Apply';
+
 function WriteClassic() {
     const classicInit = useClassicEditorInit()
     useEffect(() => {
@@ -45,4 +47,4 @@ function WriteClassic() {
     );
 }
 
-export default WriteClassic;
+export default ApplyLayout({ Content: WriteClassic });

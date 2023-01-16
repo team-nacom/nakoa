@@ -9,8 +9,9 @@ import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructDa
 import { useMetadataState } from '#/components/editor/MetadataState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
+import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts';
 
-import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
+import { ApplyLayout } from '#/layout/Apply';
 
 function WriteCell() {
     const cellInit = useCellEditorInit()
@@ -101,4 +102,4 @@ function WriteCell() {
     );
 }
 
-export default WriteCell;
+export default ApplyLayout({ Content: WriteCell });

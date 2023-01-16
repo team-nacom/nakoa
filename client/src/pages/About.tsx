@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from '#/components/markdown-lab/Markdown';
-
+import { ApplyLayout } from '#/layout/Apply';
 
 
 function About() {
@@ -19,4 +19,4 @@ function About() {
     );
 }
 
-export default About;
+export default ApplyLayout({Content: About});
