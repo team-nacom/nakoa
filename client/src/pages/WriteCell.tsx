@@ -1,24 +1,18 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { Link, Redirect, useParams } from 'react-router-dom';
 
-import Button from '#/components/Button'
-
-import { EditorCore as CellEditorCore } from '#/components/cell-editor/editor/EditorCore';
-
-import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
+import { useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
 
 import { useMetadataState } from '#/components/editor/MetadataState';
-import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts';
 
 import { ApplyLayout } from '#/layout/Apply';
+import usePromise from '#/misc/usePromise';
+import { Article, CellArticle, getArticle, postArticle } from '#/api/article';
+import { CellEditor } from '#/components/editor/CellEditor';
 
 function WriteCell() {
-    const cellInit = useCellEditorInit()
-    useEffect(() => {
-        cellInit()
-    }, []);
-
 
     // // initializing state
     // // TODO: updating
@@ -73,32 +67,39 @@ function WriteCell() {
 
     // // TODO: loading from autosave??
 
+    // subscribe values
     const metadata = useMetadataState();
     const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()];
 
+    // redirection state
+    const [redirectTo, setRedirectTo] = useState<string>();
+    const [message, setMessage] = useState<string>();
+
     const upload = useCallback(() => {
-        console.log({
+        const article: CellArticle = {
             mode: 'cell',
             metadata,
-            cellData,
-            structData
-        });
-    }, [metadata, cellData, structData]);
+            content: { cellData, structData, rootId }
+        }
+        postArticle(article).then(({success, index})=>{
+            if(success){
+                setMessage('업로드에 성공했습니다!');
+                setRedirectTo(`/article/${index}`);
+            } else{
+                setMessage('업로드에 실패했습니다.');
+            }
+        })
+    }, [metadata, cellData, structData, rootId]);
 
+    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     return (
-        <div className='cellEditorWrapper'>
-            <MetadataInput />
-            <hr />
-            <CellEditorCore />
-            <hr />
-            <div className='buttonsWrapper'>
-                <Button className='uploadButton'
-                    onClick = { upload }
-                >
-                    업로드(console.log)
-                </Button>
-            </div>
-        </div>
+        <>
+            { /* title and message goes here. */ }
+            <h1>글 작성하기</h1>
+            <p>{message}</p>
+
+            <CellEditor upload={ upload } />
+        </>
     );
 }
 

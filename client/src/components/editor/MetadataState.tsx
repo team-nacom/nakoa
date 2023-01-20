@@ -3,7 +3,8 @@ import { immer } from 'zustand/middleware/immer'
 
 export interface Metadata{
     title: string,
-    author: string
+    author: string | string[]
+    tags?: string[]
 }
 
 export interface MetadataState extends Metadata{
@@ -16,6 +17,7 @@ export const createMetadataState: StateCreator<
 > = (set, get, api) => ({
     title: '',
     author: '',
+    tags: [],
 
     setTitle(title){
         set((state: MetadataState)=>{ state.title = title })

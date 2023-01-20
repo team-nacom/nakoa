@@ -24,3 +24,10 @@ function Main() {
 }
 
 export default ApplyLayout({ Content: Main });
+
+/*
+
+https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/pages/guide/GuideList.tsx
+https://github.com/team-nacom/nakoa/blob/f303e0e90fd89d90d948408a200ec159865316b6/client/src/pages/Cell/CellList.tsx
+
+*/
