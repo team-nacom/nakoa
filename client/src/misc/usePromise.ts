@@ -9,8 +9,8 @@ export default function usePromise<Type>(promiseCreator: () => Promise<Type>, de
       const result = await promiseCreator();
       setContent(result);
     } catch (error) {
-      console.log('While getting promise: ', promiseCreator);
-      console.log('We got an error: ', error);
+      // console.log('While getting promise: ', promiseCreator);
+      // console.log('We got an error: ', error);
       setContent(undefined);
       // throw error;
     }

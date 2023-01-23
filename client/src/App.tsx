@@ -13,12 +13,15 @@ import Header from '#/layout/Header';
 import Footer from '#/layout/Footer';
 
 import Main from '#/pages/Main';
-import Hidden from '#/pages/Hidden';
-import WriteClassic from './pages/WriteClassic';
-import WriteCell from '#/pages/WriteCell';
 import NotFound from '#/pages/NotFound';
 import About from '#/pages/About';
-import Article from '#/pages/Article';
+
+
+import ArticleView from '#/pages/article/View';
+import ArticleUpdate from '#/pages/article/Update';
+import WriteClassic from './pages/article/WriteClassic';
+import WriteCell from '#/pages/article/WriteCell';
+import Hidden from '#/pages/article/Hidden';
 
 function App() {
     const { locale } = useLocale()
@@ -40,9 +43,10 @@ function App() {
                         <Route exact path='/main' component={Main} />
                         <Route exact path='/about' component={About}/>
 
-                        <Route exact path='/article/:index' component={Article} />
-                        <Route exact path='/write-classic' component={WriteClassic} />
-                        <Route exact path='/write-cell' component={WriteCell} />
+                        <Route exact path='/article/view/:index' component={ArticleView} />
+                        <Route exact path='/article/update/:index' component={ArticleUpdate} />
+                        <Route exact path='/article/write-classic' component={WriteClassic} />
+                        <Route exact path='/article/write-cell' component={WriteCell} />
 
                         <Route exact path='/hidden' component={Hidden} />
                         <Route component={NotFound}/>

@@ -9,6 +9,7 @@ import { useClassicEditorInit } from '#/components/classic-editor/EditorState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { ClassicArticle } from '#/api/article';
+import { useMetadataInit } from './MetadataState';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
@@ -19,7 +20,9 @@ export function ClassicEditor({ initArticle, upload }: ClassicEditorProps) {
 
     // init here.
     const classicInit = useClassicEditorInit()
+    const metadataInit = useMetadataInit();
     useEffect(() => {
+        metadataInit(initArticle?.metadata ?? {});
         classicInit(initArticle?.text ?? '');
     }, [initArticle]);
 

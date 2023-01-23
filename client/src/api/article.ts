@@ -52,7 +52,9 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 export async function getArticle(index: number){
     // tmp: serverless
-    return JSON.parse(localStorage.getItem(`article/${index}`) ?? '') as Article;
+    var item = localStorage.getItem(`article/${index}`)
+    if(item === null) return undefined;
+    return JSON.parse(item) as Article;
 
     // let response = await axios.get(`${apiAddress}/article/${index}`, {
     //     validateStatus,
@@ -64,7 +66,7 @@ export async function getArticle(index: number){
 
 export async function postArticle(article: Article){
     // tmp: serverless
-    var index: number = Number(localStorage.getItem('articleNextIndex')) ?? 1;
+    var index: number = Number(localStorage.getItem('articleNextIndex') ?? 1);
     localStorage.setItem('articleNextIndex', `${ index + 1 }`);
 
     localStorage.setItem(`article/${index}`, JSON.stringify(article));

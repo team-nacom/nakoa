@@ -14,7 +14,7 @@ import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 import { ApplyLayout } from '#/layout/Apply';
 import { Article, getArticle, updateArticle } from '#/api/article';
 
-import Loading from './Loading';
+import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 
 function Update() {
@@ -47,7 +47,7 @@ function Update() {
         updateArticle(index, article).then((success)=>{
             if(success){
                 setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/${index}`);
+                setRedirectTo(`/article/view/${index}`);
             } else{
                 setMessage('업로드에 실패했습니다.');
             }
@@ -56,6 +56,8 @@ function Update() {
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
+    if(initArticle === undefined) return <p> 존재하지 않는 글입니다. </p>;
+
     return (
         <>
             { /* title and message goes here. */ }

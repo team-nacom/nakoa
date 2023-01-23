@@ -33,9 +33,6 @@ export const useMetadataState = create<MetadataState>()(
 
 export const useMetadataInit = () => useMetadataState(
     state => (metadata: Partial<Metadata>) => {
-        state = {
-            ...state,
-            ...metadata
-        }
+        Object.assign(state, metadata);
     }
 )

@@ -9,6 +9,7 @@ import { useEditorInit as useCellEditorInit } from '#/components/cell-editor/sto
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { CellArticle } from '#/api/article';
+import { useMetadataInit } from './MetadataState';
 
 interface CellEditorProps{
     initArticle?: CellArticle;
@@ -19,7 +20,9 @@ export function CellEditor({ initArticle, upload }: CellEditorProps) {
 
     // init here.
     const cellInit = useCellEditorInit();
+    const metadataInit = useMetadataInit();
     useEffect(() => {
+        metadataInit(initArticle?.metadata ?? {});
         cellInit(
             initArticle?.content.cellData,
             initArticle?.content.rootId,

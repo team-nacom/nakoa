@@ -5,7 +5,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 
-import Loading from './Loading';
+import Loading from '../Loading';
 import Button from '#/components/Button';
 import { ApplyLayout } from '#/layout/Apply';
 import usePromise from '#/misc/usePromise';
@@ -32,6 +32,9 @@ function Article() {
                     { article.text }
                 </Markdown>
             </div>
+            <Link to={ `/article/update/${ index }` }>
+                <Button>편집</Button>
+            </Link>
         </>
     );
 
@@ -42,6 +45,9 @@ function Article() {
             <Display
                 {...article.content}
             />
+            <Link to={ `/article/update/${ index }` }>
+                <Button>편집</Button>
+            </Link>
         </>
     );
 }

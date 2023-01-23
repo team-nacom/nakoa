@@ -30,7 +30,7 @@ function WriteClassic() {
         postArticle(article).then(({success, index})=>{
             if(success){
                 setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/${index}`);
+                setRedirectTo(`/article/view/${index}`);
             } else{
                 setMessage('업로드에 실패했습니다.');
             }
