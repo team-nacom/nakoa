@@ -18,6 +18,7 @@ import WriteClassic from './pages/WriteClassic';
 import WriteCell from '#/pages/WriteCell';
 import NotFound from '#/pages/NotFound';
 import About from '#/pages/About';
+import Article from '#/pages/Article';
 
 function App() {
     const { locale } = useLocale()
@@ -39,6 +40,7 @@ function App() {
                         <Route exact path='/main' component={Main} />
                         <Route exact path='/about' component={About}/>
 
+                        <Route exact path='/article/:index' component={Article} />
                         <Route exact path='/write-classic' component={WriteClassic} />
                         <Route exact path='/write-cell' component={WriteCell} />
 

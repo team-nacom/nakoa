@@ -51,40 +51,61 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 // export const validateSetStatus = (status: number) => (status < 300);
 
 export async function getArticle(index: number){
-    let response = await axios.get(`${apiAddress}/article/${index}`, {
-        validateStatus,
-        // withCredentials: true
-    });
+    // tmp: serverless
+    return JSON.parse(localStorage.getItem(`article/${index}`) ?? '') as Article;
 
-    return response.data as Article;
+    // let response = await axios.get(`${apiAddress}/article/${index}`, {
+    //     validateStatus,
+    //     // withCredentials: true
+    // });
+
+    // return response.data as Article;
 }
 
 export async function postArticle(article: Article){
-    let response = await axios.post(`${apiAddress}/article`, article, {
-        validateStatus,
-        // withCredentials: true
-    });
+    // tmp: serverless
+    var index: number = Number(localStorage.getItem('articleNextIndex')) ?? 1;
+    localStorage.setItem('articleNextIndex', `${ index + 1 }`);
 
+    localStorage.setItem(`article/${index}`, JSON.stringify(article));
     return {
-        success: response.status < 300,
-        index: response.data.index as number,
+        success: true,
+        index
     };
+
+    // let response = await axios.post(`${apiAddress}/article`, article, {
+    //     validateStatus,
+    //     // withCredentials: true
+    // });
+
+    // return {
+    //     success: response.status < 300,
+    //     index: response.data.index as number,
+    // };
 }
 
 export async function updateArticle(index: number, article: Article){
-    // NOTE: index가 article의 optional field니까, 그냥 index만 넣고 싶긴 함
-    let response = await axios.put(`${apiAddress}/article/${index}`, article, {
-        validateStatus,
-        // withCredentials: true
-    });
+    // tmp: serverless
+    localStorage.setItem(`article/${index}`, JSON.stringify(article));
+    return true;
 
-    return response.status < 300;
+    // NOTE: index가 article의 optional field니까, 그냥 article만 넣고 싶긴 함
+    // 아니면 article에서 그냥 빼버릴까?
+    // let response = await axios.put(`${apiAddress}/article/${index}`, article, {
+    //     validateStatus,
+    //     // withCredentials: true
+    // });
+
+    // return response.status < 300;
 }
 
 export async function removeArticle(index: number){
-    let response = await axios.delete(`${apiAddress}/article/${index}`, {
-        //withCredentials: true
-    });
+    localStorage.removeItem(`article/${index}`);
+    return true;
 
-    return response.status < 300;
+    // let response = await axios.delete(`${apiAddress}/article/${index}`, {
+    //     //withCredentials: true
+    // });
+
+    // return response.status < 300;
 }
