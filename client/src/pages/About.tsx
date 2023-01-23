@@ -11,7 +11,6 @@ function About() {
         .then(text => setMessage(text));
 
     return ApplyLayout({
-        title: '존재하지 않는 페이지입니다.',
         content: (
             <div className='aboutDisplayWrapper'>
                 <Markdown>
