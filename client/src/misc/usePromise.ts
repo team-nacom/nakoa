@@ -11,7 +11,8 @@ export default function usePromise<Type>(promiseCreator: () => Promise<Type>, de
     } catch (error) {
       console.log('While getting promise: ', promiseCreator);
       console.log('We got an error: ', error);
-      throw error;
+      setContent(undefined);
+      // throw error;
     }
     setLoading(false);
   };
