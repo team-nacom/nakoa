@@ -92,16 +92,13 @@ function WriteCell() {
     }, [metadata, cellData, structData, rootId]);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
-    return (
-        <>
-            { /* title and message goes here. */ }
-            <h1>글 작성하기</h1>
+    return ApplyLayout({
+        title: '글 작성하기',
+        content: <>
             <p>{message}</p>
-
             <CellEditor upload={ upload } />
         </>
-    );
+    });
 }
 
 export default WriteCell;
-// export default ApplyLayout({ Content: WriteCell });

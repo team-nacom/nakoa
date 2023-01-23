@@ -11,11 +11,13 @@ function NotFound() {
             .then(text => setMessage(text));
     }, [])
 
-    return (
-        <Markdown>
+    // TODO : merge 404.md here
+    return ApplyLayout({
+        title: '존재하지 않는 페이지입니다.',
+        content: (<Markdown>
             { message }
-        </Markdown>
-    );
+        </Markdown>)
+    });
 }
 
 export default NotFound;

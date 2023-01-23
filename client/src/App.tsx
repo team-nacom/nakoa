@@ -35,24 +35,20 @@ function App() {
     return (
         <IntlProvider locale={locale} messages={localeMessages[locale]}>
             <Router history={history}>
-                {/* Layout */}
-                <Header />
-                <div id='content'>
-                    <Switch>
-                        <Redirect exact path='/' to='/main' />
-                        <Route exact path='/main' component={Main} />
-                        <Route exact path='/about' component={About}/>
+                {/* Layout is included in each component */}
+                <Switch>
+                    <Redirect exact path='/' to='/main' />
+                    <Route exact path='/main' component={Main} />
+                    <Route exact path='/about' component={About}/>
 
-                        <Route exact path='/article/view/:index' component={ArticleView} />
-                        <Route exact path='/article/update/:index' component={ArticleUpdate} />
-                        <Route exact path='/article/write-classic' component={WriteClassic} />
-                        <Route exact path='/article/write-cell' component={WriteCell} />
+                    <Route exact path='/article/view/:index' component={ArticleView} />
+                    <Route exact path='/article/update/:index' component={ArticleUpdate} />
+                    <Route exact path='/article/write-classic' component={WriteClassic} />
+                    <Route exact path='/article/write-cell' component={WriteCell} />
 
-                        <Route exact path='/hidden' component={Hidden} />
-                        <Route component={NotFound}/>
-                    </Switch>
-                </div>
-                <Footer />
+                    <Route exact path='/hidden' component={Hidden} />
+                    <Route component={NotFound}/>
+                </Switch>
             </Router>
         </IntlProvider>
     )

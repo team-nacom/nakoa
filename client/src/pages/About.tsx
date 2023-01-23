@@ -10,13 +10,16 @@ function About() {
         .then(response => response.text())
         .then(text => setMessage(text));
 
-    return (
-        <div className='aboutDisplayWrapper'>
-            <Markdown>
-                { message }
-            </Markdown>
-        </div>
-    );
+    return ApplyLayout({
+        title: '존재하지 않는 페이지입니다.',
+        content: (
+            <div className='aboutDisplayWrapper'>
+                <Markdown>
+                    { message }
+                </Markdown>
+            </div>
+        )
+    });
 }
 
 export default About;

@@ -38,16 +38,13 @@ function WriteClassic() {
     }, [metadata, text]);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
-    return (
-        <>
-            { /* title and message goes here. */ }
-            <h1>글 작성하기</h1>
+    return ApplyLayout({
+        title: '글 작성하기',
+        content: <>
             <p>{message}</p>
-
             <ClassicEditor upload={ upload } />
         </>
-    );
+    });
 }
 
 export default WriteClassic;
-// export default ApplyLayout({ Content: WriteClassic });

@@ -9,22 +9,24 @@ import { ApplyLayout } from '#/layout/Apply';
 
 function Main() {
     let intl = useIntl();
-    return (
-        <>
-            <p>{ intl.formatMessage({ id: 'main.greeting' })}</p>
-            <hr />
-            <Link to='/write-classic'>
-                <Button> 텍스트 편집기 </Button>
-            </Link>
-            <Link to='/write-cell'>
-                <Button> 셀 편집기 </Button>
-            </Link>
-        </>
-    );
+    return ApplyLayout({
+        title: '팀 나무컴퍼스 메인화면',
+        content: (
+            <>
+                <p>{ intl.formatMessage({ id: 'main.greeting' })}</p>
+                <hr />
+                <Link to='/article/write-classic'>
+                    <Button> 텍스트 편집기 </Button>
+                </Link>
+                <Link to='/article/write-cell'>
+                    <Button> 셀 편집기 </Button>
+                </Link>
+            </>
+        )
+    });
 }
 
 export default Main;
-// export default ApplyLayout({ Content: Main });
 
 /*
 

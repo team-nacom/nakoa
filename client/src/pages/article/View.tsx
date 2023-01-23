@@ -22,37 +22,28 @@ function Article() {
 
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
-    if(article === undefined) return <p> 존재하지 않는 글입니다. </p>;
+    if(article === undefined) return ApplyLayout({
+        content: <p> 존재하지 않는 글입니다. </p>
+    });
 
-    if(article.mode === 'classic') return (
-        <>
-            <h1 className='title'>{ article.metadata.title }</h1>
-            <div className='content'>
+    return ApplyLayout({
+        title: article.metadata.title,
+        content: <>
+            {article.mode === 'classic' &&
                 <Markdown>
                     { article.text }
                 </Markdown>
-            </div>
+            }
+            {article.mode === 'cell' &&
+                <Display
+                    {...article.content}
+                />
+            }
             <Link to={ `/article/update/${ index }` }>
                 <Button>편집</Button>
             </Link>
         </>
-    );
-
-    /* (article.mode === 'cell') */
-    return (
-        <>
-            <h1 className='title'>{ article.metadata.title }</h1>
-            <Display
-                {...article.content}
-            />
-            <Link to={ `/article/update/${ index }` }>
-                <Button>편집</Button>
-            </Link>
-        </>
-    );
+    });
 }
 
 export default Article;
-// export default ApplyLayout({
-//     Content: Article
-// });
