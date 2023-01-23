@@ -71,4 +71,5 @@ function Update() {
     );
 }
 
-export default ApplyLayout({ Content: Update });
+export default Update;
+// export default ApplyLayout({ Content: Update });

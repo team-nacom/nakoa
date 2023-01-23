@@ -81,4 +81,5 @@ function Hidden() {
     )
 }
 
-export default ApplyLayout({Content: Hidden});
+export default Hidden;
+// export default ApplyLayout({Content: Hidden});

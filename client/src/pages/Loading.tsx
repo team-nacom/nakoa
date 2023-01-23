@@ -5,4 +5,5 @@ function Loading() {
     return <></>;
 }
 
-export default ApplyLayout({ Content: Loading });
+export default Loading;
+// export default ApplyLayout({ Content: Loading });

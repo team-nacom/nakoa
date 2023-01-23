@@ -49,4 +49,5 @@ function WriteClassic() {
     );
 }
 
-export default ApplyLayout({ Content: WriteClassic });
+export default WriteClassic;
+// export default ApplyLayout({ Content: WriteClassic });

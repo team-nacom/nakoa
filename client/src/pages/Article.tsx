@@ -46,6 +46,7 @@ function Article() {
     );
 }
 
-export default ApplyLayout({
-    Content: Article
-});
+export default Article;
+// export default ApplyLayout({
+//     Content: Article
+// });

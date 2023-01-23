@@ -19,4 +19,5 @@ function About() {
     );
 }
 
-export default ApplyLayout({Content: About});
+export default About;
+// export default ApplyLayout({Content: About});

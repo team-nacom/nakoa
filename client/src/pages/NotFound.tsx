@@ -18,4 +18,5 @@ function NotFound() {
     );
 }
 
-export default ApplyLayout({ Content: NotFound });
+export default NotFound;
+// export default ApplyLayout({ Content: NotFound });

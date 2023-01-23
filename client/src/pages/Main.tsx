@@ -23,7 +23,8 @@ function Main() {
     );
 }
 
-export default ApplyLayout({ Content: Main });
+export default Main;
+// export default ApplyLayout({ Content: Main });
 
 /*
 

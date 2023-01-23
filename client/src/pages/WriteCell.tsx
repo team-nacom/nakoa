@@ -103,4 +103,5 @@ function WriteCell() {
     );
 }
 
-export default ApplyLayout({ Content: WriteCell });
+export default WriteCell;
+// export default ApplyLayout({ Content: WriteCell });
