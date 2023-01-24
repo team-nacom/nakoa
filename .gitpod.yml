@@ -3,7 +3,9 @@ tasks:
   - name: install nodemon and packages
     before: |
       yarn global add nodemon
-    init: yarn
+      mkdir -p /workspace/data && mongod --dbpath /workspace/data
+    init: |
+      yarn
     # command: |
 # Ports to expose on workspace startup
 ports:
