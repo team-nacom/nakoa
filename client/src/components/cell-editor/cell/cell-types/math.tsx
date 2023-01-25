@@ -10,8 +10,10 @@ import {
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
+import Markdown from '#/components/markdown-lab/Markdown';
+
 import 'katex/dist/katex.min.css';
-import TeX from '@matejmazur/react-katex'; // todo(?): remove dependency of react-katex. just render with katex.
+import katex from 'katex';
 
 // export const mathCellName = 'math'
 export interface MathCellField{
@@ -28,14 +30,20 @@ type MathCell = CellFrom<MathCellField,'math'> // only used in this file
 function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
     const { mathMacroObj } = useRenderData()
 
+    const innerHtml = katex.renderToString(cell.value, {
+        displayMode: true,
+        throwOnError: false,
+        macros: mathMacroObj,
+        globalGroup: true
+    })
+    
     return (
         <div className='mathCell'>
             <div className='mathCellPreview'>
-                <TeX block
-                    settings={ { macros: mathMacroObj } }
-                >
-                    { cell.value }
-                </TeX>
+                {/* TODO: prevent repeat with markdown (perhaps maintain our own version of react-katex) */}
+                <div className='math-display'
+                    dangerouslySetInnerHTML={ { __html: innerHtml } }
+                />
             </div>
         </div>
     )

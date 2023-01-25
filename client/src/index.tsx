@@ -9,15 +9,12 @@ import config from '#/misc/config';
 
 ReactGA.initialize(config.googleAnalyticsTrackingId);
 
-const rootElement = document.getElementById('root')
-if (!rootElement) throw new Error('Failed to find the root element')
-const root = ReactDOM.createRoot(rootElement)
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
 
+const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
         <App />
     </React.StrictMode>
-)
-
-// TODO : migrate BOTH redux AND react context providers into zustand
-// https://github.com/pmndrs/zustand
+);

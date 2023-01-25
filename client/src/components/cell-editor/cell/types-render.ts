@@ -23,6 +23,5 @@ export interface CellRendererProps{
 export interface CellTypeRendererProps<T>{
     mode: RenderMode,
     cell: T
-    // @todo for optimization, pass id and render timestamp (+ context change timestamp?) instead of the whole cell.
 }
 export type Renderer<T> = (props: CellTypeRendererProps<T>) => JSX.Element
