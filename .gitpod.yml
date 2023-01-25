@@ -1,4 +1,7 @@
 # Commands to start on workspace startup
+image:
+  file: .devcontainer/Dockerfile
+
 tasks:
   - name: install nodemon and packages
     before: |
