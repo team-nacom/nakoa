@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { CellFrom } from '../types-common';
+import { BasicCell } from '#/../../common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
@@ -20,7 +20,7 @@ export const rootCellDefault: RootCellField = {
     // author: '',
     mathMacroStr: ''
 }
-type RootCell = CellFrom<RootCellField,'root'> // only used in this file
+type RootCell = BasicCell<RootCellField,'root'> // only used in this file
 
 // renderers
 

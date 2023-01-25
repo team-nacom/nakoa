@@ -1,6 +1,6 @@
-import { StateCreator } from 'zustand'
+import { StateCreator } from 'zustand';
 
-import { Cell, CellType, cellTypeStr, CellData } from '#/components/cell-editor/cell/types'
+import { Cell, CellType, cellTypeStr, CellData } from '#/components/cell-editor/cell/types';
 
 export interface CellDataSlice{
     cellData: CellData,

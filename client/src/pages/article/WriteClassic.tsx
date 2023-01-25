@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import { useClassicEditorInit, useClassicText } from '#/components/classic-editor/EditorState';
 
@@ -8,8 +9,7 @@ import { MetadataInput } from '#/components/editor/MetadataInput';
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
 import { ApplyLayout } from '#/layout/Apply';
-import { Article, postArticle } from '#/api/article';
-import { Redirect } from 'react-router-dom';
+import { ClassicArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
 function WriteClassic() {
@@ -22,7 +22,7 @@ function WriteClassic() {
     const [message, setMessage] = useState<string>();
 
     const upload = useCallback(() => {
-        const article: Article = {
+        const article: ClassicArticle = {
             mode: 'classic',
             metadata,
             text

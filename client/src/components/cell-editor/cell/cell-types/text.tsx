@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { CellFrom } from '../types-common';
+import { BasicCell } from '#/../../common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
@@ -20,7 +20,7 @@ export interface TextCellField{
 export const textCellDefault: TextCellField = {
     value: ''
 }
-type TextCell = CellFrom<TextCellField,'text'> // only used in this file
+type TextCell = BasicCell<TextCellField,'text'> // only used in this file
 
 // renderers
 

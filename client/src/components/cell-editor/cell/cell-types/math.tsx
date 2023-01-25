@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { CellFrom } from '../types-common';
+import { BasicCell } from '#/../../common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
@@ -22,7 +22,7 @@ export interface MathCellField{
 export const mathCellDefault: MathCellField = {
     value: ''
 }
-type MathCell = CellFrom<MathCellField,'math'> // only used in this file
+type MathCell = BasicCell<MathCellField,'math'> // only used in this file
 
 
 //renderers
@@ -36,7 +36,7 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
         macros: mathMacroObj,
         globalGroup: true
     })
-    
+
     return (
         <div className='mathCell'>
             <div className='mathCellPreview'>

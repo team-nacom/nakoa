@@ -4,48 +4,18 @@
 import axios from "axios";
 import config from "#/misc/config";
 
+import {
+    ClassicArticle, BasicCellArticle
+} from '#/../../common/Article'
+
+
 import { StructData } from "#/components/cell-editor/types";
-import { CellData } from "#/components/cell-editor/cell";
+import { Cell, CellData } from "#/components/cell-editor/cell";
 
 const apiAddress = config.apiAddress;
 
-// NOTE : 복원 전에는 isProfile 필드가 있었는데
-// 그러지 말고 그냥 사용자 레코드에 article id를 추가하는 게 좋을거같습니다
-// 글 검색 같은 것도 있으니까 isPublic이 아니라 publicLv 같은 걸로 변경하는 게 어떨지
-// (e.g. publicLv == 2 : 공개, 검색가능. publicLv == 1 : 공개, 검색불가능. 글 번호로만 있어야만 접근 가능, 프로필은 여기 해당 / publicLv == 0 : 비공개)
-
-// TODO: 타입 정의 어딘가로 빼내기.
-
-export interface Metadata {
-    title: string;
-    author: string | string[];
-    tags?: string[];
-    isPublic?: boolean;
-}
-
-export interface AutogenMetadata {
-    index?: number;
-    createDate?: number;
-}
-
-export interface ClassicArticle extends AutogenMetadata {
-    metadata: Metadata;
-
-    mode: 'classic';
-    text: string;
-}
-
-export interface CellArticle extends AutogenMetadata {
-    metadata: Metadata;
-
-    mode: 'cell';
-    content: {
-        rootId: string,
-        cellData: CellData,
-        structData: StructData
-    };
-}
-
+export type { ClassicArticle };
+export type CellArticle = BasicCellArticle<Cell>;
 export type Article = ClassicArticle | CellArticle;
 
 export const validateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);

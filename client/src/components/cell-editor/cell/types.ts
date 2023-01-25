@@ -5,11 +5,7 @@ import {
     variantFactory, variantList, VariantOf, fields, TypeNames
 } from 'variant'
 
-import {
-    CellBase,
-    CellFrom, //just for test
-    cellTypeStr
-} from './types-common'
+import { CellCommonPart, BasicCell, cellTypeStr } from '#/../../common/BasicCell'
 
 import { RootCellField, rootCellDefault } from './cell-types/root'
 import { SectionCellField, sectionCellDefault } from './cell-types/section'
@@ -20,14 +16,14 @@ import { MathCellField, mathCellDefault } from './cell-types/math'
 
 // some currying, bit dirty...
 const cvf = variantFactory(cellTypeStr)
-const cv = <F>() => <K extends string>(name: K) => cvf(name, fields<F & CellBase>())
+const cv = <F extends Record<string, any> = Record<string,any> >() => <K extends string>(name: K) => cvf(name, fields<CellCommonPart & F>())
 const cellFields = variantList([
     cv<RootCellField>()('root'),
     cv<SectionCellField>()('section'),
     cv<TextCellField>()('text'),
     cv<CodeCellField>()('code'),
     cv<MathCellField>()('math'),
-])
+]);
 
 /**
  * sum type of 'cellType' field.
@@ -61,7 +57,7 @@ export type Cell<T extends CellType | undefined = undefined> = VariantOf<typeof 
 /**
  * default value for each type of cells.
  */
-export const defaultFields : Record<CellType, Omit<Cell, keyof CellBase | typeof cellTypeStr > > = {
+export const defaultFields : Record<CellType, Omit<Cell, keyof CellCommonPart | typeof cellTypeStr > > = {
     'root': rootCellDefault,
     'section': sectionCellDefault,
     'text': textCellDefault,
@@ -84,9 +80,6 @@ export function labelType(cell?: Cell) : string{
     // }
 }
 
-export type CellData = {
-    [id: string]: Cell
-}
+export type CellData = Record<string, Cell>;
 
-export type { CellBase }
 export { cellTypeStr };

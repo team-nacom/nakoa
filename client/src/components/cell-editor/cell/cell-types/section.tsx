@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { CellFrom } from '../types-common';
+import { BasicCell } from '#/../../common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
@@ -20,7 +20,7 @@ export const sectionCellDefault: SectionCellField = {
     value: '',
     hideChildren: false
 }
-type SectionCell = CellFrom<SectionCellField,'section'> // only used in this file
+type SectionCell = BasicCell<SectionCellField,'section'> // only used in this file
 
 // renderers
 

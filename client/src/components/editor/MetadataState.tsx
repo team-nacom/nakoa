@@ -1,15 +1,14 @@
 import create, { StateCreator } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
-export interface Metadata{
-    title: string,
-    author: string | string[]
-    tags?: string[]
-}
+import { Metadata } from '#/../../common/Article';
+
+export type { Metadata };
 
 export interface MetadataState extends Metadata{
     setTitle: (title: string) => any,
-    setAuthor: (author: string) => any
+    setAuthor: (author: string) => any,
+    setVisibility: (visibility: number) => any
 }
 
 export const createMetadataState: StateCreator<
@@ -18,12 +17,16 @@ export const createMetadataState: StateCreator<
     title: '',
     author: '',
     tags: [],
+    visibility: 2, // default to 2(public).
 
     setTitle(title){
-        set((state: MetadataState)=>{ state.title = title })
+        set((state: MetadataState)=>{ state.title = title; });
     },
     setAuthor(author){
-        set((state: MetadataState)=>{ state.author = author })
+        set((state: MetadataState)=>{ state.author = author; });
+    },
+    setVisibility(visibility) {
+        set((state: MetadataState)=>{ state.visibility = visibility; });
     },
 })
 

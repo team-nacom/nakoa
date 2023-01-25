@@ -8,7 +8,7 @@ import isEqual from 'react-fast-compare'
 import {
     CellData, StructData, RenderData,
     WoodSlice as WoodActionSlice, WoodDataSlice, createWoodSlice
-} from './slice/WoodSlice'
+} from './slice/CellArticleContnetSlice'
 
 export interface EditorSlice{
     focusId?: string
