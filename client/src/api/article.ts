@@ -5,14 +5,18 @@ import axios from "axios";
 import config from "#/misc/config";
 
 import {
+    IdxType, toIdx,
     ClassicArticle, BasicCellArticle
 } from '#/../../common/Article'
 
 
-import { StructData } from "#/components/cell-editor/types";
-import { Cell, CellData } from "#/components/cell-editor/cell";
+import { Cell } from "#/components/cell-editor/cell";
+
 
 const apiAddress = config.apiAddress;
+
+export type { IdxType };
+export { toIdx };
 
 export type { ClassicArticle };
 export type CellArticle = BasicCellArticle<Cell>;
@@ -22,7 +26,7 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 // export const validateSetStatus = (status: number) => (status < 300);
 
-export async function getArticle(index: number){
+export async function getArticle(index: IdxType){
     // tmp: serverless
     var item = localStorage.getItem(`article/${index}`)
     if(item === null) return undefined;
@@ -38,8 +42,8 @@ export async function getArticle(index: number){
 
 export async function postArticle(article: Article){
     // tmp: serverless
-    var index: number = Number(localStorage.getItem('articleNextIndex') ?? 1);
-    localStorage.setItem('articleNextIndex', `${ index + 1 }`);
+    var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
+    localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
 
     localStorage.setItem(`article/${index}`, JSON.stringify(article));
     return {
@@ -58,7 +62,7 @@ export async function postArticle(article: Article){
     // };
 }
 
-export async function updateArticle(index: number, article: Article){
+export async function updateArticle(index: IdxType, article: Article){
     // tmp: serverless
     localStorage.setItem(`article/${index}`, JSON.stringify(article));
     return true;
@@ -73,7 +77,7 @@ export async function updateArticle(index: number, article: Article){
     // return response.status < 300;
 }
 
-export async function removeArticle(index: number){
+export async function removeArticle(index: IdxType){
     localStorage.removeItem(`article/${index}`);
     return true;
 

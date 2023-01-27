@@ -9,13 +9,13 @@ import Loading from '../Loading';
 import Button from '#/components/Button';
 import { ApplyLayout } from '#/layout/Apply';
 import usePromise from '#/misc/usePromise';
-import { getArticle } from '#/api/article';
+import { IdxType, toIdx, getArticle } from '#/api/article';
 import Markdown from '#/components/markdown-lab/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 
 function Article() {
     let params = useParams<{ index: string }>();
-    let index = useMemo(() => +params.index, [params]);
+    let index: IdxType = useMemo(() => toIdx(params.index), [params]);
 
     let [loading, article] = usePromise(() => getArticle(index), [index]);
     let [redir, setRedir] = useState(false);

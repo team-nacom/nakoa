@@ -12,14 +12,14 @@ import { useMetadataState } from '#/components/editor/MetadataState';
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
 import { ApplyLayout } from '#/layout/Apply';
-import { Article, getArticle, updateArticle } from '#/api/article';
+import { IdxType, toIdx, Article, getArticle, updateArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 
 function Update() {
     let params = useParams<{ index: string }>();
-    let index = useMemo(() => +params.index, [params]);
+    let index: IdxType = useMemo(() => toIdx(params.index), [params]);
 
     // subscribe values
     const metadata = useMetadataState();

@@ -16,12 +16,15 @@ export interface Metadata {
     // visibility가 전순서가 아니게 되면(e.g. 'internal') 그 때 string으로 바꾸면 될듯
 };
 
+export type IdxType = string;
+export function toIdx(idxString: string): IdxType{ return idxString; }
+
 /**
  * contains metadata and auto-generated attributes
  */
 export interface ArticleAttribute {
-    index?: number;
-    createDate?: number;
+    index?: IdxType;
+    createDate?: Date;
     metadata: Metadata;
 };
 
