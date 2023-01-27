@@ -2,23 +2,18 @@ import {
     CellData, StructData
 } from '#/components/cell-editor/store/EditorState'
 
-import { Wood } from '#/components/cell-editor/types'
+export const rootId = 'c0';
 
-export const wood: Wood = {
-    rootId: 'c0',
-    title: 'Pfaffian',
-    author: '팀 나무컴퍼스',
-    structData: {
-        'c0': ['c6','c7','c14'],
-        'c6': [],
-        'c7': ['c8','c9','c10','c11','c12','c13'],
-        'c14': ['c21','c29','c32','c39'],
-        'c21': ['c22','c23','c24','c25','c26','c28'],
-        'c29': ['c30','c31','c45'],
-        'c32': ['c33','c35','c34','c37','c38'],
-        'c39': ['c40','c41','c42','c43']
-    }
-}
+export const structData: StructData = {
+    'c0': ['c6','c7','c14'],
+    'c6': [],
+    'c7': ['c8','c9','c10','c11','c12','c13'],
+    'c14': ['c21','c29','c32','c39'],
+    'c21': ['c22','c23','c24','c25','c26','c28'],
+    'c29': ['c30','c31','c45'],
+    'c32': ['c33','c35','c34','c37','c38'],
+    'c39': ['c40','c41','c42','c43']
+};
 
 export const cellData: CellData = {
     'c0': {

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 
-import { cellData as PfCellData, wood as PfWood } from '#/components/cell-editor/util/pfaffian'
+import { cellData as PfCellData, rootId as PfRootId, structData as PfStructData } from '#/components/cell-editor/util/pfaffian'
 import { pfaffian as PfText } from '#/components/classic-editor/pfaffian'
 
 import Button from '#/components/Button'
@@ -22,7 +22,7 @@ function Hidden() {
     const cellInit = useCellEditorInit()
     const classicInit = useClassicEditorInit()
     useEffect(() => {
-        cellInit(PfCellData, PfWood.rootId, PfWood.structData)
+        cellInit(PfCellData, PfRootId, PfStructData)
         classicInit(PfText)
     }, [])
 
