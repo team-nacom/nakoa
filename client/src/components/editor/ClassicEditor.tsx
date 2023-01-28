@@ -8,7 +8,7 @@ import { useClassicEditorInit } from '#/components/classic-editor/EditorState';
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import { ClassicArticle } from '#/../../common/Article';
+import { ClassicArticle } from '#common/Article';
 import { useMetadataInit } from './MetadataState';
 
 interface ClassicEditorProps{

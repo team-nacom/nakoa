@@ -10,7 +10,8 @@
     "strict": true,
     "baseUrl": "./src",
     "paths": {
-      "#/*": ["*"]
+      "#/*": ["./*"],
+      "#common/*": ["./common/*"] // symlink
     },
     "allowJs": true,
     "jsx": "react-jsx",

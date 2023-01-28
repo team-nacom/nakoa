@@ -1,4 +1,4 @@
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
+import MarkdownRenderer from '#/components/markdown/MarkdownRenderer';
 import React, { useState, useEffect } from 'react';
 
 import { FormattedMessage } from 'react-intl';

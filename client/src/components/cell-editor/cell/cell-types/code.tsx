@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { BasicCell } from '#/../../common/BasicCell';
+import { BasicCell } from '#common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {

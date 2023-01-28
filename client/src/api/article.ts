@@ -7,7 +7,7 @@ import config from "#/misc/config";
 import {
     IdxType, toIdx,
     ClassicArticle, BasicCellArticle
-} from '#/../../common/Article'
+} from '#common/Article'
 
 
 import { Cell } from "#/components/cell-editor/cell";

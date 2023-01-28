@@ -1,7 +1,7 @@
 import create, { StateCreator } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
-import { Metadata } from '#/../../common/Article';
+import { Metadata } from '#common/Article';
 
 export type { Metadata };
 

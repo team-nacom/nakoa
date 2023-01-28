@@ -5,7 +5,7 @@ import {
     variantFactory, variantList, VariantOf, fields, TypeNames
 } from 'variant'
 
-import { CellCommonPart, BasicCell, cellTypeStr } from '#/../../common/BasicCell'
+import { CellCommonPart, BasicCell, cellTypeStr } from '#common/BasicCell'
 
 import { RootCellField, rootCellDefault } from './cell-types/root'
 import { SectionCellField, sectionCellDefault } from './cell-types/section'

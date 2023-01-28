@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { BasicCell } from '#/../../common/BasicCell';
+import { BasicCell } from '#common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
