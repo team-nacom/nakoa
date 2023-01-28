@@ -4,13 +4,10 @@
 import axios from "axios";
 import config from "#/misc/config";
 
-import {
-    IdxType, toIdx,
-    ClassicArticle, BasicCellArticle
-} from '#common/Article'
+import type { IdxType, ClassicArticle, BasicCellArticle } from '#common/Article';
+import { toIdx } from '#common/Article';
 
-
-import { Cell } from "#/components/cell-editor/cell";
+import type { Cell } from "#/components/cell-editor/cell";
 
 
 const apiAddress = config.apiAddress;
@@ -28,62 +25,67 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 export async function getArticle(index: IdxType){
     // tmp: serverless
-    var item = localStorage.getItem(`article/${index}`)
-    if(item === null) return undefined;
-    return JSON.parse(item) as Article;
+    // var item = localStorage.getItem(`article/${index}`)
+    // if(item === null) return undefined;
+    // return JSON.parse(item) as Article;
 
-    // let response = await axios.get(`${apiAddress}/article/${index}`, {
-    //     validateStatus,
-    //     // withCredentials: true
-    // });
+    let response = await axios.get(`${apiAddress}/article/get/${index}`, {
+        validateStatus,
+        // withCredentials: true
+    });
 
-    // return response.data as Article;
+    if(response.status === 404){
+        throw new Error('article not found');
+    }
+
+    return response.data as Article;
 }
 
 export async function postArticle(article: Article){
     // tmp: serverless
-    var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
-    localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
+    // var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
+    // localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
 
-    localStorage.setItem(`article/${index}`, JSON.stringify(article));
-    return {
-        success: true,
-        index
-    };
-
-    // let response = await axios.post(`${apiAddress}/article`, article, {
-    //     validateStatus,
-    //     // withCredentials: true
-    // });
-
+    // localStorage.setItem(`article/${index}`, JSON.stringify(article));
     // return {
-    //     success: response.status < 300,
-    //     index: response.data.index as number,
+    //     success: true,
+    //     index
     // };
+
+    let response = await axios.post(`${apiAddress}/article/post`, article, {
+        validateStatus,
+        // withCredentials: true
+    });
+
+    return {
+        success: response.status < 300,
+        index: response.data.index as number,
+    };
 }
 
 export async function updateArticle(index: IdxType, article: Article){
     // tmp: serverless
-    localStorage.setItem(`article/${index}`, JSON.stringify(article));
-    return true;
+    // localStorage.setItem(`article/${index}`, JSON.stringify(article));
+    // return true;
 
     // NOTE: index가 article의 optional field니까, 그냥 article만 넣고 싶긴 함
     // 아니면 article에서 그냥 빼버릴까?
-    // let response = await axios.put(`${apiAddress}/article/${index}`, article, {
-    //     validateStatus,
-    //     // withCredentials: true
-    // });
+    let response = await axios.put(`${apiAddress}/article/update/${index}`, article, {
+        validateStatus,
+        // withCredentials: true
+    });
 
-    // return response.status < 300;
+    return response.status < 300;
 }
 
 export async function removeArticle(index: IdxType){
-    localStorage.removeItem(`article/${index}`);
-    return true;
+    // tmp: serverless
+    // localStorage.removeItem(`article/${index}`);
+    // return true;
 
-    // let response = await axios.delete(`${apiAddress}/article/${index}`, {
-    //     //withCredentials: true
-    // });
+    let response = await axios.delete(`${apiAddress}/article/remove/${index}`, {
+        //withCredentials: true
+    });
 
-    // return response.status < 300;
+    return response.status < 300;
 }

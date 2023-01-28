@@ -4,9 +4,9 @@ import fs from 'fs';
 import pathlib from 'path';
 import { customAlphabet } from 'nanoid';
 import createHttpError from 'http-errors';
-import File, { uploadFileToS3 } from '../models/file';
-import { rootUrlPromise } from '../setup/aws';
-import { logger } from '../utils';
+import File, { uploadFileToS3 } from '#/models/file';
+import { rootUrlPromise } from '#/setup/aws';
+import { logger } from '#/utils';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
 

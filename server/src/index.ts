@@ -9,9 +9,8 @@ import session from 'koa-session';
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
 
-import fileRouter from './file';
-import bubbleRouter from './bubble';
-import flatRouter from './flat';
+import fileRouter from './controllers/file';
+import articleRouter from './controllers/article';
 
 import {
   handleErrorMiddleware, isProduction, isStaging, logger, logStreams,
@@ -28,10 +27,8 @@ router.get('/', async (ctx, next) => {
 
 // Files
 router.use('/file', fileRouter.routes());
-// Bubble (for demo)
-router.use('/bubble', bubbleRouter.routes());
-// flat (main product)
-router.use('/flat', flatRouter.routes());
+
+router.use('/article', articleRouter.routes());
 
 // local / production config
 const origin = (isProduction ? 'https://team-na.com' : (isStaging ? '*': 'http://localhost:3000'));

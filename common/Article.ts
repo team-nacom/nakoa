@@ -5,7 +5,7 @@ import { BasicCell } from './BasicCell';
  */
 export interface Metadata {
     title: string;
-    author: string | string[];
+    author: string; // author: string | string[]; // TODO
     tags?: string[];
     visibility?: number;
     // visibility 2 : public
@@ -25,6 +25,7 @@ export function toIdx(idxString: string): IdxType{ return idxString; }
 export interface ArticleAttribute {
     index?: IdxType;
     createDate?: Date;
+    updateDate?: Date;
     metadata: Metadata;
 };
 
