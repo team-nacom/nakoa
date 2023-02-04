@@ -32,8 +32,9 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
   }
 }
 
-export const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === 'production');
-export const isStaging = (process.env) && (process.env.MODE) && (process.env.MODE === 'staging');
+export const isProduction = (process.env?.MODE === 'production');
+export const isStaging = (process.env?.MODE === 'staging');
+export const clientOrigin = (process.env?.CLIENT_ORIGIN ?? 'http://localhost:3000');
 const logOptions = {};
 
 function formatMessage(log: any, messageKey: string, levelLabel: string): string {

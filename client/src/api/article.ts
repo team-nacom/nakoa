@@ -31,7 +31,7 @@ export async function getArticle(index: IdxType){
 
     let response = await axios.get(`${apiAddress}/article/get/${index}`, {
         validateStatus,
-        // withCredentials: true
+        withCredentials: true,
     });
 
     if(response.status === 404){
@@ -54,7 +54,7 @@ export async function postArticle(article: Article){
 
     let response = await axios.post(`${apiAddress}/article/post`, article, {
         validateStatus,
-        // withCredentials: true
+        withCredentials: true,
     });
 
     return {
@@ -72,7 +72,7 @@ export async function updateArticle(index: IdxType, article: Article){
     // 아니면 article에서 그냥 빼버릴까?
     let response = await axios.put(`${apiAddress}/article/update/${index}`, article, {
         validateStatus,
-        // withCredentials: true
+        withCredentials: true,
     });
 
     return response.status < 300;
@@ -84,7 +84,7 @@ export async function removeArticle(index: IdxType){
     // return true;
 
     let response = await axios.delete(`${apiAddress}/article/remove/${index}`, {
-        //withCredentials: true
+        withCredentials: true,
     });
 
     return response.status < 300;
