@@ -1,12 +1,13 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useCallback } from 'react';
+import isEqual from 'react-fast-compare';
 import { Metadata, useMetadataState, useMetadataInit } from './MetadataState'
 
 export function MetadataInput(metadata: Partial<Metadata>){
-    const init = useMetadataInit();
+    const init = useCallback(useMetadataInit(),[]);
 
     useEffect(()=>{
         init( metadata );
-    }, [metadata]);
+    }, [init, metadata]);
 
     const { title, author, setTitle, setAuthor } = useMetadataState();
 
@@ -33,3 +34,5 @@ export function MetadataInput(metadata: Partial<Metadata>){
         </div>
     )
 }
+
+// export const MetadataInput = memo(_MetadataInput, isEqual);

@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { useClassicEditorInit, useClassicText } from '#/components/classic-editor/EditorState';
 
 import { useMetadataState } from '#/components/editor/MetadataState';
-import { MetadataInput } from '#/components/editor/MetadataInput';
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
