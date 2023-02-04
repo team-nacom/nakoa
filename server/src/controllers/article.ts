@@ -9,9 +9,9 @@ const router = new Router();
 router.get('/get/:index', async function getArticle(ctx){
     const index = ctx.params.index; // TODO: idxtype
     const query = ArticleModel.findOne({ index, 'metadata.visibility': {$gte: 1} });
-    const doc = await query.exec();
+    const article = await query.exec();
 
-    if(doc === null){
+    if(article === null){
         ctx.status = 404;
         ctx.body = {
             result: 'not found'
@@ -19,15 +19,15 @@ router.get('/get/:index', async function getArticle(ctx){
         return;
     }
 
-    ctx.body = doc;
+    ctx.body = article;
 });
 
 router.post('/post', async function postArticle(ctx){
-    const article = ctx.request.body;
-    const articleInstance = new ArticleModel(article);
-    await articleInstance.save();
+    const body = ctx.request.body;
+    const article = new ArticleModel(body);
+    await article.save();
 
-    if(articleInstance.index === undefined){
+    if(article.index === undefined){
         ctx.status = 500;
         ctx.body = {
             result: 'failure'
@@ -37,26 +37,51 @@ router.post('/post', async function postArticle(ctx){
 
     ctx.body = {
         result: 'success',
-        index: articleInstance.index,
-        createDate: articleInstance.createDate
+        index: article.index,
+        createDate: article.createDate
     };
 });
 
-router.put('/update/:index', async (ctx) => {
+router.put('/update/:index', async function putArticle(ctx){
     const index: string = ctx.params.index;
-    const article = ctx.request.body;
-    const query = ArticleModel.updateOne({index}, article);
-    await query.exec();
+    const body = ctx.request.body;
+
+    let res;
+    if(body['mode'] === 'classic'){
+        res = await ClassicArticleModel.updateOne({index}, { $set: body });
+    } else{
+        res = await BasicCellArticleModel.updateOne({index}, {$set: body});
+    }
+    // const query = ArticleModel.updateOne({index}, { $set: body });  // TODO : authentication
+    // let res = await query.exec();
+
+    if(!res.ok){
+    // if(a === undefined) {
+        ctx.status = 500;
+        ctx.body = {
+            result: 'failure'
+        };
+        return;
+    }
 
     ctx.body = {
-        result: 'success'
+        result: 'success',
     };
 });
 
 router.delete('/remove/:index', async (ctx) => {
     const index = ctx.params.index;
     const query = ArticleModel.deleteOne({index}); // TODO : authentication
-    await query.exec();
+    let res = await query.exec();
+
+    if(!res.ok){
+        ctx.status = 500;
+        ctx.body = {
+            result: 'failure'
+        };
+        return;
+    }
+
     ctx.body = {
         result: 'success'
     };

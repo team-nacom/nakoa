@@ -19,6 +19,7 @@ import About from '#/pages/About';
 
 import ArticleView from '#/pages/article/View';
 import ArticleUpdate from '#/pages/article/Update';
+import ArticleDelete from '#/pages/article/Delete';
 import WriteClassic from './pages/article/WriteClassic';
 import WriteCell from '#/pages/article/WriteCell';
 import Hidden from '#/pages/article/Hidden';
@@ -43,6 +44,7 @@ function App() {
 
                     <Route exact path='/article/view/:index' component={ArticleView} />
                     <Route exact path='/article/update/:index' component={ArticleUpdate} />
+                    <Route exact path='/article/delete/:index' component={ArticleDelete} />
                     <Route exact path='/article/write-classic' component={WriteClassic} />
                     <Route exact path='/article/write-cell' component={WriteCell} />
 

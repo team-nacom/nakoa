@@ -42,6 +42,9 @@ function Article() {
             <Link to={ `/article/update/${ index }` }>
                 <Button>편집</Button>
             </Link>
+            <Link to={ `/article/delete/${ index }` }>
+                <Button>삭제</Button>
+            </Link>
         </>
     });
 }
