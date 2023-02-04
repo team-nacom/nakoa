@@ -12,7 +12,7 @@ export const structData: StructData = {
     'c21': ['c22','c23','c24','c25','c26','c28'],
     'c29': ['c30','c31','c45'],
     'c32': ['c33','c35','c34','c37','c38'],
-    'c39': ['c40','c41','c42','c43']
+    'c39': ['c40','c41','c42','c43','c45']
 };
 
 export const cellData: CellData = {

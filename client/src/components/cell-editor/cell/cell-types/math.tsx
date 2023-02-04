@@ -29,13 +29,17 @@ type MathCell = BasicCell<MathCellField,'math'> // only used in this file
 
 function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
     const { mathMacroObj } = useRenderData()
+    const macros = { ...mathMacroObj };
 
-    const innerHtml = katex.renderToString(cell.value, {
-        displayMode: true,
-        throwOnError: false,
-        macros: mathMacroObj,
-        globalGroup: true
-    })
+    let innerHtml = '';
+    try{
+        innerHtml = katex.renderToString(cell.value, {
+            displayMode: true,
+            throwOnError: false,
+            macros: macros,
+            // globalGroup: true
+        });
+    } catch(e){}
 
     return (
         <div className='mathCell'>

@@ -74,7 +74,7 @@ function Hidden() {
                 <Button className='uploadButton'
                     onClick = { upload }
                 >
-                    업로드(console.log)
+                    console.log
                 </Button>
             </div>
         </div>
