@@ -2,7 +2,7 @@ import React from 'react';
 import { ApplyLayout } from '#/layout/Apply';
 
 function Loading() {
-    return ApplyLayout({ content: <></> });
+    return <ApplyLayout />;
 }
 
 export default Loading;

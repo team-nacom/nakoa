@@ -1,26 +1,24 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import Header from './Header';
 import Footer from './Footer';
 
-interface ApplyParams{
+interface LayoutProps{
     title?: string;
     // message
-    content: JSX.Element;
     sidebar?: JSX.Element;
 };
 
-export function ApplyLayout(params: ApplyParams): JSX.Element{
-    const title = params.title ?? '';
-    const content = params.content;
-    const sidebar = params.sidebar ?? React.Fragment;
+export function ApplyLayout(props: PropsWithChildren<LayoutProps>): JSX.Element{
+    const title = props.title ?? '';
+    const sidebar = props.sidebar ?? React.Fragment;
 
     return (<>
         <Header />
         { sidebar }
         <h1>{ title }</h1>
         <div id='content'>
-            { content }
+            { props.children }
         </div>
         <Footer />
     </>);

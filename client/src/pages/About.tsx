@@ -10,15 +10,13 @@ function About() {
         .then(response => response.text())
         .then(text => setMessage(text));
 
-    return ApplyLayout({
-        content: (
-            <div className='aboutDisplayWrapper'>
-                <Markdown>
-                    { message }
-                </Markdown>
-            </div>
-        )
-    });
+    return <ApplyLayout>
+        <div className='aboutDisplayWrapper'>
+            <Markdown>
+                { message }
+            </Markdown>
+        </div>
+    </ApplyLayout>;
 }
 
 export default About;

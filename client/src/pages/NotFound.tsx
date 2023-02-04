@@ -12,12 +12,11 @@ function NotFound() {
     }, [])
 
     // TODO : merge 404.md here
-    return ApplyLayout({
-        title: '존재하지 않는 페이지입니다.',
-        content: (<Markdown>
+    return <ApplyLayout title='존재하지 않는 페이지입니다.'>
+        <Markdown>
             { message }
-        </Markdown>)
-    });
+        </Markdown>
+    </ApplyLayout>;
 }
 
 export default NotFound;

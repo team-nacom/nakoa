@@ -56,22 +56,21 @@ function Update() {
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
-    if(initArticle === undefined) return ApplyLayout({
-        content: <p> 존재하지 않는 글입니다. </p>
-    });
+    if(initArticle === undefined){
+        return <ApplyLayout>
+            <p>존재하지 않는 글입니다.</p>
+        </ApplyLayout>;
+    }
 
-    return ApplyLayout({
-        title: '글 수정하기',
-        content: <>
-            <p>{message}</p>
-            {initArticle.mode === 'classic' &&
-                <ClassicEditor initArticle={initArticle} upload={ upload } />
-            }
-            {initArticle.mode === 'cell' &&
-                <CellEditor initArticle={initArticle} upload={ upload } />
-            }
-        </>
-    });
+    return <ApplyLayout title='글 수정하기'>
+        <p>{message}</p>
+        {initArticle.mode === 'classic' &&
+            <ClassicEditor initArticle={initArticle} upload={ upload } />
+        }
+        {initArticle.mode === 'cell' &&
+            <CellEditor initArticle={initArticle} upload={ upload } />
+        }
+    </ApplyLayout>;
 }
 
 export default Update;

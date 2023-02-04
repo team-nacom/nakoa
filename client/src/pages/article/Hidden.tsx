@@ -49,9 +49,9 @@ function Hidden() {
         console.log(metadata);
         console.log(obj);
     }, [metadata, mode, text, cellData, structData])
-
-    return ApplyLayout({
-        content: <div className='cellEditorWrapper'>
+    
+    return <ApplyLayout>
+        <div className='cellEditorWrapper'>
             <MetadataInput />
 
             <hr />
@@ -78,7 +78,7 @@ function Hidden() {
                 </Button>
             </div>
         </div>
-    });
+    </ApplyLayout>;
 }
 
 export default Hidden;
