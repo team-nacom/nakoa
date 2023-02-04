@@ -1,5 +1,12 @@
 # Nakoa - NamuCompass with Koa and React
 
+## 23/02/04 로컬 dev 빌드법
+
+1. Install yarn
+1. 탑 디렉토리(이 파일 위치)에서 `yarn install-all`
+1. `client/.env`에서 `REACT_APP_API_URL=(BE가 돌아갈 URL. 기본 로컬 http://localhost:3885)` 설정
+1. `server/.env`에서 `DB_CONN=(mongodb 접속 호스트. 기본 로컬 mongodb://localhost/nacom)` 및 `CLIENT_ORIGIN=(FE가 돌아갈 URL. 기본 로컬 http://localhost:3000)` 설정
+1. 탑 디렉토리에서 `yarn watch`
 
 ## How to run
 
