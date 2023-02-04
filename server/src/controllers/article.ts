@@ -24,6 +24,13 @@ router.get('/get/:index', async function getArticle(ctx){
 
 router.post('/post', async function postArticle(ctx){
     const body = ctx.request.body;
+
+    // let article;
+    // if(body['mode'] === 'classic'){
+    //     article = new ClassicArticleModel(body);
+    // } else{
+    //     article = new BasicCellArticleModel(body);
+    // }
     const article = new ArticleModel(body);
     await article.save();
 
