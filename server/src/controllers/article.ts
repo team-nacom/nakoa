@@ -6,6 +6,18 @@ import { logger } from '../utils';
 
 const router = new Router();
 
+router.get('/get-list', async function getArticleList(ctx){
+    const query = ArticleModel.find({ 'metadata.visibility': {$gte: 1} });
+    const articles = await query.exec();
+
+    console.log(articles);
+
+    ctx.body = {
+        result: 'found',
+        articles
+    };
+});
+
 router.get('/get/:index', async function getArticle(ctx){
     const index = ctx.params.index; // TODO: idxtype
     const query = ArticleModel.findOne({ index, 'metadata.visibility': {$gte: 1} });

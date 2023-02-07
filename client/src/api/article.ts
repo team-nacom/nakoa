@@ -23,6 +23,19 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 // export const validateSetStatus = (status: number) => (status < 300);
 
+export async function getArticleList(){
+    let response = await axios.get(`${apiAddress}/article/get-list`, {
+        // validateStatus,
+        withCredentials: true,
+    });
+
+    if(response.status >= 400){
+        throw new Error('articles not found');
+    }
+
+    return response.data.articles as Article[];
+}
+
 export async function getArticle(index: IdxType){
     // tmp: serverless
     // var item = localStorage.getItem(`article/${index}`)
@@ -30,7 +43,7 @@ export async function getArticle(index: IdxType){
     // return JSON.parse(item) as Article;
 
     let response = await axios.get(`${apiAddress}/article/get/${index}`, {
-        validateStatus,
+        // validateStatus,
         withCredentials: true,
     });
 

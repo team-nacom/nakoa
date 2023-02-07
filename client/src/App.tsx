@@ -16,7 +16,7 @@ import Main from '#/pages/Main';
 import NotFound from '#/pages/NotFound';
 import About from '#/pages/About';
 
-
+import ArticleList from '#/pages/article/List';
 import ArticleView from '#/pages/article/View';
 import ArticleUpdate from '#/pages/article/Update';
 import ArticleDelete from '#/pages/article/Delete';
@@ -42,6 +42,7 @@ function App() {
                     <Route exact path='/main' component={Main} />
                     <Route exact path='/about' component={About}/>
 
+                    <Route exact path='/article/list' component={ArticleList} />
                     <Route exact path='/article/view/:index' component={ArticleView} />
                     <Route exact path='/article/update/:index' component={ArticleUpdate} />
                     <Route exact path='/article/delete/:index' component={ArticleDelete} />
