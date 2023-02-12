@@ -12,7 +12,7 @@ import { useClassicText, ClassicEditorProvider } from '#/components/classic-edit
 
 import {  useCellData, useRootId, useStructData, CellEditorProvider } from '#/components/cell-editor/editor/EditorState'
 
-import { useMetadataState } from '#/components/editor/MetadataState';
+import { MetadataProvider, useMetadataState } from '#/components/editor/MetadataState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
 import { ApplyLayout } from '#/layout/Apply'
 
@@ -45,7 +45,9 @@ function Hidden() {
     
     return <ApplyLayout>
         <div className='cellEditorWrapper'>
-            <MetadataInput />
+            <MetadataProvider>
+                <MetadataInput />
+            </MetadataProvider>
 
             <hr />
 

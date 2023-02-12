@@ -9,7 +9,7 @@ import { ClassicEditorProvider, useClassicText } from '#/components/classic-edit
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { ClassicArticle, Metadata } from '#common/Article';
-import { useMetadataInit, useMetadataState } from './MetadataState';
+import { MetadataProvider, useMetadataState } from './MetadataState';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
@@ -19,17 +19,11 @@ interface ClassicEditorProps{
 export function ClassicEditor({ initArticle, upload }: ClassicEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
-    // init here.
-
-    const metadataInit = useMetadataInit();
-    useEffect(() => {
-        metadataInit(initArticle?.metadata ?? {});
-    }, [initArticle]);
-
     return (
         <ClassicEditorProvider initText={ initArticle?.text }>
-            {/* todo: metadata provider also */}
+        <MetadataProvider {...(initArticle?.metadata ?? {})}>
             <ClassicEditorInner upload={ upload } />
+        </MetadataProvider>
         </ClassicEditorProvider>
     );
 }

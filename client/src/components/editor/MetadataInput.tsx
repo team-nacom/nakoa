@@ -1,14 +1,8 @@
 import { memo, useEffect, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
-import { Metadata, useMetadataState, useMetadataInit } from './MetadataState'
+import { Metadata, useMetadataState} from './MetadataState'
 
 export function MetadataInput(){
-    // const init = useCallback(useMetadataInit(),[]);
-
-    // useEffect(()=>{
-    //     init( metadata );
-    // }, [init, metadata]);
-
     const { title, author, setTitle, setAuthor } = useMetadataState();
 
     return (

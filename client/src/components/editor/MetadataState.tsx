@@ -1,7 +1,8 @@
-import create, { StateCreator } from 'zustand'
+import create, { createStore, StateCreator } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 import { Metadata } from '#common/Article';
+import { CtxFactory } from '#/misc/CtxFactory';
 
 export type { Metadata };
 
@@ -11,31 +12,32 @@ export interface MetadataState extends Metadata{
     setVisibility: (visibility: number) => any
 }
 
-export const createMetadataState: StateCreator<
-    any, [], [], MetadataState
-> = (set, get, api) => ({
-    title: '',
-    author: '',
-    tags: [],
-    visibility: 2, // default to 2(public).
+function createMetadataStore(initProps: Partial<Metadata>){
+    const defaultProps : Metadata = {
+        title: '',
+        author: '',
+        tags: [],
+        visibility: 2
+    };
 
-    setTitle(title){
-        set((state: MetadataState)=>{ state.title = title; });
-    },
-    setAuthor(author){
-        set((state: MetadataState)=>{ state.author = author; });
-    },
-    setVisibility(visibility) {
-        set((state: MetadataState)=>{ state.visibility = visibility; });
-    },
-})
+    return createStore<MetadataState>()(immer((set, get, api) => ({
+        ...initProps,
+        ...defaultProps,
 
-export const useMetadataState = create<MetadataState>()(
-    immer(createMetadataState)
-)
+        setTitle(title){
+            set((state: MetadataState)=>{ state.title = title; });
+        },
+        setAuthor(author){
+            set((state: MetadataState)=>{ state.author = author; });
+        },
+        setVisibility(visibility) {
+            set((state: MetadataState)=>{ state.visibility = visibility; });
+        },
+    })))
+}
 
-export const useMetadataInit = () => useMetadataState(
-    state => (metadata: Partial<Metadata>) => {
-        Object.assign(state, metadata);
-    }
-)
+export const [ MetadataProvider, useMetadataContext ] = CtxFactory<MetadataState, Partial<Metadata>>(createMetadataStore);
+
+export const useMetadataState = () => useMetadataContext(
+    state => state
+);
