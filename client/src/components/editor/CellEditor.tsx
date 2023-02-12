@@ -1,48 +1,63 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, memo } from 'react';
 
 import Button from '#/components/Button'
 
 import { EditorCore as CellEditorCore } from '#/components/cell-editor/editor/EditorCore';
-
-import { useEditorInit as useCellEditorInit } from '#/components/cell-editor/store/EditorState'
+import { CellEditorProvider, useContent } from '#/components/cell-editor/editor/EditorState'
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { CellArticle } from '#/api/article';
-import { useMetadataInit } from './MetadataState';
+import { useMetadataInit, useMetadataState, Metadata } from './MetadataState';
 
 interface CellEditorProps{
     initArticle?: CellArticle;
-    upload: () => any;
+    upload: (metadata: Metadata, content: CellArticle['content']) => any;
+    // todo: autosave
 };
 export function CellEditor({ initArticle, upload }: CellEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
     // init here.
-    const cellInit = useCellEditorInit();
     const metadataInit = useMetadataInit();
     useEffect(() => {
         metadataInit(initArticle?.metadata ?? {});
-        cellInit(
-            initArticle?.content.cellData,
-            initArticle?.content.rootId,
-            initArticle?.content.structData
-        );
     }, [initArticle]);
 
     return (
+        <CellEditorProvider init={ initArticle?.content }>
+            <CellEditorInner upload={ upload } />
+        </CellEditorProvider>
+    );
+}
+
+// prevent rerender of this component when context has changed.
+const MemoizedMetadataInput = memo(MetadataInput);
+const MemoizedCore = memo(CellEditorCore);
+
+function CellEditorInner({ upload }: CellEditorProps){
+    const metadata = useMetadataState();
+    const content = useContent();
+
+    const uploadHandler = useCallback(() => {
+        upload(metadata, content);
+    }, [metadata, content]);
+
+    return (
         <div className='cellEditorWrapper'>
-            <MetadataInput {...initArticle?.metadata} />
+            <MemoizedMetadataInput />
+            {/* <MetadataInput /> */}
             <hr />
-            <CellEditorCore />
+            <MemoizedCore />
+            {/* <CellEditorCore /> */}
             <hr />
             <div className='buttonsWrapper'>
                 <Button className='uploadButton'
-                    onClick = { upload }
+                    onClick = { uploadHandler }
                 >
                     업로드
                 </Button>
             </div>
         </div>
-    );
+    )
 }

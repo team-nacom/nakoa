@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 
-import { cellData as PfCellData, rootId as PfRootId, structData as PfStructData } from '#/components/cell-editor/util/pfaffian'
+import { PfCell } from '#/components/cell-editor/util/pfaffian'
 import { pfaffian as PfText } from '#/components/classic-editor/pfaffian'
 
 import Button from '#/components/Button'
@@ -8,9 +8,9 @@ import Button from '#/components/Button'
 import { EditorCore as ClassicEditorCore } from '#/components/classic-editor/EditorCore'
 import { EditorCore as CellEditorCore } from '#/components/cell-editor/editor/EditorCore'
 
-import { useClassicEditorInit, useClassicText } from '#/components/classic-editor/EditorState'
+import { useClassicText, ClassicEditorProvider } from '#/components/classic-editor/EditorState'
 
-import { useEditorInit as useCellEditorInit, useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
+import {  useCellData, useRootId, useStructData, CellEditorProvider } from '#/components/cell-editor/editor/EditorState'
 
 import { useMetadataState } from '#/components/editor/MetadataState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
@@ -18,37 +18,30 @@ import { ApplyLayout } from '#/layout/Apply'
 
 function Hidden() {
     // initialize editor state.
-    // may need a single provider for this? see https://github.com/pmndrs/zustand#react-context
-    const cellInit = useCellEditorInit()
-    const classicInit = useClassicEditorInit()
-    useEffect(() => {
-        cellInit(PfCellData, PfRootId, PfStructData)
-        classicInit(PfText)
-    }, [])
 
     const metadata = useMetadataState();
 
     const [mode, setMode] = useState('classic'); // classic or cell.
 
     // initialize outside.
-    const text = useClassicText();
-    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
+    // const text = useClassicText();
+    // const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()]
 
-    const upload = useCallback(() => {
-        var obj : {mode:string, value:any} = {
-            mode,
-            value: undefined
-        }
-        if(mode === 'classic'){
-            obj.value = text;
-        } else if(mode === 'cell'){
-            obj.value = {
-                cellData, structData
-            };
-        }
-        console.log(metadata);
-        console.log(obj);
-    }, [metadata, mode, text, cellData, structData])
+    // const upload = useCallback(() => {
+    //     var obj : {mode:string, value:any} = {
+    //         mode,
+    //         value: undefined
+    //     }
+    //     if(mode === 'classic'){
+    //         obj.value = text;
+    //     } else if(mode === 'cell'){
+    //         obj.value = {
+    //             cellData, structData
+    //         };
+    //     }
+    //     console.log(metadata);
+    //     console.log(obj);
+    // }, [metadata, mode, text, cellData, structData])
     
     return <ApplyLayout>
         <div className='cellEditorWrapper'>
@@ -56,12 +49,17 @@ function Hidden() {
 
             <hr />
 
+            <ClassicEditorProvider initText={ PfText }>
             { mode === 'classic' &&
                 <ClassicEditorCore />
             }
+            </ClassicEditorProvider>
+
+            <CellEditorProvider init={ PfCell }>
             { mode === 'cell' &&
                 <CellEditorCore />
             }
+            </CellEditorProvider>
 
             <hr />
 
@@ -71,11 +69,11 @@ function Hidden() {
                 >
                     모드 전환(Classic / Cell)
                 </Button>
-                <Button className='uploadButton'
+                {/* <Button className='uploadButton'
                     onClick = { upload }
                 >
                     console.log
-                </Button>
+                </Button> */}
             </div>
         </div>
     </ApplyLayout>;

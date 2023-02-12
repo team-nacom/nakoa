@@ -2,17 +2,17 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
 import { useClassicText } from '#/components/classic-editor/EditorState';
-import { useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
+import { useContent } from '#/components/cell-editor/editor/EditorState'
 
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 import { CellEditor } from '#/components/editor/CellEditor';
 
-import { useMetadataState } from '#/components/editor/MetadataState';
+import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
 
 import { ApplyLayout } from '#/layout/Apply';
-import { IdxType, toIdx, Article, getArticle, updateArticle } from '#/api/article';
+import { IdxType, toIdx, Article, getArticle, updateArticle, ClassicArticle, CellArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
@@ -21,28 +21,17 @@ function Update() {
     let params = useParams<{ index: string }>();
     let index: IdxType = useMemo(() => toIdx(params.index), [params]);
 
-    // subscribe values
-    const metadata = useMetadataState();
-    const text = useClassicText();
-    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()];
-
     // redirection state
     const [loading, initArticle] = usePromise(() => getArticle(index), [index]);
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
-    const upload = useCallback(() => {
-        if(initArticle === undefined) return;
-
-        const article: Article = initArticle.mode === 'classic' ? {
+    const uploadClassic = useCallback((metadata: Metadata, text: string) => {
+        const article: ClassicArticle = {
             mode: 'classic',
             metadata,
             text
-        } : {
-            mode: 'cell',
-            metadata,
-            content: { cellData, rootId, structData }
-        }; // should we have separate upload callbacks per mode?
+        };
 
         updateArticle(index, article).then((success)=>{
             if(success){
@@ -52,7 +41,24 @@ function Update() {
                 setMessage('업로드에 실패했습니다.');
             }
         })
-    }, [initArticle, metadata, text, cellData, rootId, structData, index]);
+    }, [index]);
+
+    const uploadCell = useCallback((metadata: Metadata, content: CellArticle['content']) => {
+        const article: CellArticle = {
+            mode: 'cell',
+            metadata,
+            content
+        };
+
+        updateArticle(index, article).then((success)=>{
+            if(success){
+                setMessage('업로드에 성공했습니다!');
+                setRedirectTo(`/article/view/${index}`);
+            } else{
+                setMessage('업로드에 실패했습니다.');
+            }
+        });
+    }, [index]);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
@@ -65,10 +71,10 @@ function Update() {
     return <ApplyLayout title='글 수정하기'>
         <p>{message}</p>
         {initArticle.mode === 'classic' &&
-            <ClassicEditor initArticle={initArticle} upload={ upload } />
+            <ClassicEditor initArticle={initArticle} upload={ uploadClassic } />
         }
         {initArticle.mode === 'cell' &&
-            <CellEditor initArticle={initArticle} upload={ upload } />
+            <CellEditor initArticle={initArticle} upload={ uploadCell } />
         }
     </ApplyLayout>;
 }

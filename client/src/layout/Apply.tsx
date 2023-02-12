@@ -11,7 +11,7 @@ interface LayoutProps{
 
 export function ApplyLayout(props: PropsWithChildren<LayoutProps>): JSX.Element{
     const title = props.title ?? '';
-    const sidebar = props.sidebar ?? React.Fragment;
+    const sidebar = props.sidebar ?? null;
 
     return (<>
         <Header />

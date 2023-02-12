@@ -1,20 +1,13 @@
 import React, { useEffect } from 'react';
 
-import { CellRenderer,  } from "./CellRenderer";
+import { CellRenderer } from "./CellRenderer";
 import { RenderMode } from "./types-render";
 
-import { CellData } from "./types";
-import { StructData } from "../types";
+import { CellArticleContent } from '#/common/Article';
+import { Cell } from '../cell/types';
 
-import { useEditorInit as useCellEditorInit, useSingleCellChildren, useSingleCellHideChildren } from '#/components/cell-editor/store/EditorState'
+import { CellEditorProvider, useSingleCellChildren, useSingleCellHideChildren } from '#/components/cell-editor/editor/EditorState'
 import { ChildrenWrapper } from '../editor/ChildrenWrapper';
-
-//TODO : 이 타입도 많이 보던 타입임. 밖으로 빼기
-interface CellContent{
-    rootId: string;
-    structData: StructData;
-    cellData: CellData;
-}
 
 interface CellDisplayIndicatorProps{
     id: string;
@@ -39,41 +32,38 @@ function CellDisplay({ id, depth }: CellDisplayProps){
         <CellDisplayIndicator id={ id } />
         {childIds !== undefined &&
             <ChildrenWrapper hide={hide}>
-                {
-                        childIds.reduce( (prev: any[], childId, idx) => {
-                            prev.push(
-                                <CellDisplay key = { 'cell-' + childId }
-                                    id = { childId }
-                                    depth = { nextDepth }
-                                />
-                            )
-                            // prev.push(
-                            //     <InterCell key = { 'inter-' + id + '-' + (idx + 1) }
-                            //         parentId = { id } idx = { idx + 1 }
-                            //         depth = { nextDepth }
-                            //     />
-                            // )
-                            return prev;
-                        }, [
-                            // <InterCell key = { 'inter-' + id + '-0' }
-                            //     parentId = { id } idx = { 0 }
-                            //     depth = { nextDepth }
-                            // /> // 0th element
-                        ])
-                    }
+            {
+                childIds.reduce( (prev: any[], childId, idx) => {
+                    prev.push(
+                        <CellDisplay key = { 'cell-' + childId }
+                            id = { childId }
+                            depth = { nextDepth }
+                        />
+                    )
+                    // prev.push(
+                    //     <InterCell key = { 'inter-' + id + '-' + (idx + 1) }
+                    //         parentId = { id } idx = { idx + 1 }
+                    //         depth = { nextDepth }
+                    //     />
+                    // )
+                    return prev;
+                }, [
+                    // <InterCell key = { 'inter-' + id + '-0' }
+                    //     parentId = { id } idx = { 0 }
+                    //     depth = { nextDepth }
+                    // /> // 0th element
+                ])
+            }
             </ChildrenWrapper>
         }
     </>
 }
 
-function Display(props: CellContent){
-    const cellInit = useCellEditorInit();
-    useEffect(() => {
-        cellInit(props.cellData, props.rootId, props.structData);
-    }, [props]);
-
+function Display(props: CellArticleContent<Cell>){
     return (<div className='allCellsWrapper'>
-        <CellDisplay id={ props.rootId } />
+        <CellEditorProvider init={ props }>
+            <CellDisplay id={ props.rootId } />
+        </CellEditorProvider>
     </div>);
 
 }

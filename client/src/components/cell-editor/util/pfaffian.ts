@@ -1,10 +1,9 @@
-import {
-    CellData, StructData
-} from '#/components/cell-editor/store/EditorState'
+import { CellArticleContent } from '#/common/Article';
+import { Cell } from '../cell/types';
 
-export const rootId = 'c0';
+const rootId = 'c0';
 
-export const structData: StructData = {
+const structData: CellArticleContent['structData'] = {
     'c0': ['c6','c7','c14'],
     'c6': [],
     'c7': ['c8','c9','c10','c11','c12','c13'],
@@ -15,7 +14,7 @@ export const structData: StructData = {
     'c39': ['c40','c41','c42','c43','c45']
 };
 
-export const cellData: CellData = {
+const cellData: CellArticleContent<Cell>['cellData'] = {
     'c0': {
         cellType: 'root',
         id: 'c0',
@@ -191,3 +190,9 @@ export const cellData: CellData = {
         value: '\\abs{j^{-1}(G)} = 2^{\\beta(G)}'
     }
 }
+
+export const PfCell: CellArticleContent<Cell> = {
+    rootId,
+    cellData,
+    structData
+};

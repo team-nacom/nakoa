@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 
-import { useCellData, useRootId, useStructData } from '#/components/cell-editor/store/EditorState'
+import { useCellData, useContent, useRootId, useStructData } from '#/components/cell-editor/editor/EditorState'
 
-import { useMetadataState } from '#/components/editor/MetadataState';
+import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts';
 
@@ -67,19 +67,15 @@ function WriteCell() {
 
     // // TODO: loading from autosave??
 
-    // subscribe values
-    const metadata = useMetadataState();
-    const [cellData, rootId, structData] = [useCellData(), useRootId(), useStructData()];
-
     // redirection state
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
-    const upload = useCallback(() => {
+    const upload = useCallback((metadata: Metadata, content: CellArticle['content']) => {
         const article: CellArticle = {
             mode: 'cell',
             metadata,
-            content: { cellData, structData, rootId }
+            content
         }
         postArticle(article).then(({success, index})=>{
             if(success){
@@ -89,13 +85,15 @@ function WriteCell() {
                 setMessage('업로드에 실패했습니다.');
             }
         })
-    }, [metadata, cellData, structData, rootId]);
+    }, []);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     return <ApplyLayout title='글 작성하기'>
         <p>{message}</p>
         <CellEditor upload={ upload } />
     </ApplyLayout>;
+
+    // Context.Consumer for rescue ??
 }
 
 export default WriteCell;

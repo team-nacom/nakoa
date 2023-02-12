@@ -1,37 +1,38 @@
-import create, { StateCreator } from 'zustand'
-import { immer } from 'zustand/middleware/immer'
+import create, { createStore, StateCreator } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+
+import { CtxFactory } from '#/misc/CtxFactory';
+
+export interface ClassicEditorInitProps{
+    initText?: string
+}
 
 export interface ClassicEditorState{
     text: string,
     previewText: string,
-    
+}
+
+export interface ClassicEditorStateMachine extends ClassicEditorState{
     setText(text: string): void,
     setPreviewText(previewText: string): void
 }
 
-export const createClassicEditorState : StateCreator<
-    any, [], [], ClassicEditorState
-> = (set, get, api) => ({
-    text: '',
-    previewText: '',
+function createClassicEditorStore(initProps: ClassicEditorInitProps){
+    var initText = initProps.initText ?? '';
 
-    setText(text){
-        set((state: ClassicEditorState)=>{ state.text = text })
-    },
-    setPreviewText(previewText){
-        set((state: ClassicEditorState)=>{ state.previewText = previewText })
-    },
-})
+    return createStore<ClassicEditorStateMachine>()(immer((set, get) => ({
+        text: initText,
+        previewText: initText,
 
-export const useClassicEditorState = create<ClassicEditorState>()(
-    immer(createClassicEditorState)
-)
+        setText(text){
+            set((state: ClassicEditorState)=>{ state.text = text })
+        },
+        setPreviewText(previewText){
+            set((state: ClassicEditorState)=>{ state.previewText = previewText })
+        },
+    })))
+}
 
-export const useClassicEditorInit = () => useClassicEditorState(
-    state => (text: string) => {
-        state.setText(text);
-        state.setPreviewText(text);
-    }
-)
+export const [ ClassicEditorProvider, useClassicEditorContext ] = CtxFactory<ClassicEditorStateMachine, ClassicEditorInitProps>(createClassicEditorStore);
 
-export const useClassicText = () => useClassicEditorState(state => state.text);
+export const useClassicText = () => useClassicEditorContext(state => state.text);

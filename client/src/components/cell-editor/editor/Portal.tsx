@@ -12,7 +12,7 @@ import {
     useParentIds, useStructData,
     useSingleCellChildren,
     useSingleCellHideChildren,
-} from '#/components/cell-editor/store/EditorState'
+} from '#/components/cell-editor/editor/EditorState'
 
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'

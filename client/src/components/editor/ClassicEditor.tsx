@@ -1,44 +1,66 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, memo } from 'react';
 
 import Button from '#/components/Button'
 
 import { EditorCore as ClassicEditorCore } from '#/components/classic-editor/EditorCore';
 
-import { useClassicEditorInit } from '#/components/classic-editor/EditorState';
+import { ClassicEditorProvider, useClassicText } from '#/components/classic-editor/EditorState';
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import { ClassicArticle } from '#common/Article';
-import { useMetadataInit } from './MetadataState';
+import { ClassicArticle, Metadata } from '#common/Article';
+import { useMetadataInit, useMetadataState } from './MetadataState';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
-    upload: () => any;
+    upload: (metadata: Metadata, text: string) => any;
+    // todo: autosave.
 };
 export function ClassicEditor({ initArticle, upload }: ClassicEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
     // init here.
-    const classicInit = useClassicEditorInit()
+
     const metadataInit = useMetadataInit();
     useEffect(() => {
         metadataInit(initArticle?.metadata ?? {});
-        classicInit(initArticle?.text ?? '');
     }, [initArticle]);
 
     return (
+        <ClassicEditorProvider initText={ initArticle?.text }>
+            {/* todo: metadata provider also */}
+            <ClassicEditorInner upload={ upload } />
+        </ClassicEditorProvider>
+    );
+}
+
+// prevent rerender of this component when context has changed.
+const MemoizedMetadataInput = memo(MetadataInput);
+const MemoizedCore = memo(ClassicEditorCore);
+
+function ClassicEditorInner({ upload }: ClassicEditorProps){
+    const metadata = useMetadataState();
+    const text = useClassicText();
+
+    const uploadHandler = useCallback(() => {
+        upload(metadata, text);
+    }, [metadata, text]);
+
+    return (
         <div className='cellEditorWrapper'>
-            <MetadataInput {...initArticle?.metadata} />
+            <MemoizedMetadataInput />
+            {/* <MetadataInput /> */}
             <hr />
-            <ClassicEditorCore />
+            <MemoizedCore />
+            {/* <ClassicEditorCore /> */}
             <hr />
             <div className='buttonsWrapper'>
                 <Button className='uploadButton'
-                    onClick = { upload }
+                    onClick = { uploadHandler }
                 >
                     업로드
                 </Button>
             </div>
         </div>
-    );
+    )
 }

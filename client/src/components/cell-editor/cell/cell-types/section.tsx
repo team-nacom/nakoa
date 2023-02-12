@@ -5,8 +5,8 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useWoodAction,
-} from '#/components/cell-editor/store/EditorState'
+    useEditorAction,
+} from '#/components/cell-editor/editor/EditorState'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown-lab/Markdown'
@@ -41,12 +41,12 @@ function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
 
 
 function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mode'>){
-    const woodAction = useWoodAction()
+    const editorAction = useEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        woodAction.update(cell.id, {
+        editorAction.update(cell.id, {
             value: ev.target.value
         } as Partial<SectionCellField>)
     }, [cell.id])

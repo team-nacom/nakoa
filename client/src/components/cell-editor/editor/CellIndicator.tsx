@@ -3,7 +3,7 @@ import { memo } from 'react'
 import {
     useEditorAction,
     useSingleCellFocused, 
-} from '#/components/cell-editor/store/EditorState'
+} from '#/components/cell-editor/editor/EditorState'
 
 import {
     MemoizedCellRenderer, RenderMode,

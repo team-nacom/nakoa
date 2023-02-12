@@ -10,7 +10,7 @@ import Markdown from '#/components/markdown-lab/Markdown';
 
 // import Manual from './MarkdownManual';
 import Manual from './MarkdownManual';
-import { useClassicEditorState, useClassicEditorInit } from './EditorState';
+import { useClassicEditorContext } from './EditorState';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
 
@@ -89,7 +89,7 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
     const {
         text, setText,
         previewText, setPreviewText
-    } = useClassicEditorState() //should be initialized in the top component.
+    } = useClassicEditorContext(state => state) //should be initialized in the top component.
 
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
     const [manualVisible,setManualVisible] = useState(false);

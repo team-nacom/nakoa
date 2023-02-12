@@ -8,8 +8,8 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useWoodAction,
-} from '#/components/cell-editor/store/EditorState'
+    useEditorAction,
+} from '#/components/cell-editor/editor/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
@@ -46,12 +46,12 @@ function CodeCellViewer({ mode, cell } : CellTypeRendererProps<CodeCell>){
 
 function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
     // const {} = useRenderData()
-    const woodAction = useWoodAction()
+    const editorAction = useEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        woodAction.update(cell.id, {
+        editorAction.update(cell.id, {
             value: ev.target.value
         } as Partial<CodeCellField>)
     }, [cell.id])
@@ -59,7 +59,7 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
     const changeCaptionHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        woodAction.update(cell.id, {
+        editorAction.update(cell.id, {
             language: ev.target.value
         } as Partial<CodeCellField>)
     }, [cell.id])

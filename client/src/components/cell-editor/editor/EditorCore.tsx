@@ -1,4 +1,4 @@
-import { useEditorAction, useRootId } from '#/components/cell-editor/store/EditorState'
+import { useEditorAction, useRootId } from '#/components/cell-editor/editor/EditorState'
 
 import { DndScope } from './DndScope'
 

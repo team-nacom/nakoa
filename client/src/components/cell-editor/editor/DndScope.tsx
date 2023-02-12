@@ -7,9 +7,8 @@ import {
 
 import {
     useParentIds,
-    useWoodAction,
     useEditorAction
-} from '#/components/cell-editor/store/EditorState'
+} from '#/components/cell-editor/editor/EditorState'
 
 import {
     DndContext, useDndMonitor, DragStartEvent, DragOverEvent, DragEndEvent,
@@ -27,7 +26,7 @@ export const useIsOver = (dndId: string) => useContextSelector(OverIdContext, ov
 
 function _DndScope({ children }: React.PropsWithChildren){
     const parentIds = useParentIds()
-    const woodAction = useWoodAction()
+    const editorAction = useEditorAction()
     // const editorAction = useEditorAction()
 
     // const [activeId, setActiveId] = useState<string | number>('')
@@ -78,7 +77,7 @@ function _DndScope({ children }: React.PropsWithChildren){
                 pid = parentIds[pid]
             }
             if(pid === undefined){
-                woodAction.move(
+                editorAction.move(
                     targetId,
                     spl[0] ?? '', // destParentId
                     Number(spl[1]) // destPos

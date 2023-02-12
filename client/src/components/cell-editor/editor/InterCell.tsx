@@ -1,9 +1,9 @@
 import React, { memo } from 'react'
 
 import {
-    useWoodAction,
+    useEditorAction,
     useSingleCellType
-} from '#/components/cell-editor/store/EditorState'
+} from '#/components/cell-editor/editor/EditorState'
 
 import { isParentType } from '#/components/cell-editor/cell'
 
@@ -19,7 +19,7 @@ const maxDepth = 5
 
 function _InterCell({ parentId, idx, depth }: InterCellProps){
     const cellType = useSingleCellType(parentId)
-    const woodAction = useWoodAction()
+    const editorAction = useEditorAction()
 
     const dndId = parentId + '@' + idx //assume that id do not use @
     const isOver = useIsOver(dndId)
@@ -47,7 +47,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
                 <button className='addContentCellButton'
                     onClick={(ev)=>{
                         ev.stopPropagation()
-                        woodAction.createChild('text', parentId, idx)
+                        editorAction.createChild('text', parentId, idx)
                     }}
                 >
                     <AddBox />
@@ -56,7 +56,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
                     <button className='addSectionCellButton'
                         onClick={(ev)=>{
                             ev.stopPropagation()
-                            woodAction.createChild('section', parentId, idx)
+                            editorAction.createChild('section', parentId, idx)
                         }}
                     >
                         <ListAlt />
