@@ -1,18 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
-import { useClassicText } from '#/components/classic-editor/EditorState';
-import { useContent } from '#/components/cell-editor/editor/EditorState'
-
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 import { CellEditor } from '#/components/editor/CellEditor';
 
-import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
-
-import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
+import { Metadata } from '#/components/editor/MetadataState';
 
 import { ApplyLayout } from '#/layout/Apply';
-import { IdxType, toIdx, Article, getArticle, updateArticle, ClassicArticle, CellArticle } from '#/api/article';
+import { IdxType, toIdx, Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
@@ -22,7 +17,11 @@ function Update() {
     let index: IdxType = useMemo(() => toIdx(params.index), [params]);
 
     // redirection state
-    const [loading, initArticle] = usePromise(() => getArticle(index), [index]);
+    const [loading, initArticle] = usePromise(() => {
+        const draft = getAutosaveArticle(index);
+        if(draft) return Promise.resolve( draft );
+        return getArticle(index);
+    }, [index]);
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
@@ -71,10 +70,18 @@ function Update() {
     return <ApplyLayout title='글 수정하기'>
         <p>{message}</p>
         {initArticle.mode === 'classic' &&
-            <ClassicEditor initArticle={initArticle} upload={ uploadClassic } />
+            <ClassicEditor
+                initArticle={initArticle}
+                upload={ uploadClassic }
+                autosave={ (article) => { setAutosaveArticle(article, index); } }
+            />
         }
         {initArticle.mode === 'cell' &&
-            <CellEditor initArticle={initArticle} upload={ uploadCell } />
+            <CellEditor
+                initArticle={initArticle}
+                upload={ uploadCell }
+                autosave={ (article) => { setAutosaveArticle(article, index); } }
+            />
         }
     </ApplyLayout>;
 }

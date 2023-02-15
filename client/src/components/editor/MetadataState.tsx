@@ -21,8 +21,8 @@ function createMetadataStore(initProps: Partial<Metadata>){
     };
 
     return createStore<MetadataState>()(immer((set, get, api) => ({
-        ...initProps,
         ...defaultProps,
+        ...initProps,
 
         setTitle(title){
             set((state: MetadataState)=>{ state.title = title; });

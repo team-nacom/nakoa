@@ -23,6 +23,25 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 // export const validateSetStatus = (status: number) => (status < 300);
 
+export function setAutosaveArticle(article: Article, index?: IdxType){
+    // in browser cache
+    var key = index !== undefined ? `article/draft-${index}` : `article/draft-unpub-${article.mode}`;
+
+    // var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
+    // localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
+
+    localStorage.setItem(key, JSON.stringify(article)); // TODO: manage localStorage key list
+    return { success: true, };
+}
+
+export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
+    var key = index !== undefined ? `article/draft-${index}` : `article/draft-unpub-${mode}`;
+
+    var item = localStorage.getItem(key);
+    if(item === null) return undefined;
+    return JSON.parse(item) as Article;
+}
+
 export async function getArticleList(){
     let response = await axios.get(`${apiAddress}/article/get-list`, {
         // validateStatus,

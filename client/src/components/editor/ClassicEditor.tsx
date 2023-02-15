@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import { useInterval } from 'usehooks-ts';
 
 import Button from '#/components/Button'
 
@@ -8,21 +9,23 @@ import { ClassicEditorProvider, useClassicText } from '#/components/classic-edit
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import { ClassicArticle, Metadata } from '#common/Article';
-import { MetadataProvider, useMetadataState } from './MetadataState';
+import { ClassicArticle } from '#/api/article';
+import { MetadataProvider, Metadata, useMetadataState } from './MetadataState';
+
+import { autoSaveIntervalMs } from '#/misc/consts';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
     upload: (metadata: Metadata, text: string) => any;
-    // todo: autosave.
+    autosave: (article: ClassicArticle) => any;
 };
-export function ClassicEditor({ initArticle, upload }: ClassicEditorProps) {
+export function ClassicEditor({ initArticle, upload, autosave }: ClassicEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
     return (
         <ClassicEditorProvider initText={ initArticle?.text }>
         <MetadataProvider {...(initArticle?.metadata ?? {})}>
-            <ClassicEditorInner upload={ upload } />
+            <ClassicEditorInner upload={ upload } autosave={ autosave } />
         </MetadataProvider>
         </ClassicEditorProvider>
     );
@@ -32,13 +35,24 @@ export function ClassicEditor({ initArticle, upload }: ClassicEditorProps) {
 const MemoizedMetadataInput = memo(MetadataInput);
 const MemoizedCore = memo(ClassicEditorCore);
 
-function ClassicEditorInner({ upload }: ClassicEditorProps){
+function ClassicEditorInner({ upload, autosave }: ClassicEditorProps){
     const metadata = useMetadataState();
     const text = useClassicText();
 
     const uploadHandler = useCallback(() => {
         upload(metadata, text);
     }, [metadata, text]);
+
+    // this useInterval hook remembers previous closure and detects its change, so no need for dependency array.
+    // pass delay=null when we want to stop autosave.
+    useInterval(() => {
+        autosave({
+            mode: 'classic',
+            metadata,
+            text
+        });
+        console.log('autosaved');
+    }, autoSaveIntervalMs);
 
     return (
         <div className='cellEditorWrapper'>

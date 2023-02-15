@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import { useInterval } from 'usehooks-ts';
 
 import Button from '#/components/Button'
 
@@ -9,19 +10,20 @@ import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { CellArticle } from '#/api/article';
 import { useMetadataState, Metadata, MetadataProvider } from './MetadataState';
+import { autoSaveIntervalMs } from '#/misc/consts';
 
 interface CellEditorProps{
     initArticle?: CellArticle;
     upload: (metadata: Metadata, content: CellArticle['content']) => any;
-    // todo: autosave
+    autosave: (article: CellArticle) => any;
 };
-export function CellEditor({ initArticle, upload }: CellEditorProps) {
+export function CellEditor({ initArticle, upload, autosave }: CellEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
     return (
         <CellEditorProvider init={ initArticle?.content }>
         <MetadataProvider {...(initArticle?.metadata ?? {})}>
-            <CellEditorInner upload={ upload } />
+            <CellEditorInner upload={ upload } autosave={ autosave } />
         </MetadataProvider>
         </CellEditorProvider>
     );
@@ -31,13 +33,24 @@ export function CellEditor({ initArticle, upload }: CellEditorProps) {
 const MemoizedMetadataInput = memo(MetadataInput);
 const MemoizedCore = memo(CellEditorCore);
 
-function CellEditorInner({ upload }: CellEditorProps){
+function CellEditorInner({ upload, autosave }: CellEditorProps){
     const metadata = useMetadataState();
     const content = useContent();
-
+    
     const uploadHandler = useCallback(() => {
         upload(metadata, content);
     }, [metadata, content]);
+
+    // this useInterval hook remembers previous closure and detects its change, so no need for dependency array.
+    // pass delay=null when we want to stop autosave.
+    useInterval(() => {
+        autosave({
+            mode: 'cell',
+            metadata,
+            content
+        });
+        console.log('autosaved');
+    }, autoSaveIntervalMs);
 
     return (
         <div className='cellEditorWrapper'>

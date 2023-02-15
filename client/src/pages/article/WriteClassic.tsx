@@ -1,17 +1,30 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useClassicText } from '#/components/classic-editor/EditorState';
-
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
-import { autoSaveIntervalMs, localStorageKeys } from '#/misc/consts'
-
 import { ApplyLayout } from '#/layout/Apply';
-import { ClassicArticle, postArticle } from '#/api/article';
+import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
 function WriteClassic() {
+    const initArticle: ClassicArticle | undefined = useMemo(()=>{
+        const article = getAutosaveArticle(undefined, 'classic');
+        if(article === undefined || article.mode !== 'classic'){
+            return undefined; // this will simplify setting default fields
+            // return {
+            //     mode: 'classic',
+            //     metadata: {
+            //         title: '',
+            //         author: '',
+            //     },
+            //     text: ''
+            // };
+        }
+        return article;
+    }, []);
+    // const [modified, setModified] = useState(false);
+
     // redirection state
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
@@ -35,7 +48,9 @@ function WriteClassic() {
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     return <ApplyLayout title='글 작성하기'>
         <p>{message}</p>
-        <ClassicEditor upload={ upload } />
+        <ClassicEditor initArticle={ initArticle }
+            upload={ upload } autosave={ setAutosaveArticle }
+        />
     </ApplyLayout>;
 }
 
