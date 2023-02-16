@@ -10,7 +10,7 @@ import { MetadataInput } from '#/components/editor/MetadataInput'
 
 import { CellArticle } from '#/api/article';
 import { useMetadataState, Metadata, MetadataProvider } from './MetadataState';
-import { autoSaveIntervalMs } from '#/misc/consts';
+import { autoSaveIntervalMs } from '#/config/consts';
 
 interface CellEditorProps{
     initArticle?: CellArticle;

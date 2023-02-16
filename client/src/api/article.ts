@@ -2,15 +2,12 @@
 // https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/etc/api/guide.ts
 
 import axios from "axios";
-import config from "#/misc/config";
+import { apiUrl } from "#/config/env";
 
 import type { IdxType, ClassicArticle, BasicCellArticle } from '#common/Article';
 import { toIdx } from '#common/Article';
 
 import type { Cell } from "#/components/cell-editor/cell";
-
-
-const apiAddress = config.apiAddress;
 
 export type { IdxType };
 export { toIdx };
@@ -43,7 +40,7 @@ export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
 }
 
 export async function getArticleList(){
-    let response = await axios.get(`${apiAddress}/article/get-list`, {
+    let response = await axios.get(`${apiUrl}/article/get-list`, {
         // validateStatus,
         withCredentials: true,
     });
@@ -61,7 +58,7 @@ export async function getArticle(index: IdxType){
     // if(item === null) return undefined;
     // return JSON.parse(item) as Article;
 
-    let response = await axios.get(`${apiAddress}/article/get/${index}`, {
+    let response = await axios.get(`${apiUrl}/article/get/${index}`, {
         // validateStatus,
         withCredentials: true,
     });
@@ -84,7 +81,7 @@ export async function postArticle(article: Article){
     //     index
     // };
 
-    let response = await axios.post(`${apiAddress}/article/post`, article, {
+    let response = await axios.post(`${apiUrl}/article/post`, article, {
         validateStatus,
         withCredentials: true,
     });
@@ -102,7 +99,7 @@ export async function updateArticle(index: IdxType, article: Article){
 
     // NOTE: index가 article의 optional field니까, 그냥 article만 넣고 싶긴 함
     // 아니면 article에서 그냥 빼버릴까?
-    let response = await axios.put(`${apiAddress}/article/update/${index}`, article, {
+    let response = await axios.put(`${apiUrl}/article/update/${index}`, article, {
         validateStatus,
         withCredentials: true,
     });
@@ -115,7 +112,7 @@ export async function removeArticle(index: IdxType){
     // localStorage.removeItem(`article/${index}`);
     // return true;
 
-    let response = await axios.delete(`${apiAddress}/article/remove/${index}`, {
+    let response = await axios.delete(`${apiUrl}/article/remove/${index}`, {
         withCredentials: true,
     });
 

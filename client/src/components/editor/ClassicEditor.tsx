@@ -12,7 +12,7 @@ import { MetadataInput } from '#/components/editor/MetadataInput'
 import { ClassicArticle } from '#/api/article';
 import { MetadataProvider, Metadata, useMetadataState } from './MetadataState';
 
-import { autoSaveIntervalMs } from '#/misc/consts';
+import { autoSaveIntervalMs } from '#/config/consts';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;

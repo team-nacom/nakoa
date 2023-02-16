@@ -1,7 +1,5 @@
 import Axios from 'axios';
-import config from '#/misc/config';
-
-const apiAddress = config.apiAddress;
+import { apiUrl } from '#/config/env';
 
 export const authValidateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
 
@@ -17,7 +15,7 @@ export const uploadFile = async (collection: string, file: File) => {
     formData.append('file', file);
     formData.append('folder', collection);
 
-    let response = await Axios.post(`${apiAddress}/file/upload`, formData, config);
+    let response = await Axios.post(`${apiUrl}/file/upload`, formData, config);
 
     return {
         success: response.status < 300,
@@ -35,6 +33,4 @@ export async function imgUpload(file: File){
 
     let result = await uploadFile('guide', file);
     return result.success ? result.url : null;
-    
-    // return 'https://img.khan.co.kr/news/2021/03/14/l_2021031401001628900137951.jpg'; //TEMP
 }

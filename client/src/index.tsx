@@ -5,7 +5,7 @@ import '#/styles/index.scss'
 import App from './App'
 
 import ReactGA from 'react-ga'
-import config from '#/misc/config';
+import * as config from '#/config/env';
 
 ReactGA.initialize(config.googleAnalyticsTrackingId);
 

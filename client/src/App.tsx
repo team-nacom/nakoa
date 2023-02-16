@@ -24,15 +24,17 @@ import WriteClassic from './pages/article/WriteClassic';
 import WriteCell from '#/pages/article/WriteCell';
 import Hidden from '#/pages/article/Hidden';
 
-function App() {
-    const { locale } = useLocale()
+import { baseUrl } from '#/config/env';
 
-    const history = createBrowserHistory();
+function App() {
+    const { locale } = useLocale();
+
+    const history = createBrowserHistory({ basename: baseUrl });
     history.listen((location: any) => {
         console.log(location.pathname);
         ReactGA.set({ page: location.pathname });
         ReactGA.pageview(location.pathname);
-    })
+    });
     return (
         <IntlProvider locale={locale} messages={localeMessages[locale]}>
             <Router history={history}>

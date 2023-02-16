@@ -2,7 +2,7 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
-import { localStorageKeys } from "#/misc/consts";
+import { localStorageKeys } from "#/config/consts";
 
 export const localeList = ['en', 'ko'] as const;
 export const localeName = {
