@@ -19,8 +19,6 @@ import { ApplyLayout } from '#/layout/Apply'
 function Hidden() {
     // initialize editor state.
 
-    const metadata = useMetadataState();
-
     const [mode, setMode] = useState('classic'); // classic or cell.
 
     // initialize outside.

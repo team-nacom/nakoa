@@ -37,6 +37,7 @@ function setLocal(key: string, article: Article){
 function getLocal(key: string) : Article | undefined{
     let item = localStorage.getItem(key);
     if(item === null) return undefined;
+    console.log(key, JSON.parse(item));
     return JSON.parse(item) as Article;
 }
 
@@ -165,6 +166,7 @@ export async function postArticle(article: Article){
 export async function updateArticle(index: IdxType, article: Article){
     // serverless
 
+    article.index = index; // article argument might not have index anymore
     article.updateDate = new Date();
 
     let key = `article/data/${index}`;
