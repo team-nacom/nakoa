@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from '#/components/markdown-lab/Markdown';
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout } from '#/layout/Layout';
 
 
 function About() {
@@ -10,13 +10,13 @@ function About() {
         .then(response => response.text())
         .then(text => setMessage(text));
 
-    return <ApplyLayout>
+    return <Layout>
         <div className='aboutDisplayWrapper'>
             <Markdown>
                 { message }
             </Markdown>
         </div>
-    </ApplyLayout>;
+    </Layout>;
 }
 
 export default About;

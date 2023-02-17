@@ -15,7 +15,7 @@ function Delete() {
     const [loading] = usePromise(() => removeArticle(index), [index]);
 
     if(loading) return <Loading />;
-    return <Redirect to={'/'} />;
+    return <Redirect to={'/article/list'} />;
 }
 
 export default Delete;

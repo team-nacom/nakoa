@@ -14,7 +14,7 @@ import {  useCellData, useRootId, useStructData, CellEditorProvider } from '#/co
 
 import { MetadataProvider, useMetadataState } from '#/components/editor/MetadataState';
 import { MetadataInput } from '#/components/editor/MetadataInput'
-import { ApplyLayout } from '#/layout/Apply'
+import { Layout } from '#/layout/Layout'
 
 function Hidden() {
     // initialize editor state.
@@ -41,7 +41,7 @@ function Hidden() {
     //     console.log(obj);
     // }, [metadata, mode, text, cellData, structData])
     
-    return <ApplyLayout>
+    return <Layout>
         <div className='cellEditorWrapper'>
             <MetadataProvider>
                 <MetadataInput />
@@ -76,7 +76,7 @@ function Hidden() {
                 </Button> */}
             </div>
         </div>
-    </ApplyLayout>;
+    </Layout>;
 }
 
 export default Hidden;

@@ -128,6 +128,7 @@ label {
 
 @import './layout/footer.scss';
 @import './layout/header.scss';
+@import './layout/sidebar.scss';
 
 @import './components/cellEditor.scss';
 @import './components/cellList.scss';
@@ -137,6 +138,5 @@ label {
 @import './components/popup.scss';
 @import './components/tabs.scss';
 @import './components/tags.scss';
-@import './components/sidebar.scss';
 
 @import './components/write.scss';

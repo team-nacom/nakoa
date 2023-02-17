@@ -3,7 +3,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import usePromise from '#/misc/usePromise';
 import { getArticleList } from '#/api/article';
 // import Markdown from '#/components/markdown-lab/Markdown';
@@ -18,12 +18,12 @@ function Article() {
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(articles === undefined){
-        return <ApplyLayout title='오류'>
+        return <LayoutWithArticleList title='오류'>
             글을 불러오지 못했습니다.
-        </ApplyLayout>;
+        </LayoutWithArticleList>;
     }
 
-    return <ApplyLayout title='모든 글 보기'>
+    return <LayoutWithArticleList title='모든 글 보기'>
         <div>
             { `총 ${articles.length}개` }
         </div>
@@ -46,12 +46,12 @@ function Article() {
             ))}
         </div>
         <Link to='/article/write-classic'>
-            <Button> 텍스트 편집기 </Button>
+            <Button>새 글(텍스트)</Button>
         </Link>
         <Link to='/article/write-cell'>
-            <Button> 셀 편집기 </Button>
+            <Button>새 글(셀)</Button>
         </Link>
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default Article;

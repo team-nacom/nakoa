@@ -5,20 +5,13 @@ import { Link } from 'react-router-dom'
 
 import Button from '#/components/Button';
 
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 
 function Main() {
     let intl = useIntl();
-    return <ApplyLayout title='팀 나무컴퍼스 메인화면'>
+    return <LayoutWithArticleList  title='팀 나무컴퍼스 메인화면'>
         <p>{ intl.formatMessage({ id: 'main.greeting' })}</p>
-        <hr />
-        <Link to='/article/write-classic'>
-            <Button> 텍스트 편집기 </Button>
-        </Link>
-        <Link to='/article/write-cell'>
-            <Button> 셀 편집기 </Button>
-        </Link>
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default Main;

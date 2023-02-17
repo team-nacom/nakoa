@@ -6,7 +6,7 @@ import { CellEditor } from '#/components/editor/CellEditor';
 
 import { Metadata } from '#/components/editor/MetadataState';
 
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
 
 import Loading from '../Loading';
@@ -62,12 +62,12 @@ function Update() {
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     if(initArticle === undefined){
-        return <ApplyLayout>
+        return <LayoutWithArticleList>
             <p>존재하지 않는 글입니다.</p>
-        </ApplyLayout>;
+        </LayoutWithArticleList>;
     }
 
-    return <ApplyLayout title='글 수정하기'>
+    return <LayoutWithArticleList title='글 수정하기'>
         <p>{message}</p>
         {initArticle.mode === 'classic' &&
             <ClassicEditor
@@ -83,7 +83,7 @@ function Update() {
                 autosave={ (article) => { setAutosaveArticle(article, index); } }
             />
         }
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default Update;

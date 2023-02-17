@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
@@ -46,12 +46,12 @@ function WriteClassic() {
     }, []);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
-    return <ApplyLayout title='글 작성하기'>
+    return <LayoutWithArticleList title='글 작성하기'>
         <p>{message}</p>
         <ClassicEditor initArticle={ initArticle }
             upload={ upload } autosave={ setAutosaveArticle }
         />
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default WriteClassic;

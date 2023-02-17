@@ -7,7 +7,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import usePromise from '#/misc/usePromise';
 import { getArticle } from '#/api/article';
 import Markdown from '#/components/markdown-lab/Markdown';
@@ -23,12 +23,12 @@ function Article() {
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(article === undefined){
-        return <ApplyLayout>
+        return <LayoutWithArticleList>
             <p>존재하지 않는 글입니다.</p>
-        </ApplyLayout>;
+        </LayoutWithArticleList>;
     }
 
-    return <ApplyLayout /* title={ article.metadata.title } */ >
+    return <LayoutWithArticleList /* title={ article.metadata.title } */ >
         <div className='article'>
             <div className='articleBackground' />
             <h2 className='subtitle'> { article.metadata.author } </h2>
@@ -52,7 +52,7 @@ function Article() {
         <Link to={ `/article/delete/${ index }` }>
             <Button>삭제</Button>
         </Link>
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default Article;

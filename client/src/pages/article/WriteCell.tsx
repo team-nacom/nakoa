@@ -3,7 +3,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import usePromise from '#/misc/usePromise';
 import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
@@ -56,12 +56,12 @@ function WriteCell() {
     // const autosave = setAutosaveArticle;
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
-    return <ApplyLayout title='글 작성하기'>
+    return <LayoutWithArticleList title='글 작성하기'>
         <p>{message}</p>
         <CellEditor initArticle={ initArticle }
             upload={ upload } autosave={ setAutosaveArticle }
         />
-    </ApplyLayout>;
+    </LayoutWithArticleList>;
 }
 
 export default WriteCell;

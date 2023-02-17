@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from '#/components/markdown-lab/Markdown';
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout } from '#/layout/Layout';
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
@@ -12,11 +12,11 @@ function NotFound() {
     }, [])
 
     // TODO : merge 404.md here
-    return <ApplyLayout title='존재하지 않는 페이지입니다.'>
+    return <Layout title='존재하지 않는 페이지입니다.'>
         <Markdown>
             { message }
         </Markdown>
-    </ApplyLayout>;
+    </Layout>;
 }
 
 export default NotFound;

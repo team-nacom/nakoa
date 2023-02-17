@@ -1,8 +1,8 @@
 import React from 'react';
-import { ApplyLayout } from '#/layout/Apply';
+import { Layout } from '#/layout/Layout';
 
 function Loading() {
-    return <ApplyLayout />;
+    return <Layout />;
 }
 
 export default Loading;
