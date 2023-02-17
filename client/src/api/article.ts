@@ -2,6 +2,8 @@
 // https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/etc/api/guide.ts
 
 import axios from "axios";
+import { customAlphabet } from 'nanoid';
+
 import { apiUrl } from "#/config/env";
 
 import type { IdxType, ClassicArticle, BasicCellArticle } from '#common/Article';
@@ -20,26 +22,74 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 
 // export const validateSetStatus = (status: number) => (status < 300);
 
-export function setAutosaveArticle(article: Article, index?: IdxType){
-    // in browser cache
-    var key = index !== undefined ? `article/draft-${index}` : `article/draft-unpub-${article.mode}`;
 
-    // var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
-    // localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
-
-    localStorage.setItem(key, JSON.stringify(article)); // TODO: manage localStorage key list
-    return { success: true, };
+const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
+function baseid(count: number): string {
+    const nanoid = customAlphabet(base64url, count);
+    return nanoid();
 }
 
-export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
-    var key = index !== undefined ? `article/draft-${index}` : `article/draft-unpub-${mode}`;
 
-    var item = localStorage.getItem(key);
+function setLocal(key: string, article: Article){
+    localStorage.setItem(key, JSON.stringify(article));
+}
+
+function getLocal(key: string) : Article | undefined{
+    let item = localStorage.getItem(key);
     if(item === null) return undefined;
     return JSON.parse(item) as Article;
 }
 
+function unsetLocal(key: string){
+    localStorage.removeItem(key);
+}
+
+function getLocalIdxArr(){
+    // let keys = JSON.parse(localStorage.getItem(`article/keys`) ?? '[]');
+    // return Array.isArray(keys) ? keys as string[] : [];
+    return Object.keys(localStorage)
+        .map((key) => {
+            let res = key.match(/article\/data\/(?<index>[^\/]*)/);
+            if(res === null) return undefined;
+            return res.groups?.index;
+        })
+        .filter((k): k is string => k !== undefined);
+}
+
+
+export function setAutosaveArticle(article: Article, index?: IdxType){
+    // in browser cache
+
+    // TODO: manage localStorage key list
+    let key = index !== undefined
+        ? `article/draft/${index}`
+        : `article/draft-unpub/${article.mode}`;
+
+    setLocal(key, article);
+    return { success: true, };
+}
+
+export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
+    let key = index !== undefined
+        ? `article/draft/${index}`
+        : `article/draft-unpub/${mode}`;
+
+    return getLocal(key);
+}
+
+
+// todo : remoteIndex field for each article.
+
 export async function getArticleList(){
+    // serverless.
+    let articles = getLocalIdxArr().map((idx) => {
+        let index = toIdx(idx);
+        let key = `article/data/${index}`;
+        return getLocal(key);
+    }).filter((a) : a is Article => a !== undefined );
+    
+    return articles;
+
     let response = await axios.get(`${apiUrl}/article/get-list`, {
         // validateStatus,
         withCredentials: true,
@@ -53,10 +103,14 @@ export async function getArticleList(){
 }
 
 export async function getArticle(index: IdxType){
-    // tmp: serverless
-    // var item = localStorage.getItem(`article/${index}`)
-    // if(item === null) return undefined;
-    // return JSON.parse(item) as Article;
+    // serverless.
+    let key = `article/data/${index}`;
+
+    let article = getLocal(key);
+    if(article === undefined){
+        throw new Error('article not found');
+    }
+    return article;
 
     let response = await axios.get(`${apiUrl}/article/get/${index}`, {
         // validateStatus,
@@ -71,15 +125,31 @@ export async function getArticle(index: IdxType){
 }
 
 export async function postArticle(article: Article){
-    // tmp: serverless
-    // var index: IdxType = toIdx(localStorage.getItem('articleNextIndex') ?? '1');
-    // localStorage.setItem('articleNextIndex', `${ Number(index) + 1 }`);
+    // serverless.
+    let index = '';
+    do{
+        index = baseid(8);
+    } while( localStorage.getItem(index) !== null );
 
-    // localStorage.setItem(`article/${index}`, JSON.stringify(article));
-    // return {
-    //     success: true,
-    //     index
-    // };
+    article.index = index;
+    article.createDate = article.updateDate = new Date();
+    
+    let key = `article/data/${index}`;
+    setLocal(key, article);
+
+    // remove draft.
+    let draftkey = `article/draft-unpub/${article.mode}`;
+    unsetLocal(draftkey);
+
+    return {
+        success: true,
+        index
+    };
+    
+
+
+    // on publishing, the article is given a new index which server has generated.
+    // instead of using different idx, how about distinguishing with (userid, idx) ??
 
     let response = await axios.post(`${apiUrl}/article/post`, article, {
         validateStatus,
@@ -88,14 +158,18 @@ export async function postArticle(article: Article){
 
     return {
         success: response.status < 300,
-        index: response.data.index as number,
+        index: toIdx(response.data.index as string),
     };
 }
 
 export async function updateArticle(index: IdxType, article: Article){
-    // tmp: serverless
-    // localStorage.setItem(`article/${index}`, JSON.stringify(article));
-    // return true;
+    // serverless
+
+    article.updateDate = new Date();
+
+    let key = `article/data/${index}`;
+    setLocal(key, article);
+    return true;
 
     // NOTE: index가 article의 optional field니까, 그냥 article만 넣고 싶긴 함
     // 아니면 article에서 그냥 빼버릴까?
@@ -108,9 +182,11 @@ export async function updateArticle(index: IdxType, article: Article){
 }
 
 export async function removeArticle(index: IdxType){
-    // tmp: serverless
-    // localStorage.removeItem(`article/${index}`);
-    // return true;
+    // serverless
+
+    let key = `article/data/${index}`;
+    unsetLocal(key);
+    return true;
 
     let response = await axios.delete(`${apiUrl}/article/remove/${index}`, {
         withCredentials: true,

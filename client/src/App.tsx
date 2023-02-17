@@ -2,15 +2,11 @@ import React, { useMemo, useState, useCallback } from 'react'
 import { Redirect, Route, Router, Switch } from 'react-router-dom'
 
 import { IntlProvider } from 'react-intl';
-import { useSelector } from 'react-redux';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 
 import { useLocale } from '#/store/locale'
 import { localeMessages } from '#/locale'
-
-import Header from '#/layout/Header';
-import Footer from '#/layout/Footer';
 
 import Main from '#/pages/Main';
 import NotFound from '#/pages/NotFound';

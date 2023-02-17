@@ -16,8 +16,8 @@ export function ApplyLayout(props: PropsWithChildren<LayoutProps>): JSX.Element{
     return (<>
         <Header />
         { sidebar }
-        <h1>{ title }</h1>
         <div id='content'>
+            <h1>{ title }</h1>
             { props.children }
         </div>
         <Footer />
