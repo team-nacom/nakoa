@@ -6,13 +6,9 @@ import { customAlphabet } from 'nanoid';
 
 import { apiUrl } from "#/config/env";
 
-import type { IdxType, ClassicArticle, BasicCellArticle } from '#common/Article';
-import { toIdx } from '#common/Article';
+import type { ClassicArticle, BasicCellArticle } from '#common/Article';
 
 import type { Cell } from "#/components/cell-editor/cell";
-
-export type { IdxType };
-export { toIdx };
 
 export type { ClassicArticle };
 export type CellArticle = BasicCellArticle<Cell>;
@@ -58,7 +54,7 @@ function getLocalIdxArr(){
 }
 
 
-export function setAutosaveArticle(article: Article, index?: IdxType){
+export function setAutosaveArticle(article: Article, index?: string){
     // in browser cache
 
     // TODO: manage localStorage key list
@@ -70,7 +66,7 @@ export function setAutosaveArticle(article: Article, index?: IdxType){
     return { success: true, };
 }
 
-export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
+export function getAutosaveArticle(index?: string, mode?: Article['mode']){
     let key = index !== undefined
         ? `article/draft/${index}`
         : `article/draft-unpub/${mode}`;
@@ -84,8 +80,7 @@ export function getAutosaveArticle(index?: IdxType, mode?: Article['mode']){
 export async function getArticleList(){
     // serverless.
     let articles = getLocalIdxArr().map((idx) => {
-        let index = toIdx(idx);
-        let key = `article/data/${index}`;
+        let key = `article/data/${idx}`;
         return getLocal(key);
     }).filter((a) : a is Article => a !== undefined );
     
@@ -103,7 +98,7 @@ export async function getArticleList(){
     return response.data.articles as Article[];
 }
 
-export async function getArticle(index: IdxType){
+export async function getArticle(index: string){
     // serverless.
     let key = `article/data/${index}`;
 
@@ -159,11 +154,11 @@ export async function postArticle(article: Article){
 
     return {
         success: response.status < 300,
-        index: toIdx(response.data.index as string),
+        index: response.data.index as string,
     };
 }
 
-export async function updateArticle(index: IdxType, article: Article){
+export async function updateArticle(index: string, article: Article){
     // serverless
 
     article.index = index; // article argument might not have index anymore
@@ -183,7 +178,7 @@ export async function updateArticle(index: IdxType, article: Article){
     return response.status < 300;
 }
 
-export async function removeArticle(index: IdxType){
+export async function removeArticle(index: string){
     // serverless
 
     let key = `article/data/${index}`;

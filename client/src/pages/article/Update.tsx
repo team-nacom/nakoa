@@ -7,14 +7,14 @@ import { CellEditor } from '#/components/editor/CellEditor';
 import { Metadata } from '#/components/editor/MetadataState';
 
 import { ApplyLayout } from '#/layout/Apply';
-import { IdxType, toIdx, Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
+import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 
 function Update() {
     let params = useParams<{ index: string }>();
-    let index: IdxType = useMemo(() => toIdx(params.index), [params]);
+    let index = params.index;
 
     // redirection state
     const [loading, initArticle] = usePromise(() => {
