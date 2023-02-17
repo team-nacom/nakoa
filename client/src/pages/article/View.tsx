@@ -28,17 +28,24 @@ function Article() {
         </ApplyLayout>;
     }
 
-    return <ApplyLayout title={ article.metadata.title }>
-        {article.mode === 'classic' &&
-            <Markdown>
-                { article.text }
-            </Markdown>
-        }
-        {article.mode === 'cell' &&
-            <Display
-                {...article.content}
-            />
-        }
+    return <ApplyLayout /* title={ article.metadata.title } */ >
+        <div className='article'>
+            <div className='articleBackground' />
+            <h2 className='subtitle'> { article.metadata.author } </h2>
+            <h1 className='title'> { article.metadata.title } </h1>
+            <div className='articleContent'>
+            {article.mode === 'classic' &&
+                <Markdown>
+                    { article.text }
+                </Markdown>
+            }
+            {article.mode === 'cell' &&
+                <Display
+                    {...article.content}
+                />
+            }
+            </div>
+        </div>
         <Link to={ `/article/update/${ index }` }>
             <Button>편집</Button>
         </Link>

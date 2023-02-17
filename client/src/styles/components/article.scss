@@ -1,7 +1,7 @@
 @import '../consts.scss';
 @import './buttons.scss';
 
-.guideBackground {
+.articleBackground {
     position: fixed;
     z-index: -1;
     background: #f9f9f9;
@@ -12,7 +12,7 @@
     left: 0;
 }
 
-.guide {
+.article {
     div.metadata {
         .metadataItem {
             font-size: 14px;
@@ -38,16 +38,6 @@
         }
     }
 
-    h1.title {
-        font-size: 40px;
-        line-height: 55px;
-//        color: white;
-        color: #444444;
-        margin-bottom: 9px;
-        margin-top: 20px;
-        margin-left: 20px;
-    }
-
     div.subcontainer {
         margin: 0px 10px;
         button {
@@ -65,14 +55,26 @@
         }
     }
 
+    h1.title {
+        text-align: center;
+        font-size: 40px;
+        line-height: 55px;
+//        color: white;
+        color: #444444;
+        margin-bottom: 9px;
+        margin-top: 20px;
+        // margin-left: 20px;
+    }
+
     h2.subtitle {
+        text-align: center;
         font-size: 21px;
         line-height: 30px;
 //        color: white;
         color: #444444;
         margin-top: 6px;
         margin-bottom: 6px;
-        margin-left: 20px;
+        // margin-left: 20px;
         text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
     }
 
@@ -86,7 +88,7 @@
         margin-left: 20px;
     }
 
-    .guideNavigateBar {
+    .articleNavigateBar {
         padding: 15px calc(10% - 40px);
         @media (max-width: $max-mobile-width) {
             padding: 15px 20px;
@@ -100,23 +102,23 @@
             transform: translateY(7px);
         }
 
-        .guideNavigateLeft {
+        .articleNavigateLeft {
             flex: 1 0 50%;
             text-align: left;
         }
-        .guideNavigateRight {
+        .articleNavigateRight {
             flex: 1 0 50%;
             text-align: right;
         }
 
-        .guideNavigateItemName {
+        .articleNavigateItemName {
             @media (max-width: $max-mobile-width) {
                 display: none;
             }
         }
     }
 
-    .guideContent {
+    .articleContent {
 //        font-family: 'SeoulHangang';
         background: white;
         box-sizing: border-box;
@@ -131,32 +133,32 @@
         border-radius: 2px;
     }
 
-    // .guideContent.hideEssential .Essential > *:not(:first-child),
-    // .guideContent.hideRecommendable .Recommendable > *:not(:first-child),
-    // .guideContent.hideReadable .Readable > *:not(:first-child),
-    // .guideContent.hideOptional .Optional > *:not(:first-child),
-    // .guideContent.hideDraft .Draft > *:not(:first-child){
+    // .articleContent.hideEssential .Essential > *:not(:first-child),
+    // .articleContent.hideRecommendable .Recommendable > *:not(:first-child),
+    // .articleContent.hideReadable .Readable > *:not(:first-child),
+    // .articleContent.hideOptional .Optional > *:not(:first-child),
+    // .articleContent.hideDraft .Draft > *:not(:first-child){
     //     display: none;
     // }
 
-    .guideContent.hideEssential .Essential > *:not(.headingBlock),
-    .guideContent.hideRecommendable .Recommendable > *:not(.headingBlock),
-    .guideContent.hideReadable .Readable > *:not(.headingBlock),
-    .guideContent.hideOptional .Optional > *:not(.headingBlock),
-    .guideContent.hideDraft .Draft > *:not(.headingBlock){
+    .articleContent.hideEssential .Essential > *:not(.headingBlock),
+    .articleContent.hideRecommendable .Recommendable > *:not(.headingBlock),
+    .articleContent.hideReadable .Readable > *:not(.headingBlock),
+    .articleContent.hideOptional .Optional > *:not(.headingBlock),
+    .articleContent.hideDraft .Draft > *:not(.headingBlock){
         display: none;
     }
 
-    .guideContent.hideEssential .Essential > .headingBlock,
-    .guideContent.hideRecommendable .Recommendable > .headingBlock,
-    .guideContent.hideReadable .Readable > .headingBlock,
-    .guideContent.hideOptional .Optional > .headingBlock,
-    .guideContent.hideDraft .Draft > .headingBlock {
+    .articleContent.hideEssential .Essential > .headingBlock,
+    .articleContent.hideRecommendable .Recommendable > .headingBlock,
+    .articleContent.hideReadable .Readable > .headingBlock,
+    .articleContent.hideOptional .Optional > .headingBlock,
+    .articleContent.hideDraft .Draft > .headingBlock {
         opacity: 0.5;
     }
 }
 
-.guideList {
+.articleList {
     h1 {
         font-family: 'SeoulHangang';
         margin: 20px;
@@ -166,14 +168,14 @@
         text-shadow: 0px 4px 5px #0000004D;
     }
 
-    .guideListContainer {
+    .articleListContainer {
         background: white;
         border-left: 10px $primary-color solid;
         box-shadow: 0px 10px 15px #00000026;
         border-radius: 10px;
     }
 
-    .guideListSection {
+    .articleListSection {
         padding: 17px 10px;
         margin: 0px 16px;
         font-size: 20px;
@@ -201,7 +203,7 @@
         }
     }
 
-    .guideListItem {
+    .articleListItem {
         padding: 15px 16px;
         margin: 0px 47px;
         font-size: 16px;
@@ -233,14 +235,14 @@
     }
 }
 
-.guideFeedList {
+.articleFeedList {
     margin: auto;
     max-width: 1350px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 
-    .guideFeed {
+    .articleFeed {
         margin: 25px;
         flex: 0 0 283px;
 
@@ -248,7 +250,7 @@
             flex: 1 0 51%;
         }
 
-        .guideFeedContent {
+        .articleFeedContent {
             border-radius: 3.5px;
             background: white;
             border-top: 10px $primary-color solid;
@@ -305,7 +307,7 @@
     }
 }
 
-.guideSidebar {
+.articleSidebar {
     position: fixed;
     right: 20px;
     bottom: 20px;

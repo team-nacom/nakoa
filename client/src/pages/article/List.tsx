@@ -24,17 +24,22 @@ function Article() {
     }
 
     return <ApplyLayout title='모든 글 보기'>
+        <div>
+            { `총 ${articles.length}개` }
+        </div>
         <div className='articleFeedList'>
             {articles.map((article, no) => (
                 <div key={ no } className='articleFeed'>
                     <Link to={ `/article/view/${ article.index! }` }>
-                        <div className='author'>{ article.metadata.author }</div>
-                        <div className='title'>{ article.metadata.title }</div>
-                        <div className='content'>
-                            { article.mode === 'classic' ?
-                                article.text.substring(0,100)
-                                : '[Cell Mode]'
-                            }
+                        <div className='articleFeedContent'>
+                            <div className='author'>{ article.metadata.author }</div>
+                            <div className='title'>{ article.metadata.title }</div>
+                            <div className='content'>
+                                { article.mode === 'classic' ?
+                                    article.text.substring(0,100)
+                                    : '[Cell Mode]'
+                                }
+                            </div>
                         </div>
                     </Link>
                 </div>
