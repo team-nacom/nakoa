@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, Component } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { useDropzone } from 'react-dropzone';
 import { useMediaQuery } from 'react-responsive';
-
-import { FormattedMessage, useIntl } from 'react-intl';
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown-lab/Markdown';
@@ -23,12 +23,12 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
 };
 
 function EditorArea(props : React.TextareaHTMLAttributes<HTMLTextAreaElement> & { textareaRef: React.RefObject<HTMLTextAreaElement> } ){
-    let intl = useIntl();
+    let { i18n } = useTranslation('translation');
 
     return(
         <textarea
             {...props}
-            placeholder={ intl.formatMessage({id: 'editor.placeholder'}) }
+            placeholder={ i18n.t('editor.placeholder') ?? undefined }
         />
         // className={ (props.className || '') + ' editorArea' }
     )
@@ -97,7 +97,7 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const intl = useIntl();
+    const { i18n } = useTranslation('translation');
 
     const preview = () => { setPreviewText(text) }
 
@@ -121,7 +121,7 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
     }
 
     const uploadErrorHandler = (e: unknown) => {
-        alert( intl.formatMessage({id: 'editor.uploadFailed'}));
+        alert( i18n.t('editor.uploadFailed') );
     }
 
     //resizing
@@ -171,12 +171,12 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
     return (<div className='classicEditorWrapper'>
         <div className={ `active${ activeIndex }`+(collapse?' collapse':'') } style={{margin: 0}}>
             <div>
-                <PanelMenu className='panelMenu1' label={ intl.formatMessage({id: 'editor.edit'}) } callback = { () => setActiveIndex(1) }>
+                <PanelMenu className='panelMenu1' label={ i18n.t('editor.edit') ?? '' } callback = { () => setActiveIndex(1) }>
                     {/* <button className='showManualBtn' onClick={ () => setManualVisible(true) }>
                         <span className="material-icons">help_outline</span>
                     </button> */}
                 </PanelMenu>
-                <PanelMenu className='panelMenu2' label={ intl.formatMessage({id: 'editor.preview'}) } callback = { () => {setActiveIndex(2);preview()} }> 
+                <PanelMenu className='panelMenu2' label={ i18n.t('editor.preview') ?? '' } callback = { () => {setActiveIndex(2);preview()} }> 
                     <button className={ 'autoRenderBtn'+(autoRender?' autoRenderActive':'') } onClick={ (e) =>{
                         setAutoRender(!autoRender);preview()
                     } } >
@@ -219,8 +219,8 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
             
 
             <div className='dropzone'>
-                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachImages'}) } />
-                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ intl.formatMessage({id: 'editor.attachFiles'}) } />
+                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ i18n.t('editor.attachImages') ?? '' } />
+                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ i18n.t('editor.attachFiles') ?? '' } />
             </div>
         </div>
         {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}

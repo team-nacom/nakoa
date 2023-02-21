@@ -1,16 +1,14 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
-
 import { Link } from 'react-router-dom'
-
-import Button from '#/components/Button';
+import { useTranslation } from 'react-i18next';
 
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 
 function Main() {
-    let intl = useIntl();
-    return <LayoutWithArticleList  title='팀 나무컴퍼스 메인화면'>
-        <p>{ intl.formatMessage({ id: 'main.greeting' })}</p>
+    let { i18n } = useTranslation('translation');
+
+    return <LayoutWithArticleList title={ i18n.t('team') ?? undefined }>
+        <p>{ i18n.t('main.greeting') }</p>
     </LayoutWithArticleList>;
 }
 

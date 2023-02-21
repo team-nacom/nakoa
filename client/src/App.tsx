@@ -5,8 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { createBrowserHistory } from "history";
 import ReactGA from 'react-ga';
 
-import { useLocale } from '#/store/locale'
-import { localeMessages } from '#/locale'
+import { useTranslation } from 'react-i18next';
 
 import Main from '#/pages/Main';
 import NotFound from '#/pages/NotFound';
@@ -23,7 +22,13 @@ import Hidden from '#/pages/article/Hidden';
 import { baseUrl } from '#/config/env';
 
 function App() {
-    const { locale } = useLocale();
+    // const { t, i18n } = useTranslation();
+
+    // to use locale, use this:
+    // t('key')
+
+    // to change locale, use this:
+    // i18n.changeLanguage('ko');
 
     const history = createBrowserHistory({ basename: baseUrl });
     history.listen((location: any) => {
@@ -32,26 +37,24 @@ function App() {
         ReactGA.pageview(location.pathname);
     });
     return (
-        <IntlProvider locale={locale} messages={localeMessages[locale]}>
-            <Router history={history}>
-                {/* Layout is included in each component */}
-                <Switch>
-                    <Redirect exact path='/' to='/main' />
-                    <Route exact path='/main' component={Main} />
-                    <Route exact path='/about' component={About}/>
+        <Router history={history}>
+            {/* Layout is included in each component */}
+            <Switch>
+                <Redirect exact path='/' to='/main' />
+                <Route exact path='/main' component={Main} />
+                <Route exact path='/about' component={About}/>
 
-                    <Route exact path='/article/list' component={ArticleList} />
-                    <Route exact path='/article/view/:index' component={ArticleView} />
-                    <Route exact path='/article/update/:index' component={ArticleUpdate} />
-                    <Route exact path='/article/delete/:index' component={ArticleDelete} />
-                    <Route exact path='/article/write-classic' component={WriteClassic} />
-                    <Route exact path='/article/write-cell' component={WriteCell} />
+                <Route exact path='/article/list' component={ArticleList} />
+                <Route exact path='/article/view/:index' component={ArticleView} />
+                <Route exact path='/article/update/:index' component={ArticleUpdate} />
+                <Route exact path='/article/delete/:index' component={ArticleDelete} />
+                <Route exact path='/article/write-classic' component={WriteClassic} />
+                <Route exact path='/article/write-cell' component={WriteCell} />
 
-                    <Route exact path='/hidden' component={Hidden} />
-                    <Route component={NotFound}/>
-                </Switch>
-            </Router>
-        </IntlProvider>
+                <Route exact path='/hidden' component={Hidden} />
+                <Route component={NotFound}/>
+            </Switch>
+        </Router>
     )
 }
 

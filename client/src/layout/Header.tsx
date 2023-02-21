@@ -1,14 +1,14 @@
 import useSmoothValue from '#/misc/useSmoothValue';
+
 import React from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { localeList, localeName, useLocale } from '#/store/locale';
+import { useTranslation } from 'react-i18next';
+
+import { Menu as MenuIcon } from '@mui/icons-material';
 
 function LocaleButton() {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
-    let { locale: currentLocale, setLocale } = useLocale()
-    let dispatch = useDispatch();
+    let { i18n } = useTranslation('info');
 
     return (
         <>
@@ -26,17 +26,17 @@ function LocaleButton() {
                     onMouseLeave={() => setDeltaOpacity(-0.1) }
                     style={{ opacity }}
                 >
-                    { localeList.map((locale) => (
+                    { i18n.languages.map((lang) => (
                         <div 
-                            className={'localeSelectItem' + (locale === currentLocale ? ' focus' : '')} 
-                            onClick={() => setLocale(locale)}
+                            className={'localeSelectItem' + (lang === i18n.language ? ' focus' : '')} 
+                            onClick={() => i18n.changeLanguage(lang) }
                             style={{display: 'flex' }}
                         > 
                             <span className='material-icons' style={{flex: '0 0 10%' }}>
-                                { locale === currentLocale && 'check' }
+                                { lang === i18n.language && 'check' }
                             </span>
                             <span style={{flex: '1 0 0' }}>
-                                { localeName[locale] } 
+                                { i18n.t('name') } 
                             </span>
                         </div> 
                     ))} 
@@ -49,7 +49,8 @@ function LocaleButton() {
 function Header() {
     let [signInVisible, setSignInVisible] = React.useState<boolean>(false);
     let [expanded, setExpanded] = React.useState<boolean>(false);
-    let intl = useIntl();
+
+    let { i18n } = useTranslation('translation');
 
     const pathname = window.location.pathname;
     
@@ -61,7 +62,7 @@ function Header() {
                         <Link to='/'>
                             <img 
                                 src={process.env.PUBLIC_URL + '/logo.png'} 
-                                alt={intl.formatMessage({id: 'team'})}
+                                alt={ i18n.t('team') ?? '' }
                             />
                         </Link>
                     </div>
@@ -72,20 +73,20 @@ function Header() {
                     </span>
                     <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>
                         <Link to='/about'>
-                            <div> { intl.formatMessage({id: 'header.about'})} </div>
+                            <div> { i18n.t('header.about') ?? '' } </div>
                         </Link>
                     </span>
                     <span className='navitem menu'> 
                         <a href='https://chal.team-na.com'> 
-                            <div> { intl.formatMessage({id: 'header.chal'})} </div>
+                            <div> { i18n.t('header.chal') ?? '' } </div>
                         </a>
                     </span>
-                    <span className={'icon material-icons expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
+                    <MenuIcon className={'expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
                         e.preventDefault();
                         setExpanded(!expanded);
                     }}>
                         menu
-                    </span>
+                    </MenuIcon>
                 </nav>
             </header>
         </>

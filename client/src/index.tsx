@@ -7,6 +7,8 @@ import App from './App'
 import ReactGA from 'react-ga'
 import * as config from '#/config/env';
 
+import './locale'; // react-i18n initialization
+
 ReactGA.initialize(config.googleAnalyticsTrackingId);
 
 const rootElement = document.getElementById('root');
