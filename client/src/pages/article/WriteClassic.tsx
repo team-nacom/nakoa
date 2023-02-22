@@ -7,22 +7,27 @@ import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
+import Loading from '../Loading';
+import usePromise from '#/misc/usePromise';
+
 function WriteClassic() {
-    const initArticle: ClassicArticle | undefined = useMemo(()=>{
-        const article = getAutosaveArticle(undefined, 'classic');
-        if(article === undefined || article.mode !== 'classic'){
-            return undefined; // this will simplify setting default fields
-            // return {
-            //     mode: 'classic',
-            //     metadata: {
-            //         title: '',
-            //         author: '',
-            //     },
-            //     text: ''
-            // };
-        }
-        return article;
-    }, []);
+    const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'classic'), []);
+
+    // const [loading, initArticle] = usePromise(async () => {
+    //     const draft = await getAutosaveArticle(undefined, 'classic');
+    //     return draft;
+    //     // if(draft !== undefined) return draft;
+    //     // return undefined; // this will simplify setting default fields
+
+    //     // return {
+    //     //     mode: 'cell',
+    //     //     metadata: {
+    //     //         title: '',
+    //     //         author: '',
+    //     //     },
+    //     //     text: ''
+    //     // };
+    // }, []);
     // const [modified, setModified] = useState(false);
 
     // redirection state
@@ -46,9 +51,15 @@ function WriteClassic() {
     }, []);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
+    if(loading) return <Loading />;
+    
     return <LayoutWithArticleList title='글 작성하기'>
         <p>{message}</p>
-        <ClassicEditor initArticle={ initArticle }
+        <ClassicEditor
+            initArticle={
+                // initArticle?.mode === 'classic' ? initArticle : undefined
+                initArticle as ClassicArticle
+            }
             upload={ upload } autosave={ setAutosaveArticle }
         />
     </LayoutWithArticleList>;

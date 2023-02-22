@@ -4,30 +4,35 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
-import usePromise from '#/misc/usePromise';
 import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
 
+import Loading from '../Loading';
+import usePromise from '#/misc/usePromise';
+
 function WriteCell() {
-    const initArticle: CellArticle | undefined = useMemo(()=>{
-        const article = getAutosaveArticle(undefined, 'cell');
-        if(article === undefined || article.mode !== 'cell'){
-            return undefined; // this will simplify setting default fields
-            // return {
-            //     mode: 'cell',
-            //     metadata: {
-            //         title: '',
-            //         author: '',
-            //     },
-            //     content: {
-            //         rootId: 'c0',
-            //         structData: { 'c0': [] },
-            //         cellData: { 'c0': { id: 'c0', [cellTypeStr]: 'root', mathMacroStr: '', } }
-            //     }
-            // };
-        }
-        return article;
-    }, []);
+    const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'cell'), []);
+
+    // const [loading, initArticle] = usePromise(async () => {
+    //     const draft = await getAutosaveArticle(undefined, 'cell');
+    //     return draft;
+    //     // if(draft !== undefined) return draft;
+    //     // return undefined; // this will simplify setting default fields
+
+    //     // return {
+    //     //     mode: 'cell',
+    //     //     metadata: {
+    //     //         title: '',
+    //     //         author: '',
+    //     //     },
+    //     //     content: {
+    //     //         rootId: 'c0',
+    //     //         structData: { 'c0': [] },
+    //     //         cellData: { 'c0': { id: 'c0', [cellTypeStr]: 'root', mathMacroStr: '', } }
+    //     //     }
+    //     // };
+    // }, []);
+
     // const [modified, setModified] = useState(false);
 
     // redirection state
@@ -56,9 +61,15 @@ function WriteCell() {
     // const autosave = setAutosaveArticle;
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
+    if(loading) return <Loading />;
+    
     return <LayoutWithArticleList title='글 작성하기'>
         <p>{message}</p>
-        <CellEditor initArticle={ initArticle }
+        <CellEditor
+            initArticle={
+                // initArticle?.mode === 'cell' ? initArticle : undefined
+                initArticle as CellArticle
+            }
             upload={ upload } autosave={ setAutosaveArticle }
         />
     </LayoutWithArticleList>;

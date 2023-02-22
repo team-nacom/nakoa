@@ -17,10 +17,10 @@ function Update() {
     let index = params.index;
 
     // redirection state
-    const [loading, initArticle] = usePromise(() => {
-        const draft = getAutosaveArticle(index);
-        if(draft) return Promise.resolve( draft );
-        return getArticle(index);
+    const [loading, initArticle] = usePromise(async () => {
+        const draft = await getAutosaveArticle(index);
+        if(draft !== undefined) return draft;
+        return await getArticle(index);
     }, [index]);
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();

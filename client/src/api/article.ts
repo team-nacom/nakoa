@@ -3,6 +3,7 @@
 
 import axios from "axios";
 import { customAlphabet } from 'nanoid';
+import localforage from 'localforage';
 
 import { apiUrl } from "#/config/env";
 
@@ -26,52 +27,89 @@ function baseid(count: number): string {
 }
 
 
-function setLocal(key: string, article: Article){
-    localStorage.setItem(key, JSON.stringify(article));
+///////////////// db-specific implementation
+
+let articleStorage = localforage.createInstance({
+    name: 'article'
+});
+
+async function setLocal(key: string, article: Article){
+    articleStorage.setItem(key, article);
 }
 
-function getLocal(key: string) : Article | undefined{
-    let item = localStorage.getItem(key);
+async function unsetLocal(key: string){
+    articleStorage.removeItem(key);
+}
+
+async function getLocal(key: string) : Promise<Article | undefined>{
+    let item = await articleStorage.getItem(key);
     if(item === null) return undefined;
-    console.log(key, JSON.parse(item));
-    return JSON.parse(item) as Article;
+
+    return item as Article;
 }
 
-function unsetLocal(key: string){
-    localStorage.removeItem(key);
+async function getLocalAll(){
+    let articles = (await Promise.all(
+        (await getLocalIdxArr()).map(async (idx) => {
+            let key = `data/${idx}`;
+            return await getLocal(key);
+        })
+    )).filter((a) : a is Article => a !== undefined );
+
+    return articles;
 }
 
-function getLocalIdxArr(){
-    // let keys = JSON.parse(localStorage.getItem(`article/keys`) ?? '[]');
-    // return Array.isArray(keys) ? keys as string[] : [];
-    return Object.keys(localStorage)
-        .map((key) => {
-            let res = key.match(/article\/data\/(?<index>[^\/]*)/);
+async function getLocalIdxArr(){
+    let keys = await articleStorage.keys();
+
+    return keys.map((key) => {
+            let res = key.match(/data\/(?<index>[^\/]*)/);
             if(res === null) return undefined;
             return res.groups?.index;
         })
         .filter((k): k is string => k !== undefined);
 }
 
+async function generateUniqueIdx(){
+    let indices = await getLocalIdxArr();
 
-export function setAutosaveArticle(article: Article, index?: string){
-    // in browser cache
+    let index = '';
+    do{
+        index = baseid(8);
+    } while( indices.includes(index) );
 
-    // TODO: manage localStorage key list
-    let key = index !== undefined
-        ? `article/draft/${index}`
-        : `article/draft-unpub/${article.mode}`;
-
-    setLocal(key, article);
-    return { success: true, };
+    return index;
 }
 
-export function getAutosaveArticle(index?: string, mode?: Article['mode']){
-    let key = index !== undefined
-        ? `article/draft/${index}`
-        : `article/draft-unpub/${mode}`;
 
-    return getLocal(key);
+
+
+
+////////////////////////
+
+
+export async function setAutosaveArticle(article: Article, index?: string){
+    // in browser cache
+
+    // TODO: manage storage key list
+    let key = index !== undefined
+        ? `draft/${index}`
+        : `draft-unpub/${article.mode}`;
+
+    await setLocal(key, article);
+    return { success: true };
+}
+
+export async function getAutosaveArticle(index?: string, mode?: Article['mode']){
+    let key = index !== undefined
+        ? `draft/${index}`
+        : `draft-unpub/${mode}`;
+    
+    let article = await getLocal(key);
+    if(article && article.mode !== mode){
+        return undefined;
+    }
+    return article;
 }
 
 
@@ -79,12 +117,7 @@ export function getAutosaveArticle(index?: string, mode?: Article['mode']){
 
 export async function getArticleList(){
     // serverless.
-    let articles = getLocalIdxArr().map((idx) => {
-        let key = `article/data/${idx}`;
-        return getLocal(key);
-    }).filter((a) : a is Article => a !== undefined );
-    
-    return articles;
+    return getLocalAll();
 
     let response = await axios.get(`${apiUrl}/article/get-list`, {
         // validateStatus,
@@ -100,7 +133,7 @@ export async function getArticleList(){
 
 export async function getArticle(index: string){
     // serverless.
-    let key = `article/data/${index}`;
+    let key = `data/${index}`;
 
     let article = getLocal(key);
     if(article === undefined){
@@ -122,20 +155,17 @@ export async function getArticle(index: string){
 
 export async function postArticle(article: Article){
     // serverless.
-    let index = '';
-    do{
-        index = baseid(8);
-    } while( localStorage.getItem(index) !== null );
+    let index = await generateUniqueIdx();
 
     article.index = index;
     article.createDate = article.updateDate = new Date();
     
-    let key = `article/data/${index}`;
-    setLocal(key, article);
+    let key = `data/${index}`;
+    await setLocal(key, article);
 
     // remove draft.
     let draftkey = `article/draft-unpub/${article.mode}`;
-    unsetLocal(draftkey);
+    await unsetLocal(draftkey);
 
     return {
         success: true,
@@ -164,8 +194,8 @@ export async function updateArticle(index: string, article: Article){
     article.index = index; // article argument might not have index anymore
     article.updateDate = new Date();
 
-    let key = `article/data/${index}`;
-    setLocal(key, article);
+    let key = `data/${index}`;
+    await setLocal(key, article);
     return true;
 
     // NOTE: index가 article의 optional field니까, 그냥 article만 넣고 싶긴 함
@@ -181,8 +211,8 @@ export async function updateArticle(index: string, article: Article){
 export async function removeArticle(index: string){
     // serverless
 
-    let key = `article/data/${index}`;
-    unsetLocal(key);
+    let key = `data/${index}`;
+    await unsetLocal(key);
     return true;
 
     let response = await axios.delete(`${apiUrl}/article/remove/${index}`, {
