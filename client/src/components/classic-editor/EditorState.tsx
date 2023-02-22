@@ -1,7 +1,7 @@
 import create, { createStore, StateCreator } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { CtxFactory } from '#/misc/CtxFactory';
+import { CtxFactoryCurry } from '#/misc/CtxFactory';
 
 export interface ClassicEditorInitProps{
     initText?: string
@@ -33,6 +33,6 @@ function createClassicEditorStore(initProps: ClassicEditorInitProps){
     })))
 }
 
-export const [ ClassicEditorProvider, useClassicEditorContext ] = CtxFactory<ClassicEditorStateMachine, ClassicEditorInitProps>(createClassicEditorStore);
+export const [ ClassicEditorProvider, useClassicEditorContext ] = CtxFactoryCurry<ClassicEditorStateMachine, ClassicEditorInitProps>(createClassicEditorStore)({});
 
 export const useClassicText = () => useClassicEditorContext(state => state.text);

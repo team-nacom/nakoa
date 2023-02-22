@@ -1,9 +1,10 @@
 import { memo, useEffect, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
-import { Metadata, useMetadataState} from './MetadataState'
+import { Metadata, useMetadataState, useMetadataAction } from './MetadataState'
 
 export function MetadataInput(){
-    const { title, author, setTitle, setAuthor } = useMetadataState();
+    const { title, author } = useMetadataState();
+    const { setTitle, setAuthor } = useMetadataAction();
 
     return (
         <div className='metadataInput'>

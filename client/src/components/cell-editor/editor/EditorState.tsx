@@ -9,7 +9,7 @@ import isEqual from 'react-fast-compare'
 import { CellArticleContent } from '#/common/Article';
 
 import { Cell, CellType, cellTypeStr, labelType, isParentType, defaultFields } from '#/components/cell-editor/cell/types'
-import { CtxFactory } from '#/misc/CtxFactory';
+import { CtxFactoryCurry } from '#/misc/CtxFactory';
 
 // helper functions
 
@@ -381,7 +381,7 @@ function createCellEditorStore(initProps: CellEditorInitProps){
     })))
 }
 
-export const [ CellEditorProvider, useCellEditorContext ] = CtxFactory<CellEditorStateMachine, CellEditorInitProps>(createCellEditorStore);
+export const [ CellEditorProvider, useCellEditorContext ] = CtxFactoryCurry<CellEditorStateMachine, CellEditorInitProps>(createCellEditorStore)({});
 
 
 export const useEditorAction = () => useCellEditorContext(state => state.editorAction)
