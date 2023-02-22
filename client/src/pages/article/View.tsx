@@ -10,7 +10,7 @@ import Button from '#/components/Button';
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
 import usePromise from '#/misc/usePromise';
 import { getArticle } from '#/api/article';
-import Markdown from '#/components/markdown-lab/Markdown';
+import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 
 function Article() {

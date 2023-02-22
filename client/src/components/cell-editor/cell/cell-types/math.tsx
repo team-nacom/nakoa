@@ -10,7 +10,7 @@ import {
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
-import Markdown from '#/components/markdown-lab/Markdown';
+import Markdown from '#/components/markdown/Markdown';
 
 import 'katex/dist/katex.min.css';
 import katex from 'katex';

@@ -9,7 +9,7 @@ import {
 } from '#/components/cell-editor/editor/EditorState'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
-import Markdown from '#/components/markdown-lab/Markdown'
+import Markdown from '#/components/markdown/Markdown'
 
 // export const sectionCellName = 'section'
 export interface SectionCellField{

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
 import { useMediaQuery } from 'react-responsive';
 
-// import Markdown from '#/components/markdown/MarkdownRenderer'
-import Markdown from '#/components/markdown-lab/Markdown';
+// import Markdown from '#/components/markdown-legacy/MarkdownRenderer'
+import Markdown from '#/components/markdown/Markdown';
 // import { readBuilderProgram } from 'typescript';
 
 // import Manual from './MarkdownManual';

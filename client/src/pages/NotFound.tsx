@@ -1,5 +1,5 @@
 import React from 'react';
-import Markdown from '#/components/markdown-lab/Markdown';
+import Markdown from '#/components/markdown/Markdown';
 import { Layout } from '#/layout/Layout';
 
 function NotFound() {

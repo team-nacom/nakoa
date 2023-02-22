@@ -1,3 +1,6 @@
+import { notStrictEqual } from 'assert';
+import React, { Children } from 'react';
+
 import { Transformer, Plugin } from 'unified';
 import { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';

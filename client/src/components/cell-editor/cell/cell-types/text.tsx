@@ -11,7 +11,7 @@ import {
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
-import Markdown from '#/components/markdown-lab/Markdown'
+import Markdown from '#/components/markdown/Markdown'
 
 // export const textCellName = 'text'
 export interface TextCellField{
