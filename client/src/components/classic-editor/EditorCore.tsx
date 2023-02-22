@@ -10,7 +10,7 @@ import Markdown from '#/components/markdown-lab/Markdown';
 
 // import Manual from './MarkdownManual';
 import Manual from './MarkdownManual';
-import { useClassicEditorContext } from './EditorState';
+import { useClassicEditorAction, useClassicEditorContext } from './EditorState';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
 
@@ -87,9 +87,9 @@ interface ClassicEditorBodyProps extends React.HTMLAttributes<HTMLTextAreaElemen
 
 export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
     const {
-        text, setText,
-        previewText, setPreviewText
+        text, previewText
     } = useClassicEditorContext(state => state) //should be initialized in the top component.
+    const { setText, setPreviewText } = useClassicEditorAction();
 
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
     const [manualVisible,setManualVisible] = useState(false);

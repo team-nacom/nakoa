@@ -4,7 +4,7 @@ import { BasicCell } from '#common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
-    useEditorAction,
+    useCellEditorAction,
 } from '#/components/cell-editor/editor/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
@@ -43,7 +43,7 @@ function RootCellViewer({ mode, cell } : CellTypeRendererProps<RootCell>){
 
 
 function RootCellEditor({ cell }: Omit<CellTypeRendererProps<RootCell>,'mode'>){
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()

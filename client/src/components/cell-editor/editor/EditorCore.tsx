@@ -1,4 +1,4 @@
-import { useEditorAction, useRootId } from '#/components/cell-editor/editor/EditorState'
+import { useCellEditorAction, useRootId } from '#/components/cell-editor/editor/EditorState'
 
 import { DndScope } from './DndScope'
 
@@ -13,7 +13,7 @@ const [CellPortal, CellPortalDraggable] = CellPortalWith(InterCell, ChildrenWrap
 
 export function EditorCore(){
     const rootId = useRootId()
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     return (
         <div className='allCellsWrapper'

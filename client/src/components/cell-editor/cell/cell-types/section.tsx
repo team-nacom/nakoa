@@ -5,7 +5,7 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useEditorAction,
+    useCellEditorAction,
 } from '#/components/cell-editor/editor/EditorState'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
@@ -41,7 +41,7 @@ function SectionCellViewer({ mode, cell } : CellTypeRendererProps<SectionCell>){
 
 
 function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mode'>){
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()

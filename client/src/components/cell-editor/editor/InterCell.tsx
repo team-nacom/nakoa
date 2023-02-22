@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 
 import {
-    useEditorAction,
+    useCellEditorAction,
     useSingleCellType
 } from '#/components/cell-editor/editor/EditorState'
 
@@ -19,7 +19,7 @@ const maxDepth = 5
 
 function _InterCell({ parentId, idx, depth }: InterCellProps){
     const cellType = useSingleCellType(parentId)
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     const dndId = parentId + '@' + idx //assume that id do not use @
     const isOver = useIsOver(dndId)

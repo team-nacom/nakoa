@@ -2,14 +2,18 @@ import { createContext, useContext, useRef, PropsWithChildren } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
 type Func<Args extends unknown[], Ret> = (...args: Args) => Ret;
-type Setter<S> = Parameters< StoreApi<S>['setState'] >[0];
 
-export function CtxFactoryCurry<State, InitProps = Partial<State>>(
+export function CtxFactoryCurry<
+    State, InitProps = Partial<State>
+>(
     createCtxStore: (props: Omit<PropsWithChildren<InitProps>,'children'>) => ReturnType<ReturnType<typeof createStore<State> >>
+
+    // because of this type signature, we can't use any middleware (e.g. immer) for now. wrap mutations with `produce()` manually.
 ){
     type CtxStore = ReturnType< typeof createCtxStore >;
+    type Setter = Parameters< CtxStore['setState'] >[0];
 
-    return function<Mutations extends { [key: string]: Func<any[], Setter<State>> }>(mutations: Mutations){
+    return function<Mutations extends { [key: string]: Func<any[], Setter> }>(mutations: Mutations){
         const CtxContext = createContext<CtxStore | null>( null );
 
         function CtxProvider({ children, ...props }: PropsWithChildren<InitProps>): JSX.Element {
@@ -34,7 +38,7 @@ export function CtxFactoryCurry<State, InitProps = Partial<State>>(
             return state;
         }
 
-        function useCtxAction<T>() /* : Record<keyof Mutations, () => void> */ {
+        function useCtxAction<T>(){
             const store = useContext(CtxContext);
             if (store === null) throw new Error('Missing Context Provider in the tree');
 
@@ -51,12 +55,12 @@ export function CtxFactoryCurry<State, InitProps = Partial<State>>(
     }
 }
 
-export function CtxFactory<
-    State, InitProps,
-    Mutations extends { [key: string]: (...args: any[]) => Setter<State> }
->(
-    createCtxStore: (props: Omit<PropsWithChildren<InitProps>,'children'>) => ReturnType<ReturnType<typeof createStore<State> >>,
-    mutations: Mutations
-){
-    return CtxFactoryCurry(createCtxStore)(mutations);
-}
+// export function CtxFactory<
+//     State, InitProps,
+//     Mutations extends { [key: string]: (...args: any[]) => Setter<State> }
+// >(
+//     createCtxStore: (props: Omit<PropsWithChildren<InitProps>,'children'>) => ReturnType<ReturnType<typeof createStore<State> >>,
+//     mutations: Mutations
+// ){
+//     return CtxFactoryCurry(createCtxStore)(mutations);
+// }

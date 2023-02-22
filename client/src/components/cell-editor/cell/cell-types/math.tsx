@@ -5,7 +5,7 @@ import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
 
 import {
     useRenderData,
-    useEditorAction,
+    useCellEditorAction,
 } from '#/components/cell-editor/editor/EditorState'
 
 import SingletonTextArea from '#/components/helpers/SingletonTextArea'
@@ -54,7 +54,7 @@ function MathCellViewer({ mode, cell } : CellTypeRendererProps<MathCell>){
 }
 
 function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()

@@ -1,4 +1,4 @@
-import create, { createStore, StateCreator } from 'zustand';
+import create, { createStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { CtxFactoryCurry } from '#/misc/CtxFactory';
@@ -12,27 +12,18 @@ export interface ClassicEditorState{
     previewText: string,
 }
 
-export interface ClassicEditorStateMachine extends ClassicEditorState{
-    setText(text: string): void,
-    setPreviewText(previewText: string): void
-}
-
 function createClassicEditorStore(initProps: ClassicEditorInitProps){
     var initText = initProps.initText ?? '';
 
-    return createStore<ClassicEditorStateMachine>()(immer((set, get) => ({
+    return createStore<ClassicEditorState>()((set, get) => ({
         text: initText,
         previewText: initText,
-
-        setText(text){
-            set((state: ClassicEditorState)=>{ state.text = text })
-        },
-        setPreviewText(previewText){
-            set((state: ClassicEditorState)=>{ state.previewText = previewText })
-        },
-    })))
+    }))
 }
 
-export const [ ClassicEditorProvider, useClassicEditorContext ] = CtxFactoryCurry<ClassicEditorStateMachine, ClassicEditorInitProps>(createClassicEditorStore)({});
+export const [ ClassicEditorProvider, useClassicEditorContext, useClassicEditorAction ] = CtxFactoryCurry<ClassicEditorState, ClassicEditorInitProps>(createClassicEditorStore)({
+    setText: (text: string) => ({ text }),
+    setPreviewText: (previewText: string) => ({ previewText })
+});
 
 export const useClassicText = () => useClassicEditorContext(state => state.text);

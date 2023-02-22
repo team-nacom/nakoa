@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
 import {
-    useEditorAction,
+    useCellEditorAction,
     useSingleCellFocused, 
 } from '#/components/cell-editor/editor/EditorState'
 
@@ -16,7 +16,7 @@ function _CellIndicator({ id }: CellIndicatorProps){
     const isFocused = useSingleCellFocused(id)
     const mode = (isFocused? RenderMode.EDITOR : RenderMode.PREVIEW)
 
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     return (
         <div id={ id }

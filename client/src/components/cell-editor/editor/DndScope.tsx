@@ -7,7 +7,7 @@ import {
 
 import {
     useParentIds,
-    useEditorAction
+    useCellEditorAction
 } from '#/components/cell-editor/editor/EditorState'
 
 import {
@@ -26,7 +26,7 @@ export const useIsOver = (dndId: string) => useContextSelector(OverIdContext, ov
 
 function _DndScope({ children }: React.PropsWithChildren){
     const parentIds = useParentIds()
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
     // const editorAction = useEditorAction()
 
     // const [activeId, setActiveId] = useState<string | number>('')

@@ -18,7 +18,7 @@ i18n.use(initReactI18next)
                 translation: messageKo
             },
         },
-        lng: defaultLng,
+        lng: defaultLng, // TODO: make language setting persist
         fallbackLng: defaultLng,
     })
 

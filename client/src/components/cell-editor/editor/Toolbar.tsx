@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 
 import {
-    useEditorAction,
+    useCellEditorAction,
 
     useSingleCell, useSingleCellType, useSingleCellFocused, useSingleCellChildren, useSingleCellHideChildren, useSingleCellLabelTypewise,
 } from '#/components/cell-editor/editor/EditorState'
@@ -34,7 +34,7 @@ function _Toolbar({ id }: CellIndicatorProps){
     const hide = useSingleCellHideChildren(id)
     const isFocused = useSingleCellFocused(id)
 
-    const editorAction = useEditorAction()
+    const editorAction = useCellEditorAction()
 
     const changeCellTypeHandlerFactory = useCallback((targetType: CellType) => (() => {
         const { [cellTypeStr]: cellType, id: _, ...fields } = cell
