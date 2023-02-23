@@ -1,10 +1,11 @@
-import React, { PropsWithChildren } from 'react'
+import React, { useState, useEffect, PropsWithChildren } from 'react'
 import isEqual from 'react-fast-compare'
 
 import {normalizeUri} from 'micromark-util-sanitize-uri'
 
 import 'katex/dist/katex.min.css';
 import katex from 'katex'
+import { getImageUrl } from '#/api/file';
 
 export type Handler = React.ComponentType<PropsWithChildren<any>>
 
@@ -50,8 +51,21 @@ const defaultHandlers: Handlers = {
         return <Tag>{ children }</Tag>
     },
     
-    'image': ({ children, ...props }) => {
-        return <img src={ normalizeUri(props.url) } alt={ props.alt } title={ props.title ?? '' } />
+    'image': function ImageTransform({ children, ...props }){
+        const [url, setUrl] = useState('');
+
+        useEffect(() => {
+            if(props.url.startsWith('local:')){
+                let index = props.url.slice('local:'.length);
+                getImageUrl(index).then((dataUrl)=>{
+                    setUrl(dataUrl);
+                });
+            } else{
+                setUrl( normalizeUri(props.url) );
+            }
+        }, [props.url]);
+
+        return <img src={ url } alt={ props.alt } title={ props.title ?? '' } />
     },
     
     'link': ({ children, ...props }) => {

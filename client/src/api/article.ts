@@ -2,7 +2,7 @@
 // https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/etc/api/guide.ts
 
 import axios from "axios";
-import { customAlphabet } from 'nanoid';
+import { base64rand } from '#/misc/base64rand';
 import localforage from 'localforage';
 
 import { apiUrl } from "#/config/env";
@@ -20,16 +20,9 @@ export const validateStatus = (status: number) => ((200 <= status && status < 30
 // export const validateSetStatus = (status: number) => (status < 300);
 
 
-const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
-function baseid(count: number): string {
-    const nanoid = customAlphabet(base64url, count);
-    return nanoid();
-}
-
-
 ///////////////// db-specific implementation
 
-let articleStorage = localforage.createInstance({
+const articleStorage = localforage.createInstance({
     name: 'article'
 });
 
@@ -75,15 +68,11 @@ async function generateUniqueIdx(){
 
     let index = '';
     do{
-        index = baseid(8);
+        index = base64rand(8);
     } while( indices.includes(index) );
 
     return index;
 }
-
-
-
-
 
 ////////////////////////
 

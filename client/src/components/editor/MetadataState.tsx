@@ -7,6 +7,7 @@ import { CtxFactoryCurry } from '#/misc/CtxFactory';
 
 export type { Metadata };
 
+
 function createMetadataStore(initProps: Partial<Metadata>){
     const defaultProps : Metadata = {
         title: '',

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { fileUpload, imgUpload } from '#/api'
+import { postImage } from '#/api/file';
 
 export function insertText(text : string, elem? : HTMLTextAreaElement){
     if(!elem) return;
@@ -45,8 +46,13 @@ export async function pasteHandler(e : React.ClipboardEvent<HTMLTextAreaElement>
 
 export async function imgUploadHelper(file: File, elem?: HTMLTextAreaElement, errorHandler?: (e: unknown) => any ){
     try{
-        const imgUrl = await imgUpload(file);
-        insertText(`\n![](${ imgUrl })\n`, elem);
+        const result = await postImage(file);
+        if(result.local){
+            insertText(`\n![](local:${ result.index })\n`, elem);
+        }
+
+        // const imgUrl = await imgUpload(file);
+        // insertText(`\n![](${ imgUrl })\n`, elem);
     } catch (error){
         if(errorHandler) errorHandler(error);
     }
