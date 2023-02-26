@@ -48,7 +48,7 @@ export async function imgUploadHelper(file: File, elem?: HTMLTextAreaElement, er
     try{
         const result = await postImage(file);
         if(result.local){
-            insertText(`\n![](local:${ result.index })\n`, elem);
+            insertText(`\n![](local::${ result.index })\n`, elem);
         }
 
         // const imgUrl = await imgUpload(file);

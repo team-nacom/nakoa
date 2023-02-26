@@ -110,7 +110,14 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
         }
     }, [collapse]);
 
-    const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+    const keydownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Tab') { // set tab key to insert two whitespaces
+            e.preventDefault();
+            insertText('  ', textareaRef.current ?? undefined);
+        }
+    }
+
+    const changeHandler = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -192,8 +199,9 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                         {...other}
                         className={ `${other.className ?? ''} editorArea` } 
                         placeholder={ i18n.t('editor.placeholder') ?? undefined }
-                        onChange={ innerUpdate }
+                        onKeyDown={ keydownHandler }
                         onPaste={ pasteHandler }
+                        onChange={ changeHandler }
                         value = { text }
                     />
                     {/* <EditorArea

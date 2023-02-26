@@ -1,6 +1,9 @@
 import React, { useState, useEffect, PropsWithChildren } from 'react'
 import isEqual from 'react-fast-compare'
 
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+
 import {normalizeUri} from 'micromark-util-sanitize-uri'
 
 import 'katex/dist/katex.min.css';
@@ -30,11 +33,15 @@ const defaultHandlers: Handlers = {
     'strong': ({ children, ...props }) => (<strong>{ children }</strong>),
     
     'code': ({ children, ...props }) => {
-        return <pre>
-            <code className={ props.lang ? 'language-' + props.lang : ''} >
-                { (props.value ?? '') + '\n' }
-            </code>
-        </pre>
+        return (
+            <SyntaxHighlighter className='code'
+                language = { props.lang }
+                style = { docco }
+                wrapLongLines = { true }
+            >
+                {props.value}
+            </SyntaxHighlighter>
+        )
     },
     'inlineCode': ({ children, ...props }) => {
         return <code>
@@ -55,8 +62,8 @@ const defaultHandlers: Handlers = {
         const [url, setUrl] = useState('');
 
         useEffect(() => {
-            if(props.url.startsWith('local:')){
-                let index = props.url.slice('local:'.length);
+            if(props.url.startsWith('local::')){
+                let index = props.url.slice('local::'.length);
                 getImageUrl(index).then((dataUrl)=>{
                     setUrl(dataUrl);
                 });
