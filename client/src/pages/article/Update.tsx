@@ -26,6 +26,11 @@ function Update() {
     const [message, setMessage] = useState<string>();
 
     const uploadClassic = useCallback((metadata: Metadata, text: string) => {
+        if(metadata.title === ''){
+            alert('제목을 입력해 주세요.');
+            return;
+        }
+
         const article: ClassicArticle = {
             mode: 'classic',
             metadata,
