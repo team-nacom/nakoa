@@ -3,7 +3,7 @@ import React from 'react';
 import { fileUpload, imgUpload } from '#/api'
 import { postImage } from '#/api/file';
 
-export function insertText(text : string, elem? : HTMLTextAreaElement){
+export function insertText(text: string, elem? : HTMLTextAreaElement){
     if(!elem) return;
 
     // source: https://kubyshkin.name/posts/insert-text-into-textarea-at-cursor-position/
@@ -14,7 +14,7 @@ export function insertText(text : string, elem? : HTMLTextAreaElement){
     elem.selectionStart = elem.selectionEnd = st + text.length;
 
     // notify to event listeners
-    const e = new Event("UIEvent", {"bubbles": true, "cancelable": false});
+    const e = new Event('change', {"bubbles": true, "cancelable": false});
     elem.dispatchEvent(e);
 }
 

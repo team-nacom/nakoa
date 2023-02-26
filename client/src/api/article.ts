@@ -153,14 +153,13 @@ export async function postArticle(article: Article){
     await setLocal(key, article);
 
     // remove draft.
-    let draftkey = `article/draft-unpub/${article.mode}`;
+    let draftkey = `draft-unpub/${article.mode}`;
     await unsetLocal(draftkey);
 
     return {
         success: true,
         index
     };
-    
 
 
     // on publishing, the article is given a new index which server has generated.

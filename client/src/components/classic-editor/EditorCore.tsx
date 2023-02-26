@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, Component } from 'react';
+import React, { useState, useRef, useEffect, useCallback, Component } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDropzone } from 'react-dropzone';
@@ -6,10 +6,8 @@ import { useMediaQuery } from 'react-responsive';
 
 // import Markdown from '#/components/markdown-legacy/MarkdownRenderer'
 import Markdown from '#/components/markdown/Markdown';
-// import { readBuilderProgram } from 'typescript';
 
 // import Manual from './MarkdownManual';
-import Manual from './MarkdownManual';
 import { useClassicEditorAction, useClassicEditorContext } from './EditorState';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
@@ -22,17 +20,17 @@ const usePrevious = <T extends unknown>(value: T): T | undefined => {
     return ref.current;
 };
 
-function EditorArea({ textareaRef, ...props } : React.TextareaHTMLAttributes<HTMLTextAreaElement> & { textareaRef: React.RefObject<HTMLTextAreaElement> } ){
-    let { i18n } = useTranslation('translation');
+// function EditorArea({ textareaRef, ...props } : React.TextareaHTMLAttributes<HTMLTextAreaElement> & { textareaRef: React.RefObject<HTMLTextAreaElement> } ){
+//     let { i18n } = useTranslation('translation');
 
-    return(
-        <textarea ref={ textareaRef }
-            {...props}
-            placeholder={ i18n.t('editor.placeholder') ?? undefined }
-        />
-        // className={ (props.className || '') + ' editorArea' }
-    )
-}
+//     return(
+//         <textarea ref={ textareaRef }
+//             {...props}
+//             placeholder={ i18n.t('editor.placeholder') ?? undefined }
+//         />
+//         // className={ (props.className || '') + ' editorArea' }
+//     )
+// }
 
 function PreviewArea({...props} : React.HTMLAttributes<HTMLDivElement>){
     return(
@@ -70,22 +68,14 @@ interface FileDropzoneProps {
 };
 
 function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
-    const onDrop = React.useCallback(handleDrop, []);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+    const onDrop = useCallback(handleDrop, []);
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop });
   
     return (
-        <div className='dropzone'
-            onDragEnter={ (e) => {
-                (e.target as HTMLDivElement).classList.add('dragging');
-            } }
-            onDragLeave={ (e) => {
-                (e.target as HTMLDivElement).classList.remove('dragging')
-            } }
-            onDrop={ (e) => {
-                (e.target as HTMLDivElement).classList.remove('dragging')
-            } }
+        <div {...getRootProps()}
+            className={ `dropzone ${ isDragActive? `dragging` : `` }` }
         >
-            <label {...getRootProps()}>{ message }</label>
+            <label>{ message }</label>
             <input {...getInputProps()} />
         </div>
     )
@@ -113,11 +103,12 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
 
     let collapse = useMediaQuery({ query: `(max-width:768px)` }) || false;
     const prevCollapse = usePrevious(collapse);
+
     useEffect(()=>{
         if(prevCollapse && !collapse){
             preview();
         }
-    }, [collapse])
+    }, [collapse]);
 
     const innerUpdate = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
@@ -197,14 +188,22 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
             </div>
             <div className='panelWrapper' style={ {height: height} }>
                 <Panel className='panel1'>
-                    <EditorArea
+                    <textarea ref={ textareaRef }
+                        {...other}
+                        className={ `${other.className ?? ''} editorArea` } 
+                        placeholder={ i18n.t('editor.placeholder') ?? undefined }
+                        onChange={ innerUpdate }
+                        onPaste={ pasteHandler }
+                        value = { text }
+                    />
+                    {/* <EditorArea
                         {...other}
                         textareaRef={ textareaRef }
                         className={ `${other.className ?? ''} editorArea` } 
                         onChange={ innerUpdate }
                         onPaste={ pasteHandler }
                         value = { text }
-                    />
+                    /> */}
                 </Panel>
                 <Panel className='panel2'>
                     <PreviewArea className='previewArea'>
@@ -229,8 +228,14 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
             
 
             <div className='dropzoneWrapper'>
-                <FileDropzone handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ i18n.t('editor.attachImages') ?? '' } />
-                <FileDropzone handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current || undefined, uploadErrorHandler) } message={ i18n.t('editor.attachFiles') ?? '' } />
+                <FileDropzone
+                    handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
+                    message={ i18n.t('editor.attachImages') ?? '' }
+                />
+                <FileDropzone
+                    handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
+                    message={ i18n.t('editor.attachFiles') ?? '' }
+                />
             </div>
         </div>
         {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}
