@@ -40,6 +40,11 @@ function WriteCell() {
     const [message, setMessage] = useState<string>();
 
     const upload = useCallback((metadata: Metadata, content: CellArticle['content']) => {
+        if(metadata.title === ''){
+            alert('제목을 입력해 주세요.');
+            return;
+        }
+
         const article: CellArticle = {
             mode: 'cell',
             metadata,
