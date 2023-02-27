@@ -87,6 +87,11 @@ function _Toolbar({ id }: CellIndicatorProps){
                         >
                             <Code />
                         </button>
+                        <button className='cellOptionButton'
+                            onClick={ changeCellTypeHandlerFactory('image') }
+                        >
+                            <Image />
+                        </button>
                     </>}
                 </>}
             </>}

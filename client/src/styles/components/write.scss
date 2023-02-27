@@ -251,21 +251,15 @@ button.autoRenderBtn.autoRenderActive{
     white-space: pre-line; // pre-wrap ??
 }
 
-// .dropzone {
 
-// }
-
-// .dropzone:-moz-drag-over {
-//     border-color: blue;
-// }
-
-.dropzone.dragging{
-    border: 1px solid blue;
-}
-
-.dropzone * {
-    margin-left: 30px;
+.dropzone {
     cursor: pointer;
+    &.dragging{
+        border: 1px solid blue;
+    }
+    label {
+        margin-left: 30px;
+    }
 }
 
 div.manualShadow {

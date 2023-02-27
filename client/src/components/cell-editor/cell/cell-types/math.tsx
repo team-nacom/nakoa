@@ -57,12 +57,14 @@ function MathCellEditor({ cell }: Omit<CellTypeRendererProps<MathCell>,'mode'>){
     const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        ev.stopPropagation()
-        ev.preventDefault()
-        editorAction.update(cell.id, {
+        ev.stopPropagation();
+        ev.preventDefault();
+        
+        let change: Partial<MathCellField> = {
             value: ev.target.value
-        } as Partial<MathCellField>)
-    }, [cell.id])
+        };
+        editorAction.update(cell.id, change);
+    }, [cell.id]);
 
     return (
         <div className='editorMathCellWrapper'>

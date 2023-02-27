@@ -13,6 +13,7 @@ import { SectionCellField, sectionCellDefault } from './cell-types/section'
 import { TextCellField, textCellDefault } from './cell-types/text'
 import { CodeCellField, codeCellDefault } from './cell-types/code'
 import { MathCellField, mathCellDefault } from './cell-types/math'
+import { ImageCellField, imageCellDefault } from './cell-types/image'
 
 // some currying, bit dirty...
 const cvf = variantFactory(cellTypeStr)
@@ -23,6 +24,7 @@ const cellFields = variantList([
     cv<TextCellField>()('text'),
     cv<CodeCellField>()('code'),
     cv<MathCellField>()('math'),
+    cv<ImageCellField>()('image'),
 ]);
 
 /**
@@ -62,7 +64,8 @@ export const defaultFields : Record<CellType, Omit<Cell, keyof CellCommonPart | 
     'section': sectionCellDefault,
     'text': textCellDefault,
     'code': codeCellDefault,
-    'math': mathCellDefault
+    'math': mathCellDefault,
+    'image': imageCellDefault,
 }
 
 /**

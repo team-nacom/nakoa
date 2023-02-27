@@ -51,9 +51,10 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
         ev.preventDefault()
-        editorAction.update(cell.id, {
+        let change: Partial<CodeCellField> = {
             value: ev.target.value
-        } as Partial<CodeCellField>)
+        };
+        editorAction.update(cell.id, change);
     }, [cell.id])
 
     const changeCaptionHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {

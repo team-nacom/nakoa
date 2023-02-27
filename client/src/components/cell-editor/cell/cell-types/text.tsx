@@ -46,12 +46,15 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
     const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        ev.stopPropagation()
-        ev.preventDefault()
-        editorAction.update(cell.id, {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        let change: Partial<TextCellField> = {
             value: ev.target.value
-        } as Partial<TextCellField>)
-    }, [cell.id])
+        };
+
+        editorAction.update(cell.id, change);
+    }, [cell.id]);
 
     return (
         <div className='editorTextCellWrapper'>

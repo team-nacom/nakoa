@@ -39,10 +39,6 @@ function provideNodes(prev: PortalNodeMap, ids: string[]): PortalNodeMap {
 // Contexts for Portal
 const PortalNodeContext = createContext< PortalNodeMap >(new Map())
 
-// some dummy values
-const VoidWrapper = ({children}: PropsWithChildren) => <>{children}</>
-const VoidComponent = () => <></>
-
 /////////////////////////////
 //// CellPortalScopeWith ////
 /////////////////////////////
@@ -137,8 +133,8 @@ export interface CellPortalProps{
  * @param InterCell component with `InterCellProps` props which should be placed between sibling cells. e.g. add cell button.
  */
 export function CellPortalWith(
-    InterCell : React.ComponentType<InterCellProps> = VoidComponent,
-    ChildrenWrapper: React.ComponentType<ChildrenWrapperProps> = VoidWrapper,
+    InterCell : React.ComponentType<InterCellProps> = () => <></>,
+    ChildrenWrapper: React.ComponentType<ChildrenWrapperProps> = React.Fragment, // dummy vars
 ){
     const CellPortal = memo(function _CellPortal({ id, depth }: CellPortalProps){
         const node = usePortalNode(id)
@@ -182,7 +178,7 @@ export function CellPortalWith(
 
     const CellPortalDraggable = memo(function _CellPortalDraggable({ id, depth }: CellPortalProps){
         //draggable settings
-        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data: { id } }) // TODO: seems like this hook 
+        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data: { id } })
         const style : React.CSSProperties = useMemo(() => ({
             transform: CSS.Translate.toString(transform),
             position: 'relative',

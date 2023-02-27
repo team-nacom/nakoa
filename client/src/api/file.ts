@@ -1,3 +1,6 @@
+import Axios from 'axios';
+import { apiUrl } from '#/config/env';
+
 import localforage from 'localforage';
 import { base64rand } from '#/misc/base64rand';
 
@@ -40,6 +43,18 @@ export async function getImageUrl(index: string){
     });
 }
 
+export async function resolveImageUrl(url: string){
+    if(url === '' || url === 'none'){
+        return `${process.env.PUBLIC_URL}/altImg.png`;
+    }
+    if(url.startsWith('local::')){
+        let index = url.substring('local::'.length);
+        return await getImageUrl(index);
+    }
+
+    return url;
+}
+
 export async function postImage(file: File){
     if(!file.type.startsWith('image/')) throw new Error('a non-image file is uploaded on postImage');
 
@@ -54,6 +69,43 @@ export async function postImage(file: File){
     return {
         success: true,
         local: true,
-        index
+        url: `local::${index}`
     };
 }
+
+
+///////////////////////////////////////////////////// legacy ////////////////////////////
+
+// export const authValidateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
+
+export const uploadFile = async (collection: string, file: File) => {
+    const config = {
+        withCredentials: true,
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', collection);
+
+    let response = await Axios.post(`${apiUrl}/file/upload`, formData, config);
+
+    return {
+        success: response.status < 300,
+        url: response.data,
+    };
+}
+
+export async function fileUpload(file: File){
+    let result = await uploadFile('guide', file);
+    return result.success ? result.url : null;
+}
+
+// export async function imgUpload(file: File){
+//     if(!file.type.startsWith('image/')) throw new Error();
+
+//     let result = await uploadFile('guide', file);
+//     return result.success ? result.url : null;
+// }

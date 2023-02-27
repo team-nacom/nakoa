@@ -11,12 +11,13 @@ import { SectionCellRenderer } from './cell-types/section'
 import { TextCellRenderer } from './cell-types/text'
 import { CodeCellRenderer } from './cell-types/code'
 import { MathCellRenderer } from './cell-types/math'
+import { ImageCellRenderer } from './cell-types/image'
 
 import { useSingleCell, useSingleCellFocused } from '#/components/cell-editor/editor/EditorState'
 
 export function CellRenderer({ mode, id }: CellRendererProps){
-    const cell = useSingleCell(id)
-    if(cell === undefined) return null
+    const cell = useSingleCell(id);
+    if(cell === undefined) return null;
 
     return match(cell,{
         // exhaustive selection: if this spits some errors when commenting out 'default', check whether we've fed every renderers for each cellType correctly.
@@ -25,6 +26,7 @@ export function CellRenderer({ mode, id }: CellRendererProps){
         'text': cell => TextCellRenderer({mode, cell}),
         'code': cell => CodeCellRenderer({mode, cell}),
         'math': cell => MathCellRenderer({mode, cell}),
+        'image': cell => ImageCellRenderer({mode, cell}),
         default: () => null
     }, cellTypeStr)
 }

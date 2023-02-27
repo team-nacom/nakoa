@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, Component } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useDropzone } from 'react-dropzone';
 import { useMediaQuery } from 'react-responsive';
 
 // import Markdown from '#/components/markdown-legacy/MarkdownRenderer'
@@ -11,6 +10,8 @@ import Markdown from '#/components/markdown/Markdown';
 import { useClassicEditorAction, useClassicEditorContext } from './EditorState';
 
 import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
+
+import { FileDropzone } from '../helpers/FileDropzone';
 
 const MemoizedMarkdown = React.memo(Markdown);
 
@@ -61,25 +62,6 @@ function PanelMenu({children, label, callback, ...other} : PanelMenuProps){
         </div>
     );
 }
-
-interface FileDropzoneProps {
-    handleDrop: (acceptedFiles: File[]) => void;
-    message?: string;
-};
-
-function FileDropzone({ handleDrop, message } : FileDropzoneProps) {
-    const onDrop = useCallback(handleDrop, []);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop });
-  
-    return (
-        <div {...getRootProps()}
-            className={ `dropzone ${ isDragActive? `dragging` : `` }` }
-        >
-            <label>{ message }</label>
-            <input {...getInputProps()} />
-        </div>
-    )
-  }
 
 interface ClassicEditorBodyProps extends React.HTMLAttributes<HTMLTextAreaElement>{
     update?: (c : string) => void //can we do this w/o callback?
@@ -238,12 +220,14 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
             <div className='dropzoneWrapper'>
                 <FileDropzone
                     handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
-                    message={ i18n.t('editor.attachImages') ?? '' }
-                />
+                >
+                    <label>{ i18n.t('editor.attachImages') }</label>
+                </FileDropzone>
                 <FileDropzone
                     handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
-                    message={ i18n.t('editor.attachFiles') ?? '' }
-                />
+                >
+                    <label>{ i18n.t('editor.attachFiles') }</label>
+                </FileDropzone>
             </div>
         </div>
         {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}

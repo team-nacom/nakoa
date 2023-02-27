@@ -44,12 +44,14 @@ function SectionCellEditor({ cell }: Omit<CellTypeRendererProps<SectionCell>,'mo
     const editorAction = useCellEditorAction()
 
     const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
-        ev.stopPropagation()
-        ev.preventDefault()
-        editorAction.update(cell.id, {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        let change: Partial<SectionCellField> = {
             value: ev.target.value
-        } as Partial<SectionCellField>)
-    }, [cell.id])
+        };
+        editorAction.update(cell.id, change);
+    }, [cell.id]);
 
     return (
         <div className='editorSectionCell'>
