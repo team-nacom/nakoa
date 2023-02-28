@@ -7,10 +7,11 @@ import { CellEditor } from '#/components/editor/CellEditor';
 import { Metadata } from '#/components/editor/MetadataState';
 
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
-import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
+import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
+import Button from '#/components/Button';
 
 function Update() {
     let params = useParams<{ index: string }>();
@@ -69,9 +70,16 @@ function Update() {
         });
     }, [index]);
 
+    const removeAutosave = useCallback(async () => {
+        if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+        await unsetAutosaveArticle(index);
+        // setRedirectTo(`/article/update/${index}`); // might race??
+        window.location.reload();
+    }, [index]);
+
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
-    if(initArticle === undefined){
+    if(initArticle === undefined){ // todo: fallback into list
         return <LayoutWithArticleList>
             <p>존재하지 않는 글입니다.</p>
         </LayoutWithArticleList>;
@@ -93,6 +101,7 @@ function Update() {
                 autosave={ (article) => { setAutosaveArticle(article, index); } }
             />
         }
+        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 

@@ -27,11 +27,11 @@ const articleStorage = localforage.createInstance({
 });
 
 async function setLocal(key: string, article: Article){
-    articleStorage.setItem(key, article);
+    await articleStorage.setItem(key, article);
 }
 
 async function unsetLocal(key: string){
-    articleStorage.removeItem(key);
+    await articleStorage.removeItem(key);
 }
 
 async function getLocal(key: string) : Promise<Article | undefined>{
@@ -76,6 +76,14 @@ async function generateUniqueIdx(){
 
 ////////////////////////
 
+export async function unsetAutosaveArticle(index?: string, mode?: Article['mode']){
+    let key = index !== undefined
+        ? `draft/${index}`
+        : `draft-unpub/${mode}`;
+
+    await unsetLocal(key);
+    return { success: true };
+}
 
 export async function setAutosaveArticle(article: Article, index?: string){
     // in browser cache

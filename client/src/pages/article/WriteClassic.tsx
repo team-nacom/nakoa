@@ -4,11 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
-import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, postArticle } from '#/api/article';
+import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
+import Button from '#/components/Button';
 
 function WriteClassic() {
     const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'classic'), []);
@@ -55,6 +56,13 @@ function WriteClassic() {
         })
     }, []);
 
+    const removeAutosave = useCallback(async () => {
+        if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+        await unsetAutosaveArticle(undefined, 'classic');
+        // setRedirectTo(`/article/write-classic`); // might race??
+        window.location.reload();
+    }, []);
+
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
@@ -67,6 +75,7 @@ function WriteClassic() {
             }
             upload={ upload } autosave={ setAutosaveArticle }
         />
+        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 

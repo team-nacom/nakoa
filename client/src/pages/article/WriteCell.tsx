@@ -4,11 +4,12 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { Layout, LayoutWithArticleList } from '#/layout/Layout';
-import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle } from '#/api/article';
+import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
+import Button from '#/components/Button';
 
 function WriteCell() {
     const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'cell'), []);
@@ -65,6 +66,14 @@ function WriteCell() {
     // }, []);
     // const autosave = setAutosaveArticle;
 
+    // on remove autosave action, unset autosave and redirect into this page.
+    const removeAutosave = useCallback(async () => {
+        if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+        await unsetAutosaveArticle(undefined, 'cell');
+        // setRedirectTo(`/article/write-cell`); // might race??
+        window.location.reload();
+    }, []);
+
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
@@ -77,6 +86,7 @@ function WriteCell() {
             }
             upload={ upload } autosave={ setAutosaveArticle }
         />
+        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 
