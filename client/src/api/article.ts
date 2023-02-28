@@ -103,7 +103,7 @@ export async function getAutosaveArticle(index?: string, mode?: Article['mode'])
         : `draft-unpub/${mode}`;
     
     let article = await getLocal(key);
-    if(article && article.mode !== mode){
+    if(article && mode && article.mode !== mode){
         return undefined;
     }
     return article;
