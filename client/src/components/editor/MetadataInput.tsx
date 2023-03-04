@@ -17,7 +17,7 @@ export function MetadataInput(){
                     } }
                 />
             </div>
-            <div className='authorInput'>
+            {/* <div className='authorInput'>
                 <label>작성자</label>
                 <input className='author'
                     value={ author }
@@ -25,7 +25,7 @@ export function MetadataInput(){
                         setAuthor(ev.target.value)
                     } }
                 />
-            </div>
+            </div> */}
         </div>
     )
 }
