@@ -229,8 +229,6 @@ const structAction: HelperActions = {
 
             // recalculate parents
             s.parentIds = calculateParentIds(s.content.structData, s.content.rootId);
-
-            console.log(s.content.structData);
         }
     ),
     move: (targetId: string, destParentId: string, destPos?: number) => (

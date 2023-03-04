@@ -12,20 +12,25 @@ import { MetadataInput } from '#/components/editor/MetadataInput'
 import { ClassicArticle } from '#/api/article';
 import { MetadataProvider, Metadata, useMetadataState } from './MetadataState';
 
-import { autoSaveIntervalMs } from '#/config/consts';
+import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts';
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
     upload: (metadata: Metadata, text: string) => any;
     autosave: (article: ClassicArticle) => any;
+    removeAutosave?: (disableAutosave: () => any) => any;
 };
-export function ClassicEditor({ initArticle, upload, autosave }: ClassicEditorProps) {
+export function ClassicEditor({ initArticle, upload, autosave, removeAutosave }: ClassicEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
     return (
         <ClassicEditorProvider initText={ initArticle?.text }>
         <MetadataProvider {...(initArticle?.metadata ?? {})}>
-            <ClassicEditorInner upload={ upload } autosave={ autosave } />
+            <ClassicEditorInner
+                upload={ upload }
+                autosave={ autosave }
+                removeAutosave={ removeAutosave }
+            />
         </MetadataProvider>
         </ClassicEditorProvider>
     );
@@ -35,13 +40,21 @@ export function ClassicEditor({ initArticle, upload, autosave }: ClassicEditorPr
 const MemoizedMetadataInput = memo(MetadataInput);
 const MemoizedCore = memo(ClassicEditorCore);
 
-function ClassicEditorInner({ upload, autosave }: ClassicEditorProps){
+function ClassicEditorInner({ upload, autosave, removeAutosave }: ClassicEditorProps){
     const metadata = useMetadataState();
     const text = useClassicText();
 
     const uploadHandler = useCallback(() => {
         upload(metadata, text);
     }, [metadata, text]);
+
+    // autosave interval
+    const [autosaveIntervalMs, setAutosaveIntervalMs] = useState<number | null>(autosaveIntervalMsDefault);
+
+    const removeAutosaveHandler = useCallback(() => {
+        if(removeAutosave === undefined) return;
+        return removeAutosave(() => setAutosaveIntervalMs(null));
+    }, [removeAutosave]);
 
     // this useInterval hook remembers previous closure and detects its change, so no need for dependency array.
     // pass delay=null when we want to stop autosave.
@@ -52,7 +65,7 @@ function ClassicEditorInner({ upload, autosave }: ClassicEditorProps){
             text
         });
         console.log('autosaved');
-    }, autoSaveIntervalMs);
+    }, autosaveIntervalMs);
 
     return (
         <div className='cellEditorWrapper'>
@@ -67,6 +80,11 @@ function ClassicEditorInner({ upload, autosave }: ClassicEditorProps){
                     onClick = { uploadHandler }
                 >
                     업로드
+                </Button>
+                <Button className='removeAutosaveButton'
+                    onClick = { removeAutosaveHandler }
+                >
+                    임시저장 초기화
                 </Button>
             </div>
         </div>

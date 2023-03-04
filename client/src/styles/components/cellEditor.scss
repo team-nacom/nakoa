@@ -490,6 +490,10 @@
     margin: 20px;
     display: flex;
     flex-direction: row-reverse;
+    .removeAutosaveButton {
+        @include button-template($primary-color);
+    }
+
     .uploadButton {
         @include button-template($primary-color);
     }

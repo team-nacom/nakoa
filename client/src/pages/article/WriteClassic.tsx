@@ -34,7 +34,7 @@ function WriteClassic() {
     // redirection state
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
-
+    
     const upload = useCallback((metadata: Metadata, text: string) => {
         if(metadata.title === ''){
             alert('제목을 입력해 주세요.');
@@ -56,10 +56,13 @@ function WriteClassic() {
         })
     }, []);
 
-    const removeAutosave = useCallback(async () => {
+    const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+
+        disableAutosave();
         await unsetAutosaveArticle(undefined, 'classic');
-        // setRedirectTo(`/article/write-classic`); // might race??
+        setRedirectTo(`/article/write-classic`); // might race??
+
         window.location.reload();
     }, []);
 
@@ -73,9 +76,10 @@ function WriteClassic() {
                 // initArticle?.mode === 'classic' ? initArticle : undefined
                 initArticle as ClassicArticle
             }
-            upload={ upload } autosave={ setAutosaveArticle }
+            upload={ upload }
+            autosave={ setAutosaveArticle }
+            removeAutosave={ removeAutosave }
         />
-        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 

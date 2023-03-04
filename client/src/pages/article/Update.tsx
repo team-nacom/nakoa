@@ -17,12 +17,13 @@ function Update() {
     let params = useParams<{ index: string }>();
     let index = params.index;
 
-    // redirection state
     const [loading, initArticle] = usePromise(async () => {
         const draft = await getAutosaveArticle(index);
         if(draft !== undefined) return draft;
         return await getArticle(index);
     }, [index]);
+
+    // redirection state
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
@@ -70,10 +71,13 @@ function Update() {
         });
     }, [index]);
 
-    const removeAutosave = useCallback(async () => {
+    const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+
+        disableAutosave();
         await unsetAutosaveArticle(index);
-        // setRedirectTo(`/article/update/${index}`); // might race??
+        setRedirectTo(`/article/update/${index}`); // might race??
+
         window.location.reload();
     }, [index]);
 
@@ -92,6 +96,7 @@ function Update() {
                 initArticle={initArticle}
                 upload={ uploadClassic }
                 autosave={ (article) => { setAutosaveArticle(article, index); } }
+                removeAutosave={ removeAutosave }
             />
         }
         {initArticle.mode === 'cell' &&
@@ -99,9 +104,9 @@ function Update() {
                 initArticle={initArticle}
                 upload={ uploadCell }
                 autosave={ (article) => { setAutosaveArticle(article, index); } }
+                removeAutosave={ removeAutosave }
             />
         }
-        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 

@@ -67,10 +67,13 @@ function WriteCell() {
     // const autosave = setAutosaveArticle;
 
     // on remove autosave action, unset autosave and redirect into this page.
-    const removeAutosave = useCallback(async () => {
+    const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+
+        disableAutosave(); // unset autosave useTimeout first
         await unsetAutosaveArticle(undefined, 'cell');
-        // setRedirectTo(`/article/write-cell`); // might race??
+        setRedirectTo(`/article/write-cell`); // might race??
+
         window.location.reload();
     }, []);
 
@@ -84,9 +87,10 @@ function WriteCell() {
                 // initArticle?.mode === 'cell' ? initArticle : undefined
                 initArticle as CellArticle
             }
-            upload={ upload } autosave={ setAutosaveArticle }
+            upload={ upload }
+            autosave={ setAutosaveArticle }
+            removeAutosave={ removeAutosave }
         />
-        <Button onClick = { removeAutosave }>임시저장 초기화</Button>
     </LayoutWithArticleList>;
 }
 
