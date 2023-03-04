@@ -3,12 +3,12 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
-import { Layout, LayoutWithArticleList } from '#/layout/Layout';
+import { Layout } from '#/layout/Layout';
+import { ArticleListSidebar } from '#/layout/Sidebar';
 import usePromise from '#/misc/usePromise';
 import { getArticleList } from '#/api/article';
 // import Markdown from '#/components/markdown-lab/Markdown';
 // import { Display } from '#/components/cell-editor/cell/Display';
-
 
 
 function Article() {
@@ -18,12 +18,12 @@ function Article() {
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(articles === undefined){
-        return <LayoutWithArticleList title='오류'>
+        return <Layout title='오류' sidebar={ <ArticleListSidebar /> }>
             글을 불러오지 못했습니다.
-        </LayoutWithArticleList>;
+        </Layout>;
     }
 
-    return <LayoutWithArticleList title='모든 글 보기'>
+    return <Layout title='모든 글 보기' sidebar={ <ArticleListSidebar /> }>
         <div>
             { `총 ${articles.length}개` }
         </div>
@@ -51,7 +51,7 @@ function Article() {
         <Link to='/article/write-cell'>
             <Button>새 글(셀)</Button>
         </Link>
-    </LayoutWithArticleList>;
+    </Layout>;
 }
 
 export default Article;

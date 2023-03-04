@@ -3,7 +3,8 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
-import { Layout, LayoutWithArticleList } from '#/layout/Layout';
+import { Layout } from '#/layout/Layout';
+import { ArticleListSidebar } from '#/layout/Sidebar';
 import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
 
@@ -80,7 +81,7 @@ function WriteCell() {
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
-    return <LayoutWithArticleList title='글 작성하기'>
+    return <Layout title='글 작성하기' sidebar={ <ArticleListSidebar /> }>
         <p>{message}</p>
         <CellEditor
             initArticle={
@@ -91,7 +92,7 @@ function WriteCell() {
             autosave={ setAutosaveArticle }
             removeAutosave={ removeAutosave }
         />
-    </LayoutWithArticleList>;
+    </Layout>;
 }
 
 export default WriteCell;

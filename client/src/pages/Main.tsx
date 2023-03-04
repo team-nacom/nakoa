@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next';
 
-import { Layout, LayoutWithArticleList } from '#/layout/Layout';
+import { Layout } from '#/layout/Layout';
+import { ArticleListSidebar } from '#/layout/Sidebar';
 
 function Main() {
     let { i18n } = useTranslation('translation');
 
-    return <LayoutWithArticleList title={ i18n.t('team') ?? undefined }>
+    return <Layout title={ i18n.t('team') ?? undefined } sidebar={ <ArticleListSidebar /> }>
         <p>{ i18n.t('main.greeting') }</p>
-    </LayoutWithArticleList>;
+    </Layout>;
 }
 
 export default Main;
