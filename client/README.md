@@ -30,6 +30,11 @@ To run the client which updates on changes of code, run `yarn watch`.
 
 After building the client, you can publish the site by serving `build/` as a static single page application. React will magically handle the routing and everything.
 
+## How to compile static page with scss
+
+The static html pages are located in `pages_design/` directory.
+
+To generate `pages_design/index.css` with modified sass files (in `src/styles`), run `yarn sass`.
 
 ## Learn More
 

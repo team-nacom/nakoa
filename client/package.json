@@ -121,7 +121,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "start": "GENERATE_SOURCEMAP=false craco start"
+    "start": "GENERATE_SOURCEMAP=false craco start",
+    "sass": "sass ./src/styles/index.scss ./pages_design/index.css"
   },
   "eslintConfig": {
     "extends": [

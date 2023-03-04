@@ -11,6 +11,10 @@
 # production
 /build
 
+# compile target
+/pages_design/index.css
+/pages_design/index.css.map
+
 # misc
 .DS_Store
 .env
