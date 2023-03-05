@@ -49,7 +49,7 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
 
     const autosaveHandler = useCallback(async () => {
         await autosave(metadata, content);
-        console.log('autosaved on', new Date());
+        setAutosavedUp();
     }, [metadata, content]);
 
     // autosave interval
@@ -64,6 +64,8 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
         setAutosaveIntervalMs(null);
         // await autosaveHandler();
         await autosave(metadata, content);
+        setAutosavedUp();
+
         setAutosaveIntervalMs(tmp); // hope that it will reset timer
     }, [autosaveIntervalMs, metadata, content]);
 
@@ -71,6 +73,13 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
         if(removeAutosave === undefined) return;
         return removeAutosave(() => setAutosaveIntervalMs(null));
     }, [removeAutosave]);
+
+
+    const [autosaved, setAutosaved] = useState(false);
+    const setAutosavedUp = useCallback(() => {
+        setAutosaved(true);
+        setTimeout(() => setAutosaved(false), 3000);
+    }, []);
 
     return (
         <div className='cellEditorWrapper'>
@@ -80,6 +89,15 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
             <MemoizedCore />
             {/* <CellEditorCore /> */}
             <hr />
+            {autosaveIntervalMs &&
+                <>
+                    <label>자동저장 주기: <span style={ {display:'inline-block', width:'20px', textAlign:'right'} }>{ autosaveIntervalMs / 1000 }</span>초</label>
+                    <input type='range' min={ 6000 } max={ 20000 } step={ 1000 } value={ autosaveIntervalMs } onChange={ (e) => setAutosaveIntervalMs(+e.target.value) } />
+                </>
+            }
+            {autosaved &&
+                <span>임시저장 완료</span>
+            }
             <div className='buttonsWrapper'>
                 <Button className='uploadButton' onClick = { uploadHandler }>
                     업로드
@@ -87,7 +105,7 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
                 <Button className='removeAutosaveButton' onClick = { removeAutosaveHandler }>
                     임시저장 초기화
                 </Button>
-                <Button className='autosaveButton' onClick = { forceSaveHandler }>
+                <Button className='forceSaveButton' onClick = { forceSaveHandler }>
                     임시저장
                 </Button>
             </div>
