@@ -16,8 +16,8 @@ import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts
 
 interface ClassicEditorProps{
     initArticle?: ClassicArticle;
-    upload: (metadata: Metadata, text: string) => any;
-    autosave: (article: ClassicArticle) => any;
+    upload: (metadata: Metadata, text: string) => Promise<any>;
+    autosave: (metadata: Metadata, text: string) => Promise<any>;
     removeAutosave?: (disableAutosave: () => any) => any;
 };
 export function ClassicEditor({ initArticle, upload, autosave, removeAutosave }: ClassicEditorProps) {
@@ -48,24 +48,30 @@ function ClassicEditorInner({ upload, autosave, removeAutosave }: ClassicEditorP
         upload(metadata, text);
     }, [metadata, text]);
 
+    const autosaveHandler = useCallback(async () => {
+        await autosave(metadata, text);
+        console.log('autosaved on', new Date());
+    }, [metadata, text]);
+
     // autosave interval
     const [autosaveIntervalMs, setAutosaveIntervalMs] = useState<number | null>(autosaveIntervalMsDefault);
+
+    // pass delay=null when we want to stop autosave.
+    useInterval(autosaveHandler, autosaveIntervalMs);
+
+    // overwrite autosave and reset autosave timer.
+    const forceSaveHandler = useCallback(async () => {
+        let tmp = autosaveIntervalMs;
+        setAutosaveIntervalMs(null); 
+        // await autosaveHandler();
+        await autosave(metadata, text);
+        setAutosaveIntervalMs(tmp); // hope that it will reset timer
+    }, [autosaveIntervalMs, metadata, text]);
 
     const removeAutosaveHandler = useCallback(() => {
         if(removeAutosave === undefined) return;
         return removeAutosave(() => setAutosaveIntervalMs(null));
     }, [removeAutosave]);
-
-    // this useInterval hook remembers previous closure and detects its change, so no need for dependency array.
-    // pass delay=null when we want to stop autosave.
-    useInterval(() => {
-        autosave({
-            mode: 'classic',
-            metadata,
-            text
-        });
-        console.log('autosaved');
-    }, autosaveIntervalMs);
 
     return (
         <div className='cellEditorWrapper'>
@@ -76,15 +82,14 @@ function ClassicEditorInner({ upload, autosave, removeAutosave }: ClassicEditorP
             {/* <ClassicEditorCore /> */}
             <hr />
             <div className='buttonsWrapper'>
-                <Button className='uploadButton'
-                    onClick = { uploadHandler }
-                >
+                <Button className='uploadButton' onClick = { uploadHandler }>
                     업로드
                 </Button>
-                <Button className='removeAutosaveButton'
-                    onClick = { removeAutosaveHandler }
-                >
+                <Button className='removeAutosaveButton' onClick = { removeAutosaveHandler }>
                     임시저장 초기화
+                </Button>
+                <Button className='autosaveButton' onClick = { forceSaveHandler }>
+                    임시저장
                 </Button>
             </div>
         </div>

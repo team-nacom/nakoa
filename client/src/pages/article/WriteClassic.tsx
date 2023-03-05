@@ -36,7 +36,7 @@ function WriteClassic() {
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
     
-    const upload = useCallback((metadata: Metadata, text: string) => {
+    const upload = useCallback(async (metadata: Metadata, text: string) => {
         if(metadata.title === ''){
             alert('제목을 입력해 주세요.');
             return;
@@ -46,15 +46,24 @@ function WriteClassic() {
             mode: 'classic',
             metadata,
             text
+        };
+
+        let { success, index } = await postArticle(article);
+        if(success){
+            setMessage('업로드에 성공했습니다!');
+            setRedirectTo(`/article/view/${index}`);
+        } else{
+            setMessage('업로드에 실패했습니다.');
         }
-        postArticle(article).then(({success, index})=>{
-            if(success){
-                setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/view/${index}`);
-            } else{
-                setMessage('업로드에 실패했습니다.');
-            }
-        })
+    }, []);
+
+    const autosave = useCallback(async (metadata: Metadata, text: string) => {
+        const article: ClassicArticle = {
+            mode: 'classic',
+            metadata,
+            text
+        };
+        await setAutosaveArticle(article);
     }, []);
 
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
@@ -78,7 +87,7 @@ function WriteClassic() {
                 initArticle as ClassicArticle
             }
             upload={ upload }
-            autosave={ setAutosaveArticle }
+            autosave={ autosave }
             removeAutosave={ removeAutosave }
         />
     </Layout>;

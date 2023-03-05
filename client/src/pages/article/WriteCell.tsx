@@ -41,7 +41,7 @@ function WriteCell() {
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
-    const upload = useCallback((metadata: Metadata, content: CellArticle['content']) => {
+    const upload = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         if(metadata.title === ''){
             alert('제목을 입력해 주세요.');
             return;
@@ -52,20 +52,24 @@ function WriteCell() {
             metadata,
             content
         }
-        postArticle(article).then(({success, index})=>{
-            if(success){
-                setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/view/${index}`);
-            } else{
-                setMessage('업로드에 실패했습니다.');
-            }
-        })
+
+        let { success, index } = await postArticle(article);
+        if(success){
+            setMessage('업로드에 성공했습니다!');
+            setRedirectTo(`/article/view/${index}`);
+        } else{
+            setMessage('업로드에 실패했습니다.');
+        }
     }, []);
 
-    // const autosave = useCallback((article: CellArticle) => {
-    //     setAutosaveArticle(article);
-    // }, []);
-    // const autosave = setAutosaveArticle;
+    const autosave = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+        const article: CellArticle = {
+            mode: 'cell',
+            metadata,
+            content
+        };
+        await setAutosaveArticle(article);
+    }, []);
 
     // on remove autosave action, unset autosave and redirect into this page.
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
@@ -88,8 +92,7 @@ function WriteCell() {
                 // initArticle?.mode === 'cell' ? initArticle : undefined
                 initArticle as CellArticle
             }
-            upload={ upload }
-            autosave={ setAutosaveArticle }
+            upload={ upload } autosave={ autosave }
             removeAutosave={ removeAutosave }
         />
     </Layout>;

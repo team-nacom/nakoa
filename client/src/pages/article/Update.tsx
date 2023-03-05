@@ -29,7 +29,7 @@ function Update() {
     const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
-    const uploadClassic = useCallback((metadata: Metadata, text: string) => {
+    const uploadClassic = useCallback(async (metadata: Metadata, text: string) => {
         if(metadata.title === ''){
             alert('제목을 입력해 주세요.');
             return;
@@ -41,17 +41,34 @@ function Update() {
             text
         };
 
-        updateArticle(index, article).then((success)=>{
-            if(success){
-                setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/view/${index}`);
-            } else{
-                setMessage('업로드에 실패했습니다.');
-            }
-        })
+        let success = await updateArticle(index, article);
+        if(success){
+            setMessage('업로드에 성공했습니다!');
+            setRedirectTo(`/article/view/${index}`);
+        } else{
+            setMessage('업로드에 실패했습니다.');
+        }
     }, [index]);
 
-    const uploadCell = useCallback((metadata: Metadata, content: CellArticle['content']) => {
+    const autosaveClassic = useCallback(async (metadata: Metadata, text: string) => {
+        const article: ClassicArticle = {
+            mode: 'classic',
+            metadata,
+            text
+        };
+        await setAutosaveArticle(article, index);
+    }, [index]);
+
+    const autosaveCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+        const article: CellArticle = {
+            mode: 'cell',
+            metadata,
+            content
+        };
+        await setAutosaveArticle(article);
+    }, []);
+
+    const uploadCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         if(metadata.title === ''){
             alert('제목을 입력해 주세요.');
             return;
@@ -63,14 +80,13 @@ function Update() {
             content
         };
 
-        updateArticle(index, article).then((success)=>{
-            if(success){
-                setMessage('업로드에 성공했습니다!');
-                setRedirectTo(`/article/view/${index}`);
-            } else{
-                setMessage('업로드에 실패했습니다.');
-            }
-        });
+        let success = await updateArticle(index, article);
+        if(success){
+            setMessage('업로드에 성공했습니다!');
+            setRedirectTo(`/article/view/${index}`);
+        } else{
+            setMessage('업로드에 실패했습니다.');
+        }
     }, [index]);
 
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
@@ -96,16 +112,14 @@ function Update() {
         {initArticle.mode === 'classic' &&
             <ClassicEditor
                 initArticle={initArticle}
-                upload={ uploadClassic }
-                autosave={ (article) => { setAutosaveArticle(article, index); } }
+                upload={ uploadClassic } autosave={ autosaveClassic }
                 removeAutosave={ removeAutosave }
             />
         }
         {initArticle.mode === 'cell' &&
             <CellEditor
                 initArticle={initArticle}
-                upload={ uploadCell }
-                autosave={ (article) => { setAutosaveArticle(article, index); } }
+                upload={ uploadCell } autosave={ autosaveCell }
                 removeAutosave={ removeAutosave }
             />
         }

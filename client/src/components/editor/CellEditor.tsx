@@ -15,8 +15,8 @@ import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts
 
 interface CellEditorProps{
     initArticle?: CellArticle;
-    upload: (metadata: Metadata, content: CellArticle['content']) => any;
-    autosave: (article: CellArticle) => any;
+    upload: (metadata: Metadata, content: CellArticle['content']) => Promise<any>;
+    autosave: (metadata: Metadata, content: CellArticle['content']) => Promise<any>;
     removeAutosave?: (disableAutosave: () => any) => any;
 };
 export function CellEditor({ initArticle, upload, autosave, removeAutosave }: CellEditorProps) {
@@ -47,24 +47,30 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
         upload(metadata, content);
     }, [metadata, content]);
 
+    const autosaveHandler = useCallback(async () => {
+        await autosave(metadata, content);
+        console.log('autosaved on', new Date());
+    }, [metadata, content]);
+
     // autosave interval
     const [autosaveIntervalMs, setAutosaveIntervalMs] = useState<number | null>(autosaveIntervalMsDefault);
+
+    // pass delay=null when we want to stop autosave.
+    useInterval(autosaveHandler, autosaveIntervalMs);
+
+    // overwrite autosave and reset autosave timer.
+    const forceSaveHandler = useCallback(async () => {
+        let tmp = autosaveIntervalMs;
+        setAutosaveIntervalMs(null);
+        // await autosaveHandler();
+        await autosave(metadata, content);
+        setAutosaveIntervalMs(tmp); // hope that it will reset timer
+    }, [autosaveIntervalMs, metadata, content]);
 
     const removeAutosaveHandler = useCallback(() => {
         if(removeAutosave === undefined) return;
         return removeAutosave(() => setAutosaveIntervalMs(null));
     }, [removeAutosave]);
-
-    // this useInterval hook remembers previous closure and detects its change, so no need for dependency array.
-    // pass delay=null when we want to stop autosave.
-    useInterval(() => {
-        autosave({
-            mode: 'cell',
-            metadata,
-            content
-        });
-        console.log('autosaved');
-    }, autosaveIntervalMs);
 
     return (
         <div className='cellEditorWrapper'>
@@ -75,15 +81,14 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
             {/* <CellEditorCore /> */}
             <hr />
             <div className='buttonsWrapper'>
-                <Button className='uploadButton'
-                    onClick = { uploadHandler }
-                >
+                <Button className='uploadButton' onClick = { uploadHandler }>
                     업로드
                 </Button>
-                <Button className='removeAutosaveButton'
-                    onClick = { removeAutosaveHandler }
-                >
+                <Button className='removeAutosaveButton' onClick = { removeAutosaveHandler }>
                     임시저장 초기화
+                </Button>
+                <Button className='autosaveButton' onClick = { forceSaveHandler }>
+                    임시저장
                 </Button>
             </div>
         </div>
