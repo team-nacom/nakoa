@@ -18,12 +18,12 @@ function Article() {
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(articles === undefined){
-        return <Layout title='오류' sidebar={ <ArticleListSidebar /> }>
+        return <Layout title='오류' sidebar='ArticleList'>
             글을 불러오지 못했습니다.
         </Layout>;
     }
 
-    return <Layout title='모든 글 보기' sidebar={ <ArticleListSidebar /> }>
+    return <Layout title='모든 글 보기' sidebar='ArticleList'>
         <div>
             { `총 ${articles.length}개` }
         </div>

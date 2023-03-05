@@ -1,30 +1,35 @@
-import React, { PropsWithChildren } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, PropsWithChildren } from 'react';
 
 import Header from './Header';
 import Footer from './Footer';
 
 import { ArticleListSidebar } from './Sidebar';
 
-import usePromise from '#/misc/usePromise';
-import { getArticleList } from '#/api/article';
-
-import Button from '#/components/Button';
-
+type SidebarOption = 'ArticleList';
 
 interface LayoutProps{
     title?: string;
     // message
-    sidebar?: JSX.Element;
+    sidebar?: JSX.Element | SidebarOption;
 };
 
 export function Layout(props: PropsWithChildren<LayoutProps>): JSX.Element{
+    // useEffect(() => {
+    //     console.log('layout mounted!');
+    //     // todo: prevent rerendering as much as possible
+    // }, []);
+
     const title = props.title ?? '';
     const sidebar = props.sidebar ?? null;
 
     return (<>
         <Header />
-        { sidebar }
+        {typeof sidebar !== 'string' &&
+            sidebar
+        }
+        {sidebar === 'ArticleList' &&
+            <ArticleListSidebar />
+        }
         <div id='content'>
             <h1 className='pageTitle'>{ title }</h1>
             { props.children }

@@ -24,12 +24,12 @@ function Article() {
     if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(article === undefined){
-        return <Layout title='오류' sidebar={ <ArticleListSidebar /> }>
+        return <Layout title='오류' sidebar='ArticleList'>
             <p>존재하지 않는 글입니다.</p>
         </Layout>;
     }
 
-    return <Layout /* title={ article.metadata.title } */ sidebar={ <ArticleListSidebar /> }>
+    return <Layout /* title={ article.metadata.title } */ sidebar='ArticleList'>
         <div className='article'>
             <div className='articleBackground' />
             <h2 className='subtitle'> { article.metadata.author } </h2>

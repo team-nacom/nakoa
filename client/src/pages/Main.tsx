@@ -8,7 +8,7 @@ import { ArticleListSidebar } from '#/layout/Sidebar';
 function Main() {
     let { i18n } = useTranslation('translation');
 
-    return <Layout title={ i18n.t('team') ?? undefined } sidebar={ <ArticleListSidebar /> }>
+    return <Layout title={ i18n.t('team') ?? undefined } sidebar='ArticleList'>
         <p>{ i18n.t('main.greeting') }</p>
     </Layout>;
 }

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useEffect, PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
 import usePromise from '#/misc/usePromise';
@@ -10,16 +10,19 @@ export function ArticleListSidebar(){
     let [loading, articles] = usePromise(() => getArticleList(), []);
 
     if(loading) return <></>; // default loading screen
-    return (<div id='articleList'>
+    return (<div id='sidebar'>
+        <ul className='articleList'>
         {(articles ?? []).map((article, no)=>(
-            <Link key={ no } to={ `/article/view/${ article.index! }` }>
-                <div className='articleListEntry'>
-                    { article.metadata.title }
-                    &nbsp;by&nbsp; 
-                    { article.metadata.author }
-                </div>
-            </Link>
+            <li key={no}>
+                <Link to={ `/article/view/${ article.index! }` }>
+                { article.metadata.title }
+                </Link>
+                <Link to={ `/article/update/${ article.index! }` }>
+                    (편집)
+                </Link>
+            </li>
         ))}
+        </ul>
         <Link to={ `/article/list` }>
             <Button>모든 글 보기</Button>
         </Link>

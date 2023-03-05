@@ -70,7 +70,7 @@ function WriteClassic() {
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
-    return <Layout title='글 작성하기' sidebar={ <ArticleListSidebar /> }>
+    return <Layout title='글 작성하기' sidebar='ArticleList'>
         <p>{message}</p>
         <ClassicEditor
             initArticle={

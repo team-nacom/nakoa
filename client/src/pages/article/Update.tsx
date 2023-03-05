@@ -86,12 +86,12 @@ function Update() {
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     if(initArticle === undefined){ // todo: fallback into list
-        return <Layout title='오류' sidebar={ <ArticleListSidebar /> }>
+        return <Layout title='오류' sidebar='ArticleList'>
             <p>존재하지 않는 글입니다.</p>
         </Layout>;
     }
 
-    return <Layout title='글 수정하기' sidebar={ <ArticleListSidebar /> }>
+    return <Layout title='글 수정하기' sidebar='ArticleList'>
         <p>{message}</p>
         {initArticle.mode === 'classic' &&
             <ClassicEditor
