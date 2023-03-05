@@ -30,7 +30,7 @@ function Article() {
         <div className='articleFeedList'>
             {articles.map((article, no) => (
                 <div key={ no } className='articleFeed'>
-                    <Link to={ `/article/view/${ article.index! }` }>
+                    <Link to={ `/article/view/${ article.localIndex! }` }>
                         <div className='articleFeedContent'>
                             <div className='author'>{ article.metadata.author }</div>
                             <div className='title'>{ article.metadata.title }</div>

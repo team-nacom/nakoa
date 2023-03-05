@@ -154,7 +154,7 @@ export async function postArticle(article: Article){
     // serverless.
     let index = await generateUniqueIdx();
 
-    article.index = index;
+    article.localIndex = index;
     article.createDate = article.updateDate = new Date();
     
     let key = `data/${index}`;
@@ -187,7 +187,7 @@ export async function postArticle(article: Article){
 export async function updateArticle(index: string, article: Article){
     // serverless
 
-    article.index = index; // article argument might not have index anymore
+    article.localIndex = index; // article argument might not have index anymore
     article.updateDate = new Date();
 
     let key = `data/${index}`;

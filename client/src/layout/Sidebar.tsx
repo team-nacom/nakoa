@@ -14,10 +14,10 @@ export function ArticleListSidebar(){
         <ul className='articleList'>
         {(articles ?? []).map((article, no)=>(
             <li key={no}>
-                <Link to={ `/article/view/${ article.index! }` }>
+                <Link to={ `/article/view/${ article.localIndex! }` }>
                 { article.metadata.title }
                 </Link>
-                <Link to={ `/article/update/${ article.index! }` }>
+                <Link to={ `/article/update/${ article.localIndex! }` }>
                     (편집)
                 </Link>
             </li>
