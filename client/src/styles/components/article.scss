@@ -1,11 +1,11 @@
-@import '../consts.scss';
-@import './buttons.scss';
+@import "../consts.scss";
+@import "./buttons.scss";
 
 .articleBackground {
     position: fixed;
     z-index: -1;
     background: #f9f9f9;
-//    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
+    //    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
     width: 100vw;
     height: 100vh;
     top: 0;
@@ -22,18 +22,18 @@
             -moz-appearance: none;
             -webkit-appearance: none;
             appearance: none;
-            
+
             color: black;
             width: 125px;
             height: 28px;
             background: #66666633;
-//            background: none;
+            //            background: none;
             border-radius: 14px;
-//            border: 1px solid #88888888;
+            //            border: 1px solid #88888888;
             border: none;
             padding-left: 9px;
             padding-right: 9px;
-            
+
             margin: 0px 7px;
         }
     }
@@ -59,7 +59,7 @@
         text-align: center;
         font-size: 40px;
         line-height: 55px;
-//        color: white;
+        //        color: white;
         color: #444444;
         margin-bottom: 9px;
         margin-top: 20px;
@@ -70,7 +70,7 @@
         text-align: center;
         font-size: 21px;
         line-height: 30px;
-//        color: white;
+        //        color: white;
         color: #444444;
         margin-top: 6px;
         margin-bottom: 6px;
@@ -81,7 +81,7 @@
     h3.tags {
         font-size: 16px;
         line-height: 24px;
-//        color: white;
+        //        color: white;
         color: #222222;
         margin-top: 6px;
         margin-bottom: 6px;
@@ -96,7 +96,7 @@
 
         display: flex;
         color: white;
-        text-shadow: 0px 5px 5px #0000004D;
+        text-shadow: 0px 5px 5px #0000004d;
         font-size: 16px;
         .material-icons {
             transform: translateY(7px);
@@ -119,18 +119,26 @@
     }
 
     .articleContent {
-//        font-family: 'SeoulHangang';
-        background: white;
+        //        font-family: 'SeoulHangang';
+        background-color: white;
         box-sizing: border-box;
-        width: 100%;
-        padding: 20px calc(10% - 40px);
-        margin: 10px 0px;
-
-        @media (max-width: $max-mobile-width) {
-            padding: 20px 20px;
+        padding: 10px 20px;
+        @media (max-width: 720px) {
+            border-top: solid 1px #ddd;
+            border-bottom: solid 1px #ddd;
         }
-        box-shadow: 0px 3px 20px #0000004D;
-        border-radius: 2px;
+        @media (min-width: 720px) {
+            border-radius: 7px;
+            width: min(1200px, 80%);
+            margin: 48px auto;
+            @include shadow-template();
+        }
+
+        > hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+        }
     }
 
     // .articleContent.hideEssential .Essential > *:not(:first-child),
@@ -145,7 +153,7 @@
     .articleContent.hideRecommendable .Recommendable > *:not(.headingBlock),
     .articleContent.hideReadable .Readable > *:not(.headingBlock),
     .articleContent.hideOptional .Optional > *:not(.headingBlock),
-    .articleContent.hideDraft .Draft > *:not(.headingBlock){
+    .articleContent.hideDraft .Draft > *:not(.headingBlock) {
         display: none;
     }
 
@@ -160,12 +168,12 @@
 
 .articleList {
     h1 {
-        font-family: 'SeoulHangang';
+        font-family: "SeoulHangang";
         margin: 20px;
         font-size: 24px;
         line-height: 32px;
-        color: #FFFFFF;
-        text-shadow: 0px 4px 5px #0000004D;
+        color: #ffffff;
+        text-shadow: 0px 4px 5px #0000004d;
     }
 
     .articleListContainer {
@@ -258,10 +266,7 @@
             padding-top: 5px;
             min-height: 245px;
 
-
             background-image: linear-gradient(120deg, #f3f3f3 0%, #fafafa 100%);
-
-
 
             .author {
                 font-size: 14px;
@@ -290,7 +295,7 @@
             }
 
             .content {
-//                background: #ffffff88;
+                //                background: #ffffff88;
                 padding: 4px 15px;
                 font-size: 11px;
                 line-height: 22px;
@@ -329,7 +334,7 @@
             border-radius: 2px;
 
             background-color: white;
-            box-shadow: 0px 3px 10px #0000004D;
+            box-shadow: 0px 3px 10px #0000004d;
 
             margin: 10px 0px;
             padding: 5px 10px;
