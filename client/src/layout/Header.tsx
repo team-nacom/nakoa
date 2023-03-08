@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Icon } from '@mui/material';
 
 function LocaleButton() {
     let [opacity, setDeltaOpacity] = useSmoothValue(0);
@@ -81,12 +81,12 @@ function Header() {
                             <div> { i18n.t('header.chal') ?? '' } </div>
                         </a>
                     </span>
-                    <MenuIcon className={'expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
+                    <Icon className={'expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {
                         e.preventDefault();
                         setExpanded(!expanded);
                     }}>
                         menu
-                    </MenuIcon>
+                    </Icon>
                 </nav>
             </header>
         </>

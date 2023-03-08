@@ -7,7 +7,6 @@ import { CellEditor } from '#/components/editor/CellEditor';
 import { Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { ArticleListSidebar } from '#/layout/Sidebar';
 
 import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 

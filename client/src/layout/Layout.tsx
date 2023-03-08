@@ -24,14 +24,17 @@ export function Layout(props: PropsWithChildren<LayoutProps>): JSX.Element{
 
     return (<>
         <Header />
-        {typeof sidebar !== 'string' &&
-            sidebar
-        }
-        {sidebar === 'ArticleList' &&
-            <ArticleListSidebar />
-        }
         <div id='content'>
-            <h1 className='pageTitle'>{ title }</h1>
+            {typeof sidebar !== 'string' &&
+                sidebar
+            }
+            {sidebar === 'ArticleList' &&
+                <ArticleListSidebar />
+            }
+
+            {title &&
+                <h1 className='pageTitle'>{ title }</h1>
+            }
             { props.children }
         </div>
         <Footer />

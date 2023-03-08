@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { ArticleListSidebar } from '#/layout/Sidebar';
 import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle, postArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 

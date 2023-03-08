@@ -17,10 +17,7 @@ import {
 
 import isEqual from 'react-fast-compare'
 
-import {
-    AddBox, ArrowDropDown, ListAlt, FormatListNumberedRtl,
-    Article, Calculate, Code, Close, Delete, Image, Tag, Update
-} from '@mui/icons-material'
+import { Icon } from '@mui/material';
 
 function CellLabel({ id }: CellIndicatorProps){
     const cell = useSingleCell(id)
@@ -75,22 +72,22 @@ function _Toolbar({ id }: CellIndicatorProps){
                         <button className='cellOptionButton'
                             onClick={ changeCellTypeHandlerFactory('text') }
                         >
-                            <Article />
+                            <Icon>article</Icon>
                         </button>
                         <button className='cellOptionButton'
                             onClick={ changeCellTypeHandlerFactory('math') }
                         >
-                            <Calculate />
+                            <Icon>calculate</Icon>
                         </button>
                         <button className='cellOptionButton'
                             onClick={ changeCellTypeHandlerFactory('code') }
                         >
-                            <Code />
+                            <Icon>code</Icon>
                         </button>
                         <button className='cellOptionButton'
                             onClick={ changeCellTypeHandlerFactory('image') }
                         >
-                            <Image />
+                            <Icon>image</Icon>
                         </button>
                     </>}
                 </>}
@@ -103,7 +100,7 @@ function _Toolbar({ id }: CellIndicatorProps){
                             editorAction.focus() // blur
                         } }
                     >
-                        <Close />
+                        <Icon>close</Icon>
                     </button>
                 }
                 {cellType === 'section' && <>
@@ -120,13 +117,13 @@ function _Toolbar({ id }: CellIndicatorProps){
                         htmlFor={ 'hide-' + id }
                         onClick={ (ev) => { ev.stopPropagation() } }
                     >
-                        <ArrowDropDown />
+                        <Icon>arrow_drop_down</Icon>
                     </label>
                 </>}
                 <button className='cellOptionButton'
                     onClick={ deleteHandler }
                 >
-                    <Delete />
+                    <Icon>delete</Icon>
                 </button>
             </>}
             {cellType === 'root' &&
@@ -136,17 +133,17 @@ function _Toolbar({ id }: CellIndicatorProps){
                         editorAction.updateRenderData()
                     }}
                 >
-                    <Update />
+                    <Icon>update</Icon>
                 </button>
             }
         </div>
         <div className='cellInfo'>
             <span className='cellId'>
-                <span className='cellInfoIcon'><Tag /></span>
+                <span className='cellInfoIcon'><Icon>tag</Icon></span>
                 <span className='cellInfoText'>{id}</span>
             </span>
             <span className='cellPos'>
-                <span className='cellInfoIcon'><FormatListNumberedRtl /></span>
+                <span className='cellInfoIcon'><Icon>format_list_numbered_rtl</Icon></span>
                 <span className='cellInfoText'><CellLabel id={id} /></span>
             </span>
         </div>

@@ -8,11 +8,12 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Loading from '../Loading';
 import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
-import { ArticleListSidebar } from '#/layout/Sidebar';
+
 import usePromise from '#/misc/usePromise';
 import { getArticle } from '#/api/article';
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
+import { Icon } from '@mui/material';
 
 function Article() {
     let params = useParams<{ index: string }>();
@@ -31,28 +32,36 @@ function Article() {
 
     return <Layout /* title={ article.metadata.title } */ sidebar='ArticleList'>
         <div className='article'>
-            <div className='articleBackground' />
-            <h2 className='subtitle'> { article.metadata.author } </h2>
-            <h1 className='title'> { article.metadata.title } </h1>
-            <div className='articleContent'>
-            {article.mode === 'classic' &&
-                <Markdown>
-                    { article.text }
-                </Markdown>
-            }
-            {article.mode === 'cell' &&
-                <Display
-                    {...article.content}
-                />
-            }
+            <div className='articleButtonContainer'>
+                <Link to={ `/article/update/${ index }` }>
+                    <Button className='articleButton'>
+                        <Icon>edit</Icon>
+                    </Button>
+                </Link>
+                <Link to={ `/article/delete/${ index }` }>
+                    <Button className='articleButton'>
+                        <Icon>delete</Icon>
+                    </Button>
+                </Link>
             </div>
+            <div className='articleContentMain'>
+                <h1 className='title'> { article.metadata.title } </h1>
+                {/* <h2 className='subtitle'> { article.metadata.author } </h2> */}
+                {article.mode === 'classic' && (
+                    <Markdown>
+                        { article.text }
+                    </Markdown>
+                ) }
+                {article.mode === 'cell' && (
+                    <Display
+                        {...article.content}
+                    />
+                ) }
+            </div>
+
+            {/* <div className='articleBackground' /> */}
+
         </div>
-        <Link to={ `/article/update/${ index }` }>
-            <Button>편집</Button>
-        </Link>
-        <Link to={ `/article/delete/${ index }` }>
-            <Button>삭제</Button>
-        </Link>
     </Layout>;
 }
 

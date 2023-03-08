@@ -4,7 +4,6 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { ArticleListSidebar } from '#/layout/Sidebar';
 import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
 

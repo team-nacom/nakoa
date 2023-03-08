@@ -10,7 +10,7 @@ import { isParentType } from '#/components/cell-editor/cell'
 import { useIsOver } from './DndScope'
 import { InterCellProps } from './Portal'
 
-import { AddBox, ListAlt } from '@mui/icons-material'
+import { Icon } from '@mui/material';
 
 import { useDroppable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
@@ -50,7 +50,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
                         editorAction.createChild('text', parentId, idx)
                     }}
                 >
-                    <AddBox />
+                    <Icon>add_box</Icon>
                 </button>
                 {isParentType(cellType) && (depth < maxDepth) &&
                     <button className='addSectionCellButton'
@@ -59,7 +59,7 @@ function _InterCell({ parentId, idx, depth }: InterCellProps){
                             editorAction.createChild('section', parentId, idx)
                         }}
                     >
-                        <ListAlt />
+                        <Icon>list_alt</Icon>
                     </button>
                 }
             </div>

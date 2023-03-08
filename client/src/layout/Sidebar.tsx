@@ -5,32 +5,46 @@ import usePromise from '#/misc/usePromise';
 import { getArticleList } from '#/api/article';
 
 import Button from '#/components/Button';
+import { Icon } from '@mui/material';
 
 export function ArticleListSidebar(){
     let [loading, articles] = usePromise(() => getArticleList(), []);
 
     if(loading) return <></>; // default loading screen
-    return (<div id='sidebar'>
-        <ul className='articleList'>
-        {(articles ?? []).map((article, no)=>(
-            <li key={no}>
-                <Link to={ `/article/view/${ article.localIndex! }` }>
-                { article.metadata.title }
+    return (
+        <nav className='sideBar'>
+            <div className='sideBarSwitcher'>
+                <Link to='/article/list'>
+                    <h2>글 목록</h2>
                 </Link>
-                <Link to={ `/article/update/${ article.localIndex! }` }>
-                    (편집)
-                </Link>
-            </li>
-        ))}
-        </ul>
-        <Link to={ `/article/list` }>
-            <Button>모든 글 보기</Button>
-        </Link>
-        <Link to='/article/write-classic'>
-            <Button>새 글(텍스트)</Button>
-        </Link>
-        <Link to='/article/write-cell'>
-            <Button>새 글(셀)</Button>
-        </Link>
-    </div>);
+                
+                <Button className='sideBarFolder'>
+                    <Icon>menu</Icon>
+                </Button>
+            </div>
+            <ul className='sideArticleList'>
+            {(articles ?? []).map((article, no)=>(
+                <li key={no} className='sideArticleListItem'>
+                    <Link to={ `/article/view/${ article.localIndex! }` }>
+                        <div className='articleListTitle'>{ article.metadata.title }</div>
+                    </Link>
+                    <Link to={ `/article/update/${ article.localIndex! }` }>
+                        <Button className='articleListButton'>
+                            <Icon>edit</Icon>
+                        </Button>
+                    </Link>
+                </li>
+            ))}
+            </ul>
+            {/* <Link to={ `/article/list` }>
+                <Button>모든 글 보기</Button>
+            </Link>
+            <Link to='/article/write-classic'>
+                <Button>새 글(텍스트)</Button>
+            </Link>
+            <Link to='/article/write-cell'>
+                <Button>새 글(셀)</Button>
+            </Link> */}
+        </nav>
+    );
 }

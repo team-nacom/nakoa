@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next';
 
 import { Layout } from '#/layout/Layout';
-import { ArticleListSidebar } from '#/layout/Sidebar';
 
 function Main() {
     let { i18n } = useTranslation('translation');
