@@ -10,6 +10,8 @@ import { getArticleList } from '#/api/article';
 // import Markdown from '#/components/markdown-lab/Markdown';
 // import { Display } from '#/components/cell-editor/cell/Display';
 
+import { Icon } from '@mui/material';
+
 
 function Article() {
     let [loading, articles] = usePromise(() => getArticleList(), []);
@@ -24,8 +26,21 @@ function Article() {
     }
 
     return <Layout title='모든 글 보기' /* sidebar='ArticleList' */>
-        <div>
-            { `총 ${articles.length}개` }
+        
+        <div className='articleListButtonContainer'>
+            <span className='articleCount'>
+                { `총 ${articles.length}개` }
+            </span>
+            <Link to='/article/write-classic'>
+                <Button>
+                    <Icon>text_fields</Icon>
+                </Button>
+            </Link>
+            <Link to='/article/write-cell'>
+                <Button>
+                    <Icon>dynamic_feed</Icon>
+                </Button>
+            </Link>
         </div>
         <div className='articleFeedList'>
             {articles.map((article, no) => (
@@ -45,12 +60,6 @@ function Article() {
                 </div>
             ))}
         </div>
-        <Link to='/article/write-classic'>
-            <Button>새 글(텍스트)</Button>
-        </Link>
-        <Link to='/article/write-cell'>
-            <Button>새 글(셀)</Button>
-        </Link>
     </Layout>;
 }
 

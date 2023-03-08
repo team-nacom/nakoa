@@ -36,6 +36,15 @@ export function ArticleListSidebar(){
                 </li>
             ))}
             </ul>
+            <div className='sideNewArticle'>
+                <h2>새 글</h2>
+                <Link to='/article/write-classic' className='sideNewArticleButton'>
+                    <Icon>text_fields</Icon>
+                </Link>
+                <Link to='/article/write-cell' className='sideNewArticleButton'>
+                    <Icon>dynamic_feed</Icon>
+                </Link>
+            </div>
             {/* <Link to={ `/article/list` }>
                 <Button>모든 글 보기</Button>
             </Link>
