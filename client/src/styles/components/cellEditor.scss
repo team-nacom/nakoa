@@ -63,7 +63,6 @@
         font-weight: bold;
     }
 
-
     @media(min-width: 720px) {
         &::after {
             display: inline-block;
@@ -77,26 +76,10 @@
 }
 
 .cellEditorWrapper, .cellDisplayWrapper, .aboutDisplayWrapper {
-    background-color: white;
     box-sizing: border-box;
     padding: 10px 20px;
-    @media(max-width: 720px) {
-        border-top: solid 1px #ddd;
-        border-bottom: solid 1px #ddd;
-    }
-    @media(min-width: 720px) {
-        border-radius: 7px;
-        width: min(1200px, 80%);
-        margin: 48px auto;
-        @include shadow-template();
-    }
-
-    > hr {
-        border: 0;
-        height: 1px;
-        background: #ddd;
-    }
 }
+
 .cellDisplayWrapper .allCellsWrapper > .internalCellWrapper {
     display: none;
 }

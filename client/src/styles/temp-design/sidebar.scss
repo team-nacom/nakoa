@@ -1,23 +1,46 @@
 .contentInner {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    width: min(1200px, 80%);
-    margin: 48px auto;
+    // gap: 10px;
+    // width: min(1200px, 80%);
+    // margin: 48px auto;
+    @media (max-width: $max-mobile-width) {
+        border-top: solid 1px #ddd;
+        border-bottom: solid 1px #ddd;
+    }
+    @media (min-width: $max-mobile-width) {
+        display: flex;
+        align-items: flex-start;
+        border-radius: 7px;
+        gap: 10px;
+        width: min(1200px, 80%);
+        margin: 48px auto;
+    }
+
+    > div {
+        background-color: white;
+        @media (min-width: $max-mobile-width) {
+            @include shadow-template();
+            flex-grow: 1;
+            border-radius: 7px;
+            box-sizing: border-box;
+        }
+    }
 }
 
 .sideBar {
-    width: 260px;
     // height: fit-content;
-    flex-shrink: 0;
-    flex-grow: 0;
-    border-radius: 4px;
     background-color: white;
-    position: -webkit-sticky;
-    position: sticky;
-    top: 118px;
-    z-index: 5;
-    @include shadow-template();
+    
+    @media (min-width: $max-mobile-width) {
+        flex-shrink: 0;
+        flex-grow: 0;
+        position: -webkit-sticky;
+        position: sticky;
+        width: 260px;
+        top: 118px;
+        z-index: 5;
+        @include shadow-template();
+        border-radius: 7px;
+    }
 }
 
 .sideBarSwitcher {
@@ -166,16 +189,6 @@
     }
 }
 
-.article {
-    flex-grow: 1;
-}
-.articleContentWrapper {
-    background-color: white;
-    box-sizing: border-box;
-    border-radius: 7px;
-    @include shadow-template();
-
-    .articleContentMain {
-        padding: 0 20px 10px 20px;
-    }
+.articleContentMain {
+    padding: 0 20px 10px 20px;
 }
