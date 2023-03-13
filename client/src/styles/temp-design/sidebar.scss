@@ -1,5 +1,6 @@
 .contentInner {
     display: flex;
+    align-items: flex-start;
     gap: 10px;
     width: min(1200px, 80%);
     margin: 48px auto;
@@ -7,6 +8,7 @@
 
 .sideBar {
     width: 260px;
+    // height: fit-content;
     flex-shrink: 0;
     flex-grow: 0;
     border-radius: 4px;
@@ -25,7 +27,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .sideBarFolder {
         display: none;
         justify-content: center;
@@ -134,8 +136,6 @@
         background-color: #e4e6eb;
     }
 }
-
-
 
 .articleButtonContainer {
     display: flex;
