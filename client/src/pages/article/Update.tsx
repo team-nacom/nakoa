@@ -8,7 +8,7 @@ import { Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
 
-import { Article, getArticle, updateArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
+import { Article, getLocalArticle, updateLocalArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
@@ -21,7 +21,7 @@ function Update() {
     const [loading, initArticle] = usePromise(async () => {
         const draft = await getAutosaveArticle(index);
         if(draft !== undefined) return draft;
-        return await getArticle(index);
+        return await getLocalArticle(index);
     }, [index]);
 
     // redirection state
@@ -40,7 +40,7 @@ function Update() {
             text
         };
 
-        let success = await updateArticle(index, article);
+        let success = await updateLocalArticle(index, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
             setRedirectTo(`/article/view/${index}`);
@@ -79,7 +79,7 @@ function Update() {
             content
         };
 
-        let success = await updateArticle(index, article);
+        let success = await updateLocalArticle(index, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
             setRedirectTo(`/article/view/${index}`);

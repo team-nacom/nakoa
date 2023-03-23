@@ -2,13 +2,13 @@ import React, { useEffect, PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
 import usePromise from '#/misc/usePromise';
-import { getArticleList } from '#/api/article';
+import { getLocalArticleList } from '#/api/article';
 
 import Button from '#/components/Button';
 import { Icon } from '@mui/material';
 
 export function ArticleListSidebar(){
-    let [loading, articles] = usePromise(() => getArticleList(), []);
+    let [loading, articles] = usePromise(() => getLocalArticleList(), []);
 
     if(loading) return <></>; // default loading screen
     return (

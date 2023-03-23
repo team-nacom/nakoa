@@ -10,16 +10,17 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getArticle } from '#/api/article';
+import { getLocalArticle } from '#/api/article';
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 import { Icon } from '@mui/material';
+import { postPublicArticle } from '#/api/article-public';
 
 function Article() {
     let params = useParams<{ index: string }>();
     let index = params.index;
 
-    let [loading, article] = usePromise(() => getArticle(index), [index]);
+    let [loading, article] = usePromise(() => getLocalArticle(index), [index]);
     let [redir, setRedir] = useState(false);
 
     if(redir) return <Redirect to='/' />;
@@ -43,6 +44,13 @@ function Article() {
                         <Icon>delete</Icon>
                     </Button>
                 </Link>
+                <Button
+                    onClick={ () => {
+                        postPublicArticle(article!);
+                    } }
+                >
+                    publish
+                </Button>
             </div>
             <div className='articleContentMain'>
                 <h1 className='title'> { article.metadata.title } </h1>

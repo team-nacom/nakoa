@@ -31,8 +31,6 @@ export interface ArticleAttribute {
     //   이 때 클라이언트의 publicIndex도 p1로 수정된다. ( todo: 이 과정을 4-way handshake처럼 해서 transaction 처리해야 되나?? )
     //   DB의 어딘가에(혹은 article의 새로운 필드로?) p1 글이 p0 글을 fork했다는 정보로서 p0 -> p1 링크를 저장한다.
 
-    // 보안문제가 있을까?
-
     createDate?: Date;
     updateDate?: Date;
     metadata: Metadata;

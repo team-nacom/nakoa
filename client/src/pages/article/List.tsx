@@ -6,7 +6,7 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getArticleList } from '#/api/article';
+import { getLocalArticleList } from '#/api/article';
 // import Markdown from '#/components/markdown-lab/Markdown';
 // import { Display } from '#/components/cell-editor/cell/Display';
 
@@ -14,7 +14,7 @@ import { Icon } from '@mui/material';
 
 
 function Article() {
-    let [loading, articles] = usePromise(() => getArticleList(), []);
+    let [loading, articles] = usePromise(() => getLocalArticleList(), []);
     let [redir, setRedir] = useState(false);
 
     if(redir) return <Redirect to='/' />;

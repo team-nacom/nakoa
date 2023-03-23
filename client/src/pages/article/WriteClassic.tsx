@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle, postArticle } from '#/api/article';
+import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle, postLocalArticle } from '#/api/article';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
 import Loading from '../Loading';
@@ -47,7 +47,7 @@ function WriteClassic() {
             text
         };
 
-        let { success, index } = await postArticle(article);
+        let { success, index } = await postLocalArticle(article);
         if(success){
             setMessage('업로드에 성공했습니다!');
             setRedirectTo(`/article/view/${index}`);

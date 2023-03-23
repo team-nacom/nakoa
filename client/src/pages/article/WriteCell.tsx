@@ -4,7 +4,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { Article, CellArticle, getArticle, postArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
+import { Article, CellArticle, getLocalArticle, postLocalArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
 import { CellEditor } from '#/components/editor/CellEditor';
 
 import Loading from '../Loading';
@@ -52,7 +52,7 @@ function WriteCell() {
             content
         }
 
-        let { success, index } = await postArticle(article);
+        let { success, index } = await postLocalArticle(article);
         if(success){
             setMessage('업로드에 성공했습니다!');
             setRedirectTo(`/article/view/${index}`);

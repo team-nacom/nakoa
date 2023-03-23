@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
-import { Article, removeArticle } from '#/api/article';
+import { Article, removeLocalArticle } from '#/api/article';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
@@ -12,7 +12,7 @@ function Delete() {
 
     // todo : should authenticate this!
 
-    const [loading] = usePromise(() => removeArticle(index), [index]);
+    const [loading] = usePromise(() => removeLocalArticle(index), [index]);
 
     if(loading) return <Loading />;
     return <Redirect to={'/article/list'} />;

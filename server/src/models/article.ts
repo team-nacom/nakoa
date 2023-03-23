@@ -4,8 +4,15 @@ import { baseid } from '../utils';
 import { ArticleAttribute, ClassicArticle, BasicCellArticle } from '#common/Article';
 
 const articleSchema = new Schema<ArticleAttribute>({
-    index: { type: String, // IdxType
-        index: true, unique: true, default: () => baseid(8),
+    localIndex: { type: String,
+        // index: true,
+        // unique: true,
+        // default: () => baseid(8),
+    },
+    publicIndex: { type: String,
+        index: true,
+        unique: true,
+        default: () => baseid(8),
     },
     // createDate,
     // updateDate,
