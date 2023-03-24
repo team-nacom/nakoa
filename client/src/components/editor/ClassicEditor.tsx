@@ -9,7 +9,7 @@ import { ClassicEditorProvider, useClassicText } from '#/components/classic-edit
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import { ClassicArticle } from '#/api/article';
+import { ClassicArticle } from '#/api/article-local';
 import { MetadataProvider, Metadata, useMetadataState } from './MetadataState';
 
 import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts';

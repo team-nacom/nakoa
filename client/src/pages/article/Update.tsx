@@ -8,21 +8,20 @@ import { Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
 
-import { Article, getLocalArticle, updateLocalArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article';
+import { Article, getLocalArticle, updateLocalArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article-local';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
 
 function Update() {
-    let params = useParams<{ index: string }>();
-    let index = params.index;
+    const { localIndex } = useParams<{ localIndex: string }>();
 
     const [loading, initArticle] = usePromise(async () => {
-        const draft = await getAutosaveArticle(index);
+        const draft = await getAutosaveArticle(localIndex);
         if(draft !== undefined) return draft;
-        return await getLocalArticle(index);
-    }, [index]);
+        return await getLocalArticle(localIndex);
+    }, [localIndex]);
 
     // redirection state
     const [redirectTo, setRedirectTo] = useState<string>();
@@ -40,14 +39,14 @@ function Update() {
             text
         };
 
-        let success = await updateLocalArticle(index, article);
+        let success = await updateLocalArticle(localIndex, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${index}`);
+            setRedirectTo(`/article/view/${localIndex}`);
         } else{
             setMessage('업로드에 실패했습니다.');
         }
-    }, [index]);
+    }, [localIndex]);
 
     const autosaveClassic = useCallback(async (metadata: Metadata, text: string) => {
         const article: ClassicArticle = {
@@ -55,8 +54,8 @@ function Update() {
             metadata,
             text
         };
-        await setAutosaveArticle(article, index);
-    }, [index]);
+        await setAutosaveArticle(article, localIndex);
+    }, [localIndex]);
 
     const autosaveCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         const article: CellArticle = {
@@ -79,24 +78,24 @@ function Update() {
             content
         };
 
-        let success = await updateLocalArticle(index, article);
+        let success = await updateLocalArticle(localIndex, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${index}`);
+            setRedirectTo(`/article/view/${localIndex}`);
         } else{
             setMessage('업로드에 실패했습니다.');
         }
-    }, [index]);
+    }, [localIndex]);
 
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
 
         disableAutosave();
-        await unsetAutosaveArticle(index);
-        setRedirectTo(`/article/update/${index}`); // might race??
+        await unsetAutosaveArticle(localIndex);
+        setRedirectTo(`/article/update/${localIndex}`); // might race??
 
         window.location.reload();
-    }, [index]);
+    }, [localIndex]);
 
     if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;

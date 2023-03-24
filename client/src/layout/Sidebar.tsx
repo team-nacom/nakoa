@@ -2,7 +2,7 @@ import React, { useEffect, PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticleList } from '#/api/article';
+import { getLocalArticleList } from '#/api/article-local';
 
 import Button from '#/components/Button';
 import { Icon } from '@mui/material';

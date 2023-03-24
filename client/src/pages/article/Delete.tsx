@@ -1,18 +1,15 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
-import { Article, removeLocalArticle } from '#/api/article';
+import { Article, removeLocalArticle } from '#/api/article-local';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 
 function Delete() {
-    let params = useParams<{ index: string }>();
-    let index = params.index;
+    const { localIndex } = useParams<{ localIndex: string }>();
 
-    // todo : should authenticate this!
-
-    const [loading] = usePromise(() => removeLocalArticle(index), [index]);
+    const [loading] = usePromise(() => removeLocalArticle(localIndex), [localIndex]);
 
     if(loading) return <Loading />;
     return <Redirect to={'/article/list'} />;

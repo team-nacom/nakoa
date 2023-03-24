@@ -1,8 +1,8 @@
 import axios from "axios";
 import { apiUrl } from "#/config/env";
 
-import type { ClassicArticle, CellArticle, Article } from "./article";
-import { postLocalArticle, updateLocalArticle } from "./article";
+import type { ClassicArticle, CellArticle, Article } from "./article-local";
+import { postLocalArticle, updateLocalArticle } from "./article-local";
 
 const validateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
 
@@ -33,7 +33,7 @@ export async function getPublicArticle(publicIndex: string, fork: boolean = fals
     let article = response.data.article as Article; // BE should've remove localIndices.
 
     if(fork){
-        let { success, index: localIndex } = await postLocalArticle(article);
+        let { success, localIndex } = await postLocalArticle(article);
         if(!success){
             throw new Error('local post failed');
         }
@@ -47,11 +47,11 @@ export async function postPublicArticle(article: Article){
     if(article.localIndex === undefined){
         // when the first article save is done as well as publishing.
         // we aren't supposed to make this branch happen.
-        let { success, index } = await postLocalArticle(article);
+        let { success, localIndex } = await postLocalArticle(article);
         if(!success){
             throw new Error('local post failed');
         }
-        article.localIndex = index;
+        article.localIndex = localIndex;
     }
 
     // if article of post request has publicIndex(say p0) and BE has article p0, then BE should generate a new publicIndex(p1) as well as mark somewhere "p0 -> p1", for article p1 is a fork of article p0.
@@ -78,11 +78,11 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
     if(article.localIndex === undefined){
         // when the first article save is done as well as updating.
         // we aren't supposed to make this branch happen.
-        let { success, index } = await postLocalArticle(article);
+        let { success, localIndex } = await postLocalArticle(article);
         if(!success){
             throw new Error('local post failed');
         }
-        article.localIndex = index;
+        article.localIndex = localIndex;
     }
 
     let response = await axios.put(`${apiUrl}/article/update/${publicIndex}`, article, {

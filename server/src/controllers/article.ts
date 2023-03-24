@@ -18,11 +18,11 @@ router.get('/get-list', async function getArticleList(ctx){
     };
 });
 
-router.get('/get/:localIndex', async function getArticle(ctx){
+router.get('/get/:publicIndex', async function getArticle(ctx){
     // localIndex is used as verification token, so remove it
 
-    const localIndex = ctx.params.localIndex; // TODO: idxtype
-    const query = ArticleModel.findOne({ localIndex, 'metadata.visibility': {$gte: 1} }).select(['-localIndex']);
+    const publicIndex = ctx.params.publicIndex; // TODO: idxtype
+    const query = ArticleModel.findOne({ publicIndex, 'metadata.visibility': {$gte: 1} }).select(['-localIndex']);
     const article = await query.exec();
 
     if(article === null){
@@ -59,6 +59,8 @@ router.post('/post', async function postArticle(ctx){
         // todo: verify if prevIndex article is actually in db?
         delete body.publicIndex;
     }
+
+    console.log(body);
 
     // let article;
     // if(body['mode'] === 'classic'){

@@ -1,7 +1,3 @@
-// 23/01/16 revert & refactored from:
-// https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/pages/guide/Guide.tsx
-// WIP
-
 import React, { useState, useMemo } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 
@@ -11,19 +7,24 @@ import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
 import { getLocalArticle } from '#/api/article-local';
-import { postPublicArticle, updatePublicArticle } from '#/api/article-public';
+import {
+    getPublicArticle,
+    postPublicArticle
+} from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 import { Icon } from '@mui/material';
 
+// import { getPublicArticleList } from '#/api/article-public';
+
 function View() {
-    const { localIndex } = useParams<{ localIndex: string }>();
+    let { publicIndex } = useParams<{ publicIndex: string }>();
 
-    const [loading, article] = usePromise(() => getLocalArticle(localIndex), [localIndex]);
-    const [redirectTo, setRedirectTo] = useState<string>();
+    let [loading, article] = usePromise(() => getPublicArticle(publicIndex), [publicIndex]);
+    let [redir, setRedir] = useState(false);
 
-    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
+    if(redir) return <Redirect to='/' />;
     if(loading) return <Loading />;
     if(article === undefined){
         return <Layout title='오류' sidebar='ArticleList'>
@@ -34,42 +35,24 @@ function View() {
     return <Layout /* title={ article.metadata.title } */ sidebar='ArticleList'>
         <div className='article'>
             <div className='articleButtonContainer'>
-                <Link to={ `/article/update/${ localIndex }` }>
+                {/* <Link to={ `/article/update/${ publicIndex }` }>
                     <Button className='articleButton'>
                         <Icon>edit</Icon>
                     </Button>
                 </Link>
-                <Link to={ `/article/delete/${ localIndex }` }>
+                <Link to={ `/article/delete/${ publicIndex }` }>
                     <Button className='articleButton'>
                         <Icon>delete</Icon>
                     </Button>
-                </Link>
-                { article.publicIndex === undefined && (
-                    <Button
-                        onClick={ () => {
-                            postPublicArticle(article!);
-
-                            setRedirectTo(`/article/view/${localIndex}`);
-                            window.location.reload();
-                        } }
-                    >
-                        publish
-                    </Button>
-                )}
-                { article.publicIndex !== undefined && (
-                    <>
-                        <Button
-                            onClick={ () => {
-                                updatePublicArticle(article!.publicIndex!, article!);
-                            } }
-                        >
-                            sync
-                        </Button>
-                        <Link to={ `/article-pub/view/${article.publicIndex}` }>
-                            <Button>공개 글 보기</Button>
-                        </Link>
-                    </>
-                )}
+                </Link> */}
+                <Button
+                    onClick={ async () => {
+                        let localIndex = await getPublicArticle(publicIndex, true);// fork
+                        // redirect with localIndex
+                    } }
+                >
+                    fork
+                </Button>
             </div>
             <div className='articleContentMain'>
                 <h1 className='title'> { article.metadata.title } </h1>

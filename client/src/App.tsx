@@ -15,9 +15,12 @@ import ArticleList from '#/pages/article/List';
 import ArticleView from '#/pages/article/View';
 import ArticleUpdate from '#/pages/article/Update';
 import ArticleDelete from '#/pages/article/Delete';
-import WriteClassic from './pages/article/WriteClassic';
-import WriteCell from '#/pages/article/WriteCell';
+import ArticleWriteClassic from '#/pages/article/WriteClassic';
+import ArticleWriteCell from '#/pages/article/WriteCell';
 import Hidden from '#/pages/article/Hidden';
+
+import ArticlePubList from '#/pages/article-pub/List';
+import ArticlePubView from '#/pages/article-pub/View';
 
 import { baseUrl } from '#/config/env';
 
@@ -45,11 +48,14 @@ function App() {
                 <Route exact path='/about' component={About}/>
 
                 <Route exact path='/article/list' component={ArticleList} />
-                <Route exact path='/article/view/:index' component={ArticleView} />
-                <Route exact path='/article/update/:index' component={ArticleUpdate} />
-                <Route exact path='/article/delete/:index' component={ArticleDelete} />
-                <Route exact path='/article/write-classic' component={WriteClassic} />
-                <Route exact path='/article/write-cell' component={WriteCell} />
+                <Route exact path='/article/view/:localIndex' component={ArticleView} />
+                <Route exact path='/article/update/:localIndex' component={ArticleUpdate} />
+                <Route exact path='/article/delete/:localIndex' component={ArticleDelete} />
+                <Route exact path='/article/write-classic' component={ArticleWriteClassic} />
+                <Route exact path='/article/write-cell' component={ArticleWriteCell} />
+
+                <Route exact path='/article-pub/list' component={ArticlePubList} />
+                <Route exact path='/article-pub/view/:publicIndex' component={ArticlePubView} />
 
                 <Route exact path='/hidden' component={Hidden} />
                 <Route component={NotFound}/>

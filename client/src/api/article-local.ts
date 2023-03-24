@@ -1,6 +1,3 @@
-// 23/01/16 revert & refactored from:
-// https://github.com/team-nacom/nakoa/blob/2f279ea8335995a722ccf01896deb5364c405ba2/client/src/etc/api/guide.ts
-
 import { base64rand } from '#/misc/base64rand';
 import localforage from 'localforage';
 
@@ -11,11 +8,6 @@ import type { Cell } from "#/components/cell-editor/cell";
 export type { ClassicArticle };
 export type CellArticle = BasicCellArticle<Cell>;
 export type Article = ClassicArticle | CellArticle;
-
-const validateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
-
-// const validateSetStatus = (status: number) => (status < 300);
-
 
 ///////////////// db-specific implementation
 
@@ -53,9 +45,9 @@ async function getLocalIdxArr(){
     let keys = await articleStorage.keys();
 
     return keys.map((key) => {
-            let res = key.match(/data\/(?<index>[^\/]*)/);
+            let res = key.match(/data\/(?<localIndex>[^\/]*)/);
             if(res === null) return undefined;
-            return res.groups?.index;
+            return res.groups?.localIndex;
         })
         .filter((k): k is string => k !== undefined);
 }
@@ -73,30 +65,30 @@ async function generateUniqueIdx(){
 
 ////////////////////////
 
-export async function unsetAutosaveArticle(index?: string, mode?: Article['mode']){
-    let key = index !== undefined
-        ? `draft/${index}`
+export async function unsetAutosaveArticle(localIndex?: string, mode?: Article['mode']){
+    let key = localIndex !== undefined
+        ? `draft/${localIndex}`
         : `draft-unpub/${mode}`;
 
     await unsetLocal(key);
     return { success: true };
 }
 
-export async function setAutosaveArticle(article: Article, index?: string){
+export async function setAutosaveArticle(article: Article, localIndex?: string){
     // in browser cache
 
     // TODO: manage storage key list
-    let key = index !== undefined
-        ? `draft/${index}`
+    let key = localIndex !== undefined
+        ? `draft/${localIndex}`
         : `draft-unpub/${article.mode}`;
 
     await setLocal(key, article);
     return { success: true };
 }
 
-export async function getAutosaveArticle(index?: string, mode?: Article['mode']){
-    let key = index !== undefined
-        ? `draft/${index}`
+export async function getAutosaveArticle(localIndex?: string, mode?: Article['mode']){
+    let key = localIndex !== undefined
+        ? `draft/${localIndex}`
         : `draft-unpub/${mode}`;
     
     let article = await getLocal(key);
@@ -111,9 +103,9 @@ export async function getLocalArticleList(){
     return getLocalAll();
 }
 
-export async function getLocalArticle(index: string){
+export async function getLocalArticle(localIndex: string){
     // serverless.
-    let key = `data/${index}`;
+    let key = `data/${localIndex}`;
 
     let article = getLocal(key);
     if(article === undefined){
@@ -126,11 +118,11 @@ export async function postLocalArticle(article: Article, removeDraft: boolean = 
     // serverless.
 
     // set localIndex.
-    let index = await generateUniqueIdx();
-    article.localIndex = index;
+    let localIndex = await generateUniqueIdx();
+    article.localIndex = localIndex;
     article.createDate = article.updateDate = new Date();
     
-    let key = `data/${index}`;
+    let key = `data/${localIndex}`;
     await setLocal(key, article);
 
     if(removeDraft){
@@ -141,27 +133,27 @@ export async function postLocalArticle(article: Article, removeDraft: boolean = 
 
     return {
         success: true,
-        index
+        localIndex
     };
 }
 
-export async function updateLocalArticle(index: string, article: Article, shouldUpdateDate: boolean = true){
+export async function updateLocalArticle(localIndex: string, article: Article, shouldUpdateDate: boolean = true){
     // serverless
 
-    article.localIndex = index; // article argument might not have this index anymore
+    article.localIndex = localIndex; // article argument might not have this localIndex anymore
     if(shouldUpdateDate){
         article.updateDate = new Date();
     }
 
-    let key = `data/${index}`;
+    let key = `data/${localIndex}`;
     await setLocal(key, article);
     return true;
 }
 
-export async function removeLocalArticle(index: string){
+export async function removeLocalArticle(localIndex: string){
     // serverless
 
-    let key = `data/${index}`;
+    let key = `data/${localIndex}`;
     await unsetLocal(key);
     return true;
 }
