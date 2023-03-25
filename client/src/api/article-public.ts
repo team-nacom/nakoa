@@ -20,25 +20,30 @@ export async function getPublicArticleList(){
     return articles;
 }
 
-export async function getPublicArticle(publicIndex: string, fork: boolean = false){
+export async function getPublicArticle(publicIndex: string, localIndex?: string){
+    // todo: given publicIndex, can we find the article locally??
+
     let response = await axios.get(`${apiUrl}/article/get/${publicIndex}`, {
         // validateStatus,
         withCredentials: true,
+        headers: {
+            'Authorization': localIndex && `LocalIndex ${localIndex}`
+        }
     });
 
     if(response.status >= 400){
         throw new Error('article not found');
     }
 
-    let article = response.data.article as Article; // BE should've remove localIndices.
+    let article = response.data.article as Article; // BE should've remove localIndex.
 
-    if(fork){
-        let { success, localIndex } = await postLocalArticle(article);
-        if(!success){
-            throw new Error('local post failed');
-        }
-        article.localIndex = localIndex;
-    }
+    // if(fork){
+    //     let { success, localIndex } = await postLocalArticle(article);
+    //     if(!success){
+    //         throw new Error('local post failed');
+    //     }
+    //     article.localIndex = localIndex;
+    // }
 
     return article;
 }
@@ -60,7 +65,7 @@ export async function postPublicArticle(article: Article){
         withCredentials: true,
     });
 
-    let publicIndex = response.data.publicIndex as string; // todo: BE should generate and return publicIndex
+    let publicIndex = response.data.publicIndex as string; // BE should generate and return publicIndex
 
     if(response.status < 300 && typeof publicIndex === 'string'){
         article.publicIndex = publicIndex;
@@ -126,13 +131,13 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
 
 // withdrawing public article. this do not remove local article.
 export async function removePublicArticle(publicIndex: string, localIndex: string){
-
-    // todo: BE should support DELETE /article/remove with body (so that we can payload localIndex)
     let response = await axios.delete(`${apiUrl}/article/remove/${publicIndex}`, {
-        data: { localIndex },
         withCredentials: true,
+        headers: {
+            'Authorization': `LocalIndex ${localIndex}`
+        }
     });
-    // todo : BE should check article.localIndex with its DB counterpart. if not match, then respond with response.status 401(unauthorized).
+    // BE should check article.localIndex with its DB counterpart. if not match, then respond with response.status 401(unauthorized).
 
     return response.status < 300;
 }

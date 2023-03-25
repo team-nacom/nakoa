@@ -5,6 +5,11 @@ import {
 import { logger } from '../utils';
 
 
+// localIndex is used as a verification token
+
+// GET, DELETE method : HTTP Authentication header (LocalIndex <localIndex>)
+// PUT method : in its body
+
 const router = new Router();
 
 router.get('/get-list', async function getArticleList(ctx){
@@ -19,10 +24,8 @@ router.get('/get-list', async function getArticleList(ctx){
 });
 
 router.get('/get/:publicIndex', async function getArticle(ctx){
-    // localIndex is used as verification token, so remove it
-
     const publicIndex = ctx.params.publicIndex; // TODO: idxtype
-    const query = ArticleModel.findOne({ publicIndex, 'metadata.visibility': {$gte: 1} }).select(['-localIndex']);
+    const query = ArticleModel.findOne({ publicIndex, 'metadata.visibility': {$gte: 1} }).lean();
     const article = await query.exec();
 
     if(article === null){
@@ -32,6 +35,21 @@ router.get('/get/:publicIndex', async function getArticle(ctx){
         }
         return;
     }
+
+    let clientLocalIndex: string | undefined = undefined;
+    let auth = ctx.headers.authorization;
+    if(auth){
+        let splitted = auth.trim().split(/[ ]+/);
+        if(splitted.length === 2 && splitted[0] === 'LocalIndex'){
+            clientLocalIndex = splitted[1];
+        }
+    }
+
+    if(clientLocalIndex !== article.localIndex){
+        //unauthorized
+        delete article.localIndex; // in order to make this work, `.lean()` should be applied to query
+    }
+    // otherwise don't remove localIndex so that the client knows they own the article
 
     ctx.body = {
         result: 'found',
@@ -59,8 +77,6 @@ router.post('/post', async function postArticle(ctx){
         // todo: verify if prevIndex article is actually in db?
         delete body.publicIndex;
     }
-
-    console.log(body);
 
     // let article;
     // if(body['mode'] === 'classic'){
@@ -133,9 +149,26 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
 });
 
 router.delete('/remove/:publicIndex', async (ctx) => {
+    let clientLocalIndex: string | undefined = undefined;
+    let auth = ctx.headers.authorization;
+    if(auth){
+        let splitted = auth.trim().split(/[ ]+/);
+        if(splitted.length === 2 && splitted[0] === 'LocalIndex'){
+            clientLocalIndex = splitted[1];
+        }
+    }
+
+    if(clientLocalIndex === undefined){
+        ctx.status = 401;
+        ctx.body = {
+            result: 'failure',
+            resaon: 'localIndex not given'
+        };
+        return;
+    }
+
     const publicIndex = ctx.params.publicIndex;
-    const localIndex = ctx.request.body.localIndex;
-    const query = ArticleModel.deleteOne({publicIndex, localIndex});
+    const query = ArticleModel.deleteOne({publicIndex, localIndex: clientLocalIndex});
     let res = await query.exec();
 
     if(res.deletedCount === 0){

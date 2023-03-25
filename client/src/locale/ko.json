@@ -1,6 +1,7 @@
 {
     "team": "팀 나무컴퍼스",
-    "header.guide": "가이드",
+    "header.article": "글 목록",
+    "header.article.pub": "공개 글 목록",
     "header.chal": "챌린지",
     "header.about": "프로젝트 소개",
     "header.hello": "{name}님, 안녕하세요!",

@@ -6,11 +6,8 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticle } from '#/api/article-local';
-import {
-    getPublicArticle,
-    postPublicArticle
-} from '#/api/article-public';
+import { getLocalArticle, postLocalArticle } from '#/api/article-local';
+import { getPublicArticle, postPublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
@@ -21,6 +18,7 @@ import { Icon } from '@mui/material';
 function View() {
     let { publicIndex } = useParams<{ publicIndex: string }>();
 
+    // todo: how can we obtain localArticle ?
     let [loading, article] = usePromise(() => getPublicArticle(publicIndex), [publicIndex]);
     let [redir, setRedir] = useState(false);
 
@@ -45,14 +43,20 @@ function View() {
                         <Icon>delete</Icon>
                     </Button>
                 </Link> */}
-                <Button
-                    onClick={ async () => {
-                        let localIndex = await getPublicArticle(publicIndex, true);// fork
-                        // redirect with localIndex
-                    } }
-                >
-                    fork
-                </Button>
+                { article.localIndex && ( // authorized.
+                    'mine!' // todo: update and delete actions
+                )}
+                { !article.localIndex && (
+                    <Button
+                        onClick={ async () => {
+                            // let { localIndex } = await getPublicArticle(publicIndex);
+                            let { localIndex } = await postLocalArticle(article!); // fork
+                            // redirect with localIndex
+                        } }
+                    >
+                        fork
+                    </Button>
+                )}
             </div>
             <div className='articleContentMain'>
                 <h1 className='title'> { article.metadata.title } </h1>

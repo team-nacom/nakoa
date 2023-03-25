@@ -66,19 +66,24 @@ function Header() {
                             />
                         </Link>
                     </div>
-                    <span className={'navitem menu' + (pathname.startsWith('/list') ? ' active' : '')}>
+                    <span className={'navitem menu' + (pathname.startsWith('/article') ? ' active' : '')}>
                         <Link to='/article/list'>
-                            <div> { "글 목록" } </div>
+                            <div> { i18n.t('header.article') } </div>
+                        </Link>
+                    </span>
+                    <span className={'navitem menu' + (pathname.startsWith('/article-pub') ? ' active' : '')}>
+                        <Link to='/article-pub/list'>
+                            <div> { i18n.t('header.article.pub') } </div>
                         </Link>
                     </span>
                     <span className={'navitem menu' + (pathname.startsWith('/about') ? ' active' : '')}>
                         <Link to='/about'>
-                            <div> { i18n.t('header.about') ?? '' } </div>
+                            <div> { i18n.t('header.about') } </div>
                         </Link>
                     </span>
                     <span className='navitem menu'> 
                         <a href='https://chal.team-na.com'> 
-                            <div> { i18n.t('header.chal') ?? '' } </div>
+                            <div> { i18n.t('header.chal') } </div>
                         </a>
                     </span>
                     <Icon className={'expandMenu link' + (expanded ? ' active' : '')} onClick={(e) => {

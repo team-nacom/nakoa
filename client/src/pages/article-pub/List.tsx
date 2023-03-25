@@ -23,7 +23,7 @@ function List() {
         </Layout>;
     }
 
-    return <Layout title='모든 글 보기(공개)' /* sidebar='ArticleList' */>
+    return <Layout title='모든 공개 글 보기' /* sidebar='ArticleList' */>
         
         <div className='articleListButtonContainer'>
             <span className='articleCount'>
