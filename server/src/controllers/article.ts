@@ -14,7 +14,10 @@ const router = new Router();
 
 router.get('/get-list', async function getArticleList(ctx){
     // localIndices are used as verification tokens, so remove them
-    const query = ArticleModel.find({ 'metadata.visibility': {$gte: 1} }).select(['-localIndex']);
+    const query = ArticleModel.find(
+        { 'metadata.visibility': {$gte: 1} },
+        {_id: false, __v: false, localIndex: false}
+    );
     const articles = await query.exec();
 
     ctx.body = {
@@ -25,7 +28,10 @@ router.get('/get-list', async function getArticleList(ctx){
 
 router.get('/get/:publicIndex', async function getArticle(ctx){
     const publicIndex = ctx.params.publicIndex; // TODO: idxtype
-    const query = ArticleModel.findOne({ publicIndex, 'metadata.visibility': {$gte: 1} }).lean();
+    const query = ArticleModel.findOne(
+        { publicIndex, 'metadata.visibility': {$gte: 1} },
+        {_id: false, __v: false} // remove _id and __v
+    ).lean();
     const article = await query.exec();
 
     if(article === null){
@@ -59,6 +65,9 @@ router.get('/get/:publicIndex', async function getArticle(ctx){
 
 router.post('/post', async function postArticle(ctx){
     const body = ctx.request.body;
+
+    // console.log(body);
+
     if(body.localIndex === undefined){ // localIndex should've been defined.
         ctx.status = 400;
         ctx.body = {
