@@ -125,8 +125,6 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
     // since ArticleModel is base(parent) scheme which don't have any children info(content type),
     // not setting overwrite: true will truncate contents
 
-    console.log(body);
-
     // const query0 = ArticleModel.findOneAndUpdate({publicIndex, localIndex}, {$set: body}, {overwrite: true, returnDocument: 'after'});
     // let art = await query0.exec();
 
@@ -134,8 +132,6 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
 
     const query = ArticleModel.replaceOne({publicIndex, localIndex}, body);
     let res = await query.exec();
-
-    console.log(res);
 
     if(res.nModified === 0){
         ctx.status = 401;

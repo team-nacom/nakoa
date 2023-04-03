@@ -19,4 +19,4 @@ mongoose.connect(connectionString, {
   logger.error(err);
 });
 
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
