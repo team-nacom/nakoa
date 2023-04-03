@@ -8,7 +8,7 @@ import { CellEditorProvider, useContent } from '#/components/cell-editor/editor/
 
 import { MetadataInput } from '#/components/editor/MetadataInput'
 
-import { CellArticle } from '#/api/article-local';
+import { CellArticle } from '#/components/cell-editor/types';
 import { useMetadataState, Metadata, MetadataProvider } from './MetadataState';
 
 import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts';

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
-import { Article, removeLocalArticle } from '#/api/article-local';
+import { removeLocalArticle } from '#/api/article-local-idb';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';

@@ -10,7 +10,7 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticle } from '#/api/article-local';
+import { getLocalArticle } from '#/api/article-local-idb';
 import { postPublicArticle, updatePublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';

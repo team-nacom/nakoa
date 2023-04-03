@@ -30,6 +30,8 @@ const articleSchema = new Schema<ArticleAttribute>({
 export const ArticleModel = model<ArticleAttribute>('Article', articleSchema, 'articles');
 
 
+///// unused below
+
 const classicArticleAttributeSchema = new Schema({
     text: String
 });

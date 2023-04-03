@@ -1,6 +1,8 @@
 import { base64rand } from '#/misc/base64rand';
 import localforage from 'localforage';
 
+
+
 import type { ClassicArticle, BasicCellArticle } from '#common/Article';
 
 import type { Cell } from "#/components/cell-editor/cell";
@@ -65,7 +67,7 @@ async function generateUniqueIdx(){
 
 ////////////////////////
 
-export async function unsetAutosaveArticle(localIndex?: string, mode?: Article['mode']){
+export async function unsetDraftArticle(localIndex?: string, mode?: Article['mode']){
     let key = localIndex !== undefined
         ? `draft/${localIndex}`
         : `draft-unpub/${mode}`;
@@ -74,7 +76,7 @@ export async function unsetAutosaveArticle(localIndex?: string, mode?: Article['
     return { success: true };
 }
 
-export async function setAutosaveArticle(article: Article, localIndex?: string){
+export async function setDraftArticle(article: Article, localIndex?: string){
     // in browser cache
 
     // TODO: manage storage key list
@@ -86,7 +88,7 @@ export async function setAutosaveArticle(article: Article, localIndex?: string){
     return { success: true };
 }
 
-export async function getAutosaveArticle(localIndex?: string, mode?: Article['mode']){
+export async function getDraftArticle(localIndex?: string, mode?: Article['mode']){
     let key = localIndex !== undefined
         ? `draft/${localIndex}`
         : `draft-unpub/${mode}`;
@@ -127,8 +129,9 @@ export async function postLocalArticle(article: Article, removeDraft: boolean = 
 
     if(removeDraft){
         // remove draft.
-        let draftkey = `draft-unpub/${article.mode}`;
-        await unsetLocal(draftkey);
+        // let draftkey = `draft-unpub/${article.mode}`;
+        // await unsetLocal(draftkey);
+        await unsetDraftArticle(undefined, article.mode);
     }
 
     return {

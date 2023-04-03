@@ -1,8 +1,12 @@
 import axios from "axios";
 import { apiUrl } from "#/config/env";
 
-import type { ClassicArticle, CellArticle, Article } from "./article-local";
-import { postLocalArticle, updateLocalArticle } from "./article-local";
+import type { ClassicArticle, CellArticle, Article } from '#/components/cell-editor/types';
+import {
+    getLocalArticleWithPublicIndex,
+    postLocalArticle,
+    updateLocalArticle
+} from "./article-local-idb";
 
 const validateStatus = (status: number) => ((200 <= status && status < 300) || status === 401);
 
@@ -21,13 +25,17 @@ export async function getPublicArticleList(){
 }
 
 export async function getPublicArticle(publicIndex: string, localIndex?: string){
-    // todo: given publicIndex, can we find the article locally??
+
+    // given publicIndex, find the article locally.
+    localIndex ??= ( await getLocalArticleWithPublicIndex(publicIndex) )?.localIndex;
 
     let response = await axios.get(`${apiUrl}/article/get/${publicIndex}`, {
         // validateStatus,
         withCredentials: true,
         headers: {
-            'Authorization': localIndex && `LocalIndex ${localIndex}`
+            ...(localIndex ? {
+                'Authorization': localIndex && `LocalIndex ${localIndex}`
+            }: {})
         }
     });
 
@@ -56,7 +64,7 @@ export async function postPublicArticle(article: Article){
         if(!success){
             throw new Error('local post failed');
         }
-        article.localIndex = localIndex;
+        article.localIndex = localIndex!;
     }
 
     // if article of post request has publicIndex(say p0) and BE has article p0, then BE should generate a new publicIndex(p1) as well as mark somewhere "p0 -> p1", for article p1 is a fork of article p0.
@@ -87,7 +95,7 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
         if(!success){
             throw new Error('local post failed');
         }
-        article.localIndex = localIndex;
+        article.localIndex = localIndex!;
     }
 
     let response = await axios.put(`${apiUrl}/article/update/${publicIndex}`, article, {

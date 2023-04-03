@@ -6,7 +6,7 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticleList } from '#/api/article-local';
+import { getLocalArticleList } from '#/api/article-local-idb';
 // import Markdown from '#/components/markdown-lab/Markdown';
 // import { Display } from '#/components/cell-editor/cell/Display';
 

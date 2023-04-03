@@ -4,7 +4,9 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { Article, CellArticle, getLocalArticle, postLocalArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article-local';
+
+import type { Article, CellArticle } from '#/components/cell-editor/types';
+import { getLocalArticle, postLocalArticle, getDraftArticle, setDraftArticle, unsetDraftArticle } from '#/api/article-local-idb';
 import { CellEditor } from '#/components/editor/CellEditor';
 
 import Loading from '../Loading';
@@ -12,7 +14,7 @@ import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
 
 function WriteCell() {
-    const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'cell'), []);
+    const [loading, initArticle] = usePromise(() => getDraftArticle(undefined, 'cell'), []);
 
     // const [loading, initArticle] = usePromise(async () => {
     //     const draft = await getAutosaveArticle(undefined, 'cell');
@@ -67,7 +69,7 @@ function WriteCell() {
             metadata,
             content
         };
-        await setAutosaveArticle(article);
+        await setDraftArticle(article);
     }, []);
 
     // on remove autosave action, unset autosave and redirect into this page.
@@ -75,7 +77,7 @@ function WriteCell() {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
 
         disableAutosave(); // unset autosave useTimeout first
-        await unsetAutosaveArticle(undefined, 'cell');
+        await unsetDraftArticle(undefined, 'cell');
         setRedirectTo(`/article/write-cell`); // might race??
 
         window.location.reload();

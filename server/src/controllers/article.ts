@@ -121,8 +121,29 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
     // } else{
     //     res = await BasicCellArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
     // }
+
+    console.log(body);
+
+    const quer = ArticleModel.findOneAndUpdate({publicIndex, localIndex},
+        { $set: body }, //body,
+        { returnDocument: 'after' });
+    let updatedDoc = await quer.exec();
+
+    console.log(updatedDoc);
+
+    ctx.body = {
+        result: 'success',
+    };
+
+    return;
+
+
     const query = ArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
     let res = await query.exec();
+
+    console.log(res);
+
+    // todo : not working!!
 
     // 
     if(res.nModified === 0){

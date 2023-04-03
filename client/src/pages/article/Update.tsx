@@ -8,7 +8,8 @@ import { Metadata } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
 
-import { Article, getLocalArticle, updateLocalArticle, ClassicArticle, CellArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle } from '#/api/article-local';
+import type { Article, ClassicArticle, CellArticle } from '#/components/cell-editor/types';
+import { getLocalArticle, updateLocalArticle, getDraftArticle, setDraftArticle, unsetDraftArticle } from '#/api/article-local-idb';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
@@ -18,9 +19,13 @@ function Update() {
     const { localIndex } = useParams<{ localIndex: string }>();
 
     const [loading, initArticle] = usePromise(async () => {
-        const draft = await getAutosaveArticle(localIndex);
+        const draft = await getDraftArticle(localIndex);
+        // console.log('draft', draft);
         if(draft !== undefined) return draft;
-        return await getLocalArticle(localIndex);
+
+        const article = await getLocalArticle(localIndex);
+        // console.log('article', article);
+        return article;
     }, [localIndex]);
 
     // redirection state
@@ -34,6 +39,7 @@ function Update() {
         }
 
         const article: ClassicArticle = {
+            ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'classic',
             metadata,
             text
@@ -46,25 +52,31 @@ function Update() {
         } else{
             setMessage('업로드에 실패했습니다.');
         }
-    }, [localIndex]);
+    }, [localIndex, initArticle]);
 
     const autosaveClassic = useCallback(async (metadata: Metadata, text: string) => {
         const article: ClassicArticle = {
+            ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'classic',
             metadata,
             text
         };
-        await setAutosaveArticle(article, localIndex);
-    }, [localIndex]);
+
+        // console.log('autosave init', initArticle);
+        // console.log('autosave target', article);
+
+        await setDraftArticle(article, localIndex);
+    }, [localIndex, initArticle]);
 
     const autosaveCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         const article: CellArticle = {
+            ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'cell',
             metadata,
             content
         };
-        await setAutosaveArticle(article);
-    }, []);
+        await setDraftArticle(article);
+    }, [initArticle]);
 
     const uploadCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         if(metadata.title === ''){
@@ -73,6 +85,7 @@ function Update() {
         }
 
         const article: CellArticle = {
+            ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'cell',
             metadata,
             content
@@ -85,13 +98,13 @@ function Update() {
         } else{
             setMessage('업로드에 실패했습니다.');
         }
-    }, [localIndex]);
+    }, [localIndex, initArticle]);
 
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
 
         disableAutosave();
-        await unsetAutosaveArticle(localIndex);
+        await unsetDraftArticle(localIndex);
         setRedirectTo(`/article/update/${localIndex}`); // might race??
 
         window.location.reload();

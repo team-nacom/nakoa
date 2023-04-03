@@ -4,7 +4,8 @@ import { Redirect } from 'react-router-dom';
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
-import { ClassicArticle, getAutosaveArticle, setAutosaveArticle, unsetAutosaveArticle, postLocalArticle } from '#/api/article-local';
+import type { ClassicArticle } from '#/components/cell-editor/types';
+import { getDraftArticle, setDraftArticle, unsetDraftArticle, postLocalArticle } from '#/api/article-local-idb';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 
 import Loading from '../Loading';
@@ -12,7 +13,7 @@ import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
 
 function WriteClassic() {
-    const [loading, initArticle] = usePromise(() => getAutosaveArticle(undefined, 'classic'), []);
+    const [loading, initArticle] = usePromise(() => getDraftArticle(undefined, 'classic'), []);
 
     // const [loading, initArticle] = usePromise(async () => {
     //     const draft = await getAutosaveArticle(undefined, 'classic');
@@ -62,14 +63,14 @@ function WriteClassic() {
             metadata,
             text
         };
-        await setAutosaveArticle(article);
+        await setDraftArticle(article);
     }, []);
 
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
 
         disableAutosave();
-        await unsetAutosaveArticle(undefined, 'classic');
+        await unsetDraftArticle(undefined, 'classic');
         setRedirectTo(`/article/write-classic`); // might race??
 
         window.location.reload();
