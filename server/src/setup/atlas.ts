@@ -18,3 +18,5 @@ mongoose.connect(connectionString, {
   logger.error('Failed to connect.');
   logger.error(err);
 });
+
+mongoose.set('debug', true);

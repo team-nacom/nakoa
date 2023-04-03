@@ -122,30 +122,21 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
     //     res = await BasicCellArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
     // }
 
+    // since ArticleModel is base(parent) scheme which don't have any children info(content type),
+    // not setting overwrite: true will truncate contents
+
     console.log(body);
 
-    const quer = ArticleModel.findOneAndUpdate({publicIndex, localIndex},
-        { $set: body }, //body,
-        { returnDocument: 'after' });
-    let updatedDoc = await quer.exec();
+    // const query0 = ArticleModel.findOneAndUpdate({publicIndex, localIndex}, {$set: body}, {overwrite: true, returnDocument: 'after'});
+    // let art = await query0.exec();
 
-    console.log(updatedDoc);
+    // console.log(art);
 
-    ctx.body = {
-        result: 'success',
-    };
-
-    return;
-
-
-    const query = ArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
+    const query = ArticleModel.replaceOne({publicIndex, localIndex}, body);
     let res = await query.exec();
 
     console.log(res);
 
-    // todo : not working!!
-
-    // 
     if(res.nModified === 0){
         ctx.status = 401;
         ctx.body = {
