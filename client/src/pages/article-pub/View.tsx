@@ -6,12 +6,14 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticle, postLocalArticle } from '#/api/article-local-idb';
+import { getLocalArticle, getLocalArticleWithPublicIndex, postLocalArticle } from '#/api/article-local-idb';
 import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 import { Icon } from '@mui/material';
+
+import { Article } from '#/components/cell-editor/types';
 
 // import { getPublicArticleList } from '#/api/article-public';
 
@@ -20,7 +22,24 @@ function View() {
 
     const navigate = useNavigate();
 
-    const [loading, article] = usePromise(() => getPublicArticle(publicIndex!), [publicIndex]);
+    const [forkedArticle, setForkedArticle] = useState<Article>();
+
+    const [loading, article] = usePromise(async () => {
+        setForkedArticle(undefined);
+
+        const article = await getPublicArticle(publicIndex!);
+        if(article?.localIndex === undefined){
+            // unauthorized
+
+            getLocalArticleWithPublicIndex(publicIndex!)
+                .then(localArticle => {
+                    if(localArticle !== undefined){
+                        setForkedArticle(localArticle);
+                    }
+                })
+        }
+        return article;
+    }, [publicIndex]);
 
     if(loading) return <Loading />;
     if(article === undefined){
@@ -76,7 +95,23 @@ function View() {
                         </Link>
                     </>
                 )}
-                { !article.localIndex && (
+                { forkedArticle !== undefined && ( // has fork.
+                    <>
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                await postPublicArticle(article!);
+
+                                navigate(`/article/view/${forkedArticle.localIndex}`);
+                            } }
+                        >
+                            포크 글 업로드
+                        </Button>
+                        <Link to={ `/article/view/${forkedArticle.localIndex}` }>
+                            <Button className='articleButton'>포크 글 보기</Button>
+                        </Link>
+                    </>
+                )}
+                { !article.localIndex && !forkedArticle && ( // unauthorized and doesn't have fork.
                     <Button
                         onClick={ async () => {
                             // let { localIndex } = await getPublicArticle(publicIndex);

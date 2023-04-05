@@ -41,7 +41,7 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
     });
 
     if(response.status >= 400){
-        throw new Error('article not found');
+        return undefined;
     }
 
     let article = response.data.article as Article; // BE should've remove localIndex.
@@ -167,5 +167,3 @@ export async function removePublicArticle(publicIndex: string, localIndex?: stri
 
     return { success: true };
 }
-
-// todo: given publicIndex and localIndex, FE should be able to query if it owns the article.

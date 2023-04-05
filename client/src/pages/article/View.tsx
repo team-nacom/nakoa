@@ -11,7 +11,7 @@ import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
 import { getLocalArticle, removeLocalArticle } from '#/api/article-local-idb';
-import { postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
+import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
@@ -22,7 +22,35 @@ function View() {
 
     const navigate = useNavigate();
 
-    const [loading, article] = usePromise(() => getLocalArticle(localIndex!), [localIndex]);
+    const [publicIndex, setPublicIndex] = useState<string>();
+
+    const [loading, article] = usePromise(async () => {
+        // this component shares hook along every localIndex params, so initialize it every time.
+        setPublicIndex(undefined);
+
+        const article = await getLocalArticle(localIndex!);
+
+        if(article?.publicIndex){
+            // if publicIndex is set -- owner and published.
+            // if article has publicIndex but publicIndex is not set -- forked.
+            // otherwise -- unpublished.
+
+            // do this async (make all handlers on published branch use useCallback??)
+            // todo: prevent that previous setPublicIndex() never execute after succeeding setPublicIndex().
+            // todo: determine ownership without receiving full publicArticle.
+
+            getPublicArticle(article.publicIndex, localIndex!)
+                .then(publicArticle => {
+                    if(publicArticle === undefined) return;
+
+                    if(publicArticle.localIndex === localIndex){
+                        setPublicIndex(article.publicIndex);
+                    }
+                });
+        }
+
+        return article;
+    }, [localIndex]);
 
     if(loading) return <Loading />;
     if(article === undefined){
@@ -39,7 +67,7 @@ function View() {
                         <Icon>edit</Icon>
                     </Button>
                 </Link>
-                { article.publicIndex === undefined && ( //unpublished
+                { publicIndex === undefined && ( //unpublished OR forked
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
@@ -59,9 +87,16 @@ function View() {
                         >
                             <Icon>publish</Icon>
                         </Button>
+                        { article.publicIndex !== undefined && // forked
+                            <Link to={ `/article-pub/view/${article.publicIndex}` }>
+                                <Button className='articleButton'>
+                                    원본 글 보기
+                                </Button>
+                            </Link>
+                        }
                     </>
                 )}
-                { article.publicIndex !== undefined && ( //published
+                { publicIndex !== undefined && ( //owner and published
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
@@ -69,7 +104,7 @@ function View() {
                                 if(!window.confirm('공개된 게시글이 모두 사라집니다. 괜찮으시겠습니까?')) return;
 
                                 await removeLocalArticle(localIndex!);
-                                await removePublicArticle(article.publicIndex!, localIndex);
+                                await removePublicArticle(publicIndex!, localIndex);
 
                                 navigate(`/article/list`);
                             } }
@@ -78,12 +113,12 @@ function View() {
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
-                                updatePublicArticle(article!.publicIndex!, article!);
+                                updatePublicArticle(publicIndex!, article!);
                             } }
                         >
                             <Icon>sync</Icon>
                         </Button>
-                        <Link to={ `/article-pub/view/${article.publicIndex}` }>
+                        <Link to={ `/article-pub/view/${publicIndex}` }>
                             <Button className='articleButton'>
                                 공개 글 보기
                             </Button>
