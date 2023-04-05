@@ -101,7 +101,7 @@ function ClassicEditorInner({ upload, autosave, removeAutosave }: ClassicEditorP
             }
             <div className='buttonsWrapper'>
                 <Button className='uploadButton' onClick = { uploadHandler }>
-                    업로드
+                    저장
                 </Button>
                 <Button className='removeAutosaveButton' onClick = { removeAutosaveHandler }>
                     임시저장 초기화

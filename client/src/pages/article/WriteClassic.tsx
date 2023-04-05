@@ -51,10 +51,10 @@ function WriteClassic() {
 
         let { success, localIndex } = await postLocalArticle(article);
         if(success){
-            setMessage('업로드에 성공했습니다!');
+            setMessage('저장에 성공했습니다!');
             navigate(`/article/view/${localIndex}`);
         } else{
-            setMessage('업로드에 실패했습니다.');
+            setMessage('저장에 실패했습니다.');
         }
     }, []);
 

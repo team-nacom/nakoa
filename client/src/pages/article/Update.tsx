@@ -47,11 +47,11 @@ function Update() {
 
         let { success } = await updateLocalArticle(localIndex!, article);
         if(success){
-            setMessage('업로드에 성공했습니다!');
+            setMessage('저장에 성공했습니다!');
 
             navigate(`/article/view/${localIndex}`); // end of page
         } else{
-            setMessage('업로드에 실패했습니다.');
+            setMessage('저장에 실패했습니다.');
         }
     }, [localIndex, initArticle]);
 
@@ -94,10 +94,10 @@ function Update() {
 
         let success = await updateLocalArticle(localIndex!, article);
         if(success){
-            setMessage('업로드에 성공했습니다!');
+            setMessage('저장에 성공했습니다!');
             navigate(`/article/view/${localIndex}`);
         } else{
-            setMessage('업로드에 실패했습니다.');
+            setMessage('저장에 실패했습니다.');
         }
     }, [localIndex, initArticle]);
 
