@@ -39,15 +39,11 @@ function View() {
                         <Icon>edit</Icon>
                     </Button>
                 </Link>
-                { article.publicIndex === undefined && (
+                { article.publicIndex === undefined && ( //unpublished
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
-                                // when published, delete both the local AND public articles
-                                if(!window.confirm('공개된 게시글이 모두 사라집니다. 괜찮으시겠습니까?')) return;
-
                                 await removeLocalArticle(localIndex!);
-                                await removePublicArticle(article.publicIndex!, localIndex);
 
                                 navigate(`/article/list`);
                             } }
@@ -65,11 +61,15 @@ function View() {
                         </Button>
                     </>
                 )}
-                { article.publicIndex !== undefined && (
+                { article.publicIndex !== undefined && ( //published
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
+                                // when published, delete both the local AND public articles
+                                if(!window.confirm('공개된 게시글이 모두 사라집니다. 괜찮으시겠습니까?')) return;
+
                                 await removeLocalArticle(localIndex!);
+                                await removePublicArticle(article.publicIndex!, localIndex);
 
                                 navigate(`/article/list`);
                             } }
