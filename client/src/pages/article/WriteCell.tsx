@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
 
@@ -14,6 +14,8 @@ import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
 
 function WriteCell() {
+    const navigate = useNavigate();
+
     const [loading, initArticle] = usePromise(() => getDraftArticle(undefined, 'cell'), []);
 
     // const [loading, initArticle] = usePromise(async () => {
@@ -38,13 +40,11 @@ function WriteCell() {
 
     // const [modified, setModified] = useState(false);
 
-    // redirection state
-    const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
     const upload = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         if(metadata.title === ''){
-            alert('제목을 입력해 주세요.');
+            window.alert('제목을 입력해 주세요.');
             return;
         }
 
@@ -57,7 +57,7 @@ function WriteCell() {
         let { success, localIndex } = await postLocalArticle(article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${localIndex}`);
+            navigate(`/article/view/${localIndex}`);
         } else{
             setMessage('업로드에 실패했습니다.');
         }
@@ -72,18 +72,16 @@ function WriteCell() {
         await setDraftArticle(article);
     }, []);
 
-    // on remove autosave action, unset autosave and redirect into this page.
+    // on remove autosave action, unset autosave and navigate into this page.
     const removeAutosave = useCallback(async (disableAutosave: () => any) => {
         if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
 
         disableAutosave(); // unset autosave useTimeout first
         await unsetDraftArticle(undefined, 'cell');
-        setRedirectTo(`/article/write-cell`); // might race??
 
-        window.location.reload();
+        navigate(`/article/write-cell`); // might race??
     }, []);
 
-    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
     return <Layout title='글 작성하기' sidebar='ArticleList'>

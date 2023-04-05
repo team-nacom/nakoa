@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
@@ -7,7 +7,7 @@ import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
 import { getLocalArticle, postLocalArticle } from '#/api/article-local-idb';
-import { getPublicArticle, postPublicArticle } from '#/api/article-public';
+import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
@@ -18,11 +18,10 @@ import { Icon } from '@mui/material';
 function View() {
     let { publicIndex } = useParams<{ publicIndex: string }>();
 
-    // todo: how can we obtain localArticle ?
-    let [loading, article] = usePromise(() => getPublicArticle(publicIndex), [publicIndex]);
-    let [redir, setRedir] = useState(false);
+    const navigate = useNavigate();
 
-    if(redir) return <Redirect to='/' />;
+    const [loading, article] = usePromise(() => getPublicArticle(publicIndex!), [publicIndex]);
+
     if(loading) return <Loading />;
     if(article === undefined){
         return <Layout title='오류' sidebar='ArticleList'>
@@ -44,14 +43,47 @@ function View() {
                     </Button>
                 </Link> */}
                 { article.localIndex && ( // authorized.
-                    'mine!' // todo: update and delete actions
+                    <>
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                // by 'deleting' an article the owner can withdraw its publication.
+
+                                await removePublicArticle(publicIndex!);
+
+                                // to local article page
+                                navigate(`/article/list`);
+                            } }
+                        >
+                            <Icon>delete</Icon>
+                        </Button>
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                // todo : prevent double query into local article
+                                // todo : check if publicArticle is up-to-date
+
+                                const localArticle = await getLocalArticle(article.localIndex!);
+                                
+                                await updatePublicArticle(article.publicIndex!, localArticle!);
+
+                                // refresh!
+                                navigate(0);
+                            } }
+                        >
+                            <Icon>sync</Icon>
+                        </Button>
+                        <Link to={ `/article/view/${article.localIndex}` }>
+                            <Button className='articleButton'>내 글 보기</Button>
+                        </Link>
+                    </>
                 )}
                 { !article.localIndex && (
                     <Button
                         onClick={ async () => {
                             // let { localIndex } = await getPublicArticle(publicIndex);
-                            let { localIndex } = await postLocalArticle(article!); // fork
-                            // redirect with localIndex
+                            let { localIndex } = await postLocalArticle(article); // fork
+                            // navigate with localIndex
+
+                            navigate(`/article/view/${localIndex}`);
                         } }
                     >
                         fork

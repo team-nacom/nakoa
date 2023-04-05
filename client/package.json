@@ -85,7 +85,7 @@
     "react-responsive": "^8.2.0",
     "react-reverse-portal": "^2.1.1",
     "react-rnd": "^10.4.1",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.10.0",
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "^5.0.1",
     "react-syntax-highlighter": "^15.5.0",

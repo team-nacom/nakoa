@@ -3,6 +3,7 @@ import { apiUrl } from "#/config/env";
 
 import type { ClassicArticle, CellArticle, Article } from '#/components/cell-editor/types';
 import {
+    getLocalArticle,
     getLocalArticleWithPublicIndex,
     postLocalArticle,
     updateLocalArticle
@@ -34,7 +35,7 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
         withCredentials: true,
         headers: {
             ...(localIndex ? {
-                'Authorization': localIndex && `LocalIndex ${localIndex}`
+                'Authorization': `LocalIndex ${localIndex}`
             }: {})
         }
     });
@@ -138,16 +139,33 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
 }
 
 // withdrawing public article. this do not remove local article.
-export async function removePublicArticle(publicIndex: string, localIndex: string){
+export async function removePublicArticle(publicIndex: string, localIndex?: string){
+    // given publicIndex, find the article locally.
+    localIndex ??= ( await getLocalArticleWithPublicIndex(publicIndex) )?.localIndex;
+
     let response = await axios.delete(`${apiUrl}/article/remove/${publicIndex}`, {
+        // validateStatus,
         withCredentials: true,
         headers: {
-            'Authorization': `LocalIndex ${localIndex}`
+            ...(localIndex ? {
+                'Authorization': `LocalIndex ${localIndex}`
+            }: {})
         }
     });
     // BE should check article.localIndex with its DB counterpart. if not match, then respond with response.status 401(unauthorized).
 
-    return response.status < 300;
+    if(response.status >= 300){
+        return { success: false };
+    }
+
+    // remove public index.
+    const article = await getLocalArticle(localIndex!);
+    if(article !== undefined){
+        delete article.publicIndex;
+        updateLocalArticle(localIndex!, article, false);
+    }
+
+    return { success: true };
 }
 
 // todo: given publicIndex and localIndex, FE should be able to query if it owns the article.

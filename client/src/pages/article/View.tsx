@@ -3,15 +3,15 @@
 // WIP
 
 import React, { useState, useMemo } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticle } from '#/api/article-local-idb';
-import { postPublicArticle, updatePublicArticle } from '#/api/article-public';
+import { getLocalArticle, removeLocalArticle } from '#/api/article-local-idb';
+import { postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
@@ -20,10 +20,10 @@ import { Icon } from '@mui/material';
 function View() {
     const { localIndex } = useParams<{ localIndex: string }>();
 
-    const [loading, article] = usePromise(() => getLocalArticle(localIndex), [localIndex]);
-    const [redirectTo, setRedirectTo] = useState<string>();
+    const navigate = useNavigate();
 
-    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
+    const [loading, article] = usePromise(() => getLocalArticle(localIndex!), [localIndex]);
+
     if(loading) return <Loading />;
     if(article === undefined){
         return <Layout title='오류' sidebar='ArticleList'>
@@ -39,34 +39,54 @@ function View() {
                         <Icon>edit</Icon>
                     </Button>
                 </Link>
-                <Link to={ `/article/delete/${ localIndex }` }>
-                    <Button className='articleButton'>
-                        <Icon>delete</Icon>
-                    </Button>
-                </Link>
                 { article.publicIndex === undefined && (
-                    <Button
-                        onClick={ () => {
-                            postPublicArticle(article!);
+                    <>
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                // when published, delete both the local AND public articles
+                                if(!window.confirm('공개된 게시글이 모두 사라집니다. 괜찮으시겠습니까?')) return;
 
-                            setRedirectTo(`/article/view/${localIndex}`);
-                            window.location.reload();
-                        } }
-                    >
-                        publish
-                    </Button>
+                                await removeLocalArticle(localIndex!);
+                                await removePublicArticle(article.publicIndex!, localIndex);
+
+                                navigate(`/article/list`);
+                            } }
+                        >
+                            <Icon>delete</Icon>
+                        </Button>
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                await postPublicArticle(article!);
+
+                                navigate(`/article/view/${localIndex}`);
+                            } }
+                        >
+                            <Icon>publish</Icon>
+                        </Button>
+                    </>
                 )}
                 { article.publicIndex !== undefined && (
                     <>
-                        <Button
-                            onClick={ () => {
+                        <Button className='articleButton'
+                            onClick={ async () => {
+                                await removeLocalArticle(localIndex!);
+
+                                navigate(`/article/list`);
+                            } }
+                        >
+                            <Icon>delete</Icon>
+                        </Button>
+                        <Button className='articleButton'
+                            onClick={ async () => {
                                 updatePublicArticle(article!.publicIndex!, article!);
                             } }
                         >
-                            sync
+                            <Icon>sync</Icon>
                         </Button>
                         <Link to={ `/article-pub/view/${article.publicIndex}` }>
-                            <Button>공개 글 보기</Button>
+                            <Button className='articleButton'>
+                                공개 글 보기
+                            </Button>
                         </Link>
                     </>
                 )}

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
 import { CellEditor } from '#/components/editor/CellEditor';
@@ -18,23 +18,23 @@ import Button from '#/components/Button';
 function Update() {
     const { localIndex } = useParams<{ localIndex: string }>();
 
+    const navigate = useNavigate();
+
     const [loading, initArticle] = usePromise(async () => {
         const draft = await getDraftArticle(localIndex);
         // console.log('draft', draft);
         if(draft !== undefined) return draft;
 
-        const article = await getLocalArticle(localIndex);
+        const article = await getLocalArticle(localIndex!);
         // console.log('article', article);
         return article;
     }, [localIndex]);
 
-    // redirection state
-    const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
 
     const uploadClassic = useCallback(async (metadata: Metadata, text: string) => {
         if(metadata.title === ''){
-            alert('제목을 입력해 주세요.');
+            window.alert('제목을 입력해 주세요.');
             return;
         }
 
@@ -45,10 +45,11 @@ function Update() {
             text
         };
 
-        let success = await updateLocalArticle(localIndex, article);
+        let { success } = await updateLocalArticle(localIndex!, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${localIndex}`);
+
+            navigate(`/article/view/${localIndex}`); // end of page
         } else{
             setMessage('업로드에 실패했습니다.');
         }
@@ -80,7 +81,7 @@ function Update() {
 
     const uploadCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
         if(metadata.title === ''){
-            alert('제목을 입력해 주세요.');
+            window.alert('제목을 입력해 주세요.');
             return;
         }
 
@@ -91,10 +92,10 @@ function Update() {
             content
         };
 
-        let success = await updateLocalArticle(localIndex, article);
+        let success = await updateLocalArticle(localIndex!, article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${localIndex}`);
+            navigate(`/article/view/${localIndex}`);
         } else{
             setMessage('업로드에 실패했습니다.');
         }
@@ -105,12 +106,10 @@ function Update() {
 
         disableAutosave();
         await unsetDraftArticle(localIndex);
-        setRedirectTo(`/article/update/${localIndex}`); // might race??
 
-        window.location.reload();
+        navigate(`/article/update/${localIndex}`);
     }, [localIndex]);
 
-    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     if(initArticle === undefined){ // todo: fallback into list
         return <Layout title='오류' sidebar='ArticleList'>

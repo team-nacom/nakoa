@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Metadata, useMetadataState } from '#/components/editor/MetadataState';
 
 import { Layout } from '#/layout/Layout';
+
 import type { ClassicArticle } from '#/components/cell-editor/types';
 import { getDraftArticle, setDraftArticle, unsetDraftArticle, postLocalArticle } from '#/api/article-local-idb';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
@@ -13,6 +14,8 @@ import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
 
 function WriteClassic() {
+    const navigate = useNavigate();
+
     const [loading, initArticle] = usePromise(() => getDraftArticle(undefined, 'classic'), []);
 
     // const [loading, initArticle] = usePromise(async () => {
@@ -32,13 +35,11 @@ function WriteClassic() {
     // }, []);
     // const [modified, setModified] = useState(false);
 
-    // redirection state
-    const [redirectTo, setRedirectTo] = useState<string>();
     const [message, setMessage] = useState<string>();
     
     const upload = useCallback(async (metadata: Metadata, text: string) => {
         if(metadata.title === ''){
-            alert('제목을 입력해 주세요.');
+            window.alert('제목을 입력해 주세요.');
             return;
         }
 
@@ -51,7 +52,7 @@ function WriteClassic() {
         let { success, localIndex } = await postLocalArticle(article);
         if(success){
             setMessage('업로드에 성공했습니다!');
-            setRedirectTo(`/article/view/${localIndex}`);
+            navigate(`/article/view/${localIndex}`);
         } else{
             setMessage('업로드에 실패했습니다.');
         }
@@ -71,12 +72,10 @@ function WriteClassic() {
 
         disableAutosave();
         await unsetDraftArticle(undefined, 'classic');
-        setRedirectTo(`/article/write-classic`); // might race??
 
-        window.location.reload();
+        navigate(`/article/write-classic`);
     }, []);
 
-    if(redirectTo !== undefined) return <Redirect to={redirectTo} />;
     if(loading) return <Loading />;
     
     return <Layout title='글 작성하기' sidebar='ArticleList'>

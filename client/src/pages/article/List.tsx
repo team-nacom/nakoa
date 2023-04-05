@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 
 import Loading from '../Loading';
 import Button from '#/components/Button';
@@ -15,9 +15,7 @@ import { Icon } from '@mui/material';
 
 function List() {
     let [loading, articles] = usePromise(() => getLocalArticleList(), []);
-    let [redir, setRedir] = useState(false);
-
-    if(redir) return <Redirect to='/' />;
+    
     if(loading) return <Loading />;
     if(articles === undefined){
         return <Layout title='오류'>
