@@ -1,4 +1,4 @@
-import React, { useEffect, PropsWithChildren } from 'react';
+import React, { useEffect, PropsWithChildren, CSSProperties } from 'react';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -11,6 +11,7 @@ interface LayoutProps{
     title?: string;
     // message
     sidebar?: JSX.Element | SidebarOption;
+    bgClass?: string;
 };
 
 export function Layout(props: PropsWithChildren<LayoutProps>): JSX.Element{
@@ -24,7 +25,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>): JSX.Element{
 
     return (<>
         <Header />
-        <div id='content'>
+        <div id='content' className={ props.bgClass }>
             <div className='contentInner'>
                 {typeof sidebar !== 'string' &&
                     sidebar

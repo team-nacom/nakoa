@@ -62,11 +62,12 @@ function View() {
     return <Layout /* title={ article.metadata.title } */ sidebar='ArticleList'>
         <div className='article'>
             <div className='articleButtonContainer'>
-                <Link to={ `/article/update/${ localIndex }` }>
-                    <Button className='articleButton'>
-                        <Icon>edit</Icon>
-                    </Button>
-                </Link>
+                <Button className='articleButton'
+                    to={ `/article/update/${ localIndex }` }
+                >
+                    <Icon>edit</Icon>
+                    <span>글 수정</span>
+                </Button>
                 { publicIndex === undefined && ( //unpublished OR forked
                     <>
                         <Button className='articleButton'
@@ -77,6 +78,7 @@ function View() {
                             } }
                         >
                             <Icon>delete</Icon>
+                            <span>글 삭제</span>
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
@@ -86,13 +88,15 @@ function View() {
                             } }
                         >
                             <Icon>publish</Icon>
+                            <span>글 공개</span>
                         </Button>
                         { article.publicIndex !== undefined && // forked
-                            <Link to={ `/article-pub/view/${article.publicIndex}` }>
-                                <Button className='articleButton'>
-                                    원본 글 보기
-                                </Button>
-                            </Link>
+                            <Button className='articleButton'
+                                to={ `/article-pub/view/${article.publicIndex}` }
+                            >
+                                <Icon>public</Icon>
+                                <span>원본 글 보기</span>
+                            </Button>
                         }
                     </>
                 )}
@@ -101,28 +105,35 @@ function View() {
                         <Button className='articleButton'
                             onClick={ async () => {
                                 // when published, delete both the local AND public articles
-                                if(!window.confirm('공개된 게시글이 모두 사라집니다. 괜찮으시겠습니까?')) return;
+                                if(!window.confirm('글이 삭제됨과 동시에 공개 글이 철회됩니다. 괜찮으시겠습니까?')) return;
 
+                                // todo: transaction.
+                                let { success } = await removePublicArticle(publicIndex!, localIndex); // withdraw first.
+                                if(!success){
+                                    alert('공개 글 철회를 실패했습니다. 인터넷 상태를 확인하고 다시 시도해 주세요.');
+                                    return;
+                                }
                                 await removeLocalArticle(localIndex!);
-                                await removePublicArticle(publicIndex!, localIndex);
-
                                 navigate(`/article/list`);
                             } }
                         >
                             <Icon>delete</Icon>
+                            <span>삭제 및 철회</span>
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
                                 updatePublicArticle(publicIndex!, article!);
                             } }
                         >
-                            <Icon>sync</Icon>
+                            <Icon>update</Icon>
+                            <span>수정내용 반영</span>
                         </Button>
-                        <Link to={ `/article-pub/view/${publicIndex}` }>
-                            <Button className='articleButton'>
-                                공개 글 보기
-                            </Button>
-                        </Link>
+                        <Button className='articleButton'
+                            to={ `/article-pub/view/${publicIndex}` }
+                        >
+                            <Icon>public</Icon>
+                            <span>공개 글 보기</span>
+                        </Button>
                     </>
                 )}
             </div>

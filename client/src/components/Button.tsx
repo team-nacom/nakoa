@@ -1,21 +1,29 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void | Promise<any>,
+    to?: string;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void | Promise<any>;
 };
 
 function Button(props : Props) {
+    const navigate = useNavigate();
+
     let [loading, setLoading] = React.useState<boolean>(false);
     let [suspended, setSuspended] = React.useState<boolean>(false);
 
-    let { onClick, disabled, ...otherProps} = props;
+    let { to, onClick, disabled, ...otherProps} = props;
 
     let realOnClick: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setSuspended(true);
         setLoading(true);
 
+        if (to){
+            navigate(to);
+            return;
+        }
         if (onClick) {
-            await onClick(e)
+            await onClick(e);
         }
         setLoading(false);
         setTimeout(() => {

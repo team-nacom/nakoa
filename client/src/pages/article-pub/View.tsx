@@ -43,12 +43,12 @@ function View() {
 
     if(loading) return <Loading />;
     if(article === undefined){
-        return <Layout title='오류' sidebar='ArticleList'>
+        return <Layout title='오류'>
             <p>존재하지 않는 글입니다.</p>
         </Layout>;
     }
 
-    return <Layout /* title={ article.metadata.title } */ sidebar='ArticleList'>
+    return <Layout /* title={ article.metadata.title } */ /* sidebar='ArticleList' */ bgClass='published'>
         <div className='article'>
             <div className='articleButtonContainer'>
                 {/* <Link to={ `/article/update/${ publicIndex }` }>
@@ -73,7 +73,8 @@ function View() {
                                 navigate(`/article/list`);
                             } }
                         >
-                            <Icon>delete</Icon>
+                            <Icon>public_off</Icon>
+                            <span>공개 철회</span>
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
@@ -89,10 +90,14 @@ function View() {
                             } }
                         >
                             <Icon>sync</Icon>
+                            <span>내 수정내용 반영</span>
                         </Button>
-                        <Link to={ `/article/view/${article.localIndex}` }>
-                            <Button className='articleButton'>내 글 보기</Button>
-                        </Link>
+                        <Button className='articleButton'
+                            to={ `/article/view/${article.localIndex}` }
+                        >
+                            <Icon>home</Icon>
+                            <span>내 글 보기</span>
+                        </Button>
                     </>
                 )}
                 { forkedArticle !== undefined && ( // has fork.
@@ -104,15 +109,19 @@ function View() {
                                 navigate(`/article/view/${forkedArticle.localIndex}`);
                             } }
                         >
-                            포크 글 업로드
+                            <Icon>upload</Icon>
+                            <span>복제 글 업로드</span>
                         </Button>
-                        <Link to={ `/article/view/${forkedArticle.localIndex}` }>
-                            <Button className='articleButton'>포크 글 보기</Button>
-                        </Link>
+                        <Button className='articleButton'
+                            to={ `/article/view/${forkedArticle.localIndex}` }
+                        >
+                            <Icon>home</Icon>
+                            <span>복제 글 보기</span>
+                        </Button>
                     </>
                 )}
-                { !article.localIndex && !forkedArticle && ( // unauthorized and doesn't have fork.
-                    <Button
+                { !article.localIndex && !forkedArticle && ( // unauthorized and not have fork.
+                    <Button className='articleButton'
                         onClick={ async () => {
                             // let { localIndex } = await getPublicArticle(publicIndex);
                             let { localIndex } = await postLocalArticle(article); // fork
@@ -121,7 +130,8 @@ function View() {
                             navigate(`/article/view/${localIndex}`);
                         } }
                     >
-                        fork
+                        <Icon>content_copy</Icon>
+                        <span>내 글로 복제</span>
                     </Button>
                 )}
             </div>

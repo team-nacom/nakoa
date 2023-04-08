@@ -161,9 +161,17 @@
 }
 
 .articleButtonContainer {
+    position: absolute; // coupled with .article { position: relative; }
+    right: 0;
+    top: -10px;
+    width: 144px;
+
     display: flex;
     justify-content: right;
-    padding: 10px 10px 0 10px;
+    flex-direction: column;
+
+    // padding: 10px 10px 0 10px;
+
     .articleButton {
         display: flex;
         justify-content: center;
@@ -172,7 +180,7 @@
         flex-shrink: 0;
         flex-grow: 0;
         height: 24px;
-        width: 24px;
+        // width: 24px;
         padding: 0;
         border-radius: 2px;
         background-color: inherit;

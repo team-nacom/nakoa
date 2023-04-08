@@ -44,7 +44,8 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
         return undefined;
     }
 
-    let article = response.data.article as Article; // BE should've remove localIndex.
+    // BE should've remove localIndex if not authorized.
+    let article = response.data.article as Article;
 
     // if(fork){
     //     let { success, localIndex } = await postLocalArticle(article);

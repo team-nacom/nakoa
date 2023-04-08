@@ -89,6 +89,10 @@ html {
 #content {
     background-color: #f5f6fa;
     min-height: calc(100vh - 300px);
+
+    &.published{
+        background-color: pink;
+    }
 }
 
 .flexbox {
