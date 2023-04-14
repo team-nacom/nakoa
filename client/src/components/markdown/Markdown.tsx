@@ -1,23 +1,39 @@
-import React from 'react'
-import { unified, Processor, PluggableList } from 'unified'
-import remarkParse from 'remark-parse'
+import React, { useState, useEffect } from 'react';
+import { unified, Processor, PluggableList } from 'unified';
+import remarkParse from 'remark-parse';
 
 import RemarkGFM from 'remark-gfm';
 import RemarkMath from 'remark-math';
 
-import { MdastTransform, Handlers } from './MdastTransform'
-import WrapTableRows from './remark-wrap-table-rows'
-import RemovePosition from './remark-remove-position'
-import perref from './perref'
-import inlineRender from './inline-render'
+import { MdastTransform, Handlers } from './MdastTransform';
+import WrapTableRows from './remark-wrap-table-rows';
+import RemovePosition from './remark-remove-position';
+import perref from './perref';
+import inlineRender from './inline-render';
 
-import InternalLinkHandler from './InternalLinkHandler'
+import InternalLinkHandler from './InternalLinkHandler';
 
-import katex from 'katex'
+import { resolveUrlWithMap } from '#/api/file-local';
 
-function customHandlersBuilder(mathMacroObj: Object): Handlers{
-    const macros = {...mathMacroObj}
+import katex from 'katex';
+import usePromise from '#/misc/usePromise';
+
+function customHandlersBuilder(mathMacroObj: Object, fileMap: Record<string, File>): Handlers{
+    const macros = {...mathMacroObj};
+
     return {
+        'image': function ImageTransform({ children, ...props }){
+            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap, true), [props.url, fileMap]);
+
+            if(loading) return null;
+            return <img src={ url } alt={ props.alt } title={ props.title } />
+        },
+        'link': function LinkTransform({ children, ...props }){
+            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap), [props.url, fileMap]);
+
+            if(loading) return null;
+            return <a href={ url } /* title={ props.title } */>{ children }</a>
+        },
         'math': ({ children, ...props }) => {
             const innerHtml = katex.renderToString(props.value, {
                 displayMode: true,
@@ -48,19 +64,21 @@ interface RendererOptionProps{
     inlineRenderPrefix?: string,
     perrefMap?: Record<string, number[]>,
 
-    children: string
+    fileMap?: Record<string, File>,
+    children: string,
 }
 function Markdown(props: RendererOptionProps){
     const {
         mathMacroObj,
         inlineRenderPrefix,
         perrefMap,
+        fileMap,
         children: contents
-    } = props
+    } = props;
 
     const customHandlers = React.useMemo(()=>{
-        return customHandlersBuilder(mathMacroObj ?? {})
-    }, [mathMacroObj])
+        return customHandlersBuilder(mathMacroObj ?? {}, fileMap ?? {});
+    }, [mathMacroObj]);
 
     // should be memoed?
     const processor = unified()

@@ -1,39 +1,31 @@
 import Router from 'koa-router';
 
-import fs from 'fs';
-import pathlib from 'path';
-import { customAlphabet } from 'nanoid';
-import createHttpError from 'http-errors';
-import File, { uploadFileToS3 } from '#/models/file';
-import { rootUrlPromise } from '#/setup/aws';
-import { logger } from '#/utils';
+import { getBucket } from '#/setup/atlas';
+import { logger } from '../utils';
 
-const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 16);
+import {
+    indexAsDir
+} from './article-with-file';
+
+// https://stackoverflow.com/questions/46145738/stream-response-into-http-response
 
 const router = new Router();
 
-router.post('/upload', async (ctx) => {
-  const { folder } = ctx.request.body;
-  const file = ctx.request.files?.file;
+router.get('/:publicIndex/:path', async function getFile(ctx){
+    const { publicIndex, path } = ctx.params;
 
-  if (!folder || !file || 'length' in file) {
-    // console.error(folder, file);
-    throw createHttpError(400, `Invalid form (folder: ${folder}, file: ${file}`);
-  }
-
-  const randomKey = nanoid();
-  const extname = pathlib.extname(file.path);
-  const s3Path = pathlib.join(folder, randomKey + extname);
-
-  const fileStream = fs.readFileSync(file.path);
-
-  await uploadFileToS3(s3Path, fileStream, file.type);
-
-  const doc = new File({ path: s3Path, mime: file.type });
-  await doc.save();
-
-  logger.info(`Successfully uploaded ${file.path} of type ${file.type} on ${s3Path}`);
-  ctx.body = (await rootUrlPromise) + s3Path;
+    const bucket = getBucket(indexAsDir(publicIndex));
+    ctx.body = bucket.openDownloadStreamByName(path);
 });
+
+// router.get('/bar', async function getFoo(ctx){
+//     const body = ctx.request.body;
+
+//     console.log(body);
+
+//     ctx.body = {
+//         result: 'ok'
+//     };
+// });
 
 export default router;

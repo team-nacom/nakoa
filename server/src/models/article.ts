@@ -1,4 +1,4 @@
-import { Document, model, Schema } from 'mongoose';
+import { Document, model, Schema, ObjectId } from 'mongoose';
 import { baseid } from '../utils';
 
 import { ArticleAttribute, ClassicArticle, BasicCellArticle } from '#common/Article';
@@ -21,7 +21,9 @@ const articleSchema = new Schema<ArticleAttribute>({
         author: String,
         tags: [String],
         visibility: Number
-    }
+    },
+    files: [Buffer],
+    filePaths: [String],
 }, {
     timestamps: { createdAt: 'createDate', updatedAt: 'updateDate' },
     discriminatorKey: 'mode'

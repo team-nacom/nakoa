@@ -14,7 +14,8 @@ import {
 import { FileDropzone } from '#/components/helpers/FileDropzone';
 
 import Markdown from '#/components/markdown/Markdown'
-import { postImage, resolveImageUrl } from '#/api/file';
+import { setFile, resolveUrlWithMap, attachmentIndexToUrl } from '#/api/file-local';
+import { useFileMapDataAction, useFileMapState } from '#/components/editor/FileMapState';
 
 // export const imageCellName = 'image'
 export interface ImageCellField{
@@ -39,6 +40,8 @@ interface ImageProps{
     caption: string,
 }
 function Image(props: ImageProps){
+    const { map } = useFileMapState();
+
     return (
         <Resizable lockAspectRatio
             enable={ { top: false, right: false, bottom:false, left: false } }
@@ -50,7 +53,7 @@ function Image(props: ImageProps){
                 // width={ props.width } // width as pixel.
                 alt={ props.caption }
                 onError = { async (ev) =>{
-                    let fallbackSrc = await resolveImageUrl(imageCellDefault.src);
+                    let fallbackSrc = await resolveUrlWithMap(imageCellDefault.src, map);
                     if(ev.currentTarget.src !== fallbackSrc){
                         ev.currentTarget.src = fallbackSrc; // setting this will trigger reload
                     }
@@ -63,10 +66,11 @@ function Image(props: ImageProps){
 
 function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
     const { mathMacroObj, label, labelTypewise } = useRenderData();
+    const { map } = useFileMapState();
 
     const [resolvedSrc, setResolvedSrc] = useState<string | undefined>();
     useEffect(()=>{
-        resolveImageUrl(cell.src).then(setResolvedSrc);
+        resolveUrlWithMap(cell.src, map).then(setResolvedSrc);
     }, [cell.src]);
 
     return (
@@ -78,7 +82,7 @@ function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
                 width={ cell.width } // width as pixel.
                 alt={ cell.caption }
                 onError = { async (ev) =>{
-                    setResolvedSrc(await resolveImageUrl(''));
+                    setResolvedSrc(await resolveUrlWithMap('', map));
                 }}
             />
             <Markdown
@@ -92,16 +96,17 @@ function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
 }
 
 
-
 function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>){
     // const {} = useRenderData()
     const editorAction = useCellEditorAction();
+    const { map } = useFileMapState();
+    const { addFile } = useFileMapDataAction();
 
     const [aspectRatio, setAspectRatio] = useState(1); // height / width
 
     const [resolvedSrc, setResolvedSrc] = useState<string | undefined>();
     useEffect(()=>{
-        resolveImageUrl(cell.src).then(setResolvedSrc);
+        resolveUrlWithMap(cell.src, map).then(setResolvedSrc);
     }, [cell.src]);
 
     const setWidth = useCallback((width: number) => {
@@ -119,16 +124,13 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
     }, [cell.id])
 
     const uploadHandler: (files: File[]) => void | Promise<void> = useCallback(async (files) => {
-        try{
-            let { url } = await postImage(files[0]);
-            let change: Partial<ImageCellField> = {
+        addFile(files[0], undefined, async path => {
+            const url = await attachmentIndexToUrl(path);
+            const change: Partial<ImageCellField> = {
                 src: url
             };
             editorAction.update(cell.id, change);
-        }
-        catch(err){
-            console.log('이미지 업로드 실패');
-        }
+        });
     }, [cell.id])
 
     return (
@@ -161,7 +163,7 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
                                 );
                             } }
                             onError = { async (ev) =>{
-                                setResolvedSrc(await resolveImageUrl(''));
+                                setResolvedSrc(await resolveUrlWithMap('', map));
                             } }
                         />
                     </Resizable>

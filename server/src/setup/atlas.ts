@@ -20,3 +20,10 @@ mongoose.connect(connectionString, {
 });
 
 // mongoose.set('debug', true);
+
+// return new gridFS bucket.
+export function getBucket(bucketName?: string){
+  return new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName,
+  });
+}

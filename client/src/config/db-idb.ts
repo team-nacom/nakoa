@@ -22,14 +22,25 @@ interface NacomDB extends DBSchema {
             'publicIndex': string, // secondary keys
         },
     },
+    files: {
+        key: [string, string],
+        value: {
+            localIndex: string,
+            attachmentIndex: string,
+            file: File,
+        },
+        indexes: {
+            'localIndex': string,
+            'attachmentIndex': string,
+        },
+    }
 }
 
 
 async function _create(){
-    const db = await openDB<NacomDB>('nacom-db', /* version: */ 1, {
+    const db = await openDB<NacomDB>('nacom-db', /* version: */ 2, {
         upgrade: (db, oldVersion) => {
-
-            // versions are linear; no breaks inside switch
+            // versions are linear, hence fall-through; no breaks inside switch
             switch(oldVersion){
             case 0:
                 const DraftStore = db.createObjectStore('drafts', { keyPath: 'localIndex' });
@@ -40,6 +51,12 @@ async function _create(){
                 ArticleStore.createIndex('publicIndex', 'publicIndex');
 
                 // store.createIndex(indexName, keyPath)
+            case 1:
+                const FileStore = db.createObjectStore('files', {
+                    keyPath: ['localIndex', 'attachmentIndex']
+                });
+                FileStore.createIndex('localIndex', 'localIndex'); // article index.
+                FileStore.createIndex('attachmentIndex', 'attachmentIndex');
             }
         },
     })

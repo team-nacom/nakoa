@@ -12,24 +12,35 @@ import { CellArticle } from '#/components/cell-editor/types';
 import { useMetadataState, Metadata, MetadataProvider } from './MetadataState';
 
 import { autoSaveIntervalMs as autosaveIntervalMsDefault } from '#/config/consts';
+import { FileMapDataProvider, useFileMapState } from './FileMapState';
 
 interface CellEditorProps{
     initArticle?: CellArticle;
-    upload: (metadata: Metadata, content: CellArticle['content']) => Promise<any>;
-    autosave: (metadata: Metadata, content: CellArticle['content']) => Promise<any>;
+    upload: (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => Promise<any>;
+    autosave: (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => Promise<any>;
     removeAutosave?: (disableAutosave: () => any) => any;
 };
 export function CellEditor({ initArticle, upload, autosave, removeAutosave }: CellEditorProps) {
     // initArticle === undefined ? 'create' : 'update'
 
+    const fileMap = useMemo(()=>{
+        if(!initArticle) return {};
+        const keys = initArticle.filePaths ?? [];
+        const values = initArticle.files ?? []; // might not have been initialized.
+
+        return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
+    }, [initArticle?.filePaths, initArticle?.files]);
+
     return (
         <CellEditorProvider init={ initArticle?.content }>
         <MetadataProvider {...(initArticle?.metadata ?? {})}>
+        <FileMapDataProvider map={ fileMap }>
             <CellEditorInner
                 upload={ upload }
                 autosave={ autosave }
                 removeAutosave={ removeAutosave }
             />
+        </FileMapDataProvider>
         </MetadataProvider>
         </CellEditorProvider>
     );
@@ -42,15 +53,16 @@ const MemoizedCore = memo(CellEditorCore);
 function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
     const metadata = useMetadataState();
     const content = useContent();
+    const { map } = useFileMapState();
     
     const uploadHandler = useCallback(() => {
-        upload(metadata, content);
-    }, [metadata, content]);
+        upload(metadata, content, map);
+    }, [metadata, content, map]);
 
     const autosaveHandler = useCallback(async () => {
-        await autosave(metadata, content);
+        await autosave(metadata, content, map);
         setAutosavedUp();
-    }, [metadata, content]);
+    }, [metadata, content, map]);
 
     // autosave interval
     const [autosaveIntervalMs, setAutosaveIntervalMs] = useState<number | null>(autosaveIntervalMsDefault);
@@ -63,11 +75,11 @@ function CellEditorInner({ upload, autosave, removeAutosave }: CellEditorProps){
         let tmp = autosaveIntervalMs;
         setAutosaveIntervalMs(null);
         // await autosaveHandler();
-        await autosave(metadata, content);
+        await autosave(metadata, content, map);
         setAutosavedUp();
 
         setAutosaveIntervalMs(tmp); // hope that it will reset timer
-    }, [autosaveIntervalMs, metadata, content]);
+    }, [autosaveIntervalMs, metadata, content, map]);
 
     const removeAutosaveHandler = useCallback(() => {
         if(removeAutosave === undefined) return;

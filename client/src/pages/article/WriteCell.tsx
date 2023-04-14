@@ -12,6 +12,7 @@ import { CellEditor } from '#/components/editor/CellEditor';
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
+import { unzipMap } from '#/components/editor/FileMapState';
 
 function WriteCell() {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ function WriteCell() {
 
     const [message, setMessage] = useState<string>();
 
-    const upload = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+    const upload = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
         if(metadata.title === ''){
             window.alert('제목을 입력해 주세요.');
             return;
@@ -51,7 +52,8 @@ function WriteCell() {
         const article: CellArticle = {
             mode: 'cell',
             metadata,
-            content
+            content,
+            ...unzipMap(fileMap)
         }
 
         let { success, localIndex } = await postLocalArticle(article);
@@ -63,11 +65,12 @@ function WriteCell() {
         }
     }, []);
 
-    const autosave = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+    const autosave = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
         const article: CellArticle = {
             mode: 'cell',
             metadata,
-            content
+            content,
+            ...unzipMap(fileMap)
         };
         await setDraftArticle(article);
     }, []);

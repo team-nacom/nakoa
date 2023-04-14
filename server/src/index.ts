@@ -39,14 +39,16 @@ app.use(session({}, app));
 
 // Router
 const router = new Router();
+
 // Root (not used)
 router.get('/', async (ctx, next) => {
   ctx.body = 'Hello World';
   await next();
 });
-// Files
+
 router.use('/file', fileRouter.routes());
 router.use('/article', articleRouter.routes());
+
 
 
 app.use(handleErrorMiddleware);

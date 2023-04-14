@@ -8,7 +8,6 @@ import {normalizeUri} from 'micromark-util-sanitize-uri'
 
 import 'katex/dist/katex.min.css';
 import katex from 'katex'
-import { getImageUrl, resolveImageUrl } from '#/api/file';
 
 export type Handler = React.ComponentType<PropsWithChildren<any>>
 
@@ -58,14 +57,8 @@ const defaultHandlers: Handlers = {
         return <Tag>{ children }</Tag>
     },
     
-    'image': function ImageTransform({ children, ...props }){
-        const [url, setUrl] = useState('');
-
-        useEffect(() => {
-            resolveImageUrl(props.url).then( setUrl );
-        }, [props.url]);
-
-        return <img src={ url } alt={ props.alt } title={ props.title ?? '' } />
+    'image': ({ children, ...props }) => {
+        return <img src={ props.url } alt={ props.alt } title={ props.title ?? '' } />
     },
     
     'link': ({ children, ...props }) => {

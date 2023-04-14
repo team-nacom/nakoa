@@ -5,6 +5,7 @@ import { ClassicEditor } from '#/components/editor/ClassicEditor';
 import { CellEditor } from '#/components/editor/CellEditor';
 
 import { Metadata } from '#/components/editor/MetadataState';
+import { unzipMap } from '#/components/editor/FileMapState';
 
 import { Layout } from '#/layout/Layout';
 
@@ -32,7 +33,7 @@ function Update() {
 
     const [message, setMessage] = useState<string>();
 
-    const uploadClassic = useCallback(async (metadata: Metadata, text: string) => {
+    const uploadClassic = useCallback(async (metadata: Metadata, text: string, fileMap: Record<string, File>) => {
         if(metadata.title === ''){
             window.alert('제목을 입력해 주세요.');
             return;
@@ -42,7 +43,8 @@ function Update() {
             ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'classic',
             metadata,
-            text
+            text,
+            ...unzipMap(fileMap)
         };
 
         let { success } = await updateLocalArticle(localIndex!, article);
@@ -55,12 +57,13 @@ function Update() {
         }
     }, [localIndex, initArticle]);
 
-    const autosaveClassic = useCallback(async (metadata: Metadata, text: string) => {
+    const autosaveClassic = useCallback(async (metadata: Metadata, text: string, fileMap: Record<string, File>) => {
         const article: ClassicArticle = {
             ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'classic',
             metadata,
-            text
+            text,
+            ...unzipMap(fileMap)
         };
 
         // console.log('autosave init', initArticle);
@@ -69,17 +72,18 @@ function Update() {
         await setDraftArticle(article, localIndex);
     }, [localIndex, initArticle]);
 
-    const autosaveCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+    const autosaveCell = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
         const article: CellArticle = {
             ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'cell',
             metadata,
-            content
+            content,
+            ...unzipMap(fileMap)
         };
         await setDraftArticle(article);
     }, [initArticle]);
 
-    const uploadCell = useCallback(async (metadata: Metadata, content: CellArticle['content']) => {
+    const uploadCell = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
         if(metadata.title === ''){
             window.alert('제목을 입력해 주세요.');
             return;
@@ -89,7 +93,8 @@ function Update() {
             ...initArticle, // localIndex, publicIndex, createDate, updateDate
             mode: 'cell',
             metadata,
-            content
+            content,
+            ...unzipMap(fileMap)
         };
 
         let success = await updateLocalArticle(localIndex!, article);

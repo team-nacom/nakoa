@@ -34,6 +34,9 @@ export interface ArticleAttribute {
     createDate?: Date;
     updateDate?: Date;
     metadata: Metadata;
+
+    files?: File[]; // fileMap의 value. 송수신 시에는 이쪽을 사용
+    filePaths?: string[]; // fileMap의 key. 송수신 시에는 이쪽을 사용 (수신시 얘만 받고 files는 나중에 따로 생성)
 };
 
 export interface ClassicArticle extends ArticleAttribute {
@@ -52,7 +55,7 @@ export interface BasicCellArticle<C extends BasicCell = BasicCell> extends Artic
     content: CellArticleContent<C>;
 };
 
-// export type Article = ClassicArticle | BasicCellArticle;
+export type BroadArticle = ClassicArticle | BasicCellArticle;
 
 // should be redefined as ClassicArticle | BasicCellArticle<Cell> once Cell type has been declared.
 

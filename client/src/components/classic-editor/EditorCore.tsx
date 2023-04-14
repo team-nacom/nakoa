@@ -9,9 +9,24 @@ import Markdown from '#/components/markdown/Markdown';
 // import Manual from './MarkdownManual';
 import { useClassicEditorAction, useClassicEditorContext } from './EditorState';
 
-import { insertText, pasteHandler, imgUploadHelper, fileUploadHelper } from './handlers'
+import { FileInput } from '../editor/FileInput';
+import { attachmentIndexToUrl } from '#/api/file-local';
+import { useFileMapDataAction, useFileMapState } from '../editor/FileMapState';
 
-import { FileDropzone } from '../helpers/FileDropzone';
+function insertText(text: string, elem? : HTMLTextAreaElement){
+    if(!elem) return;
+
+    // source: https://kubyshkin.name/posts/insert-text-into-textarea-at-cursor-position/
+    const st = elem.selectionStart;
+    const ed = elem.selectionEnd;
+
+    elem.setRangeText(text, st, ed);
+    elem.selectionStart = elem.selectionEnd = st + text.length;
+
+    // notify to event listeners
+    const e = new Event('change', {"bubbles": true, "cancelable": false});
+    elem.dispatchEvent(e);
+}
 
 const MemoizedMarkdown = React.memo(Markdown);
 
@@ -63,18 +78,24 @@ function PanelMenu({children, label, callback, ...other} : PanelMenuProps){
     );
 }
 
+// editor core
+
 interface ClassicEditorBodyProps extends React.HTMLAttributes<HTMLTextAreaElement>{
-    update?: (c : string) => void //can we do this w/o callback?
+    // update?: (c : string) => void
+    localIndex?: string;
 }
 
-export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
+export function EditorCore({ localIndex, ...other } : ClassicEditorBodyProps) {
     const {
         text, previewText
     } = useClassicEditorContext(state => state) //should be initialized in the top component.
     const { setText, setPreviewText } = useClassicEditorAction();
 
+    const { map } = useFileMapState();
+    const { addFile, removeFile } = useFileMapDataAction();
+
     const [activeIndex,setActiveIndex] = useState(1 as 1 | 2);
-    const [manualVisible,setManualVisible] = useState(false);
+    // const [manualVisible,setManualVisible] = useState(false);
     const [autoRender,setAutoRender] = useState(true);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -107,6 +128,34 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
         setText(e.target.value);
         if(!collapse && autoRender){
             setPreviewText(e.target.value);
+        }
+    }
+    
+    const pasteHandler = async (e : React.ClipboardEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    
+        const elem = e.currentTarget;
+    
+        // text
+        let text = e.clipboardData.getData('text/plain');
+        if(text){
+            insertText(text, elem);
+            return;
+        }
+    
+        // images
+        const items = e.clipboardData.items
+        for(var i = 0; i < items.length; ++i){
+            if(items[i].type.startsWith('image/')){ //image detected
+                const blob = items[i].getAsFile();
+                if(blob == null) continue;
+
+                addFile(blob, undefined, async path => {
+                    insertText(`\n![](${ await attachmentIndexToUrl(path) })\n`, elem);
+                });
+                return;
+            }
         }
     }
 
@@ -199,6 +248,7 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                     <PreviewArea className='previewArea'>
                         <MemoizedMarkdown /* usePriority useTOC openDetails */
                             // mathMacroObj={ {} }
+                            fileMap = { map }
                         >
                             { previewText }
                         </MemoizedMarkdown>
@@ -215,20 +265,15 @@ export function EditorCore({ update, ...other } : ClassicEditorBodyProps) {
                     onMouseDown={ resizeMouseDown }
                 />
             </div>
-            
 
-            <div className='dropzoneWrapper'>
-                <FileDropzone
-                    handleDrop={ (files) => imgUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
-                >
-                    <label>{ i18n.t('editor.attachImages') }</label>
-                </FileDropzone>
-                <FileDropzone
-                    handleDrop={ (files) => fileUploadHelper(files[0], textareaRef.current ?? undefined, uploadErrorHandler) }
-                >
-                    <label>{ i18n.t('editor.attachFiles') }</label>
-                </FileDropzone>
-            </div>
+            <FileInput
+                imgUploadHandler={async (file, path) => {
+                    insertText(`\n![](${ await attachmentIndexToUrl(path) })\n`, textareaRef.current ?? undefined);
+                }}
+                fileUploadHandler={async (file, path) => {
+                    insertText(`[💾 ${ file.name }](${ await attachmentIndexToUrl(path) })`, textareaRef.current ?? undefined);
+                }} //todo
+            />
         </div>
         {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}
     </div>);

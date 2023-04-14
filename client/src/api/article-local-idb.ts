@@ -1,12 +1,8 @@
+import { dummyIndex } from '#/misc/dummyIndex';
 import { base64rand } from '#/misc/base64rand';
 import getDB from '#/config/db-idb';
 
 import type { Article } from '#/components/cell-editor/types';
-
-const dummyIndex = (s: string | undefined) => {
-    if(s === undefined) throw new Error();
-    return `&${s}`;
-}
 
 export async function unsetDraftArticle(localIndex?: string, mode?: Article['mode']){
     const db = await getDB();
@@ -86,23 +82,15 @@ export async function getLocalArticleWithPublicIndex(publicIndex: string){
     }
 }
 
-async function generateUniqueIdx(){
-    let localIndex = '';
-    let article: Article | undefined;
-    do{
-        localIndex = base64rand(8);
-        article = await getLocalArticle(localIndex);
-    } while( article !== undefined );
-
-    // when loop is over, we have safe localIndex
-
-    return localIndex;
-}
-
 export async function postLocalArticle(article: Article, removeDraft: boolean = true){
     const db = await getDB();
 
-    let localIndex = await generateUniqueIdx();
+    // generate unique localIndex.
+    let localIndex = '';
+    do {
+        localIndex = base64rand(8);
+    } while( await getLocalArticle(localIndex) !== undefined );
+
     article.localIndex = localIndex;
     article.createDate = article.updateDate = new Date();
     
@@ -125,7 +113,7 @@ export async function postLocalArticle(article: Article, removeDraft: boolean = 
 export async function updateLocalArticle(localIndex: string, article: Article, shouldUpdateDate: boolean = true){
     const db = await getDB();
 
-    article.localIndex = localIndex; // article argument might not have this localIndex anymore
+    article.localIndex = localIndex; // article argument might not have this localIndex anymore..? 
     if(shouldUpdateDate){
         article.updateDate = new Date();
     }

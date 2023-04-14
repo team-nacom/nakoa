@@ -12,8 +12,9 @@ export function CtxFactoryCurry<
 ){
     type CtxStore = ReturnType< typeof createCtxStore >;
     type Setter = Parameters< CtxStore['setState'] >[0];
+    // type Setter = Partial<State> | Promise<Partial<State>> | ((state: State) => (Partial<State> | Promise<Partial<State>>));
 
-    return function<Mutations extends { [key: string]: Func<any[], Setter> }>(mutations: Mutations){
+    return function<Mutations extends { [key: string]: Func<any[], Setter | Promise<Setter>> }>(mutations: Mutations){
         const CtxContext = createContext<CtxStore | null>( null );
 
         function CtxProvider({ children, ...props }: PropsWithChildren<InitProps>): JSX.Element {
@@ -44,7 +45,18 @@ export function CtxFactoryCurry<
 
             let actions = Object.entries(mutations)
                     .reduce(
-                        (prev, [key, setter]) => ({ [key]: (...args) => store.setState(setter(...args)), ...prev}),
+                        (prev, [key, setter]) => ({
+                            [key]: (...args) => {
+                                let obj = setter(...args);
+                                if(obj instanceof Promise){
+                                    (async () => store.setState(await obj))();
+                                } else{
+                                    store.setState(obj);
+                                }
+                                // store.setState(setter(...args));
+                            },
+                            ...prev
+                        }),
                         {} as { [K in keyof Mutations]: Func< Parameters<Mutations[K]>, void > }
                     );
             

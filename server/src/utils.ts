@@ -5,7 +5,7 @@ import Pino from 'pino';
 import pretty from 'pino-pretty';
 
 // base64+1
-const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
+const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789+-=';
 export function baseid(count: number): string {
   const nanoid = customAlphabet(base64url, count);
   return nanoid();

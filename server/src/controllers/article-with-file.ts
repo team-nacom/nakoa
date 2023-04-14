@@ -1,9 +1,42 @@
+import fs from 'fs';
+
 import Router from 'koa-router';
+
 import {
   ArticleModel, ClassicArticleModel, BasicCellArticleModel
 } from '#/models/article';
+import { getBucket } from '#/setup/atlas';
 import { logger } from '../utils';
 
+import { File } from 'formidable';
+
+export function indexAsDir(publicIndex: string){ return `article_${publicIndex}`; }
+
+async function uploadFiles(dir: string, files: File | File[] = [], filePaths: string[] = []){
+    const bucket = getBucket(dir);
+
+    if(!Array.isArray(files)){ files = [files]; }
+
+    await Promise.all(files.map((file, i) => {
+        return new Promise<void>((resolve, reject) => {
+            if(file.size === 0){ // no modification.
+                fs.rmSync(file.path);
+                resolve();
+                return;
+            }
+
+            fs.createReadStream(file.path)
+                .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
+                .on('error', (err) => {
+                    reject(err);
+                })
+                .on('finish', () => {
+                    // todo: remove temp file
+                    resolve();
+                });
+        });
+    }));
+}
 
 // localIndex is used as a verification token
 
@@ -27,7 +60,7 @@ router.get('/get-list', async function getArticleList(ctx){
 });
 
 router.get('/get/:publicIndex', async function getArticle(ctx){
-    const publicIndex = ctx.params.publicIndex; // TODO: idxtype
+    const publicIndex = ctx.params.publicIndex;
     const query = ArticleModel.findOne(
         { publicIndex, 'metadata.visibility': {$gte: 1} },
         {_id: false, __v: false} // remove _id and __v
@@ -64,11 +97,9 @@ router.get('/get/:publicIndex', async function getArticle(ctx){
 });
 
 router.post('/post', async function postArticle(ctx){
-    const body = ctx.request.body;
+    const articleBody = JSON.parse(ctx.request.body.article);
 
-    // console.log(body);
-
-    if(body.localIndex === undefined){ // localIndex should've been defined.
+    if(articleBody.localIndex === undefined){ // localIndex should've been defined.
         ctx.status = 400;
         ctx.body = {
             result: 'failure',
@@ -77,14 +108,16 @@ router.post('/post', async function postArticle(ctx){
         return;
     }
 
-    const prevIndex = body.publicIndex;
+    const prevIndex = articleBody.publicIndex;
     if(prevIndex !== undefined){
         // if publicIndex has been defined,
         // then create a new article discarding publicIndex.
         // this is 'forking' behavior of the article distinguished by publicIndex.
 
+        // todo: copy file (or redirect) on fork
+
         // todo: verify if prevIndex article is actually in db?
-        delete body.publicIndex;
+        delete articleBody.publicIndex;
     }
 
     // let article;
@@ -93,27 +126,34 @@ router.post('/post', async function postArticle(ctx){
     // } else{
     //     article = new BasicCellArticleModel(body);
     // }
-    const article = new ArticleModel(body);
+    const article = new ArticleModel(articleBody);
     await article.save();
 
     // generating unique publicIndex depends on MongoDB's index creation.
-    const index = article.publicIndex ?? ''; // '' should not happen
+    const publicIndex = article.publicIndex ?? ''; // '' should not happen
 
     // if(prevIndex !== undefined){
     //     // todo: we could make prevIndex -> index link somewhere
     // }
 
+    // storing files.
+    await uploadFiles(
+        indexAsDir(publicIndex),
+        ctx.request.files?.files,
+        article.filePaths
+    );
+
     ctx.body = {
         result: 'success',
-        publicIndex: index,
+        publicIndex,
         createDate: article.createDate
     };
 });
 
 router.put('/update/:publicIndex', async function putArticle(ctx){
     const publicIndex: string = ctx.params.publicIndex;
-    const body = ctx.request.body;
-    const localIndex: string | undefined = body.localIndex;
+    const articleBody = JSON.parse(ctx.request.body.article);
+    const localIndex: string | undefined = articleBody.localIndex;
 
     if(localIndex === undefined){
         ctx.status = 401; // unauthorized
@@ -124,22 +164,13 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
         return;
     }
 
-    // let res;
-    // if(body['mode'] === 'classic'){
-    //     res = await ClassicArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
-    // } else{
-    //     res = await BasicCellArticleModel.updateOne({publicIndex, localIndex}, {$set: body});
-    // }
-
     // since ArticleModel is base(parent) scheme which don't have any children info(content type),
     // not setting overwrite: true will truncate contents
 
     // const query0 = ArticleModel.findOneAndUpdate({publicIndex, localIndex}, {$set: body}, {overwrite: true, returnDocument: 'after'});
-    // let art = await query0.exec();
+    // let article0 = await query0.exec();
 
-    // console.log(art);
-
-    const query = ArticleModel.replaceOne({publicIndex, localIndex}, body);
+    const query = ArticleModel.replaceOne({publicIndex, localIndex}, articleBody);
     let res = await query.exec();
 
     if(res.nModified === 0){
@@ -159,6 +190,13 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
         };
         return;
     }
+
+    // storing files.
+    await uploadFiles(
+        indexAsDir(publicIndex),
+        ctx.request.files?.files,
+        articleBody.filePaths
+    );
 
     ctx.body = {
         result: 'success',
@@ -210,36 +248,5 @@ router.delete('/remove/:publicIndex', async (ctx) => {
         result: 'success'
     };
 });
-
-// router.get('/author/:author', async (ctx) => {
-//     const author: string = ctx.params.author;
-//     const query = Flat.find({author, hidden: false})
-//       .sort({ createDate: -1 })
-//       .select('localIndex title author createDate');
-//     const docs = await query.exec();
-//     ctx.body = docs;
-// })
-
-// router.put('/hide/:localIndex', async (ctx) => {
-//   const localIndex: string = ctx.params.localIndex;
-//   const query = Flat.updateOne({localIndex}, {$set: {'hidden': true}});
-//   const doc = await query.exec();
-//   ctx.body = 'Success';
-// })
-
-// router.put('/unhide/:localIndex', async (ctx) => {
-//   const localIndex: string = ctx.params.localIndex;
-//   const query = Flat.updateOne({localIndex}, {$set: {'hidden': false}});
-//   const doc = await query.exec();
-//   ctx.body = 'Success';
-// })
-
-// internal APIs for convenience
-
-// router.get('/debug', async (ctx) => {
-//   const query = ArticleModel.find({});
-//   const docs = await query.exec();
-//   ctx.body = docs;
-// });
 
 export default router;

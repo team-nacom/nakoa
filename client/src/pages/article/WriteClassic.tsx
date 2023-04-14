@@ -8,10 +8,12 @@ import { Layout } from '#/layout/Layout';
 import type { ClassicArticle } from '#/components/cell-editor/types';
 import { getDraftArticle, setDraftArticle, unsetDraftArticle, postLocalArticle } from '#/api/article-local-idb';
 import { ClassicEditor } from '#/components/editor/ClassicEditor';
+import { unzipMap } from '#/components/editor/FileMapState';
 
 import Loading from '../Loading';
 import usePromise from '#/misc/usePromise';
 import Button from '#/components/Button';
+
 
 function WriteClassic() {
     const navigate = useNavigate();
@@ -37,7 +39,7 @@ function WriteClassic() {
 
     const [message, setMessage] = useState<string>();
     
-    const upload = useCallback(async (metadata: Metadata, text: string) => {
+    const upload = useCallback(async (metadata: Metadata, text: string, fileMap: Record<string, File>) => {
         if(metadata.title === ''){
             window.alert('제목을 입력해 주세요.');
             return;
@@ -46,7 +48,8 @@ function WriteClassic() {
         const article: ClassicArticle = {
             mode: 'classic',
             metadata,
-            text
+            text,
+            ...unzipMap(fileMap)
         };
 
         let { success, localIndex } = await postLocalArticle(article);
@@ -58,12 +61,18 @@ function WriteClassic() {
         }
     }, []);
 
-    const autosave = useCallback(async (metadata: Metadata, text: string) => {
+    const autosave = useCallback(async (metadata: Metadata, text: string, fileMap: Record<string, File>) => {
         const article: ClassicArticle = {
             mode: 'classic',
             metadata,
-            text
+            text,
+            ...unzipMap(fileMap)
         };
+        
+        // console.log(fileMap);
+
+        // todo: if we send this as axios, file won't be preserved...
+
         await setDraftArticle(article);
     }, []);
 

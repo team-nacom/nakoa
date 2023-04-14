@@ -52,6 +52,14 @@ function View() {
         return article;
     }, [localIndex]);
 
+    const fileMap = useMemo(()=>{
+        if(!article) return {};
+        const keys = article.filePaths ?? [];
+        const values = article.files ?? []; // might not have been initialized.
+
+        return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
+    }, [article?.filePaths, article?.files]);
+
     if(loading) return <Loading />;
     if(article === undefined){
         return <Layout title='오류' sidebar='ArticleList'>
@@ -141,12 +149,12 @@ function View() {
                 <h1 className='title'> { article.metadata.title } </h1>
                 {/* <h2 className='subtitle'> { article.metadata.author } </h2> */}
                 {article.mode === 'classic' && (
-                    <Markdown>
+                    <Markdown fileMap={ fileMap }>
                         { article.text }
                     </Markdown>
                 ) }
                 {article.mode === 'cell' && (
-                    <Display
+                    <Display // TODO : fileMap here
                         {...article.content}
                     />
                 ) }
