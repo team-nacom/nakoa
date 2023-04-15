@@ -27,7 +27,10 @@ async function uploadFiles(dir: string, files: File | File[] = [], filePaths: st
             fs.createReadStream(file.path)
                 .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
                 .on('error', reject)
-                .on('finish', resolve);
+                .on('finish', () => {
+                    // console.log(`file ${filePaths[i]} uploaded`);
+                    resolve();
+                });
         });
     }));
 }
@@ -53,6 +56,7 @@ router.get('/get-list', async function getArticleList(ctx){
     };
 });
 
+// get article body. attachments not included.
 router.get('/get/:publicIndex', async function getArticle(ctx){
     const publicIndex = ctx.params.publicIndex;
     const query = ArticleModel.findOne(

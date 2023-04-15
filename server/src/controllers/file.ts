@@ -15,7 +15,7 @@ router.get('/:publicIndex/:path', async function getFile(ctx){
     const { publicIndex, path } = ctx.params;
 
     const bucket = getBucket(indexAsDir(publicIndex));
-    const stream = bucket.openDownloadStreamByName(path);
+    const stream = bucket.openDownloadStreamByName(path).setEncoding('binary');
     stream.on('error', (err) => {
             console.log('filenotfound')
 

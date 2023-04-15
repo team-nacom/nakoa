@@ -60,6 +60,7 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
     // BE should've remove localIndex if not authorized.
     // also files are not downloaded yet
     let article = response.data.article as Article;
+    // console.log(article);
     if(article.filePaths){
         // download files here!
         // todo: lazy file download ??
@@ -79,6 +80,12 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
                 // if(res.status >= 400){
                 //     return undefined!;
                 // }
+
+                if(typeof res.data === 'string'){
+                    return new File([res.data], path, {
+                        type: 'text/plain'
+                    });
+                }
 
                 return res.data as File;
             })
