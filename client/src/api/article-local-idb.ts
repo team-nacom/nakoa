@@ -97,7 +97,7 @@ export async function postLocalArticle(article: Article, removeDraft: boolean = 
     try{
         await db.put('articles', article); // key localIndex is inline
 
-        if(removeDraft){
+        if(removeDraft){ // remove draft
             let { success } = await unsetDraftArticle(undefined, article.mode);
             if(!success){
                 return { success: false };
@@ -119,6 +119,8 @@ export async function updateLocalArticle(localIndex: string, article: Article, s
     }
 
     await db.put('articles', article); // key localIndex is inline
+
+    await unsetDraftArticle(article.localIndex); // remove draft
 
     return { success: true };
 }
