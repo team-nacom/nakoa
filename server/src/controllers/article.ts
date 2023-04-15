@@ -1,3 +1,5 @@
+// deprecated. use `./article-with-file.ts` instead.
+
 import Router from 'koa-router';
 import {
   ArticleModel, ClassicArticleModel, BasicCellArticleModel

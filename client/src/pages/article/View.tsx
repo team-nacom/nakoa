@@ -11,7 +11,7 @@ import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
 import { getLocalArticle, removeLocalArticle } from '#/api/article-local-idb';
-import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
+import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public-with-file';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
@@ -90,7 +90,9 @@ function View() {
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
-                                await postPublicArticle(article!);
+                                const { publicIndex: newPublicIndex } = await postPublicArticle(article!);
+
+                                setPublicIndex(newPublicIndex);
 
                                 navigate(`/article/view/${localIndex}`);
                             } }

@@ -1,3 +1,5 @@
+// deprecated. use `./article-public-with-file.ts` instead.
+
 import axios from "axios";
 import { apiUrl } from "#/config/env";
 

@@ -10,7 +10,7 @@ import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
 
 import fileRouter from './controllers/file';
-import articleRouter from './controllers/article';
+import articleRouter from './controllers/article-with-file';
 
 import {
   handleErrorMiddleware, isProduction, isStaging, clientOrigin, logger, logStreams,

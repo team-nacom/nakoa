@@ -6,7 +6,7 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getPublicArticleList } from '#/api/article-public';
+import { getPublicArticleList } from '#/api/article-public-with-file';
 
 import { Icon } from '@mui/material';
 

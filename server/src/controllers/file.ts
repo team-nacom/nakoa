@@ -15,7 +15,21 @@ router.get('/:publicIndex/:path', async function getFile(ctx){
     const { publicIndex, path } = ctx.params;
 
     const bucket = getBucket(indexAsDir(publicIndex));
-    ctx.body = bucket.openDownloadStreamByName(path);
+    const stream = bucket.openDownloadStreamByName(path);
+    stream.on('error', (err) => {
+            console.log('filenotfound')
+
+            ctx.body = new Blob();
+
+            // stream.emit('end') // put this to make status 200
+        })
+        // .on('data', (data) => {
+        //     ctx.body = data;
+        // })
+    
+    ctx.body = stream;
+    
+    // ctx.body = bucket.openDownloadStreamByName(path);
 });
 
 // router.get('/bar', async function getFoo(ctx){

@@ -72,11 +72,13 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
                     headers: {
                         responseType: 'blob',
                     }
+                }).catch((err) => {
+                    return { data: undefined }; // if there was an error, files should be like [ File, undefined, File, ... ]
                 });
 
-                if(res.status >= 400){
-                    throw new Error('file download failed');
-                }
+                // if(res.status >= 400){
+                //     return undefined!;
+                // }
 
                 return res.data as File;
             })

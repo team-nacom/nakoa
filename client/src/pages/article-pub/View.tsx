@@ -7,15 +7,13 @@ import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
 import { getLocalArticle, getLocalArticleWithPublicIndex, postLocalArticle } from '#/api/article-local-idb';
-import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public';
+import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicArticle } from '#/api/article-public-with-file';
 
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 import { Icon } from '@mui/material';
 
 import { Article } from '#/components/cell-editor/types';
-
-// import { getPublicArticleList } from '#/api/article-public';
 
 function View() {
     let { publicIndex } = useParams<{ publicIndex: string }>();
@@ -70,7 +68,7 @@ function View() {
                                 await removePublicArticle(publicIndex!);
 
                                 // to local article page
-                                navigate(`/article/list`);
+                                navigate(`/article/view/${article.localIndex!}`);
                             } }
                         >
                             <Icon>public_off</Icon>

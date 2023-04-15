@@ -1,5 +1,4 @@
 import fs from 'fs';
-
 import Router from 'koa-router';
 
 import {
@@ -27,13 +26,8 @@ async function uploadFiles(dir: string, files: File | File[] = [], filePaths: st
 
             fs.createReadStream(file.path)
                 .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
-                .on('error', (err) => {
-                    reject(err);
-                })
-                .on('finish', () => {
-                    // todo: remove temp file
-                    resolve();
-                });
+                .on('error', reject)
+                .on('finish', resolve);
         });
     }));
 }

@@ -22,7 +22,7 @@ const articleSchema = new Schema<ArticleAttribute>({
         tags: [String],
         visibility: Number
     },
-    files: [Buffer],
+    // files: [Buffer], // files are stored in GridFS
     filePaths: [String],
 }, {
     timestamps: { createdAt: 'createDate', updatedAt: 'updateDate' },
