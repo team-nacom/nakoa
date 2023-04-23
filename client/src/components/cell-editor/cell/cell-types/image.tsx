@@ -16,6 +16,21 @@ import { FileDropzone } from '#/components/helpers/FileDropzone';
 import Markdown from '#/components/markdown/Markdown'
 import { setFile, resolveUrlWithMap, attachmentIndexToUrl } from '#/api/file-local';
 import { useFileMapDataAction, useFileMapState } from '#/components/editor/FileMapState';
+import usePromise from '#/misc/usePromise';
+
+function useObjectURLState(){
+    const [str, setStr] = useState<string | undefined>();
+    const changeStr = (newStr: string) => {
+        setStr(oldStr => {
+            if(oldStr?.startsWith('blob:')){
+                console.log('revoked(in change) - ', oldStr);
+                URL.revokeObjectURL(oldStr);
+            }
+            return newStr;
+        })
+    }
+    return [str, changeStr] as const;
+}
 
 // export const imageCellName = 'image'
 export interface ImageCellField{
@@ -35,56 +50,69 @@ type ImageCell = BasicCell<ImageCellField,'image'> // only used in this file
 
 // renderers
 
-interface ImageProps{
-    src: string,
-    caption: string,
-}
-function Image(props: ImageProps){
-    const { map } = useFileMapState();
+// interface ImageProps{
+//     src: string,
+//     caption: string,
+// }
+// function Image(props: ImageProps){
+//     const { map } = useFileMapState();
 
-    return (
-        <Resizable lockAspectRatio
-            enable={ { top: false, right: false, bottom:false, left: false } }
-            bounds='parent'
-        >
-            <img className='imageCellImage'
-                style={ { objectFit: 'contain' } }
-                src={ props.src }
-                // width={ props.width } // width as pixel.
-                alt={ props.caption }
-                onError = { async (ev) =>{
-                    let fallbackSrc = await resolveUrlWithMap(imageCellDefault.src, map);
-                    if(ev.currentTarget.src !== fallbackSrc){
-                        ev.currentTarget.src = fallbackSrc; // setting this will trigger reload
-                    }
-                } }
-            />
-        </Resizable>
-    );
-}
+//     return (
+//         <Resizable lockAspectRatio
+//             enable={ { top: false, right: false, bottom:false, left: false } }
+//             bounds='parent'
+//         >
+//             <img className='imageCellImage'
+//                 style={ { objectFit: 'contain' } }
+//                 src={ props.src }
+//                 // width={ props.width } // width as pixel.
+//                 alt={ props.caption }
+//                 onError = { async (ev) =>{
+//                     let fallbackSrc = await resolveUrlWithMap(imageCellDefault.src, map);
+//                     if(ev.currentTarget.src !== fallbackSrc){
+//                         ev.currentTarget.src = fallbackSrc; // setting this will trigger reload
+//                     }
+//                 } }
+//             />
+//         </Resizable>
+//     );
+// }
 
 
 function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
     const { mathMacroObj, label, labelTypewise } = useRenderData();
     const { map } = useFileMapState();
 
-    const [resolvedSrc, setResolvedSrc] = useState<string | undefined>();
+    const [resolvedSrc, setResolvedSrc] = useObjectURLState();
     useEffect(()=>{
-        resolveUrlWithMap(cell.src, map).then(setResolvedSrc);
+        resolveUrlWithMap(cell.src, map).then( resolved => {
+            console.log('generated - ', resolved);
+            setResolvedSrc(resolved);
+        });
     }, [cell.src]);
 
     return (
         <div className='editorImageCellWrapper'>
             {/* <Image {...cell} /> */}
-            <img className='imageCellImage'
-                style={ { objectFit: 'contain' } }
-                src={ resolvedSrc }
-                width={ cell.width } // width as pixel.
-                alt={ cell.caption }
-                onError = { async (ev) =>{
-                    setResolvedSrc(await resolveUrlWithMap('', map));
-                }}
-            />
+            {resolvedSrc !== undefined &&
+                <img className='imageCellImage'
+                    style={ { objectFit: 'contain' } }
+                    src={ resolvedSrc }
+                    width={ cell.width } // width as pixel.
+                    alt={ cell.caption }
+                    onLoad = { (ev) => {
+                        console.log('loaded - ', resolvedSrc);
+                        if(resolvedSrc.startsWith('blob:')){
+                            URL.revokeObjectURL(resolvedSrc);
+                        }
+                    } }
+                    onError = { async (ev) =>{
+                        console.log('err')
+                        console.log(ev.nativeEvent)
+                        // setResolvedSrc(await resolveUrlWithMap('', map));
+                    }}
+                />
+            }
             <Markdown
                 mathMacroObj={ mathMacroObj }
                 perrefMap={ labelTypewise }
@@ -104,7 +132,7 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
 
     const [aspectRatio, setAspectRatio] = useState(1); // height / width
 
-    const [resolvedSrc, setResolvedSrc] = useState<string | undefined>();
+    const [resolvedSrc, setResolvedSrc] = useObjectURLState();
     useEffect(()=>{
         resolveUrlWithMap(cell.src, map).then(setResolvedSrc);
     }, [cell.src]);
@@ -125,13 +153,13 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
 
     const uploadHandler: (files: File[]) => void | Promise<void> = useCallback(async (files) => {
         addFile(files[0], files[0].name, true, async path => {
-            const url = await attachmentIndexToUrl(path);
+            const url = attachmentIndexToUrl(path);
             const change: Partial<ImageCellField> = {
                 src: url
             };
             editorAction.update(cell.id, change);
         });
-    }, [cell.id])
+    }, [cell.id]);
 
     return (
         <div className='editorImageCellWrapper'>
@@ -155,7 +183,10 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
                             src={ resolvedSrc }
                             alt={ cell.caption }
                             onLoad={ (ev) => {
-                                if(cell.width === undefined ){
+                                if(resolvedSrc?.startsWith('blob:')){
+                                    URL.revokeObjectURL(resolvedSrc);
+                                }
+                                if(cell.width === undefined){
                                     setWidth( ev.currentTarget.naturalWidth );
                                 }
                                 setAspectRatio(

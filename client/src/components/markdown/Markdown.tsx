@@ -79,7 +79,7 @@ function Markdown(props: RendererOptionProps){
 
     const customHandlers = React.useMemo(()=>{
         return customHandlersBuilder(mathMacroObj ?? {}, fileMap ?? {});
-    }, [mathMacroObj]);
+    }, [mathMacroObj, fileMap]);
 
     // should be memoed?
     const processor = unified()

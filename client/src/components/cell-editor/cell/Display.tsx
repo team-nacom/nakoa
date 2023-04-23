@@ -8,6 +8,7 @@ import { Cell } from '../cell/types';
 
 import { CellEditorProvider, useSingleCellChildren, useSingleCellHideChildren } from '#/components/cell-editor/editor/EditorState'
 import { ChildrenWrapper } from '../editor/ChildrenWrapper';
+import { FileMapDataProvider } from '#/components/editor/FileMapState';
 
 interface CellDisplayIndicatorProps{
     id: string;
@@ -59,11 +60,20 @@ function CellDisplay({ id, depth }: CellDisplayProps){
     </>
 }
 
-function Display(props: CellArticleContent<Cell>){
+interface DisplayProps{
+    fileMap: Record<string, File>;
+    content: CellArticleContent<Cell>;
+}
+
+function Display(props: DisplayProps){
+    const { fileMap, content } = props;
+
     return (<div className='allCellsWrapper'>
-        <CellEditorProvider init={ props }>
-            <CellDisplay id={ props.rootId } />
+        <FileMapDataProvider map={ fileMap }>
+        <CellEditorProvider init={ content }>
+            <CellDisplay id={ content.rootId } />
         </CellEditorProvider>
+        </FileMapDataProvider>
     </div>);
 
 }

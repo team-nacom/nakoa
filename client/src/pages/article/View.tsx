@@ -16,6 +16,7 @@ import { getPublicArticle, postPublicArticle, removePublicArticle, updatePublicA
 import Markdown from '#/components/markdown/Markdown';
 import { Display } from '#/components/cell-editor/cell/Display';
 import { Icon } from '@mui/material';
+import { FileMapDataProvider } from '#/components/editor/FileMapState';
 
 function View() {
     const { localIndex } = useParams<{ localIndex: string }>();
@@ -156,8 +157,9 @@ function View() {
                     </Markdown>
                 ) }
                 {article.mode === 'cell' && (
-                    <Display // TODO : fileMap here
-                        {...article.content}
+                    <Display
+                        fileMap={fileMap}
+                        content={article.content}
                     />
                 ) }
             </div>

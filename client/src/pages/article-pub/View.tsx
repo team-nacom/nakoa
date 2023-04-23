@@ -150,8 +150,9 @@ function View() {
                     </Markdown>
                 ) }
                 {article.mode === 'cell' && (
-                    <Display // TODO : fileMap here
-                        {...article.content}
+                    <Display
+                        fileMap={fileMap}
+                        content={article.content}
                     />
                 ) }
             </div>
