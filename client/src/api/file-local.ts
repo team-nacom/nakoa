@@ -48,7 +48,7 @@ export async function getFileUrl(localIndex: string, attachmentIndex: string){
  * @param attachmentIndex attachment index
  * @returns formatted string
  */
-export async function attachmentIndexToUrl(attachmentIndex: string){
+export function attachmentIndexToUrl(attachmentIndex: string){
     return `embed::${attachmentIndex}`;
 }
 
@@ -63,16 +63,24 @@ export async function attachmentIndexToUrl(attachmentIndex: string){
 //     return url;
 // }
 
+export function urlToAttachmentIndex(url: string){
+    if(url.startsWith('embed::')){
+        return url.substring('embed::'.length);
+    }
+    return undefined;
+}
+
 export async function resolveUrlWithMap(url: string, map: Record<string, File>, asImg?: boolean){
     if(asImg && (url === '' || url === 'none')){
         return `${process.env.PUBLIC_URL}/altImg.png`;
     }
-    if(url.startsWith('embed::')){
-        let path = url.substring('embed::'.length);
-        if(map[path]) return await fileToUrl(map[path]);
-        
+
+    let path = urlToAttachmentIndex(url);
+    if(path){
+        if(map[path]) return URL.createObjectURL(map[path]);
         return '';
     }
+
     return normalizeUri(url);
 }
 

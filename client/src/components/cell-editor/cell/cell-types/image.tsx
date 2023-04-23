@@ -124,7 +124,7 @@ function ImageCellEditor({ cell }: Omit<CellTypeRendererProps<ImageCell>,'mode'>
     }, [cell.id])
 
     const uploadHandler: (files: File[]) => void | Promise<void> = useCallback(async (files) => {
-        addFile(files[0], undefined, async path => {
+        addFile(files[0], files[0].name, true, async path => {
             const url = await attachmentIndexToUrl(path);
             const change: Partial<ImageCellField> = {
                 src: url

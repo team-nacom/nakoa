@@ -19,8 +19,22 @@ function createAttachmentDataStore(initMap: Partial<FileMapData>){
 
 export const [ FileMapDataProvider, useFileMapDataContext, useFileMapDataAction ] = CtxFactoryCurry<FileMapData>(createAttachmentDataStore)({
     // add file to idb and file map
-    addFile: async (file: File, attachmentIndex?: string, callback?: (attachmentIndex: string) => any) => produce((state: FileMapData) => {
+    addFile: async (file: File, attachmentIndex?: string, renameOnDuplicate?: boolean, callback?: (attachmentIndex: string) => any) => produce((state: FileMapData) => {
         attachmentIndex ??= generatePath(state.map);
+        attachmentIndex = attachmentIndex.split(' ').join('_'); // should not have space
+
+        if(renameOnDuplicate && state.map[attachmentIndex] !== undefined){ // handle duplicate.
+            for(let i = 1; ; ++i){
+                let arr = attachmentIndex.split('.');
+                arr[0] += `(${i})`;
+                let newIndex = arr.join('.');
+
+                if(state.map[newIndex] === undefined){
+                    attachmentIndex = newIndex;
+                    break;
+                }
+            }
+        }
         state.map[attachmentIndex] = file;
 
         // side effect.

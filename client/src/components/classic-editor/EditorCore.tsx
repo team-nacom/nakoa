@@ -149,9 +149,9 @@ export function EditorCore({ localIndex, ...other } : ClassicEditorBodyProps) {
         for(var i = 0; i < items.length; ++i){
             if(items[i].type.startsWith('image/')){ //image detected
                 const blob = items[i].getAsFile();
-                if(blob == null) continue;
+                if(blob === null) continue;
 
-                addFile(blob, undefined, async path => {
+                addFile(blob, blob.name, true, async path => {
                     insertText(`\n![](${ await attachmentIndexToUrl(path) })\n`, elem);
                 });
                 return;

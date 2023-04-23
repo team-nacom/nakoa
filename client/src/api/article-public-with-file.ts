@@ -38,7 +38,7 @@ export async function getPublicArticleList(){ // articles except files.
     return articles;
 }
 
-export async function getPublicArticle(publicIndex: string, localIndex?: string){
+export async function getPublicArticle(publicIndex: string, localIndex?: string, getFiles: boolean = false){
 
     // given publicIndex, find the article locally.
     localIndex ??= ( await getLocalArticleWithPublicIndex(publicIndex) )?.localIndex;
@@ -58,10 +58,11 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
     }
 
     // BE should've remove localIndex if not authorized.
-    // also files are not downloaded yet
     let article = response.data.article as Article;
     // console.log(article);
-    if(article.filePaths){
+    if(getFiles){ // download files.
+        article.filePaths ??= [];
+
         // download files here!
         // todo: lazy file download ??
         // todo: (server) implement `GET /file/<publicIndex>/<path>`
@@ -81,9 +82,10 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string)
                 //     return undefined!;
                 // }
 
+                // not expected
                 if(typeof res.data === 'string'){
                     return new File([res.data], path, {
-                        type: 'text/plain'
+                        type: 'text/plain',
                     });
                 }
 

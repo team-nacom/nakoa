@@ -13,7 +13,7 @@ import inlineRender from './inline-render';
 
 import InternalLinkHandler from './InternalLinkHandler';
 
-import { resolveUrlWithMap } from '#/api/file-local';
+import { resolveUrlWithMap, urlToAttachmentIndex } from '#/api/file-local';
 
 import katex from 'katex';
 import usePromise from '#/misc/usePromise';
@@ -32,7 +32,8 @@ function customHandlersBuilder(mathMacroObj: Object, fileMap: Record<string, Fil
             const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap), [props.url, fileMap]);
 
             if(loading) return null;
-            return <a href={ url } /* title={ props.title } */>{ children }</a>
+
+            return <a href={ url } download={ urlToAttachmentIndex(props.url) } /* title={ props.title } */>{ children }</a>
         },
         'math': ({ children, ...props }) => {
             const innerHtml = katex.renderToString(props.value, {

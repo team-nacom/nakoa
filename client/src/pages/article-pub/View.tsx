@@ -25,7 +25,7 @@ function View() {
     const [loading, article] = usePromise(async () => {
         setForkedArticle(undefined);
 
-        const article = await getPublicArticle(publicIndex!);
+        const article = await getPublicArticle(publicIndex!, undefined, true);
         if(article?.localIndex === undefined){
             // unauthorized
 

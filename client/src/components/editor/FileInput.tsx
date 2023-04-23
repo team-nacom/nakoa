@@ -20,7 +20,7 @@ export function FileInput({
         <div className='dropzoneWrapper'>
             <FileDropzone
                 handleDrop={ (files) => {
-                    addFile(files[0], undefined, path => {
+                    addFile(files[0], files[0].name, true, path => {
                         imgUploadHandler(files[0], path);
                     });
                 } }
@@ -29,7 +29,7 @@ export function FileInput({
             </FileDropzone>
             <FileDropzone
                 handleDrop={ (files) => {
-                    addFile(files[0], undefined, path => {
+                    addFile(files[0], files[0].name, true, path => {
                         fileUploadHandler(files[0], path);
                     });
                 } }

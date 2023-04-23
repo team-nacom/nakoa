@@ -129,6 +129,8 @@ export async function removeLocalArticle(localIndex: string){
     const db = await getDB();
 
     await db.delete('articles', localIndex);
+
+    await unsetDraftArticle(localIndex); // remove draft
     
     return { success: true };
 }
