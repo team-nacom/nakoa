@@ -63,19 +63,21 @@ function CellDisplay({ id, depth }: CellDisplayProps){
 interface DisplayProps{
     fileMap: Record<string, File>;
     content: CellArticleContent<Cell>;
+    publicIndex?: string;
 }
 
-function Display(props: DisplayProps){
-    const { fileMap, content } = props;
+export function Display(props: DisplayProps){
+    const { fileMap, content, publicIndex } = props;
 
     return (<div className='allCellsWrapper'>
         <FileMapDataProvider map={ fileMap }>
-        <CellEditorProvider init={ content }>
+        <CellEditorProvider
+            init={ content }
+            publicIndex={ publicIndex }
+        >
             <CellDisplay id={ content.rootId } />
         </CellEditorProvider>
         </FileMapDataProvider>
     </div>);
 
 }
-
-export { Display };

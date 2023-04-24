@@ -18,18 +18,18 @@ import { resolveUrlWithMap, urlToAttachmentIndex } from '#/api/file-local';
 import katex from 'katex';
 import usePromise from '#/misc/usePromise';
 
-function customHandlersBuilder(mathMacroObj: Object, fileMap: Record<string, File>): Handlers{
+function customHandlersBuilder(mathMacroObj: Object, fileMap: Record<string, File>, publicIndex?: string): Handlers{
     const macros = {...mathMacroObj};
 
     return {
         'image': function ImageTransform({ children, ...props }){
-            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap, true), [props.url, fileMap]);
+            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap, publicIndex, true), [props.url, fileMap]);
 
             if(loading) return null;
             return <img src={ url } alt={ props.alt } title={ props.title } />
         },
         'link': function LinkTransform({ children, ...props }){
-            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap), [props.url, fileMap]);
+            const [loading, url] = usePromise(() => resolveUrlWithMap(props.url, fileMap, publicIndex), [props.url, fileMap]);
 
             if(loading) return null;
 
@@ -61,24 +61,26 @@ function customHandlersBuilder(mathMacroObj: Object, fileMap: Record<string, Fil
 }
 
 interface RendererOptionProps{
-    mathMacroObj?: Object,
     inlineRenderPrefix?: string,
     perrefMap?: Record<string, number[]>,
 
+    mathMacroObj?: Object,
     fileMap?: Record<string, File>,
+    publicIndex?: string,
     children: string,
 }
 function Markdown(props: RendererOptionProps){
     const {
-        mathMacroObj,
         inlineRenderPrefix,
         perrefMap,
+        mathMacroObj,
         fileMap,
+        publicIndex,
         children: contents
     } = props;
 
     const customHandlers = React.useMemo(()=>{
-        return customHandlersBuilder(mathMacroObj ?? {}, fileMap ?? {});
+        return customHandlersBuilder(mathMacroObj ?? {}, fileMap ?? {}, publicIndex);
     }, [mathMacroObj, fileMap]);
 
     // should be memoed?

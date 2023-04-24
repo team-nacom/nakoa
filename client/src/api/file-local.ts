@@ -70,14 +70,21 @@ export function urlToAttachmentIndex(url: string){
     return undefined;
 }
 
-export async function resolveUrlWithMap(url: string, map: Record<string, File>, asImg?: boolean){
+// this is not async actually, but we use as if it is
+// (async resolution may be added in future)
+export async function resolveUrlWithMap(url: string, map: Record<string, File>, publicIndex?: string, asImg?: boolean){
     if(asImg && (url === '' || url === 'none')){
         return `${process.env.PUBLIC_URL}/altImg.png`;
     }
 
     let path = urlToAttachmentIndex(url);
     if(path){
-        if(map[path]) return URL.createObjectURL(map[path]);
+        if(map[path]){
+            if(publicIndex){
+                return `${process.env.REACT_APP_API_URL}/file/${publicIndex}/${path}`
+            }
+            return URL.createObjectURL(map[path]);
+        }
         return '';
     }
 

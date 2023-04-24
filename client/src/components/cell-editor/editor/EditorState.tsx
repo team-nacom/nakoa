@@ -96,14 +96,17 @@ function calculateParentIds(struct: Content['structData'], rootId: string){
 // state type definitions
 
 export interface RenderData{
-    mathMacroObj: {},
-    label: Record<string, number[]>
-    labelTypewise: Record<string, number[]>
+    mathMacroObj: {};
+    label: Record<string, number[]>;
+    labelTypewise: Record<string, number[]>;
+    publicIndex?: string;
 }
 
 export interface CellEditorInitProps{
     init?: Content,
     focusId?: string,
+
+    publicIndex?: string,
 }
 
 export interface CellEditorState{
@@ -118,7 +121,7 @@ export interface CellEditorState{
 // end state type definitions
 
 function createCellEditorStore(initProps: CellEditorInitProps){
-    var { init, focusId } = initProps;
+    var { init, focusId, publicIndex } = initProps;
 
     var { rootId, cellData, structData } = init ?? {};
     rootId ??= 'c0';
@@ -155,6 +158,7 @@ function createCellEditorStore(initProps: CellEditorInitProps){
         mathMacroObj: toMathMacroObj((cellData[rootId] as Cell<'root'>).mathMacroStr),
         label: generateAllLabel(content),
         labelTypewise: generateTypedLabel(content),
+        publicIndex,
     };
 
     return createStore<CellEditorState>()(immer((set, get) => ({

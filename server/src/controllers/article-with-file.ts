@@ -11,28 +11,63 @@ import { File } from 'formidable';
 
 export function indexAsDir(publicIndex: string){ return `article_${publicIndex}`; }
 
+// note: this function DROPS all previous files before upload new ones.
 async function uploadFiles(dir: string, files: File | File[] = [], filePaths: string[] = []){
     const bucket = getBucket(dir);
-
     if(!Array.isArray(files)){ files = [files]; }
 
-    await Promise.all(files.map((file, i) => {
-        return new Promise<void>((resolve, reject) => {
-            if(file.size === 0){ // no modification.
-                fs.rmSync(file.path);
-                resolve();
-                return;
-            }
+    // let streams = await Promise.all(files.map((file, i) => {
+    //     if(file.size > 0) return fs.createReadStream(file.path);
 
-            fs.createReadStream(file.path)
-                .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
-                .on('error', reject)
-                .on('finish', () => {
-                    // console.log(`file ${filePaths[i]} uploaded`);
-                    resolve();
+    //     // zero-sized file to indicate no modification for this file.
+    //     return bucket.openDownloadStreamByName(filePaths[i]);
+    // }))
+
+    // bocket.drop( callback ) ????
+
+    // todo: currently no zero-size file indication: just reupload the whole file for now.
+    return new Promise<void>((resolve, reject) => {
+        bucket.drop(() => { // first drop the directory. every files should be reuploaded.
+            if(!Array.isArray(files)){ files = [files]; }
+            Promise.all(files.map((file, i) => {
+                return new Promise<void>((resolve2, reject2) => {
+                    fs.createReadStream(file.path)
+                        .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
+                        .on('error', reject2)
+                        .on('finish', resolve2)
                 });
-        });
-    }));
+            }))
+                .catch(reject)
+                .then(() => { resolve() });
+        })
+    })
+
+    // await Promise.all(files.map((file, i) => {
+    //     return new Promise<void>((resolve, reject) => {
+    //         if(file.size === 0){ // zero-sized file to indicate no modification for this file.
+    //             fs.rmSync(file.path); // remove zero-sized dummy file
+    //             resolve();
+    //             return;
+    //         }
+
+    //         fs.createReadStream(file.path)
+    //             .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
+    //             .on('error', reject)
+    //             .on('finish', () => {
+    //                 // console.log(`file ${filePaths[i]} uploaded`);
+
+    //                 // at least remove previous file
+
+    //                 bucket.find({}, {
+    //                     limit: 1,
+    //                     skip: 1,
+    //                     sort: { uploadDate: -1 }
+    //                 }); // should be equivalent to { revision : -2 }
+
+    //                 resolve();
+    //             });
+    //     });
+    // }));
 }
 
 // localIndex is used as a verification token
@@ -241,6 +276,10 @@ router.delete('/remove/:publicIndex', async (ctx) => {
         };
         return;
     }
+
+    // drop bucket
+    const bucket = getBucket(indexAsDir(publicIndex));
+    bucket.drop(); // todo: use promise version, by upgrading into mongodb@5.x and mongoose@7.x
 
     ctx.body = {
         result: 'success'

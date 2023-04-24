@@ -80,12 +80,12 @@ type ImageCell = BasicCell<ImageCellField,'image'> // only used in this file
 
 
 function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
-    const { mathMacroObj, label, labelTypewise } = useRenderData();
+    const { mathMacroObj, label, labelTypewise, publicIndex } = useRenderData();
     const { map } = useFileMapState();
 
     const [resolvedSrc, setResolvedSrc] = useObjectURLState();
     useEffect(()=>{
-        resolveUrlWithMap(cell.src, map).then( resolved => {
+        resolveUrlWithMap(cell.src, map, publicIndex, true).then( resolved => {
             console.log('generated - ', resolved);
             setResolvedSrc(resolved);
         });

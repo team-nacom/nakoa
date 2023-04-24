@@ -145,13 +145,17 @@ function View() {
                 <h1 className='title'> { article.metadata.title } </h1>
                 {/* <h2 className='subtitle'> { article.metadata.author } </h2> */}
                 {article.mode === 'classic' && (
-                    <Markdown fileMap={ fileMap }>
+                    <Markdown
+                        fileMap={ fileMap }
+                        publicIndex={ publicIndex }
+                    >
                         { article.text }
                     </Markdown>
                 ) }
                 {article.mode === 'cell' && (
                     <Display
                         fileMap={fileMap}
+                        publicIndex={ publicIndex }
                         content={article.content}
                     />
                 ) }
