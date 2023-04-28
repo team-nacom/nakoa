@@ -82,8 +82,11 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string,
                 //     return undefined!;
                 // }
 
+                console.log(typeof res.data);
+
                 // not expected
                 if(typeof res.data === 'string'){
+                    console.log('not expected this')
                     return new File([res.data], path, {
                         type: 'text/plain',
                     });

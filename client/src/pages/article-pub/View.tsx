@@ -25,7 +25,7 @@ function View() {
     const [loading, article] = usePromise(async () => {
         setForkedArticle(undefined);
 
-        const article = await getPublicArticle(publicIndex!, undefined, true);
+        const article = await getPublicArticle(publicIndex!, undefined, false); // don't get files for now
         if(article?.localIndex === undefined){
             // unauthorized
 
@@ -126,11 +126,16 @@ function View() {
                         </Button>
                     </>
                 )}
-                { !article.localIndex && !forkedArticle && ( // unauthorized and not have fork.
+                { !article.localIndex && !forkedArticle && ( // unauthorized and do not have fork.
                     <Button className='articleButton'
                         onClick={ async () => {
-                            // let { localIndex } = await getPublicArticle(publicIndex);
-                            let { localIndex } = await postLocalArticle(article); // fork
+                            let articleWithFile = await getPublicArticle(publicIndex!, undefined, true); // get files this time
+
+                            if(articleWithFile === undefined){
+                                throw new Error('article with file loading failed');
+                            }
+
+                            let { localIndex } = await postLocalArticle(articleWithFile); // fork
                             // navigate with localIndex
 
                             navigate(`/article/view/${localIndex}`);

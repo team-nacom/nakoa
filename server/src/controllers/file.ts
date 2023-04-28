@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+// import { getMimeType } from 'stream-mime-type';
 
 import { getBucket } from '#/setup/atlas';
 import { logger } from '../utils';
@@ -27,6 +28,11 @@ router.get('/:publicIndex/:path', async function getFile(ctx){
         //     ctx.body = data;
         // })
     
+    // const { mime } = await getMimeType(stream);
+    // console.log(mime);
+
+    // URGENT : set encoding on server side
+
     ctx.body = stream;
     
     // ctx.body = bucket.openDownloadStreamByName(path);

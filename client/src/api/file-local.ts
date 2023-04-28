@@ -79,10 +79,12 @@ export async function resolveUrlWithMap(url: string, map: Record<string, File>, 
 
     let path = urlToAttachmentIndex(url);
     if(path){
-        if(map[path]){
+        if(Object.keys(map).indexOf(path) !== -1){
             if(publicIndex){
                 return `${process.env.REACT_APP_API_URL}/file/${publicIndex}/${path}`
             }
+            console.log(path)
+            console.log(map)
             return URL.createObjectURL(map[path]);
         }
         return '';

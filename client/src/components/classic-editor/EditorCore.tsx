@@ -12,6 +12,7 @@ import { useClassicEditorAction, useClassicEditorContext } from './EditorState';
 import { FileInput } from '../editor/FileInput';
 import { attachmentIndexToUrl } from '#/api/file-local';
 import { useFileMapDataAction, useFileMapState } from '../editor/FileMapState';
+import { AttachmentList } from '../editor/FileList';
 
 function insertText(text: string, elem? : HTMLTextAreaElement){
     if(!elem) return;
@@ -274,6 +275,7 @@ export function EditorCore({ localIndex, ...other } : ClassicEditorBodyProps) {
                     insertText(`[💾 ${ file.name }](${ await attachmentIndexToUrl(path) })`, textareaRef.current ?? undefined);
                 }} //todo
             />
+            <AttachmentList />
         </div>
         {/* <Manual visible={manualVisible} setVisible={setManualVisible} /> */}
     </div>);

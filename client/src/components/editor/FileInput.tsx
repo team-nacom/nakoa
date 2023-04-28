@@ -4,8 +4,8 @@ import { FileDropzone } from '#/components/helpers/FileDropzone';
 import { useFileMapDataAction, useFileMapState, generatePath } from './FileMapState';
 
 export interface FileInputProps{
-    imgUploadHandler: (file: File, path: string) => any;
-    fileUploadHandler: (file: File, path: string) => any;
+    imgUploadHandler?: (file: File, path: string) => any;
+    fileUploadHandler?: (file: File, path: string) => any;
 }
 
 export function FileInput({
@@ -21,7 +21,7 @@ export function FileInput({
             <FileDropzone
                 handleDrop={ (files) => {
                     addFile(files[0], files[0].name, true, path => {
-                        imgUploadHandler(files[0], path);
+                        imgUploadHandler && imgUploadHandler(files[0], path);
                     });
                 } }
             >
@@ -30,22 +30,12 @@ export function FileInput({
             <FileDropzone
                 handleDrop={ (files) => {
                     addFile(files[0], files[0].name, true, path => {
-                        fileUploadHandler(files[0], path);
+                        fileUploadHandler && fileUploadHandler(files[0], path);
                     });
                 } }
             >
                 <label>{ i18n.t('editor.attachFiles') }</label>
             </FileDropzone>
-            <div className='attachmentsList'>
-            { Object.entries(map).map(([path, file])=>(
-                <p key={path}>
-                    path: {path}, filename: {file.name} // 
-                    <span onClick={ ()=>{
-                        removeFile(path);
-                    } }>REMOVE</span>
-                </p>
-            )) }
-            </div>
         </div>
     );
 }
