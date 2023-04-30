@@ -12,7 +12,7 @@ export function AttachmentList(){ // name 'FileList' is already taken.
         <div className='attachmentsList'>
         { Object.entries(map).map(([path, file])=>(
             <p key={path}>
-                filename: {file.name} 
+                filename: {path} {/* path should be filename-like */} 
                 <Button onClick={ ()=>{
                     removeFile(path);
                 } }>REMOVE</Button>

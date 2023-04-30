@@ -32,7 +32,12 @@ async function uploadFiles(dir: string, files: File | File[] = [], filePaths: st
             Promise.all(files.map((file, i) => {
                 return new Promise<void>((resolve2, reject2) => {
                     fs.createReadStream(file.path)
-                        .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost'))
+                        .pipe(bucket.openUploadStream(filePaths[i] ?? 'lost', {
+                            contentType: file.type ?? undefined,
+                            metadata: {
+                                contentType: file.type // not necessary I suppose..
+                            }
+                        }))
                         .on('error', reject2)
                         .on('finish', resolve2)
                 });

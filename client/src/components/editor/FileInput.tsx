@@ -14,7 +14,7 @@ export function FileInput({
 }: FileInputProps){
     const { i18n } = useTranslation();
     const { map } = useFileMapState();
-    const { addFile, removeFile } = useFileMapDataAction();
+    const { addFile } = useFileMapDataAction();
 
     return (
         <div className='dropzoneWrapper'>

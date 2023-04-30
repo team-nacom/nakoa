@@ -7,7 +7,7 @@ import Axios from 'axios';
 import { apiUrl } from '#/config/env';
 
 import { base64rand } from '#/misc/base64rand';
-import getDB from '#/config/db-idb';
+// import getDB from '#/config/db-idb';
 
 export async function fileToUrl(file: File){
     return new Promise<string>((resolve, reject)=>{
@@ -18,30 +18,30 @@ export async function fileToUrl(file: File){
     });
 }
 
-/**
- * get local file from local and attachment indexes
- * @param localIndex local article index
- * @param attachmentIndex attachment index in this article
- * @returns local file
- */
-export async function getFile(localIndex: string, attachmentIndex: string){
-    const db = await getDB();
+// /**
+//  * get local file from local and attachment indexes
+//  * @param localIndex local article index
+//  * @param attachmentIndex attachment index in this article
+//  * @returns local file
+//  */
+// export async function getFile(localIndex: string, attachmentIndex: string){
+//     const db = await getDB();
 
-    return (await db.get('files', [localIndex, attachmentIndex]))?.file;
-}
+//     return (await db.get('files', [localIndex, attachmentIndex]))?.file;
+// }
 
-/**
- * get src-attachable url(`data:`) of local file from local and attachment indexes
- * @param localIndex local article index
- * @param attachmentIndex attachment index in this article
- * @returns local file url
- */
-export async function getFileUrl(localIndex: string, attachmentIndex: string){
-    let file = await getFile(localIndex, attachmentIndex);
-    if(file === undefined) return '';
+// /**
+//  * get src-attachable url(`data:`) of local file from local and attachment indexes
+//  * @param localIndex local article index
+//  * @param attachmentIndex attachment index in this article
+//  * @returns local file url
+//  */
+// export async function getFileUrl(localIndex: string, attachmentIndex: string){
+//     let file = await getFile(localIndex, attachmentIndex);
+//     if(file === undefined) return '';
     
-    return fileToUrl(file);
-}
+//     return fileToUrl(file);
+// }
 
 /**
  * format attachment index into markdown img/link source string.
@@ -83,8 +83,8 @@ export async function resolveUrlWithMap(url: string, map: Record<string, File>, 
             if(publicIndex){
                 return `${process.env.REACT_APP_API_URL}/file/${publicIndex}/${path}`
             }
-            console.log(path)
-            console.log(map)
+            // console.log(path)
+            // console.log(map)
             return URL.createObjectURL(map[path]);
         }
         return '';
@@ -93,29 +93,29 @@ export async function resolveUrlWithMap(url: string, map: Record<string, File>, 
     return normalizeUri(url);
 }
 
-export async function setFile(file: File, localIndex: string, attachmentIndex?: string){
-    // if(!file.type.startsWith('image/')) throw new Error('a non-image file is uploaded on postImage');
+// export async function setFile(file: File, localIndex: string, attachmentIndex?: string){
+//     // if(!file.type.startsWith('image/')) throw new Error('a non-image file is uploaded on postImage');
 
-    const db = await getDB();
+//     const db = await getDB();
 
-    // post. otherwise put.
-    if(attachmentIndex === undefined){
-        do {
-            attachmentIndex = base64rand(8);
-        } while( await db.get('files', [localIndex, attachmentIndex]) !== undefined );
-    }    
+//     // post. otherwise put.
+//     if(attachmentIndex === undefined){
+//         do {
+//             attachmentIndex = base64rand(8);
+//         } while( await db.get('files', [localIndex, attachmentIndex]) !== undefined );
+//     }    
 
-    try {
-        await db.put('files', { localIndex, attachmentIndex, file });
-        return {
-            success: true,
-            attachmentIndex,
-            url: await attachmentIndexToUrl(attachmentIndex) // data:// url.
-        };
-    } catch(err){
-        return { success: false };
-    }
-}
+//     try {
+//         await db.put('files', { localIndex, attachmentIndex, file });
+//         return {
+//             success: true,
+//             attachmentIndex,
+//             url: await attachmentIndexToUrl(attachmentIndex) // data:// url.
+//         };
+//     } catch(err){
+//         return { success: false };
+//     }
+// }
 
 export async function setFileWithMap(file: File, map: Record<string, File>, attachmentIndex?: string){
     if(attachmentIndex === undefined){
@@ -131,16 +131,16 @@ export async function setFileWithMap(file: File, map: Record<string, File>, atta
     };
 }
 
-export async function deleteFile(localIndex: string, attachmentIndex: string){
-    const db = await getDB();
+// export async function deleteFile(localIndex: string, attachmentIndex: string){
+//     const db = await getDB();
 
-    try {
-        await db.delete('files', [localIndex, attachmentIndex]);
-        return { success: true };
-    } catch(err){
-        return { success: false };
-    }
-}
+//     try {
+//         await db.delete('files', [localIndex, attachmentIndex]);
+//         return { success: true };
+//     } catch(err){
+//         return { success: false };
+//     }
+// }
 
 
 ///////////////////////////////////////////////////// legacy ////////////////////////////

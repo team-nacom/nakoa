@@ -22,23 +22,23 @@ interface NacomDB extends DBSchema {
             'publicIndex': string, // secondary keys
         },
     },
-    files: {
-        key: [string, string],
-        value: {
-            localIndex: string,
-            attachmentIndex: string,
-            file: File,
-        },
-        indexes: {
-            'localIndex': string,
-            'attachmentIndex': string,
-        },
-    }
+    // files: {
+    //     key: [string, string],
+    //     value: {
+    //         localIndex: string,
+    //         attachmentIndex: string,
+    //         file: File,
+    //     },
+    //     indexes: {
+    //         'localIndex': string,
+    //         'attachmentIndex': string,
+    //     },
+    // }
 }
 
 
 async function _create(){
-    const db = await openDB<NacomDB>('nacom-db', /* version: */ 2, {
+    const db = await openDB<NacomDB>('nacom-db', /* version: */ 1, {
         upgrade: (db, oldVersion) => {
             // versions are linear, hence fall-through; no breaks inside switch
             switch(oldVersion){
@@ -51,12 +51,12 @@ async function _create(){
                 ArticleStore.createIndex('publicIndex', 'publicIndex');
 
                 // store.createIndex(indexName, keyPath)
-            case 1:
-                const FileStore = db.createObjectStore('files', {
-                    keyPath: ['localIndex', 'attachmentIndex']
-                });
-                FileStore.createIndex('localIndex', 'localIndex'); // article index.
-                FileStore.createIndex('attachmentIndex', 'attachmentIndex');
+            // case 1:
+            //     const FileStore = db.createObjectStore('files', {
+            //         keyPath: ['localIndex', 'attachmentIndex']
+            //     });
+            //     FileStore.createIndex('localIndex', 'localIndex'); // article index.
+            //     FileStore.createIndex('attachmentIndex', 'attachmentIndex');
             }
         },
     })

@@ -65,34 +65,28 @@ export async function getPublicArticle(publicIndex: string, localIndex?: string,
 
         // download files here!
         // todo: lazy file download ??
-        // todo: (server) implement `GET /file/<publicIndex>/<path>`
+        // (server) `GET /file/<publicIndex>/<path>`
         article.files = await Promise.all(
             article.filePaths.map(async path => {
                 let res = await axios.get(`${apiUrl}/file/${publicIndex}/${path}`, {
                     // validateStatus,
                     withCredentials: true,
-                    headers: {
-                        responseType: 'blob',
-                    }
+                    responseType: 'blob',
+                    // transformRequest: (data, headers) => {
+                    //     delete headers.common['accept'];
+                    //     return data;
+                    // }
                 }).catch((err) => {
-                    return { data: undefined }; // if there was an error, files should be like [ File, undefined, File, ... ]
+                    return { data: undefined, headers: {} }; // if there was an error, files should be like [ File, undefined, File, ... ]
                 });
 
                 // if(res.status >= 400){
                 //     return undefined!;
                 // }
 
-                console.log(typeof res.data);
-
-                // not expected
-                if(typeof res.data === 'string'){
-                    console.log('not expected this')
-                    return new File([res.data], path, {
-                        type: 'text/plain',
-                    });
-                }
-
-                return res.data as File;
+                return new File([res.data], path, {
+                    type: res.headers['content-type'],
+                });
             })
         );
     }
@@ -119,7 +113,7 @@ export async function postPublicArticle(article: Article){
         article.localIndex = localIndex!;
     }
 
-    // todo: (server) implement `POST /article/post` with form data
+    // (server) `POST /article/post` with form data
 
     // if article of post request has publicIndex(say p0) and BE has article p0, then BE should generate a new publicIndex(p1) as well as mark somewhere "p0 -> p1", for article p1 is a fork of article p0.
     let response = await axios.post(`${apiUrl}/article/post`,
@@ -155,7 +149,7 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
         article.localIndex = localIndex!;
     }
 
-    // todo: (server) implement `PUT /article/update/<publicIndex>` with form data
+    // (server) `PUT /article/update/<publicIndex>` with form data
 
     let response = await axios.put(`${apiUrl}/article/update/${publicIndex}`, 
         ToFormData(article),
@@ -220,7 +214,7 @@ export async function removePublicArticle(publicIndex: string, localIndex?: stri
     });
     // BE should check article.localIndex with its DB counterpart. if not match, then respond with response.status 401(unauthorized).
 
-    // todo: what about files??
+    // files are dropped when calling this request. don't worry.
 
     if(response.status >= 300){
         return { success: false };

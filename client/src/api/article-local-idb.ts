@@ -28,7 +28,6 @@ export async function setDraftArticle(article: Article, localIndex?: string){
 
         return { success: true };
     } catch(err){
-        console.log(err);
         return { success: false };
     }
 }

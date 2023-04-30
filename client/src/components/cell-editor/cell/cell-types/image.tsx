@@ -14,7 +14,7 @@ import {
 import { FileDropzone } from '#/components/helpers/FileDropzone';
 
 import Markdown from '#/components/markdown/Markdown'
-import { setFile, resolveUrlWithMap, attachmentIndexToUrl } from '#/api/file-local';
+import { resolveUrlWithMap, attachmentIndexToUrl } from '#/api/file-local';
 import { useFileMapDataAction, useFileMapState } from '#/components/editor/FileMapState';
 import usePromise from '#/misc/usePromise';
 
@@ -23,7 +23,6 @@ function useObjectURLState(){
     const changeStr = (newStr: string) => {
         setStr(oldStr => {
             if(oldStr?.startsWith('blob:')){
-                console.log('revoked(in change) - ', oldStr);
                 URL.revokeObjectURL(oldStr);
             }
             return newStr;
@@ -85,10 +84,7 @@ function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
 
     const [resolvedSrc, setResolvedSrc] = useObjectURLState();
     useEffect(()=>{
-        resolveUrlWithMap(cell.src, map, publicIndex, true).then( resolved => {
-            console.log('generated - ', resolved);
-            setResolvedSrc(resolved);
-        });
+        resolveUrlWithMap(cell.src, map, publicIndex, true).then(setResolvedSrc);
     }, [cell.src]);
 
     return (
@@ -101,15 +97,12 @@ function ImageCellViewer({ mode, cell } : CellTypeRendererProps<ImageCell>){
                     width={ cell.width } // width as pixel.
                     alt={ cell.caption }
                     onLoad = { (ev) => {
-                        console.log('loaded - ', resolvedSrc);
                         if(resolvedSrc.startsWith('blob:')){
                             URL.revokeObjectURL(resolvedSrc);
                         }
                     } }
                     onError = { async (ev) =>{
-                        console.log('err')
-                        console.log(ev.nativeEvent)
-                        // setResolvedSrc(await resolveUrlWithMap('', map));
+                        setResolvedSrc(await resolveUrlWithMap('', map, undefined, true));
                     }}
                 />
             }

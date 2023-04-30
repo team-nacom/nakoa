@@ -8,8 +8,8 @@ export interface FileDropzoneProps {
 };
 
 export function FileDropzone({ handleDrop, accept, noClick, children } : PropsWithChildren<FileDropzoneProps>) {
-    const onDrop = useCallback(handleDrop, []);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop, accept, noClick });
+    // const onDrop = useCallback(handleDrop, []);
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop: handleDrop, accept, noClick });
   
     return (
         <div {...getRootProps()}

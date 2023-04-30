@@ -16,13 +16,21 @@ router.get('/:publicIndex/:path', async function getFile(ctx){
     const { publicIndex, path } = ctx.params;
 
     const bucket = getBucket(indexAsDir(publicIndex));
+
+    // get mime type manually. seriously?
+    const fileData = (await bucket.find({ filename: path }).toArray())[0];
+    if(!fileData){
+        ctx.status = 404;
+        return;
+    }
+    ctx.set('content-type', fileData.contentType);
+
     const stream = bucket.openDownloadStreamByName(path); //.setEncoding('binary');
     stream.on('error', (err) => {
-            console.log(`file ${publicIndex}/${path} not found`)
+            stream.emit('end');
 
-            ctx.body = new Blob();
-
-            // stream.emit('end') // put this to make status 200
+            ctx.status = 500;
+            // ctx.body = new Blob();
         })
         // .on('data', (data) => {
         //     ctx.body = data;

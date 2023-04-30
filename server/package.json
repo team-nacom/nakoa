@@ -33,7 +33,6 @@
     "path": "^0.12.7",
     "pino": "^7.6.2",
     "pino-pretty": "^7.3.0",
-    "stream-mime-type": "^2.0.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.1.3"
   },
