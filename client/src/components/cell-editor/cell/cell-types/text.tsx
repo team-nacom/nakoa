@@ -12,6 +12,7 @@ import SingletonTextArea from '#/components/helpers/SingletonTextArea'
 
 // import Markdown from '#/components/markdown/MarkdownRenderer'
 import Markdown from '#/components/markdown/Markdown'
+import { useFileMapState } from '#/components/editor/FileMapState';
 
 // export const textCellName = 'text'
 export interface TextCellField{
@@ -25,13 +26,15 @@ type TextCell = BasicCell<TextCellField,'text'> // only used in this file
 // renderers
 
 function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
-    const { mathMacroObj, label, labelTypewise } = useRenderData()
+    const { mathMacroObj, label, labelTypewise } = useRenderData();
+    const { map } = useFileMapState();
 
     return (
         <div className='textCell'>
             <Markdown
                 mathMacroObj={ mathMacroObj }
                 perrefMap={ labelTypewise }
+                fileMap={ map }
             >
                 {cell.value}
             </Markdown>
