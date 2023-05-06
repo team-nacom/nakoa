@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - run: CI=false; yarn install-all
-    - run: CI=false; yarn build
+    # - uses: actions/setup-node@v2
+    #   with:
+    #     node-version: 16
+    # - run: CI=false; yarn install-all
+    # - run: CI=false; yarn build
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -29,6 +29,7 @@ jobs:
       uses: shimataro/ssh-key-action@v2
       with:
         key: ${{ secrets.NACOM_MAIN_PEM }}
+        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Update and build
       run: ssh -o StrictHostKeyChecking=no -i ${{ secrets.NACOM_MAIN_PEM }} ubuntu@PROD_SERVER_IP "echo Hi!"
 
