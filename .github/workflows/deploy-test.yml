@@ -32,5 +32,5 @@ jobs:
         known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
         name: Nacom_Main.pem
     - name: Update and build
-      run: ssh -o StrictHostKeyChecking=no -i Nacom_Main.pem ubuntu@PROD_SERVER_IP "echo Hi!"
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/Nacom_Main.pem ubuntu@PROD_SERVER_IP "echo Hi!"
 
