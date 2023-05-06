@@ -4,8 +4,8 @@ import { HttpError } from 'http-errors';
 import Pino from 'pino';
 import pretty from 'pino-pretty';
 
-// base64+1
-const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789-_=';
+// base64 (not including `=`)
+const base64url = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789+-';
 export function baseid(count: number): string {
   const nanoid = customAlphabet(base64url, count);
   return nanoid();
@@ -32,8 +32,9 @@ export async function handleErrorMiddleware(ctx: Koa.Context, next: Koa.Next) {
   }
 }
 
-export const isProduction = (process.env) && (process.env.MODE) && (process.env.MODE === 'production');
-export const isStaging = (process.env) && (process.env.MODE) && (process.env.MODE === 'staging');
+export const isProduction = (process.env?.MODE === 'production');
+export const isStaging = (process.env?.MODE === 'staging');
+export const clientOrigin = (process.env?.CLIENT_ORIGIN ?? 'http://localhost:3000');
 const logOptions = {};
 
 function formatMessage(log: any, messageKey: string, levelLabel: string): string {

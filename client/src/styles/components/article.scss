@@ -1,0 +1,345 @@
+@import "../consts.scss";
+@import "./buttons.scss";
+
+.articleBackground {
+    position: fixed;
+    z-index: -1;
+    background: #f9f9f9;
+    //    background: transparent linear-gradient(147deg, #F9B399 0%, #FF7BAC 100%) 0% 0% no-repeat padding-box;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.article {
+    position: relative;
+
+    div.metadata {
+        .metadataItem {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+
+            color: black;
+            width: 125px;
+            height: 28px;
+            background: #66666633;
+            //            background: none;
+            border-radius: 14px;
+            //            border: 1px solid #88888888;
+            border: none;
+            padding-left: 9px;
+            padding-right: 9px;
+
+            margin: 0px 7px;
+        }
+    }
+
+    div.subcontainer {
+        margin: 0px 10px;
+        button {
+            &.author {
+                @include tagButton(#ddffdd);
+            }
+            &.tag {
+                @include tagButton(white);
+            }
+
+            .material-icons {
+                font-size: inherit;
+                transform: translate(-1.5px, 1.5px);
+            }
+        }
+    }
+
+    h1.title {
+        text-align: center;
+        font-size: 40px;
+        line-height: 55px;
+        //        color: white;
+        color: #444444;
+        margin-bottom: 9px;
+        margin-top: 20px;
+        // margin-left: 20px;
+    }
+
+    h2.subtitle {
+        text-align: center;
+        font-size: 21px;
+        line-height: 30px;
+        //        color: white;
+        color: #444444;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        // margin-left: 20px;
+        text-shadow: 0px 0px 8px rgba($primary-color, 0.4);
+    }
+
+    h3.tags {
+        font-size: 16px;
+        line-height: 24px;
+        //        color: white;
+        color: #222222;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        margin-left: 20px;
+    }
+
+    .articleNavigateBar {
+        padding: 15px calc(10% - 40px);
+        @media (max-width: $max-mobile-width) {
+            padding: 15px 20px;
+        }
+
+        display: flex;
+        color: white;
+        text-shadow: 0px 5px 5px #0000004d;
+        font-size: 16px;
+        .material-icons {
+            transform: translateY(7px);
+        }
+
+        .articleNavigateLeft {
+            flex: 1 0 50%;
+            text-align: left;
+        }
+        .articleNavigateRight {
+            flex: 1 0 50%;
+            text-align: right;
+        }
+
+        .articleNavigateItemName {
+            @media (max-width: $max-mobile-width) {
+                display: none;
+            }
+        }
+    }
+
+    .articleContent {
+        //        font-family: 'SeoulHangang';
+        background-color: white;
+        box-sizing: border-box;
+        padding: 10px 20px;
+        @media (max-width: 720px) {
+            border-top: solid 1px #ddd;
+            border-bottom: solid 1px #ddd;
+        }
+        @media (min-width: 720px) {
+            border-radius: 7px;
+            width: min(1200px, 80%);
+            margin: 48px auto;
+            @include shadow-template();
+        }
+
+        > hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+        }
+    }
+
+    // .articleContent.hideEssential .Essential > *:not(:first-child),
+    // .articleContent.hideRecommendable .Recommendable > *:not(:first-child),
+    // .articleContent.hideReadable .Readable > *:not(:first-child),
+    // .articleContent.hideOptional .Optional > *:not(:first-child),
+    // .articleContent.hideDraft .Draft > *:not(:first-child){
+    //     display: none;
+    // }
+
+    .articleContent.hideEssential .Essential > *:not(.headingBlock),
+    .articleContent.hideRecommendable .Recommendable > *:not(.headingBlock),
+    .articleContent.hideReadable .Readable > *:not(.headingBlock),
+    .articleContent.hideOptional .Optional > *:not(.headingBlock),
+    .articleContent.hideDraft .Draft > *:not(.headingBlock) {
+        display: none;
+    }
+
+    .articleContent.hideEssential .Essential > .headingBlock,
+    .articleContent.hideRecommendable .Recommendable > .headingBlock,
+    .articleContent.hideReadable .Readable > .headingBlock,
+    .articleContent.hideOptional .Optional > .headingBlock,
+    .articleContent.hideDraft .Draft > .headingBlock {
+        opacity: 0.5;
+    }
+}
+
+.articleList {
+    h1 {
+        font-family: "SeoulHangang";
+        margin: 20px;
+        font-size: 24px;
+        line-height: 32px;
+        color: #ffffff;
+        text-shadow: 0px 4px 5px #0000004d;
+    }
+
+    .articleListContainer {
+        background: white;
+        border-left: 10px $primary-color solid;
+        box-shadow: 0px 10px 15px #00000026;
+        border-radius: 10px;
+    }
+
+    .articleListSection {
+        padding: 17px 10px;
+        margin: 0px 16px;
+        font-size: 20px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        @media (max-width: $max-mobile-width) {
+            padding: 12px 10px;
+        }
+
+        .index {
+            flex: 0 0 40px;
+            font-weight: bold;
+            color: $primary-color;
+        }
+
+        .title {
+            flex-grow: 1;
+        }
+
+        div {
+            overflow: auto;
+        }
+    }
+
+    .articleListItem {
+        padding: 15px 16px;
+        margin: 0px 47px;
+        font-size: 16px;
+        font-weight: 200;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow: auto;
+
+        @media (max-width: $max-mobile-width) {
+            padding: 10px 10px;
+            margin: 0px 20px;
+        }
+
+        .title {
+            flex-grow: 1;
+        }
+
+        .priority {
+            flex: 0 0 60px;
+            font-size: 12px;
+            font-weight: 300;
+            text-align: right;
+        }
+
+        div {
+            overflow: auto;
+        }
+    }
+}
+
+.articleFeedList {
+    margin: auto;
+    max-width: 1350px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .articleFeed {
+        margin: 25px;
+        flex: 0 0 283px;
+
+        @media (max-width: $max-mobile-width) {
+            flex: 1 0 51%;
+        }
+
+        .articleFeedContent {
+            border-radius: 3.5px;
+            background: white;
+            border-top: 10px $primary-color solid;
+            box-shadow: 0px 5px 15px #00000056;
+            padding-top: 5px;
+            min-height: 245px;
+
+            background-image: linear-gradient(120deg, #f3f3f3 0%, #fafafa 100%);
+
+            .author {
+                font-size: 14px;
+                line-height: 14px;
+                padding: 5px 15px;
+                padding-bottom: 10px;
+                bottom: 0;
+            }
+
+            .tags {
+                font-size: 11px;
+                line-height: 20px;
+                padding: 15px 15px;
+                bottom: 0;
+                max-height: 15px;
+                overflow: hidden;
+            }
+
+            .title {
+                font-size: 20px;
+                line-height: 26px;
+                text-shadow: 0px 1px 8px #ffffff88;
+                padding: 3px 15px;
+                max-height: 26px;
+                overflow: hidden;
+            }
+
+            .content {
+                //                background: #ffffff88;
+                padding: 4px 15px;
+                font-size: 11px;
+                line-height: 22px;
+                height: 132px;
+                overflow: hidden;
+            }
+            .metadata {
+                font-size: 12px;
+                line-height: 20px;
+                margin: 10px 15px;
+                bottom: 0;
+            }
+        }
+    }
+}
+
+.articleSidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3;
+    button {
+        @include sidebarButton;
+    }
+
+    .prioritySelectorContainer {
+        position: absolute;
+        width: 180px;
+        left: -140px;
+        top: -220px;
+
+        .prioritySelector {
+            width: 100%;
+            background-color: white;
+
+            border-radius: 2px;
+
+            background-color: white;
+            box-shadow: 0px 3px 10px #0000004d;
+
+            margin: 10px 0px;
+            padding: 5px 10px;
+        }
+    }
+}

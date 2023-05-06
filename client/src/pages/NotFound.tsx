@@ -1,8 +1,6 @@
 import React from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-
+import Markdown from '#/components/markdown/Markdown';
+import { Layout } from '#/layout/Layout';
 
 function NotFound() {
     let [message, setMessage] = React.useState('');
@@ -13,17 +11,13 @@ function NotFound() {
             .then(text => setMessage(text));
     }, [])
 
-    return (
-        <>
-            <Header/>
-            <div id='content'>
-                <MarkdownRenderer isManual>
-                    { message }
-                </MarkdownRenderer>
-            </div>
-            <Footer/>
-        </>
-    );
+    // TODO : merge 404.md here
+    return <Layout title='존재하지 않는 페이지입니다.'>
+        <Markdown>
+            { message }
+        </Markdown>
+    </Layout>;
 }
 
 export default NotFound;
+// export default ApplyLayout({ Content: NotFound });

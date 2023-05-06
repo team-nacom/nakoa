@@ -1,8 +1,6 @@
 import React from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import MarkdownRenderer from 'components/markdown/MarkdownRenderer';
-
+import Markdown from '#/components/markdown/Markdown';
+import { Layout } from '#/layout/Layout';
 
 
 function About() {
@@ -12,19 +10,14 @@ function About() {
         .then(response => response.text())
         .then(text => setMessage(text));
 
-    return (
-        <>
-            <Header/>
-            <div id='content'>
-                <div className='aboutDisplayWrapper'>
-                    <MarkdownRenderer isManual useTOC>
-                        { message }
-                    </MarkdownRenderer>
-                </div>
-            </div>
-            <Footer/>
-        </>
-    );
+    return <Layout>
+        <div className='aboutDisplayWrapper'>
+            <Markdown>
+                { message }
+            </Markdown>
+        </div>
+    </Layout>;
 }
 
 export default About;
+// export default ApplyLayout({Content: About});

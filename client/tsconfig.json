@@ -1,28 +1,38 @@
 {
   "compilerOptions": {
+    "module": "esnext",
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "strict": true,
+    "baseUrl": "./src",
+    "paths": {
+      "#/*": ["./*"],
+      "#common/*": ["./common/*"] // symlink
+    },
     "allowJs": true,
+    "jsx": "react-jsx",
     "skipLibCheck": true,
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": "src",
-    "jsx": "react-jsx"
+    "removeComments": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "noFallthroughCasesInSwitch": false,
   },
   "include": [
-    "src"
+    "src",
+    "craco.config.js"
   ]
 }

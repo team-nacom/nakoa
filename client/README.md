@@ -12,6 +12,14 @@ Default API server address is set to `http://localhost:3885`. If you want to cha
 REACT_APP_API_URL=https://beta.team-na.com
 ```
 
+Additionally, if you are using code-server as your workspace for example, then your client root path might not be `/` and should be set manually. To set this root path, `PUBLIC_URL` and `REACT_APP_BASE_URL` variable should be added. In code-server case, the full `client/.env` should contain:
+
+```
+PUBLIC_URL="/absproxy/3000"
+REACT_APP_BASE_URL="/proxy/3000"
+REACT_APP_API_URL="/proxy/3885"
+```
+
 ## How to run
 
 To build the client (mainly to make static SPA), run `yarn build`.
@@ -22,6 +30,11 @@ To run the client which updates on changes of code, run `yarn watch`.
 
 After building the client, you can publish the site by serving `build/` as a static single page application. React will magically handle the routing and everything.
 
+## How to compile static page with scss
+
+The static html pages are located in `pages_design/` directory.
+
+To generate `pages_design/index.css` with modified sass files (in `src/styles`), run `yarn sass`.
 
 ## Learn More
 

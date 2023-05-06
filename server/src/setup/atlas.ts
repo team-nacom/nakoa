@@ -18,3 +18,12 @@ mongoose.connect(connectionString, {
   logger.error('Failed to connect.');
   logger.error(err);
 });
+
+// mongoose.set('debug', true);
+
+// return new gridFS bucket.
+export function getBucket(bucketName?: string){
+  return new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName,
+  });
+}

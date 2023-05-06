@@ -1,0 +1,81 @@
+import React, { useCallback } from 'react';
+
+import { BasicCell } from '#common/BasicCell';
+import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
+
+import {
+    useRenderData,
+    useCellEditorAction,
+} from '#/components/cell-editor/editor/EditorState'
+
+import SingletonTextArea from '#/components/helpers/SingletonTextArea'
+
+// import Markdown from '#/components/markdown/MarkdownRenderer'
+import Markdown from '#/components/markdown/Markdown'
+import { useFileMapState } from '#/components/editor/FileMapState';
+
+// export const textCellName = 'text'
+export interface TextCellField{
+    value: string
+}
+export const textCellDefault: TextCellField = {
+    value: ''
+}
+type TextCell = BasicCell<TextCellField,'text'> // only used in this file
+
+// renderers
+
+function TextCellViewer({ mode, cell } : CellTypeRendererProps<TextCell>){
+    const { mathMacroObj, label, labelTypewise } = useRenderData();
+    const { map } = useFileMapState();
+
+    return (
+        <div className='textCell'>
+            <Markdown
+                mathMacroObj={ mathMacroObj }
+                perrefMap={ labelTypewise }
+                fileMap={ map }
+            >
+                {cell.value}
+            </Markdown>
+        </div>
+    )
+}
+
+
+
+function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
+    // const {} = useRenderData()
+    const editorAction = useCellEditorAction()
+
+    const changeHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        let change: Partial<TextCellField> = {
+            value: ev.target.value
+        };
+
+        editorAction.update(cell.id, change);
+    }, [cell.id]);
+
+    return (
+        <div className='editorTextCellWrapper'>
+            <SingletonTextArea
+                className='editorTextCell editorCell'
+                value={cell.value}
+                onChange={ changeHandler }
+            />
+            <TextCellViewer mode={ RenderMode.PREVIEW } cell={cell} />
+        </div>
+    )
+}
+
+
+export function TextCellRenderer({ mode, cell }: CellTypeRendererProps<TextCell>){
+    if(mode !== RenderMode.EDITOR){
+        return <TextCellViewer mode={ mode } cell={ cell } />
+    }
+
+    return <TextCellEditor cell={ cell } />
+}

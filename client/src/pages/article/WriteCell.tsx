@@ -1,0 +1,103 @@
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useMetadataState, Metadata } from '#/components/editor/MetadataState';
+
+import { Layout } from '#/layout/Layout';
+
+import type { Article, CellArticle } from '#/components/cell-editor/types';
+import { getLocalArticle, postLocalArticle, getDraftArticle, setDraftArticle, unsetDraftArticle } from '#/api/article-local-idb';
+import { CellEditor } from '#/components/editor/CellEditor';
+
+import Loading from '../Loading';
+import usePromise from '#/misc/usePromise';
+import Button from '#/components/Button';
+import { unzipMap } from '#/components/editor/FileMapState';
+
+function WriteCell() {
+    const navigate = useNavigate();
+
+    const [loading, initArticle] = usePromise(() => getDraftArticle(undefined, 'cell'), []);
+
+    // const [loading, initArticle] = usePromise(async () => {
+    //     const draft = await getAutosaveArticle(undefined, 'cell');
+    //     return draft;
+    //     // if(draft !== undefined) return draft;
+    //     // return undefined; // this will simplify setting default fields
+
+    //     // return {
+    //     //     mode: 'cell',
+    //     //     metadata: {
+    //     //         title: '',
+    //     //         author: '',
+    //     //     },
+    //     //     content: {
+    //     //         rootId: 'c0',
+    //     //         structData: { 'c0': [] },
+    //     //         cellData: { 'c0': { id: 'c0', [cellTypeStr]: 'root', mathMacroStr: '', } }
+    //     //     }
+    //     // };
+    // }, []);
+
+    // const [modified, setModified] = useState(false);
+
+    const [message, setMessage] = useState<string>();
+
+    const upload = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
+        if(metadata.title === ''){
+            window.alert('제목을 입력해 주세요.');
+            return;
+        }
+
+        const article: CellArticle = {
+            mode: 'cell',
+            metadata,
+            content,
+            ...unzipMap(fileMap)
+        }
+
+        let { success, localIndex } = await postLocalArticle(article);
+        if(success){
+            setMessage('저장에 성공했습니다!');
+            navigate(`/article/view/${localIndex}`);
+        } else{
+            setMessage('저장에 실패했습니다.');
+        }
+    }, []);
+
+    const autosave = useCallback(async (metadata: Metadata, content: CellArticle['content'], fileMap: Record<string, File>) => {
+        const article: CellArticle = {
+            mode: 'cell',
+            metadata,
+            content,
+            ...unzipMap(fileMap)
+        };
+        await setDraftArticle(article);
+    }, []);
+
+    // on remove autosave action, unset autosave and navigate into this page.
+    const removeAutosave = useCallback(async (disableAutosave: () => any) => {
+        if(!window.confirm('정말 임시저장을 초기화하시겠습니까?')) return;
+
+        disableAutosave(); // unset autosave useTimeout first
+        await unsetDraftArticle(undefined, 'cell');
+
+        navigate(`/article/write-cell`); // might race??
+    }, []);
+
+    if(loading) return <Loading />;
+    
+    return <Layout title='글 작성하기' sidebar='ArticleList'>
+        <p>{message}</p>
+        <CellEditor
+            initArticle={
+                // initArticle?.mode === 'cell' ? initArticle : undefined
+                initArticle as CellArticle
+            }
+            upload={ upload } autosave={ autosave }
+            removeAutosave={ removeAutosave }
+        />
+    </Layout>;
+}
+
+export default WriteCell;

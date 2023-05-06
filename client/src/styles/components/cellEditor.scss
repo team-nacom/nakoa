@@ -1,5 +1,5 @@
 @mixin shadow-template {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 1px 3px;
 }
 
 @mixin input-template {
@@ -63,7 +63,6 @@
         font-weight: bold;
     }
 
-
     @media(min-width: 720px) {
         &::after {
             display: inline-block;
@@ -77,26 +76,10 @@
 }
 
 .cellEditorWrapper, .cellDisplayWrapper, .aboutDisplayWrapper {
-    background-color: white;
     box-sizing: border-box;
     padding: 10px 20px;
-    @media(max-width: 720px) {
-        border-top: solid 1px #ddd;
-        border-bottom: solid 1px #ddd;
-    }
-    @media(min-width: 720px) {
-        border-radius: 7px;
-        width: min(1200px, 80%);
-        margin: 48px auto;
-        @include shadow-template();
-    }
-
-    > hr {
-        border: 0;
-        height: 1px;
-        background: #ddd;
-    }
 }
+
 .cellDisplayWrapper .allCellsWrapper > .internalCellWrapper {
     display: none;
 }
@@ -164,6 +147,10 @@
     text-align: left;
     white-space: pre;
 }
+.rootCellSettings code{
+    text-align: left;
+    white-space: pre;
+}
 
 .editorRootCellTextArea {
     width: 100%;
@@ -207,6 +194,9 @@
         outline: none;
     }
 }
+.childrenContainerHiddenEditor{
+    background-color: antiquewhite;
+}
 .childrenContainerHidden {
     display: none;
 }
@@ -214,12 +204,10 @@
     cursor: pointer;
     user-select: none;
 }
-// .childrenContainerHidden, .childrenContainerHiddenEditor{
-//     background-color: antiquewhite;
-// }
 
 .cellChildrenWrapper {
     position: relative;
+    padding: 0 10px;
     &:after {
         content: '';
         position: absolute;
@@ -292,6 +280,22 @@
     .cellInfoIcon + .cellInfoText { margin: 0 4px 0 0; }
 }
 
+.cellHandle {
+    width: 10px;
+    height: 10px;
+    background-color: blue;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+
+    &:active {
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+    }
+    // visibility: transform !== null ? 'hidden' : undefined
+}
+
 .interBlockHelper {
     opacity: 0;
     height: 16px;
@@ -352,6 +356,36 @@
             width: 100%;
         }
     }
+
+    &.helperOver {
+        opacity: 1;
+        hr {
+            @include shadow-template();
+            width: 100%;
+            background-color: $primary-color;
+        }
+
+        .addButtonsWrapper {
+            display: flex;
+            position: relative;
+            padding: 0 10px;
+            &:before, &:after {
+                position: absolute;
+                background-color: $primary-color;
+                border-radius: 3px;
+                width: 100%;
+                height: 100%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                content:'';
+            }
+            &:after {
+                @include shadow-template();
+                z-index: -1;
+            }
+        }
+    }
 }
 
 .editorTextCellWrapper, .editorMathCellWrapper {
@@ -380,6 +414,9 @@
     .editorCell {
         border-top: solid 1px #ddd;
     }
+}
+.editorImageCellWrapper {
+    text-align: center;
 }
 
 .textCell, .mathCell, .codeCell {
@@ -436,6 +473,10 @@
     margin: 20px;
     display: flex;
     flex-direction: row-reverse;
+    .removeAutosaveButton {
+        @include button-template($primary-color);
+    }
+
     .uploadButton {
         @include button-template($primary-color);
     }

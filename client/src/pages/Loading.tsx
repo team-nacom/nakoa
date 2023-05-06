@@ -1,14 +1,9 @@
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import React from 'react';
+import { Layout } from '#/layout/Layout';
 
 function Loading() {
-    return (
-        <>
-            <Header/>
-            <Footer/>
-        </>
-    );
+    return <Layout />;
 }
 
 export default Loading;
+// export default ApplyLayout({ Content: Loading });

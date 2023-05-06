@@ -9,32 +9,15 @@ import session from 'koa-session';
 import './setup/atlas'; // connect Atlas mongoDB
 import './setup/aws'; // connect aws S3
 
-import fileRouter from './file';
-import bubbleRouter from './bubble';
-import flatRouter from './flat';
+import fileRouter from './controllers/file';
+import articleRouter from './controllers/article-with-file';
 
 import {
-  handleErrorMiddleware, isProduction, isStaging, logger, logStreams,
+  handleErrorMiddleware, isProduction, isStaging, clientOrigin, logger, logStreams,
 } from './utils';
 
-// Router
-const router = new Router();
-
-// Root (not used)
-router.get('/', async (ctx, next) => {
-  ctx.body = 'Hello World';
-  await next();
-});
-
-// Files
-router.use('/file', fileRouter.routes());
-// Bubble (for demo)
-router.use('/bubble', bubbleRouter.routes());
-// flat (main product)
-router.use('/flat', flatRouter.routes());
-
 // local / production config
-const origin = (isProduction ? 'https://team-na.com' : (isStaging ? '*': 'http://localhost:3000'));
+const origin = (isProduction ? 'https://team-na.com' : (isStaging ? '*': clientOrigin));
 const port = (isProduction ? 3884 : 3885);
 
 // Koa app
@@ -53,8 +36,24 @@ app.use(Cors({
 app.keys = ['exNFlUxpSphOJL3zzNIHRy39pzxsdrLmXEFoiXYQcFp3DW3xc41gHyS8rh7ZcOY6'];
 app.use(session({}, app));
 
+
+// Router
+const router = new Router();
+
+// Root (not used)
+router.get('/', async (ctx, next) => {
+  ctx.body = 'Hello World';
+  await next();
+});
+
+router.use('/file', fileRouter.routes());
+router.use('/article', articleRouter.routes());
+
+
+
 app.use(handleErrorMiddleware);
-app.use(router.routes()).use(router.allowedMethods());
+app.use(router.routes())
+  .use(router.allowedMethods());
 
 if (isProduction) {
   app.listen(port);

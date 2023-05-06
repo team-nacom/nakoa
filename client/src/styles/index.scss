@@ -89,6 +89,10 @@ html {
 #content {
     background-color: #f5f6fa;
     min-height: calc(100vh - 300px);
+
+    &.published{
+        background-color: pink;
+    }
 }
 
 .flexbox {
@@ -111,6 +115,7 @@ label {
 
 .pageTitle {
 	font-family: SeoulNamsan;
+    text-align: center;
 	margin: 32px 0px;
 }
 
@@ -128,12 +133,16 @@ label {
 
 @import './layout/footer.scss';
 @import './layout/header.scss';
+@import './layout/sidebar.scss';
 
 @import './components/cellEditor.scss';
 @import './components/cellList.scss';
 @import './components/buttons.scss';
-@import './components/guide.scss';
+@import './components/article.scss';
 @import './components/markdown.scss';
 @import './components/popup.scss';
 @import './components/tabs.scss';
 @import './components/tags.scss';
+
+@import './components/write.scss';
+@import './temp-design/sidebar.scss';
