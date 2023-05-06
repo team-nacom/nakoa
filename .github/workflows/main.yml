@@ -3,6 +3,7 @@ name: Build Release
 on:
   release:
     types: [ published ] # will be triggered when a release is published
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,3 +15,21 @@ jobs:
         node-version: 16
     - run: CI=false; yarn install-all
     - run: CI=false; yarn build
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      PROD_SERVER_IP: 52.78.238.149
+    steps:
+    - name: Get tag name
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.NACOM_MAIN_PEM }}
+        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+        name: Nacom_Main.pem
+    - name: Update and build
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/Nacom_Main.pem ubuntu@$PROD_SERVER_IP "./build.sh $RELEASE_VERSION"
+    - name: Restart service
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/Nacom_Main.pem ubuntu@$PROD_SERVER_IP "sudo ./launch.sh"
