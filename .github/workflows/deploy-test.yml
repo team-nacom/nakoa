@@ -1,0 +1,34 @@
+name: Deploy test
+
+on:
+  release:
+    types: [ published ] # will be triggered when a release is published
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - run: CI=false; yarn install-all
+    - run: CI=false; yarn build
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      PROD_SERVER_IP: 52.78.238.149
+    steps:
+    - name: Get tag name
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+    - name: Show tag name
+      run: echo $RELEASE_VERSION
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.NACOM_MAIN_PEM }}
+    - name: Update and build
+      run: ssh -o StrictHostKeyChecking=no -i ${{ secrets.NACOM_MAIN_PEM }} ubuntu@PROD_SERVER_IP "echo Hi!"
+
