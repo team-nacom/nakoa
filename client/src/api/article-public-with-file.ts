@@ -115,26 +115,35 @@ export async function postPublicArticle(article: Article){
 
     // (server) `POST /article/post` with form data
 
-    // if article of post request has publicIndex(say p0) and BE has article p0, then BE should generate a new publicIndex(p1) as well as mark somewhere "p0 -> p1", for article p1 is a fork of article p0.
-    let response = await axios.post(`${apiUrl}/article/post`,
-        ToFormData(article),
-        {
-            validateStatus,
-            withCredentials: true,
+    try{
+        // if article of post request has publicIndex(say p0) and BE has article p0, then BE should generate a new publicIndex(p1) as well as mark somewhere "p0 -> p1", for article p1 is a fork of article p0.
+        let response = await axios.post(`${apiUrl}/article/post`,
+            ToFormData(article),
+            {
+                validateStatus,
+                withCredentials: true,
+            }
+        );
+
+        let publicIndex = response.data.publicIndex as string; // BE should generate and return publicIndex
+
+        if(response.status < 300 && typeof publicIndex === 'string'){
+            article.publicIndex = publicIndex;
+
+            // insert publicIndex to local article also.
+            await updateLocalArticle(article.localIndex, article, false);
+
+            return { success: true, publicIndex, localIndex: article.localIndex } as const;
+        } else {
+            return { success: false, publicIndex, localIndex: article.localIndex } as const;
         }
-    );
-
-    let publicIndex = response.data.publicIndex as string; // BE should generate and return publicIndex
-
-    if(response.status < 300 && typeof publicIndex === 'string'){
-        article.publicIndex = publicIndex;
-
-        // insert publicIndex to local article also.
-        await updateLocalArticle(article.localIndex, article, false);
-
-        return { success: true, publicIndex, localIndex: article.localIndex };
-    } else {
-        return { success: false, publicIndex, localIndex: article.localIndex };
+    } catch(err: any){
+        return {
+            success: false,
+            status: err.response?.status, // 429
+            publicIndex: undefined,
+            localIndex: undefined
+        } as const;
     }
 }
 
@@ -178,7 +187,7 @@ export async function updatePublicArticle(publicIndex: string, article: Article)
         let { success, publicIndex, localIndex } = await postPublicArticle(article);
         if(success){
             article.publicIndex = publicIndex;
-            await updateLocalArticle(localIndex, article, false);
+            await updateLocalArticle(localIndex!, article, false);
 
             return {
                 success: true,

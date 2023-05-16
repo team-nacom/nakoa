@@ -81,6 +81,8 @@ function View() {
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
+                                if(!window.confirm("정말로 글을 삭제하시겠습니까?")) return;
+
                                 await removeLocalArticle(localIndex!);
 
                                 navigate(`/article/list`);
@@ -91,11 +93,14 @@ function View() {
                         </Button>
                         <Button className='articleButton'
                             onClick={ async () => {
-                                const { publicIndex: newPublicIndex } = await postPublicArticle(article!);
+                                const { publicIndex: newPublicIndex, success, status } = await postPublicArticle(article!);
 
-                                setPublicIndex(newPublicIndex);
-
-                                navigate(`/article/view/${localIndex}`);
+                                if(success){
+                                    setPublicIndex(newPublicIndex);
+                                    navigate(`/article/view/${localIndex}`);
+                                } else if(status === 429){
+                                    window.alert("잠시 후 다시 시도해 주세요.");
+                                }
                             } }
                         >
                             <Icon>publish</Icon>
@@ -121,7 +126,7 @@ function View() {
                                 // todo: transaction.
                                 let { success } = await removePublicArticle(publicIndex!, localIndex); // withdraw first.
                                 if(!success){
-                                    alert('공개 글 철회를 실패했습니다. 인터넷 상태를 확인하고 다시 시도해 주세요.');
+                                    window.alert('공개 글 철회를 실패했습니다. 인터넷 상태를 확인하고 다시 시도해 주세요.');
                                     return;
                                 }
                                 await removeLocalArticle(localIndex!);

@@ -160,9 +160,9 @@ export function EditorCore({ localIndex, ...other } : ClassicEditorBodyProps) {
         }
     }
 
-    const uploadErrorHandler = (e: unknown) => {
-        alert( i18n.t('editor.uploadFailed') );
-    }
+    // const uploadErrorHandler = (e: unknown) => {
+    //     window.alert( i18n.t('editor.uploadFailed') );
+    // }
 
     //resizing
     const [height,setHeight] = useState(400);

@@ -73,6 +73,8 @@ function View() {
                             onClick={ async () => {
                                 // by 'deleting' an article the owner can withdraw its publication.
 
+                                if(!window.confirm("정말로 공개 글을 철회하시겠습니까?")) return;
+
                                 await removePublicArticle(publicIndex!);
 
                                 // to local article page
@@ -110,9 +112,13 @@ function View() {
                     <>
                         <Button className='articleButton'
                             onClick={ async () => {
-                                await postPublicArticle(article!);
+                                const { publicIndex: newPublicIndex, success, status } = await postPublicArticle(article!);
 
-                                navigate(`/article/view/${forkedArticle.localIndex}`);
+                                if(success){
+                                    navigate(`/article/view/${forkedArticle.localIndex}`);
+                                } else if(status === 429){
+                                    window.alert("잠시 후 다시 시도해 주세요.");
+                                }
                             } }
                         >
                             <Icon>upload</Icon>

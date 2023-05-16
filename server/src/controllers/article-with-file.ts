@@ -1,6 +1,8 @@
 import fs from 'fs';
 import Router from 'koa-router';
 
+import { RateLimit } from 'koa2-ratelimit';
+
 import {
   ArticleModel, ClassicArticleModel, BasicCellArticleModel
 } from '#/models/article';
@@ -11,7 +13,7 @@ import { File } from 'formidable';
 
 export function indexAsDir(publicIndex: string){ return `article_${publicIndex}`; }
 
-// note: this function DROPS all previous files before upload new ones.
+// note: this function DROPS all previous files before uploading new ones.
 async function uploadFiles(dir: string, files: File | File[] = [], filePaths: string[] = []){
     const bucket = getBucket(dir);
     if(!Array.isArray(files)){ files = [files]; }
@@ -134,7 +136,11 @@ router.get('/get/:publicIndex', async function getArticle(ctx){
     };
 });
 
-router.post('/post', async function postArticle(ctx){
+router.post('/post', RateLimit.middleware({ // limit request up to 1 per minute
+    interval: 60000, // 1min
+    // timeWait: 1000, // 1s
+    max: 1,
+}), async function postArticle(ctx){
     const articleBody = JSON.parse(ctx.request.body.article);
 
     if(articleBody.localIndex === undefined){ // localIndex should've been defined.
