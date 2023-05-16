@@ -1,4 +1,5 @@
 @import './consts.scss';
+@import './mixin.scss';
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
@@ -134,6 +135,7 @@ label {
 @import './layout/footer.scss';
 @import './layout/header.scss';
 @import './layout/sidebar.scss';
+@import './layout/content.scss';
 
 @import './components/cellEditor.scss';
 @import './components/cellList.scss';
@@ -143,6 +145,6 @@ label {
 @import './components/popup.scss';
 @import './components/tabs.scss';
 @import './components/tags.scss';
-
 @import './components/write.scss';
-@import './temp-design/sidebar.scss';
+
+@import './layout-legacy/sidebar.scss';

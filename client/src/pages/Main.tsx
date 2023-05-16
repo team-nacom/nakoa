@@ -7,9 +7,9 @@ import { Layout } from '#/layout/Layout';
 function Main() {
     let { i18n } = useTranslation('translation');
 
-    return <Layout title={ i18n.t('team') ?? undefined } /* sidebar='ArticleList' */>
+    return (<Layout title={ i18n.t('team') ?? undefined } /* sidebar='ArticleList' */>
         <p>{ i18n.t('main.greeting') }</p>
-    </Layout>;
+    </Layout>);
 }
 
 export default Main;
