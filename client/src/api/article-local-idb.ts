@@ -2,6 +2,8 @@ import { dummyIndex } from '#/misc/dummyIndex';
 import { base64rand } from '#/misc/base64rand';
 import getDB from '#/config/db-idb';
 
+import { PAGE_SIZE } from '#/common/consts';
+
 import type { Article } from '#/components/cell-editor/types';
 
 export async function unsetDraftArticle(localIndex?: string, mode?: Article['mode']){
@@ -49,12 +51,32 @@ export async function getDraftArticle(localIndex?: string, mode?: Article['mode'
     }
 }
 
-export async function getLocalArticleList(){
+export async function getLocalArticleList(page?: number){
+    // if page is undefined, then get all articles.
+    // if page is defined, then get selected page.
+
     const db = await getDB();
 
-    const articles = await db.getAll('articles');
+    if(page === undefined){
+        return db.getAll('articles');
+    }
+
+    let cursor = await db.transaction('articles').store.openCursor() ?? undefined;
+    cursor = await cursor?.advance(page * PAGE_SIZE) ?? undefined;
+
+    let articles: Article[] = [];
+
+    for(let i = 0; i < PAGE_SIZE; ++i){
+        if(!cursor) break;
+        articles.push(cursor.value);
+    }
 
     return articles;
+}
+
+export async function getLocalArticleCount(){
+    const db = await getDB();
+    return db.count('articles');
 }
 
 export async function getLocalArticle(localIndex: string){

@@ -6,15 +6,19 @@ import Button from '#/components/Button';
 import { Layout } from '#/layout/Layout';
 
 import usePromise from '#/misc/usePromise';
-import { getLocalArticleList } from '#/api/article-local-idb';
+import { getLocalArticleCount, getLocalArticleList } from '#/api/article-local-idb';
 // import Markdown from '#/components/markdown-lab/Markdown';
 // import { Display } from '#/components/cell-editor/cell/Display';
 
 import { Icon } from '@mui/material';
-
+import { PAGE_SIZE } from '#/common/consts';
 
 function List() {
-    let [loading, articles] = usePromise(() => getLocalArticleList(), []);
+    const { page: pgstr } = useParams<{ page: string }>();
+    const page = Math.abs(+(pgstr || 0)); // default behavior : show first(#0) page.
+
+    let [loading, articles] = usePromise(() => getLocalArticleList(page), [page]);
+    let [countLoading, count] = usePromise(() => getLocalArticleCount(), []);
     
     if(loading) return <Loading />;
     if(articles === undefined){
@@ -27,37 +31,56 @@ function List() {
         
         <div className='articleListButtonContainer'>
             <span className='articleCount'>
-                { `총 ${articles.length}개` }
+                { `총 ${count !== undefined ? count : '?'}개` }
             </span>
-            <Link to='/article/write-classic'>
-                <Button>
-                    <Icon>text_fields</Icon>
-                </Button>
-            </Link>
-            <Link to='/article/write-cell'>
-                <Button>
-                    <Icon>dynamic_feed</Icon>
-                </Button>
-            </Link>
+            <Button to='/article/write-classic'>
+                <Icon>text_fields</Icon>
+            </Button>
+            <Button to='/article/write-cell'>
+                <Icon>dynamic_feed</Icon>
+            </Button>
         </div>
-        <div className='articleFeedList'>
-            {articles.map((article, no) => (
-                <div key={ no } className='articleFeed'>
-                    <Link to={ `/article/view/${ article.localIndex! }` }>
-                        <div className='articleFeedContent'>
-                            <div className='author'>{ article.metadata.author }</div>
-                            <div className='title'>{ article.metadata.title }</div>
-                            <div className='content'>
-                                { article.mode === 'classic' ?
-                                    article.text.substring(0,100)
-                                    : '[Cell Mode]'
-                                }
-                            </div>
+        {(countLoading || count! > 0) &&
+            <>
+                <div className='articleFeedList'>
+                    {articles.map((article, no) => (
+                        <div key={ no } className='articleFeed'>
+                            <Link to={ `/article/view/${ article.localIndex! }` }>
+                                <div className='articleFeedContent'>
+                                    <div className='author'>{ article.metadata.author }</div>
+                                    <div className='title'>{ article.metadata.title }</div>
+                                    <div className='content'>
+                                        { article.mode === 'classic' ?
+                                            article.text.substring(0,100)
+                                            : '[Cell Mode]'
+                                        }
+                                    </div>
+                                </div>
+                            </Link>
                         </div>
-                    </Link>
+                    ))}
                 </div>
-            ))}
-        </div>
+                <div className='pagination'>
+                    { page > 0 && (
+                        <Button to={ `/article/list/${page-1}` }>
+                            이전 페이지
+                        </Button>
+                    )}
+                    <span>{ page }</span>
+                    { page < Math.ceil( (count ?? 0) / PAGE_SIZE ) &&
+                        <Button to={ `/article/list/${page+1}` }>
+                            다음 페이지
+                        </Button>
+                    }
+                </div>
+            </>
+        }
+        {count === 0 &&
+            <div>
+                아직 글이 없습니다. 새 글을 작성해 보세요!
+            </div>
+        }
+
     </Layout>;
 }
 

@@ -1,7 +1,8 @@
 import fs from 'fs';
 import Router from 'koa-router';
-
 import { RateLimit } from 'koa2-ratelimit';
+
+import { PAGE_SIZE } from '#/common/consts';
 
 import {
   ArticleModel, ClassicArticleModel, BasicCellArticleModel
@@ -95,6 +96,37 @@ router.get('/get-list', async function getArticleList(ctx){
     ctx.body = {
         result: 'found',
         articles
+    };
+});
+
+router.get('/get-list/:page', async function getArticlePage(ctx){
+    const pgstr = ctx.params.page;
+    const page = Math.abs(+(pgstr || 0));
+
+    // localIndices are used as verification tokens, so remove them
+    const query = ArticleModel.find(
+        { 'metadata.visibility': {$gte: 1} },
+        {_id: false, __v: false, localIndex: false},
+        {skip: page * PAGE_SIZE, limit: PAGE_SIZE}
+    );
+    const articles = await query.exec();
+
+    ctx.body = {
+        result: 'found',
+        articles
+    };
+});
+
+router.get('/get-count', async function getArticleCount(ctx){
+    // localIndices are used as verification tokens, so remove them
+    const query = ArticleModel.count(
+        { 'metadata.visibility': {$gte: 1} }
+    );
+    const count = await query.exec();
+
+    ctx.body = {
+        result: 'found',
+        count
     };
 });
 

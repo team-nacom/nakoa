@@ -24,8 +24,11 @@ export function ToFormData(article: Article){
     return formData;
 }
 
-export async function getPublicArticleList(){ // articles except files.
-    let response = await axios.get(`${apiUrl}/article/get-list`, {
+export async function getPublicArticleList(page?: number){ // get articles except files.
+    // if page is undefined, then get all articles.
+    // if page is defined, then get selected page.
+
+    let response = await axios.get(`${apiUrl}/article/get-list${ page !== undefined ? '/' + page : '' }`, {
         // validateStatus,
         withCredentials: true,
     });
@@ -36,6 +39,19 @@ export async function getPublicArticleList(){ // articles except files.
 
     let articles = response.data.articles as Article[]; // BE should've removed localIndices.
     return articles;
+}
+
+export async function getPublicArticleCount(){
+    let response = await axios.get(`${apiUrl}/article/get-count`, {
+        // validateStatus,
+        withCredentials: true,
+    });
+
+    if(response.status >= 400){
+        throw new Error('articles not found');
+    }
+
+    return +response.data.count;
 }
 
 export async function getPublicArticle(publicIndex: string, localIndex?: string, getFiles: boolean = false){

@@ -11,7 +11,7 @@ import ArticleView from '#/pages/article/View';
 import ArticleUpdate from '#/pages/article/Update';
 import ArticleWriteClassic from '#/pages/article/WriteClassic';
 import ArticleWriteCell from '#/pages/article/WriteCell';
-import Hidden from '#/pages/article/Hidden';
+// import Hidden from '#/pages/article/Hidden';
 
 import ArticlePubList from '#/pages/article-pub/List';
 import ArticlePubView from '#/pages/article-pub/View';
@@ -26,7 +26,7 @@ const routes: RouteObject[] = [
 
             { path: 'article',
                 children: [
-                    { path: 'list', element: <ArticleList /> },
+                    { path: 'list/:page?', element: <ArticleList /> },
                     { path: 'view/:localIndex', element: <ArticleView /> },
                     { path: 'update/:localIndex', element: <ArticleUpdate /> },
                     { path: 'write-classic', element: <ArticleWriteClassic /> },
@@ -36,12 +36,12 @@ const routes: RouteObject[] = [
 
             { path: 'article-pub',
                 children: [
-                    { path: 'list', element: <ArticlePubList /> },
+                    { path: 'list/:page?', element: <ArticlePubList /> },
                     { path: 'view/:publicIndex', element: <ArticlePubView /> },
                 ]
             },
 
-            { path: 'hidden', element: <Hidden /> },
+            // { path: 'hidden', element: <Hidden /> },
         ]
     },
 
