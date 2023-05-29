@@ -10,6 +10,7 @@ import { getPublicArticleCount, getPublicArticleList } from '#/api/article-publi
 
 import { Icon } from '@mui/material';
 import { PAGE_SIZE } from '#/common/consts';
+import { Pagination } from '#/layout/Pagination';
 
 
 function List() {
@@ -63,19 +64,7 @@ function List() {
                         </div>
                     ))}
                 </div>
-                <div className='pagination'>
-                    { page > 0 && (
-                        <Link to={ `/article-pub/list/${page-1}` }>
-                            ◀이전
-                        </Link>
-                    )}
-                    <span> { page }페이지 </span>
-                    { page < Math.ceil( (count ?? 0) / PAGE_SIZE ) &&
-                        <Link to={ `/article-pub/list/${page+1}` }>
-                            다음▶
-                        </Link>
-                    }
-                </div>
+                <Pagination page={page} count={count} pageToLink='/article-pub/list/' />
             </>
         }
         {count === 0 &&

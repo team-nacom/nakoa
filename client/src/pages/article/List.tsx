@@ -13,6 +13,8 @@ import { getLocalArticleCount, getLocalArticleList } from '#/api/article-local-i
 import { Icon } from '@mui/material';
 import { PAGE_SIZE } from '#/common/consts';
 
+import { Pagination } from '#/layout/Pagination';
+
 function List() {
     const { page: pgstr } = useParams<{ page: string }>();
     const page = Math.abs(+(pgstr || 0)); // default behavior : show first(#0) page.
@@ -60,19 +62,7 @@ function List() {
                         </div>
                     ))}
                 </div>
-                <div className='pagination'>
-                    { page > 0 && (
-                        <Button to={ `/article/list/${page-1}` }>
-                            이전 페이지
-                        </Button>
-                    )}
-                    <span>{ page }</span>
-                    { page < Math.ceil( (count ?? 0) / PAGE_SIZE ) &&
-                        <Button to={ `/article/list/${page+1}` }>
-                            다음 페이지
-                        </Button>
-                    }
-                </div>
+                <Pagination page={page} count={count} pageToLink='/article/list/' />
             </>
         }
         {count === 0 &&
