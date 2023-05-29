@@ -2,22 +2,30 @@ import fs from 'fs';
 import Router from 'koa-router';
 import { RateLimit } from 'koa2-ratelimit';
 
-import { PAGE_SIZE } from '#/common/consts';
+import { PAGE_SIZE, FILE_SIZE_LIMIT_MB } from '#/common/consts';
 
 import {
   ArticleModel, ClassicArticleModel, BasicCellArticleModel
 } from '#/models/article';
 import { getBucket } from '#/setup/atlas';
-import { logger } from '../utils';
 
 import { File } from 'formidable';
 
 export function indexAsDir(publicIndex: string){ return `article_${publicIndex}`; }
 
+// checks total file size and upload files
 // note: this function DROPS all previous files before uploading new ones.
 async function uploadFiles(dir: string, files: File | File[] = [], filePaths: string[] = []){
     const bucket = getBucket(dir);
     if(!Array.isArray(files)){ files = [files]; }
+
+    let totalSize = 0;
+    for(let file of files){
+        totalSize += file.size;
+    }
+    if(totalSize > FILE_SIZE_LIMIT_MB * 1024 * 1024){
+        throw new Error("file size too large");
+    }
 
     // let streams = await Promise.all(files.map((file, i) => {
     //     if(file.size > 0) return fs.createReadStream(file.path);
@@ -119,7 +127,7 @@ router.get('/get-list/:page', async function getArticlePage(ctx){
 
 router.get('/get-count', async function getArticleCount(ctx){
     // localIndices are used as verification tokens, so remove them
-    const query = ArticleModel.count(
+    const query = ArticleModel.countDocuments(
         { 'metadata.visibility': {$gte: 1} }
     );
     const count = await query.exec();
@@ -169,7 +177,7 @@ router.get('/get/:publicIndex', async function getArticle(ctx){
 });
 
 router.post('/post', RateLimit.middleware({ // limit request up to 1 per minute
-    interval: 60000, // 1min
+    interval: 60 * 1000, // 1min
     // timeWait: 1000, // 1s
     max: 1,
 }), async function postArticle(ctx){
@@ -213,11 +221,21 @@ router.post('/post', RateLimit.middleware({ // limit request up to 1 per minute
     // }
 
     // storing files.
-    await uploadFiles(
-        indexAsDir(publicIndex),
-        ctx.request.files?.files,
-        article.filePaths
-    );
+    try {
+        await uploadFiles(
+            indexAsDir(publicIndex),
+            ctx.request.files?.files,
+            article.filePaths
+        );
+    } catch (err) { // file size too large
+        ctx.status = 413;
+        ctx.body = {
+            result: 'failure',
+            reason: `Attachments exceeded size limit (${FILE_SIZE_LIMIT_MB}MB)`
+        };
+        return;
+    }
+    
 
     ctx.body = {
         result: 'success',
@@ -268,11 +286,20 @@ router.put('/update/:publicIndex', async function putArticle(ctx){
     }
 
     // storing files.
-    await uploadFiles(
-        indexAsDir(publicIndex),
-        ctx.request.files?.files,
-        articleBody.filePaths
-    );
+    try {
+        await uploadFiles(
+            indexAsDir(publicIndex),
+            ctx.request.files?.files,
+            articleBody.filePaths
+        );
+    } catch (err) { // file size too large
+        ctx.status = 413;
+        ctx.body = {
+            result: 'failure',
+            reason: `Attachments exceeded size limit (${FILE_SIZE_LIMIT_MB}MB)`
+        };
+        return;
+    }
 
     ctx.body = {
         result: 'success',
