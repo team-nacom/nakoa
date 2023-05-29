@@ -62,13 +62,16 @@ export async function getLocalArticleList(page?: number){
     }
 
     let cursor = await db.transaction('articles').store.openCursor() ?? undefined;
-    cursor = await cursor?.advance(page * PAGE_SIZE) ?? undefined;
+    if(page > 0){ // some version doesn't support cursor.advance(0)?
+        cursor = await cursor?.advance(page * PAGE_SIZE) ?? undefined;
+    }
 
     let articles: Article[] = [];
 
     for(let i = 0; i < PAGE_SIZE; ++i){
         if(!cursor) break;
         articles.push(cursor.value);
+        cursor = await cursor.continue() ?? undefined;
     }
 
     return articles;
