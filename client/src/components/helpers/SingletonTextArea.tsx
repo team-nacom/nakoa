@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
 
 // useful helper function
@@ -46,8 +46,31 @@ function SingletonTextArea(props : SingletonTextAreaProps){
     // }
 
     const nodeRef = useRef<HTMLTextAreaElement | null>(null);
-    const ref = useCallback((node : HTMLTextAreaElement) => {
-        nodeRef.current = node;
+    // const ref = useCallback((node : HTMLTextAreaElement) => {
+    //     nodeRef.current = node;
+    //     if(nodeRef.current){
+    //         // onMount(nodeRef.current);
+
+    //         nodeRef.current.focus(); // autoFocus not working, so focus it manually
+
+    //         if(initialSelectionStart){
+    //             nodeRef.current.selectionStart = initialSelectionStart;
+    
+    //             if(initialSelectionEnd){
+    //                 nodeRef.current.selectionEnd = initialSelectionEnd;
+    //             }
+    //             else{
+    //                 nodeRef.current.selectionEnd = initialSelectionStart;
+    //             }
+    //         }
+    //     }
+    // }, [/* onMount */ initialSelectionStart, initialSelectionEnd]);
+    // const ref = useRefWithCallback<HTMLTextAreaElement>(
+    //     onMount,
+    //     undefined
+    // );
+
+    useEffect(() => {
         if(nodeRef.current){
             // onMount(nodeRef.current);
 
@@ -61,17 +84,15 @@ function SingletonTextArea(props : SingletonTextAreaProps){
                     nodeRef.current.selectionEnd = initialSelectionStart;
                 }
             }
+
+            nodeRef.current.focus(); // autoFocus not working, so focus it manually
         }
-    }, [/* onMount */ initialSelectionStart, initialSelectionEnd]);
-    // const ref = useRefWithCallback<HTMLTextAreaElement>(
-    //     onMount,
-    //     undefined
-    // );
+    }, [nodeRef.current, initialSelectionStart, initialSelectionEnd]);
 
     return (
-        <TextareaAutosize autoFocus
+        <TextareaAutosize //autoFocus
             {...others} //style, name, className, onChange, value, ...
-            ref={ ref }
+            ref={ nodeRef }
             spellCheck={false} autoComplete='off' autoCorrect='off' autoCapitalize='off'
         />
     );

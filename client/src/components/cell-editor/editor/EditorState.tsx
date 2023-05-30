@@ -318,15 +318,21 @@ export const [ CellEditorProvider, useCellEditorContext, useCellEditorAction ] =
         structAction.move(id, destParentId, destPos)(s);
         renderDataAction.relabel()(s);
     }),
-    createChild: (cellType: CellType, parentId: string, pos?: number) => produce((s: CellEditorState) => {
+    createChild: (cellType: CellType, parentId: string, pos?: number, initFields?: any, focus?: boolean) => produce((s: CellEditorState) => {
         const id = generateId(Object.keys(s.parentIds));
+        
         cellAction.create(id, {
             [cellTypeStr]: cellType,
             id,
-            ...defaultFields[cellType]
+            ...defaultFields[cellType],
+            ...(initFields ?? {}),
         } as Cell)(s);
         structAction.addChild(id, parentId, pos)(s);
         renderDataAction.relabel()(s);
+
+        if(focus){
+            s.focusId = id;
+        }
     }),
     remove: (id: string) => produce((s: CellEditorState) => {
         cellAction.remove(id)(s);
