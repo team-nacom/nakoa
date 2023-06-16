@@ -43,11 +43,11 @@ function _generateTypedLabel(c: Content, id: string, obj: Record<string, number[
 
     const idxObj : Record<string, number> = {};
     (c.structData[id] ?? []).forEach((childId)=>{
-        const currentType = labelType(c.cellData[childId])
-        const currentTypeNextIdx = (idxObj[currentType] ?? 0) + 1
-        idxObj[currentType] = currentTypeNextIdx
+        const currentType = labelType(c.cellData[childId]);
+        const currentTypeNextIdx = (idxObj[currentType] ?? 0) + 1;
+        idxObj[currentType] = currentTypeNextIdx;
 
-        _generateTypedLabel(c, childId, obj, [...prefix, currentTypeNextIdx])
+        _generateTypedLabel(c, childId, obj, [...prefix, currentTypeNextIdx]);
     });
 }
 function generateTypedLabel(c: Content): Record<string, number[]>{
@@ -72,20 +72,20 @@ function cascadeChildren(struct: Content['structData'], id: string): Content['st
 }
 
 function toMathMacroObj(mathMacroStr: string){
-    let obj = {}
+    let obj = {};
     katex.renderToString(mathMacroStr,{
         throwOnError: false,
         globalGroup: true,
         macros: obj
-    })
-    return obj
+    });
+    return obj;
 }
 
 function calculateParentIds(struct: Content['structData'], rootId: string){
-    let parentIds: Record<string, string | undefined> = { [rootId]: undefined }
+    let parentIds: Record<string, string | undefined> = { [rootId]: undefined };
     for(let pid in struct){
         for(let cid of struct[pid]){
-            parentIds[cid] = pid
+            parentIds[cid] = pid;
         }
     }
     return parentIds;
@@ -168,7 +168,7 @@ function createCellEditorStore(initProps: CellEditorInitProps){
         renderData,
         focusId,
         hideChildren,
-    })))
+    })));
 }
 
 // slice functions : this will assume that all usage will be wrapped inside immer `produce()`; ok to directly modify
@@ -320,6 +320,9 @@ export const [ CellEditorProvider, useCellEditorContext, useCellEditorAction ] =
     }),
     createChild: (cellType: CellType, parentId: string, pos?: number, initFields?: any, focus?: boolean) => produce((s: CellEditorState) => {
         const id = generateId(Object.keys(s.parentIds));
+        if(focus){
+            s.focusId = id;
+        }
         
         cellAction.create(id, {
             [cellTypeStr]: cellType,
@@ -329,15 +332,45 @@ export const [ CellEditorProvider, useCellEditorContext, useCellEditorAction ] =
         } as Cell)(s);
         structAction.addChild(id, parentId, pos)(s);
         renderDataAction.relabel()(s);
-
-        if(focus){
-            s.focusId = id;
-        }
     }),
     remove: (id: string) => produce((s: CellEditorState) => {
         cellAction.remove(id)(s);
         structAction.remove(id)(s);
         renderDataAction.relabel()(s);
+    }),
+    // inspect a neighbor cell, and if possible, remove the target cell and merge it.
+    // do nothing if not mergable
+    merge: (
+        id: string,
+        direction: 'forward' | 'backward', // direction of dest cell
+        criteria: (target: Cell, dest: Cell) => boolean,
+        overwrite: (target: Cell, dest: Cell) => any, // Partial field of dest
+    ) => produce((s: CellEditorState) => {
+        const pid = s.parentIds[id] as string;
+        const idx = s.content.structData[pid].indexOf(id);
+
+        let dest_idx = (direction === 'forward' ? idx - 1 : idx + 1);
+        if(dest_idx < 0 || dest_idx >= s.content.structData[pid].length) return;
+
+        let dest_id = s.content.structData[pid][dest_idx];
+
+        // current behavior : leave cell[sib_id] and remove cell[id]
+
+        // check if mergeable
+        if( !criteria(s.content.cellData[id], s.content.cellData[dest_id]) ) return;
+
+        // merge data
+        s.content.cellData[dest_id] = {
+            ...s.content.cellData[dest_id],
+            ...overwrite(s.content.cellData[id], s.content.cellData[dest_id])
+        };
+
+        // remove target cell
+        cellAction.remove(id)(s);
+        structAction.remove(id)(s);
+        renderDataAction.relabel()(s);
+
+        s.focusId = dest_id;
     }),
 
     focus: (id?: string) => produce((s: CellEditorState) => {
