@@ -55,7 +55,7 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
             value: ev.target.value
         };
         editorAction.update(cell.id, change);
-    }, [cell.id])
+    }, [cell.id]);
 
     const changeCaptionHandler : React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = useCallback((ev) => {
         ev.stopPropagation()
@@ -63,7 +63,33 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
         editorAction.update(cell.id, {
             language: ev.target.value
         } as Partial<CodeCellField>)
-    }, [cell.id])
+    }, [cell.id]);
+
+    const keyDownHandler: React.KeyboardEventHandler<HTMLTextAreaElement> = useCallback((ev) => {
+        if(ev.key === 'Tab'){ // support indentation.
+            // currently we're only using textarea-based code editor
+            // so don't expect to much!
+
+            ev.preventDefault();
+
+            let start = ev.currentTarget.selectionStart;
+            let end = ev.currentTarget.selectionEnd;
+
+            let beforeValue = ev.currentTarget.value.slice(0, start);
+            let afterValue = ev.currentTarget.value.slice(start);
+
+            let change: Partial<CodeCellField> = {
+                value: beforeValue + '    ' + afterValue, // 4 space as for indentation
+            };
+            editorAction.update(cell.id, change);
+
+            ev.currentTarget.selectionStart = start + 4;
+            ev.currentTarget.selectionEnd = end + 4;
+        }
+
+        // todo: keydown handler ?
+
+    }, [cell.id]);
 
     return (
         <div className='editorCodeCellWrapper'>
@@ -78,6 +104,7 @@ function CodeCellEditor({ cell }: Omit<CellTypeRendererProps<CodeCell>,'mode'>){
                 className='editorCodeCell editorCell'
                 value={ cell.value }
                 onChange={ changeHandler }
+                onKeyDown={ keyDownHandler }
             />
         </div>
     )
