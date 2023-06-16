@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import { BasicCell } from '#common/BasicCell';
 import { RenderMode, Renderer, CellTypeRendererProps } from '../types-render';
+import { SectionCellField } from './section';
 
 import {
     useRenderData,
@@ -66,7 +67,8 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
     // todo: should have separate module for shortcuts
     const keyDownHandler: React.KeyboardEventHandler<HTMLTextAreaElement> = useCallback((ev) => {
         if(ev.ctrlKey && ev.key === 'Enter'){ // cell split
-
+            // text to text-section split
+            
             let change1: Partial<TextCellField> = {
                 value: ev.currentTarget.value.slice(0, ev.currentTarget.selectionStart)
             };
@@ -74,8 +76,37 @@ function TextCellEditor({ cell }: Omit<CellTypeRendererProps<TextCell>,'mode'>){
                 value: ev.currentTarget.value.slice(ev.currentTarget.selectionStart)
             };
 
-            editorAction.update(cell.id, change1);
-            editorAction.createChild('text', parentId, idx+1, change2, true); // immediate focus after creation
+            // find newline and determine the behavior
+            let beforeText = change1.value ?? '';
+            let lastLineBreak = beforeText.lastIndexOf('\n');
+            let line = beforeText.substring(lastLineBreak + 1); // this also works if lastLineBreak === -1
+
+            let remainder = beforeText.substring(0, lastLineBreak + 1);
+
+            if(line[0] === '#'){
+                // text to section-text split
+
+                let i = 1;
+                while(line[i] === '#') i++;
+
+                let sectionCellChange: Partial<SectionCellField> = { value: line.substring(i).trim() };
+
+                if(remainder.trim().length === 0){ // current cell will be transformed into section cell
+                    editorAction.changeType(cell.id, 'section');
+                    editorAction.update(cell.id, sectionCellChange);
+                    editorAction.createChild('text', cell.id, 0, change2, true);
+                } else { // current cell leaves only remainder. new cells will be created
+                    editorAction.update(cell.id, { value: remainder } as Partial<TextCellField>);
+                    editorAction.createChild('section', parentId, idx+1, sectionCellChange, true); // after this call, the focusId will be the new section cell id.
+                    editorAction.createChild('text', undefined /* use focusId */, 0, change2, true);
+                }
+                
+            } else {
+                // text to text-text split
+
+                editorAction.update(cell.id, change1);
+                editorAction.createChild('text', parentId, idx+1, change2, true); // immediate focus after creation
+            }
 
             ev.preventDefault();
         }

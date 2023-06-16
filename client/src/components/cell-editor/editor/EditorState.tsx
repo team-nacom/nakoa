@@ -318,7 +318,13 @@ export const [ CellEditorProvider, useCellEditorContext, useCellEditorAction ] =
         structAction.move(id, destParentId, destPos)(s);
         renderDataAction.relabel()(s);
     }),
-    createChild: (cellType: CellType, parentId: string, pos?: number, initFields?: any, focus?: boolean) => produce((s: CellEditorState) => {
+    createChild: (cellType: CellType, parentId?: string, pos?: number, initFields?: any, focus?: boolean) => produce((s: CellEditorState) => {
+        // if parentId is not specified, then use focusId as parentId.
+        // todo: is it safe?
+        if(parentId === undefined){
+            parentId = s.focusId ?? s.content.rootId;
+        }
+
         const id = generateId(Object.keys(s.parentIds));
         if(focus){
             s.focusId = id;
